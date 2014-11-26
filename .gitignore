@@ -1,7 +1,7 @@
 *.class
 .idea/
-.target/
-.out/
+**target/
+**out/
 # Package Files #
 *.jar
 *.war
