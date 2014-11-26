@@ -11,6 +11,10 @@
     <title></title>
   </head>
   <body>
-Hello Worlds
+
+<form action="reports">
+  <input type="submit" value="Get Report">
+</form>
+
   </body>
 </html>
