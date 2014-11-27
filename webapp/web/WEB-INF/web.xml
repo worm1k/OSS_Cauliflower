@@ -9,10 +9,35 @@
         <servlet-name>ReportGenerator</servlet-name>
         <servlet-class>reports.ReportGeneratorServlet</servlet-class>
     </servlet>
-    
     <servlet-mapping>
         <servlet-name>ReportGenerator</servlet-name>
         <url-pattern>/reports</url-pattern>
+    </servlet-mapping>
+    
+    
+    <servlet>
+        <servlet-name>Login</servlet-name>
+    <servlet-class>controllers.LoginController</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <mime-mapping>
+        <extension>xls</extension>
+        <mime-type>application/vnd.ms-excel</mime-type>
+    </mime-mapping>
+    
+    
+    <servlet>
+        <servlet-name>MailSender</servlet-name>
+        <servlet-class>mail.MailSenderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MailSender</servlet-name>
+        <url-pattern>/mail</url-pattern>
     </servlet-mapping>
     
 </web-app>

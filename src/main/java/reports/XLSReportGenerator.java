@@ -421,18 +421,10 @@ public class XLSReportGenerator {
 
     /**
      * Generates xls report
-     * @param fileName name of generated xls-file
+     *
      */
-    public void createXlsFile(String fileName) {
-        try {
-            File file = new File(fileName);
-            FileOutputStream out = new FileOutputStream(file);
-            workbook.write(out);
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public HSSFWorkbook  createXlsFile() {
+        return workbook;
     }
+
 }
