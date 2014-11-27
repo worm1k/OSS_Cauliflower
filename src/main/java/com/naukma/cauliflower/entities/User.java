@@ -1,36 +1,29 @@
 package com.naukma.cauliflower.entities;
 
+import java.io.Serializable;
+
 /**
  * Created by Eugene on 26.11.2014.
  */
-public class User {
+public class User implements Serializable {
 
-    private long userId;
-    private long userRoleId;
+    private int userId;
+    private int userRoleId;
+    private String userRole;
     private String email;
     private String firstName;
     private String lastName;
     private String phone;
 
-    public User(long userId, long userRoleId, String email, String firstName, String lastName, String phone) {
+    public User(int userId, int userRoleId, String userRole, String email, String firstName, String lastName, String phone) {
         this.userId = userId;
         this.userRoleId = userRoleId;
+        this.userRole = userRole;
         this.email = email;
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", userRoleId=" + userRoleId +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
     }
 
     public String getEmail() {
@@ -45,6 +38,11 @@ public class User {
         return userRoleId;
     }
 
+
+    public String getUserRole() {
+        return userRole;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -56,5 +54,19 @@ public class User {
     public String getPhone() {
         return phone;
     }
+
+
+//    @Override
+//    public String toString() {
+//        return "User{" +
+//                "userId=" + userId +
+//                ", userRoleId=" + userRoleId +
+//                ", email='" + email + '\'' +
+//                ", firstName='" + firstName + '\'' +
+//                ", lastName='" + lastName + '\'' +
+//                ", phone='" + phone + '\'' +
+//                '}';
+//    }
+
 }
 

@@ -8,10 +8,6 @@
     <artifactId>Main</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <modules>
-        <module>web</module>
-    </modules>
-
 
     <dependencies>
         <dependency>
