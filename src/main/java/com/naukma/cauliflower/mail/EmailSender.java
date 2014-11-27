@@ -1,4 +1,4 @@
-package mail;
+package com.naukma.cauliflower.mail;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -6,16 +6,10 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import entities.User;
+import com.naukma.cauliflower.entities.User;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -53,7 +47,7 @@ public class EmailSender {
 
 			Map<String, String> rootMap = new HashMap<String, String>();
 			StringBuilder to = new StringBuilder();
-			to.append(user.getName()).append(" ").append(user.getSurname());
+			to.append(user.getFirstName()).append(" ").append(user.getLastName());
 			rootMap.put("to", to.toString());
 			 rootMap.put("body", body);
 			// TODO

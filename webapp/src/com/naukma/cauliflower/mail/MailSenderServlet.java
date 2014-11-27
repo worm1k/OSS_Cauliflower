@@ -1,6 +1,6 @@
-package mail;
+package com.naukma.cauliflower.mail;
 
-import entities.User;
+import com.naukma.cauliflower.entities.User;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -8,11 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URL;
 
 /**
  * Created by Max on 27.11.2014.
@@ -31,7 +28,7 @@ public class MailSenderServlet extends HttpServlet {
         EmailSender emailSender = new EmailSender();
 //        BufferedReader br = new BufferedReader(new FileReader(fullPath));
 //            System.out.println(br.read());
-       emailSender.sendEmail(new User(1,1,"mhladchuk@gmail.com","aaa","max","gladchuk","22222"),"gg","gg",
+       emailSender.sendEmail(new User(1,1,"mhladchuk@gmail.com","max","gladchuk","22222"),"gg","gg",
                 EmailSender.getTemplate("/html-mail-template.ftl" ,fullPath));
         out.write("Email sent");
 

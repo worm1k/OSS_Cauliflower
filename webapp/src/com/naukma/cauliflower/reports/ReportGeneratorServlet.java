@@ -1,6 +1,6 @@
-package reports;
+package com.naukma.cauliflower.reports;
 
-import dao.UserDAO;
+import com.naukma.cauliflower.dao.UserDAO;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;

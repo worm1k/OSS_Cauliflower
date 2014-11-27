@@ -7,7 +7,7 @@
     
     <servlet>
         <servlet-name>ReportGenerator</servlet-name>
-        <servlet-class>reports.ReportGeneratorServlet</servlet-class>
+        <servlet-class>com.naukma.cauliflower.reports.ReportGeneratorServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ReportGenerator</servlet-name>
@@ -17,7 +17,7 @@
     
     <servlet>
         <servlet-name>Login</servlet-name>
-    <servlet-class>controllers.LoginController</servlet-class>
+    <servlet-class>com.naukma.cauliflower.controllers.LoginController</servlet-class>
     </servlet>
     
     <servlet-mapping>
@@ -33,7 +33,7 @@
     
     <servlet>
         <servlet-name>MailSender</servlet-name>
-        <servlet-class>mail.MailSenderServlet</servlet-class>
+        <servlet-class>com.naukma.cauliflower.mail.MailSenderServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>MailSender</servlet-name>

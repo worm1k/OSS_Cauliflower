@@ -1,14 +1,15 @@
-package dao;
+package com.naukma.cauliflower.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import entities.User;
+import com.naukma.cauliflower.entities.*;
 
 /**
  * Created by Eugene on 26.11.2014.
  */
+
 public class UserDAO extends DAO{
     private PreparedStatement findUser;
     private User user = null;
@@ -22,13 +23,12 @@ public class UserDAO extends DAO{
             ResultSet resultSet = findUser.executeQuery();
             while (resultSet.next()){
                 int ID_USER = resultSet.getInt(1);
-                int ID_USERROLE = resultSet.getInt(2);
+              int ID_USERROLE = resultSet.getInt(2);
                 String E_MAIL = resultSet.getString(3);
-                String PASSWORD = resultSet.getString(4);
-                String F_NAME = resultSet.getString(5);
+                 String F_NAME = resultSet.getString(5);
                 String L_NAME = resultSet.getString(6);
                 String PHONE = resultSet.getString(7);
-                user = new User(ID_USER, ID_USERROLE, E_MAIL, PASSWORD, F_NAME, L_NAME, PHONE);
+                user = new User(ID_USER, ID_USERROLE, E_MAIL, F_NAME, L_NAME, PHONE);
             }
             if(user == null) throw new NullPointerException("No such user");
         } catch (SQLException e) {
@@ -36,6 +36,7 @@ public class UserDAO extends DAO{
             throw new NullPointerException(e.getMessage());
         }
     }
+
     public User getUser(){
         return user;
     }

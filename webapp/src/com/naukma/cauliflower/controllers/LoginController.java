@@ -1,6 +1,6 @@
-package controllers;
+package com.naukma.cauliflower.controllers;
 
-import dao.UserDAO;
+import com.naukma.cauliflower.dao.UserDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

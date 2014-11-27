@@ -1,4 +1,4 @@
-package dao;
+package com.naukma.cauliflower.dao;
 
 import java.sql.Statement;
 import java.sql.Connection;
