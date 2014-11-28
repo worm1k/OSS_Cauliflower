@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.SQLException;
 
 /**
  * Created by Max on 26.11.2014.
@@ -27,16 +28,22 @@ public class LoginController extends HttpServlet {
 
         //DAO dao = new DAO();
         User user = null;
+        try {
+            DAO.getInstance().open();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         try{
-            //user = dao.getUserByLoginAndPassword(username, password);
-            user = DAOenum.INSTANCE.getUserByLoginAndPassword(username, password);
+
+            user = DAO.getInstance().getUserByLoginAndPassword(username, password);
+          //  user = dao.getUserByLoginAndPassword(username, password);
         }catch (NullPointerException e){
             res = e.getMessage();
         }
         if(user == null){
             res = "NULL";
-        }else
-            res = user.toString();
+       }else
+           res = user.toString();
 
         Writer out = response.getWriter();
         out.write("<h1> Hello,"+res );
