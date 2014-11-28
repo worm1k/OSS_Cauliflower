@@ -1,6 +1,7 @@
 package com.naukma.cauliflower.controllers;
 
-import com.naukma.cauliflower.dao.UserDAO;
+import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.entities.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,16 +23,17 @@ public class LoginController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String res = "";
-        UserDAO userDAO = null;
+        DAO dao = new DAO();
+        User user = null;
         try{
-            userDAO = new UserDAO(username, password);
+            user = dao.getUser();
         }catch (NullPointerException e){
             res = e.getMessage();
         }
-        if(userDAO == null){
+        if(user == null){
             res = "NULL";
         }else
-            res = userDAO.getUser().toString();
+            res = user.toString();
 
         Writer out = response.getWriter();
         out.write("<h1> Hello,"+res );

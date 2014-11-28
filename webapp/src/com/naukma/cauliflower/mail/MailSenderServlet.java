@@ -26,10 +26,11 @@ public class MailSenderServlet extends HttpServlet {
         Writer out = response.getWriter();
 
         EmailSender emailSender = new EmailSender();
-//        BufferedReader br = new BufferedReader(new FileReader(fullPath));
-//            System.out.println(br.read());
-       emailSender.sendEmail(new User(1,1,"mhladchuk@gmail.com","max","gladchuk","22222"),"gg","gg",
+        /* We will receive user from DAO
+        emailSender.sendEmail(new User(1,1,"mhladchuk@gmail.com","max","gladchuk","22222"),"gg","gg",
+
                 EmailSender.getTemplate("/html-mail-template.ftl" ,fullPath));
+         */
         out.write("Email sent");
 
     }

@@ -56,17 +56,18 @@ public class User implements Serializable {
     }
 
 
-//    @Override
-//    public String toString() {
-//        return "User{" +
-//                "userId=" + userId +
-//                ", userRoleId=" + userRoleId +
-//                ", email='" + email + '\'' +
-//                ", firstName='" + firstName + '\'' +
-//                ", lastName='" + lastName + '\'' +
-//                ", phone='" + phone + '\'' +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "User{" +
+               "userId=" + userId +
+                ", userRole= "+ userRole +
+               ", userRoleId=" + userRoleId +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
 
 }
 
