@@ -15,9 +15,8 @@ public class UserDAO extends DAO{
     private User user = null;
 
     public UserDAO(String login, String password)throws NullPointerException{
-        super();
         try {
-            findUser = getConnection().prepareStatement("SELECT * FROM USERS WHERE E_MAIL = ? AND PASSWORD = ?");
+            findUser = DAO.getConnection().prepareStatement("SELECT * FROM USERS WHERE E_MAIL = ? AND PASSWORD = ?");
             findUser.setString(1 , login);
             findUser.setString(2, password);
             ResultSet resultSet = findUser.executeQuery();
@@ -44,7 +43,7 @@ public class UserDAO extends DAO{
 
     public ResultSet reportTester() throws SQLException {
 
-        Connection conn = getConnection();
+        Connection conn = DAO.getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM USERS");
         ResultSet rs = preparedStatement.executeQuery();
         return  rs;
