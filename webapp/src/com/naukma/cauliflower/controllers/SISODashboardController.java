@@ -1,5 +1,7 @@
 package com.naukma.cauliflower.controllers;
 
+import com.naukma.cauliflower.entities.User;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +14,8 @@ import java.io.IOException;
 
 @WebServlet(name = "SOSIDashboardController")
 public class SISODashboardController {
+
+
     /*
     ACK.14
     ACK.15
@@ -23,6 +27,7 @@ public class SISODashboardController {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        User user = (User)request.getSession().getAttribute("user");
 
 
     }

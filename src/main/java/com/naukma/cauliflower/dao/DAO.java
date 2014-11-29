@@ -17,11 +17,12 @@ import java.sql.SQLException;
  */
 public enum DAO {
     INSTANCE;
-    private DataSource dataSource;
-    private PreparedStatement preparedStatement;
     // assumes the current class is called logger
     private final Logger logger = Logger.getLogger(DAO.class.getName());
-    private DAO(){
+    private DataSource dataSource;
+    private PreparedStatement preparedStatement;
+
+    private DAO() {
         InitialContext ic = null;
         try {
             ic = new InitialContext();
@@ -30,6 +31,7 @@ public enum DAO {
             e.printStackTrace();
         }
     }
+
     private Connection getConnection() {
         try {
             return dataSource.getConnection();
@@ -38,7 +40,8 @@ public enum DAO {
         }
         return null;
     }
-    public User getUserByLoginAndPassword(String login, String password)throws NullPointerException{
+
+    public User getUserByLoginAndPassword(String login, String password) {
         Connection connection = getConnection();
         User user = null;
         try {
@@ -48,7 +51,7 @@ public enum DAO {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 int idUser = resultSet.getInt("ID_USER");
                 int idUserrole = resultSet.getInt("ID_USERROLE");
                 String eMail = resultSet.getString("E_MAIL");
@@ -56,16 +59,15 @@ public enum DAO {
                 String lastName = resultSet.getString("L_NAME");
                 String phone = resultSet.getString("PHONE");
                 String userrole = resultSet.getString("NAME");
-                user = new User(idUser, idUserrole,userrole,  eMail, firstName, lastName, phone);
+                user = new User(idUser, idUserrole, userrole, eMail, firstName, lastName, phone);
             }
             resultSet.close();
-         } catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally{
+        } finally {
             try {
                 if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed())connection.close();
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -74,35 +76,50 @@ public enum DAO {
         }
         return user;
     }
-
-    public  int createServiceOrder(String orderStatus, String orderScenarioName){
-        
+    public int createServiceOrder(Scenario scenario) {
+        //default status ENTERING
         return 1;
 
     }
 
-    public  int createServiceInstance( int userId,
-                                          int serviceLocationId, String locationAddress,
-                                          int locationLongitude, int locationLatitude,
-                                          int serviceId,
-                                          String instanceStatus){
+    public int createServiceInstance(int userId,
+                                     int serviceLocationId, String locationAddress,
+                                     int locationLongitude, int locationLatitude,
+                                     int serviceId)
+    {
 
-        return  1;
+        //default status PLANNED
+
+        return 1;
+    }
+
+    public int createTask() {
+        return 1;
+
     }
 
 
-    public int createTask(){
-    return 1;
+    public void changeInstanceStatus(int instanceId, InstanceStatus status) {
+
+    }
+
+    public void changeOrderStatus(int orderId, OrderStatus orderStatus) {
+
+    }
+
+    public void changeTaskStatus(int taskId, TaskStatus taskStatus) {
+
 
     }
 
 
-    public ResultSet reportTester() throws SQLException {
+    public ResultSet reportTester() throws SQLException
+    {
         Connection conn = getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM USERS");
         ResultSet rs = preparedStatement.executeQuery();
-        return  rs;
+        return rs;
     }
-    }
+}
 
 
