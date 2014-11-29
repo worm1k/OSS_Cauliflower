@@ -82,8 +82,7 @@ public class ProceedOrderController extends HttpServlet {
 
     private void scenarioDisconnect(HttpServletRequest request){
         Integer instanceId =  Integer.parseInt(request.getParameter("instanceId"));
-        orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT,instanceId);
-       // createDisconectOrder();
+        createDisconectOrder(instanceId);
         changeOrderStatus();
         DAO.INSTANCE.createTaskForProvisioning(orderId);
 
@@ -98,15 +97,16 @@ public class ProceedOrderController extends HttpServlet {
     }
 
     // ACK.3
-    private void createDisconectOrder()
+    private void createDisconectOrder(Integer instanceId)
     {
-        orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT);
+        orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT, instanceId);
 
 
     }
 
     //ACK 12
     private void changeOrderStatus(){
+
         DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
 
 
@@ -115,12 +115,12 @@ public class ProceedOrderController extends HttpServlet {
     //ACK 12
     private void createServiceInstance(HttpServletRequest request)
     {
-        int userId = -1;
-        if(user == null){
-        }
+//        int userId = -1;
+//        if(user == null){
+//        }
+
         ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
         Service service = (Service)request.getSession().getAttribute("service");
-
         serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
 
     }
