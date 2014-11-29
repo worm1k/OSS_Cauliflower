@@ -99,6 +99,12 @@ public enum DAO {
     }
 
 
+    public void setInstanceForOrder(int instanceId, int orderId){
+
+
+
+    }
+
     public void changeInstanceStatus(int instanceId, InstanceStatus status) {
 
     }

@@ -37,10 +37,12 @@ public class ProceedOrderController extends HttpServlet {
     {
 
         user = (User) request.getSession().getAttribute("user");
-        Scenario scenario = (Scenario)request.getParameter("scenario");
+        String scenario = request.getParameter("scenario");
+
         createNewOrder();
         changeOrderStatus();
         createServiceInstance();
+
         createTaskForInstallation();
         createTaskForProvisioning();
 
