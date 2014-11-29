@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 
 @WebServlet(name = "SOSIDashboardController")
-public class SOSIDashboardController {
+public class SISODashboardController {
     /*
     ACK.14
     ACK.15
