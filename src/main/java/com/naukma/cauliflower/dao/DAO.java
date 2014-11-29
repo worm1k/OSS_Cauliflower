@@ -93,17 +93,19 @@ public enum DAO {
             if (resultSet.next()){
                 idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
             }
+            System.out.println("Scenario "+scenario.toString()+"idOrderScenario = " + idOrderScenario);
+
             preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
             preparedStatement.setString(1, orderStatus.toString());
-
             int idOrderStatus = 0;
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
             }
+            System.out.println("Orderstatus "+orderStatus.toString()+"idOrderStatus = " + idOrderStatus);
             if (idServiceInstance == null){
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
-                        "VALUES('null', ?,? )");
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
+                        "VALUES(?,? )");
                 preparedStatement.setInt(1, idOrderScenario);
                 preparedStatement.setInt(2, idOrderStatus);
             }else{
@@ -119,8 +121,10 @@ public enum DAO {
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
             resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
+                System.out.println("idDerviceorder" +resultSet.getInt("RES"));
                 return resultSet.getInt("RES");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
