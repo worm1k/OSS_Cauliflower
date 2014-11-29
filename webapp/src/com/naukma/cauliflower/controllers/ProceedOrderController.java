@@ -45,7 +45,7 @@ public class ProceedOrderController extends HttpServlet {
         if(scenario == Scenario.NEW)
             scenarioNew(request);
         else
-            scenarioDisconnect(HttpServletRequest request);
+            scenarioDisconnect(request);
 
 
 //
