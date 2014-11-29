@@ -1,5 +1,9 @@
 package com.naukma.cauliflower.controllers;
 
+import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.TaskStatus;
+import com.naukma.cauliflower.entities.User;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +22,19 @@ public class CreateRouterController {
     SOW.5
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        User user = (User) request.getSession().getAttribute("user");
+        Integer taskId = (Integer) request.getSession().getAttribute("taskid");
+        Integer serviceOrderId = (Integer) request.getSession().getAttribute("serviceorderid");
 
+        try {
+            //CREATE ROUTER METHOD FROM DAO
+            DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+            DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

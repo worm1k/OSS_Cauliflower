@@ -22,6 +22,10 @@ public class LocationController {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        //get tasks with taskStatusId TaskStatus.FREE and userRole
+        //List<Task> tasks = getTasksByStatusAndRole(TaskStatus.FREE, user.getUserRoleId());
+        //request.setAttribute("tasks", tasks);
+        //request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
