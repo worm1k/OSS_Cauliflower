@@ -27,14 +27,10 @@ public class LoginController extends HttpServlet {
 
 
         User user = null;
-        try{
-            user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
-        }catch (NullPointerException e){
-            res = e.getMessage();
-        }
+        user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
         if(user == null){
-            res = "NULL";
-       }else{
+            res = "NULL";}
+        else{
             request.getSession().setAttribute("user",user);
             res = user.toString();
         }

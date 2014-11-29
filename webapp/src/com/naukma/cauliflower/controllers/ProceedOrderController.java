@@ -13,7 +13,7 @@ import java.io.IOException;
  * Created by Max on 29.11.2014.
  */
 @WebServlet(name = "CreateOrderController")
-public class CreateOrderController extends HttpServlet {
+public class ProceedOrderController extends HttpServlet {
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

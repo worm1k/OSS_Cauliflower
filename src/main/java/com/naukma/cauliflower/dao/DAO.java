@@ -59,10 +59,8 @@ public enum DAO {
                 user = new User(idUser, idUserrole,userrole,  eMail, firstName, lastName, phone);
             }
             resultSet.close();
-            if(user == null) throw new NullPointerException("No such user");
-        } catch (SQLException e) {
+         } catch (SQLException e) {
             e.printStackTrace();
-            throw new NullPointerException(e.getMessage());
         }
         finally{
             try {

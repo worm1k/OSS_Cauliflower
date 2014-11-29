@@ -42,7 +42,7 @@
 
     <servlet>
         <servlet-name>ProceedOrder</servlet-name>
-        <servlet-class>com.naukma.cauliflower.controllers.CreateOrderController</servlet-class>
+        <servlet-class>com.naukma.cauliflower.controllers.ProceedOrderController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ProceedOrder</servlet-name>
