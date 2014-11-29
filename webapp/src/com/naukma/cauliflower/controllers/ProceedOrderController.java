@@ -37,8 +37,12 @@ public class ProceedOrderController extends HttpServlet {
     {
 
         user = (User) request.getSession().getAttribute("user");
+        Scenario scenario = (Scenario)request.getParameter("scenario");
         createNewOrder();
-
+        changeOrderStatus();
+        createServiceInstance();
+        createTaskForInstallation();
+        createTaskForProvisioning();
 
 
 
@@ -46,35 +50,37 @@ public class ProceedOrderController extends HttpServlet {
         //crate instance
         // check cable
         // create tasks
-        // change tasks ctatuses
+        // change tasks statuses
         // change instance status
-
+        request.setAttribute("name", "value");
+        request.getRequestDispatcher("index.jsp").forward(request, response);
 
     }
 
     // ACK.1
     private void createNewOrder()
     {
-       orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW);
-        createServiceInstance();
-        createTaskForInstallation();
+         orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW);
+
 
     }
 
     // ACK.3
     private void createDisconectOrder()
     {
-        orderId = DAO.INSTANCE.createServiceOrder( Scenario.DISCONNECT);
+        orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT);
 
 
     }
 
-    private void changeOrderStatus(int orderId){
+    //ACK 12
+    private void changeOrderStatus(){
         DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
 
 
     }
 
+    //ACK 12
     private void createServiceInstance()
     {
         serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(), 1, "home", 40, 40, 1);
@@ -83,13 +89,13 @@ public class ProceedOrderController extends HttpServlet {
 
     private void createTaskForInstallation()
     {
-
+        DAO.INSTANCE.createTask();
 
     }
 
     private void createTaskForProvisioning()
     {
-
+        DAO.INSTANCE.createTask();
 
     }
 
