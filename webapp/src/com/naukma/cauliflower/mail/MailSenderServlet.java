@@ -23,13 +23,8 @@ public class MailSenderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletContext context = getServletContext();
         String fullPath = context.getRealPath("/WEB-INF/mail/");
-        Writer out = response.getWriter();
+        EmailSender.sendEmail((User) request.getSession().getAttribute("user"), "gg", "gg", EmailSender.getTemplate("/html-mail-template.ftl", fullPath));
 
-        EmailSender emailSender = new EmailSender();
-
-        emailSender.sendEmail((User)request.getSession().getAttribute("user"),"gg","gg",
-                EmailSender.getTemplate("/html-mail-template.ftl" ,fullPath));
-        out.write("Email sent");
 
     }
 }
