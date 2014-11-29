@@ -3,7 +3,6 @@ package com.naukma.cauliflower.entities;
 public class Service {
     private int serviceId;
     private int providerLocationId;
-    private int locationId;
     private int serviceTypeId;
 
     private String locationAddress;
@@ -13,9 +12,8 @@ public class Service {
     private String serviceTypeName;
     private String serviceSpeed;
 
-    public Service(int locationId, int serviceTypeId, String locationAddress, int locationLongitude, int locationLatitude,
+    public Service(int serviceTypeId, String locationAddress, int locationLongitude, int locationLatitude,
                    String serviceTypeName, String serviceSpeed, int providerLocationId, int serviceId) {
-        this.locationId = locationId;
         this.serviceTypeId = serviceTypeId;
         this.locationAddress = locationAddress;
         this.locationLongitude = locationLongitude;
@@ -32,10 +30,6 @@ public class Service {
 
     public int getProviderLocationId() {
         return providerLocationId;
-    }
-
-    public int getLocationId() {
-        return locationId;
     }
 
     public int getServiceTypeId() {
@@ -68,10 +62,6 @@ public class Service {
 
     public void setProviderLocationId(int providerLocationId) {
         this.providerLocationId = providerLocationId;
-    }
-
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
     }
 
     public void setServiceTypeId(int serviceTypeId) {
