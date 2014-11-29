@@ -206,16 +206,6 @@ public enum DAO {
     }
 
     //KaspYar
-
-    /**
-     * Connects selected instance and selected order
-     * @param instanceId id of the instance
-     * @param orderId id of the order    * */
-    public void setInstanceForOrder(int instanceId, int orderId){
-        
-    }
-
-    //KaspYar
     /**
      * Set selected status for selected instance
      * @param instanceId id of the instance
@@ -653,6 +643,11 @@ public enum DAO {
     }
 
     //KaspYar
+
+    /**
+     * return List<Services> of all Services
+     * @return
+     */
     public List<Service> getServices(){
         //public Service(int serviceTypeId, String locationAddress,
         //              int locationLongitude, int locationLatitude,
