@@ -166,10 +166,9 @@ public enum DAO {
 
     //KaspYar
     public void setInstanceForOrder(int instanceId, int orderId){
-
-
-
+        
     }
+
     //KaspYar
     public void changeInstanceStatus(int instanceId, InstanceStatus status) {
         Connection connection = getConnection();
@@ -197,6 +196,7 @@ public enum DAO {
         }
 
     }
+
     //KaspYar
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) {
         Connection connection = getConnection();
@@ -223,6 +223,7 @@ public enum DAO {
             }
         }
     }
+
     //KaspYar
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) {
         Connection connection = getConnection();
@@ -250,6 +251,7 @@ public enum DAO {
         }
 
     }
+
     //KaspYar
     public void setInstanceBlocked(int instanceId, int isBlocked){
         //int isBlocked = 1;
@@ -276,30 +278,52 @@ public enum DAO {
         }
 
     }
+
     //KaspYar
     public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId){
         return null;
     }
     //KaspYar
+
     public List<Service> getServicesByProviderLocationId(int providerLocationId){
         return null;
     }
+
     //KaspYar
+    /**
+     *  Creates new router
+     * */
     public void createRouter(){
 
     }
     //KaspYar
+    /**
+     *  Returns ServiceOrder for selected task
+     *  @param taskId  Id of the task
+     * */
+
     public ServiceOrder getServiceOrder(int taskId){
         return null;
     }
+
     //KaspYar
+    /**
+     *  Returns ArrayList of orders for selected user
+     *  @param userId  Id of the user
+     * */
     public ArrayList<ServiceOrder> getOrders(int userId){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
 
         return  result;
 
     }
+
     //KaspYar
+    /**
+     *  Returns ArrayList of instances for selected user
+     *  @param userId  Id of the user
+     * */
+
     public ArrayList<ServiceInstance> getInstances(int userId){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
@@ -338,12 +362,20 @@ public enum DAO {
     }
 
     //KaspYar
+
+    /**
+     *  Returns ArrayList of all orders
+     * */
     public ArrayList<ServiceOrder> getAllOrders(){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         return  result;
 
     }
     //KaspYar
+
+    /**
+     *  Returns ArrayList of all instances
+     * */
     public ArrayList<ServiceInstance> getAllInstances(){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
