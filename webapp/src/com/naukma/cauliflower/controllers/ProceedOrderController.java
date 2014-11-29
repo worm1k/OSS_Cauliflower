@@ -40,14 +40,14 @@ public class ProceedOrderController extends HttpServlet {
     {
         user = (User) request.getSession().getAttribute("user");
         Scenario scenario = (Scenario)request.getSession().getAttribute("scenario");
-
+        scenario = Scenario.NEW;
         //   if(user != null) {
         if(scenario == Scenario.NEW)
             scenarioNew(request);
         else
             scenarioDisconnect(request);
 
-        
+
     //    request.setAttribute("name", "value");
     //   request.getRequestDispatcher("index.jsp").forward(request, response);
 

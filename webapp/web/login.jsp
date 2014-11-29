@@ -36,7 +36,7 @@
   <div class=container><div class="collapse navbar-collapse">
     <ul class="nav navbar-nav">
       <li>
-        <a href=#>create order testing</a>
+        <a href=createOrder.jsp>create order testing</a>
       </li>
       <li>
         <a href=#>navbtn2</a>
