@@ -80,7 +80,7 @@ public enum DAO {
     }
 
 
-    public int createServiceOrder(Scenario scenario) {
+    public int createServiceOrder(Scenario scenario, Integer idServiceInstance) {
         //default status ENTERING
         OrderStatus orderStatus = OrderStatus.ENTERING;
         Connection connection = getConnection();
@@ -100,11 +100,19 @@ public enum DAO {
             if (resultSet.next()){
                 idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
             }
+            if (idServiceInstance.equals(null)){
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
+                        "VALUES('null', ?,? )");
+                preparedStatement.setInt(1, idOrderScenario);
+                preparedStatement.setInt(2, idOrderStatus);
+            }else{
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
+                        "VALUES(?, ?,? )");
+                preparedStatement.setInt(1, idServiceInstance.intValue());
+                preparedStatement.setInt(2, idOrderScenario);
+                preparedStatement.setInt(3, idOrderStatus);
+            }
 
-            preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
-                                                            "VALUES('null', ?,? )");
-            preparedStatement.setInt(1, idOrderScenario);
-            preparedStatement.setInt(2, idOrderStatus);
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
