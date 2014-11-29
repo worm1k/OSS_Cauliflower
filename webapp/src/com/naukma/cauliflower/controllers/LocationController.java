@@ -11,19 +11,9 @@ import java.io.IOException;
  */
 @WebServlet(name = "LocationController")
 public class LocationController {
-    /*
-     ACK.5
-     ACK.6
-     ACK.7
-     ACK.8
-     ACK.9 ~~
-
-     */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //List<ProviderLocation> providerLocations = DAO.INSTANCE.getProviderLocations();
-        //request.setAttribute("providerlocations", providerLocations);
-        //request.getRequestDispatcher("index.jsp").forward(request, response);
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
