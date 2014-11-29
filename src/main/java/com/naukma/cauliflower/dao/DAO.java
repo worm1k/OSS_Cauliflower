@@ -357,7 +357,35 @@ public enum DAO {
     //KaspYar
 
     public List<Service> getServicesByProviderLocationId(int providerLocationId){
-        return null;
+        ArrayList<Service> result = new ArrayList<Service>();
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID " +
+                                                                                "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                                                                                "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID " +
+                                                                                "WHERE S.ID_PROVIDER_LOCATION = ? ");
+            preparedStatement.setInt(1, providerLocationId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getInt("L.LONGITUDE"),
+                        resultSet.getInt("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
+                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        result.trimToSize();
+        return result;
     }
 
     //KaspYar
@@ -509,7 +537,7 @@ public enum DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        result.trimToSize();
         return  result;
 
     }
@@ -621,6 +649,7 @@ public enum DAO {
             }
 
         }
+        result.trimToSize();
         return result;
     }
 
