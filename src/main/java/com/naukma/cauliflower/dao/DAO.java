@@ -17,22 +17,22 @@ import java.sql.SQLException;
  */
 public enum DAO {
     INSTANCE;
-    private DataSource ds;
-    private PreparedStatement pSt;
+    private DataSource dataSource;
+    private PreparedStatement preparedStatement;
     // assumes the current class is called logger
-    private final Logger LOGGER = Logger.getLogger(DAO.class.getName());
+    private final Logger logger = Logger.getLogger(DAO.class.getName());
     private DAO(){
         InitialContext ic = null;
         try {
             ic = new InitialContext();
-            ds = (DataSource) ic.lookup("jdbc/oraclesource");
+            dataSource = (DataSource) ic.lookup("jdbc/oraclesource");
         } catch (NamingException e) {
             e.printStackTrace();
         }
     }
     private Connection getConnection() {
         try {
-            return ds.getConnection();
+            return dataSource.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,21 +42,21 @@ public enum DAO {
         Connection connection = getConnection();
         User user = null;
         try {
-            pSt = connection.prepareStatement("SELECT * " +
+            preparedStatement = connection.prepareStatement("SELECT * " +
                     "FROM USERS U INNER JOIN USERROLE UR ON U.ID_USERROLE = UR.ID_USERROLE " +
                     "WHERE E_MAIL = ? AND PASSWORD = ?");
-            pSt.setString(1, login);
-            pSt.setString(2, password);
-            ResultSet resultSet = pSt.executeQuery();
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
-                int ID_USER = resultSet.getInt(1);
-                int ID_USERROLE = resultSet.getInt(2);
-                String E_MAIL = resultSet.getString(3);
-                String F_NAME = resultSet.getString(5);
-                String L_NAME = resultSet.getString(6);
-                String PHONE = resultSet.getString(7);
-                String USERROLE = resultSet.getString("NAME");
-                user = new User(ID_USER, ID_USERROLE,USERROLE,  E_MAIL, F_NAME, L_NAME, PHONE);
+                int idUser = resultSet.getInt("ID_USER");
+                int idUserrole = resultSet.getInt("ID_USERROLE");
+                String eMail = resultSet.getString("E_MAIL");
+                String firstName = resultSet.getString("F_NAME");
+                String lastName = resultSet.getString("L_NAME");
+                String phone = resultSet.getString("PHONE");
+                String userrole = resultSet.getString("NAME");
+                user = new User(idUser, idUserrole,userrole,  eMail, firstName, lastName, phone);
             }
             resultSet.close();
             if(user == null) throw new NullPointerException("No such user");
@@ -66,7 +66,7 @@ public enum DAO {
         }
         finally{
             try {
-                if (!pSt.isClosed())pSt.close();
+                if (!preparedStatement.isClosed()) preparedStatement.close();
                 if (!connection.isClosed())connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
