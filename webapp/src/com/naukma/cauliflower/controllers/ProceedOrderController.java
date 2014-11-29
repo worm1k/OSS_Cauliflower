@@ -4,6 +4,8 @@ import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.InstanceStatus;
 import com.naukma.cauliflower.dao.OrderStatus;
 import com.naukma.cauliflower.dao.Scenario;
+import com.naukma.cauliflower.entities.Service;
+import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 
 import javax.servlet.ServletException;
@@ -19,8 +21,9 @@ import java.io.IOException;
 @WebServlet(name = "ProceedOrderController")
 public class ProceedOrderController extends HttpServlet {
     private User user;
-    private int orderId = 0;
-    private int serviceInstanceId = 0;
+    private int orderId = -1;
+    private int serviceInstanceId = -1;
+
     /*
     ACK.1  ACK.2(OPTIONAL)
     ACK.3
@@ -37,8 +40,14 @@ public class ProceedOrderController extends HttpServlet {
     {
 
         user = (User) request.getSession().getAttribute("user");
-        createNewOrder();
+     //   if(user != null) {
+            createNewOrder();
+            changeOrderStatus();
+            createServiceInstance(request);
+            connectInstanceWithOrder();
 
+            createTaskForInstallation();
+            createTaskForProvisioning();
 
 
 
@@ -46,50 +55,63 @@ public class ProceedOrderController extends HttpServlet {
         //crate instance
         // check cable
         // create tasks
-        // change tasks ctatuses
+        // change tasks statuses
         // change instance status
-
+    //    request.setAttribute("name", "value");
+    //   request.getRequestDispatcher("index.jsp").forward(request, response);
 
     }
 
     // ACK.1
     private void createNewOrder()
     {
-       orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW);
-        createServiceInstance();
-        createTaskForInstallation();
+         orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW);
+
 
     }
 
     // ACK.3
     private void createDisconectOrder()
     {
-        orderId = DAO.INSTANCE.createServiceOrder( Scenario.DISCONNECT);
+        orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT);
 
 
     }
 
-    private void changeOrderStatus(int orderId){
+    //ACK 12
+    private void changeOrderStatus(){
         DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
 
 
     }
 
-    private void createServiceInstance()
+    //ACK 12
+    private void createServiceInstance(HttpServletRequest request)
     {
-        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(), 1, "home", 40, 40, 1);
+        int userId = -1;
+        if(user == null){
+        }
+        ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
+        Service service = (Service)request.getSession().getAttribute("service");
 
+        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
+
+    }
+
+
+    private void connectInstanceWithOrder(){
+        DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
     }
 
     private void createTaskForInstallation()
     {
-
+        DAO.INSTANCE.createTask();
 
     }
 
     private void createTaskForProvisioning()
     {
-
+        DAO.INSTANCE.createTask();
 
     }
 
