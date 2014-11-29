@@ -45,7 +45,7 @@ public enum DAO {
         }
         return null;
     }
-
+    //KaspYar
     public User getUserByLoginAndPassword(String login, String password) {
         Connection connection = getConnection();
         User user = null;
@@ -82,7 +82,7 @@ public enum DAO {
         return user;
     }
 
-
+    //KaspYar
     public int createServiceOrder(Scenario scenario, Integer idServiceInstance) {
         //default status ENTERING
         OrderStatus orderStatus = OrderStatus.ENTERING;
@@ -141,7 +141,7 @@ public enum DAO {
 
 
 
-
+    //KaspYar
     public int createServiceInstance(int userId, ServiceLocation serviceLocation,
                                         int serviceId)
     {
@@ -150,29 +150,29 @@ public enum DAO {
 
         return 1;
     }
-
+    //KaspYar
     public int createTaskForInstallation(int serviceOrderId) {
         return 1;
 
     }
-
+    //KaspYar
     public int createTaskForProvisioning(int serviceOrderId) {
         return 1;
 
     }
 
-
+    //KaspYar
     public void setUserForInstance(int instanceId,int userId){
 
     }
 
-
+    //KaspYar
     public void setInstanceForOrder(int instanceId, int orderId){
 
 
 
     }
-
+    //KaspYar
     public void changeInstanceStatus(int instanceId, InstanceStatus status) {
         Connection connection = getConnection();
         try {
@@ -199,7 +199,7 @@ public enum DAO {
         }
 
     }
-
+    //KaspYar
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) {
         Connection connection = getConnection();
         try {
@@ -225,7 +225,7 @@ public enum DAO {
             }
         }
     }
-
+    //KaspYar
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) {
         Connection connection = getConnection();
         try {
@@ -252,7 +252,7 @@ public enum DAO {
         }
 
     }
-
+    //KaspYar
     public void setInstanceBlocked(int instanceId, int isBlocked){
         //int isBlocked = 1;
         Connection connection = getConnection();
@@ -278,29 +278,30 @@ public enum DAO {
         }
 
     }
-
+    //KaspYar
     public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId){
         return null;
     }
-
+    //KaspYar
     public List<Service> getServicesByProviderLocationId(int providerLocationId){
         return null;
     }
-
+    //KaspYar
     public void createRouter(){
 
     }
-
+    //KaspYar
     public ServiceOrder getServiceOrder(int taskId){
         return null;
     }
+    //KaspYar
     public ArrayList<ServiceOrder> getOrders(int userId){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
 
         return  result;
 
     }
-
+    //KaspYar
     public ArrayList<ServiceInstance> getInstances(int userId){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
@@ -338,13 +339,13 @@ public enum DAO {
 
     }
 
-
+    //KaspYar
     public ArrayList<ServiceOrder> getAllOrders(){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         return  result;
 
     }
-
+    //KaspYar
     public ArrayList<ServiceInstance> getAllInstances(){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         return  result;
@@ -359,6 +360,7 @@ public enum DAO {
         ResultSet rs = preparedStatement.executeQuery();
         return rs;
     }
+    //KaspYar
     public List<ProviderLocation> getProviderLocations(){
         return null;
     }
