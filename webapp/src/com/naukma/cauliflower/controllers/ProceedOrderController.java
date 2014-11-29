@@ -95,7 +95,11 @@ public class ProceedOrderController extends HttpServlet {
     {
         ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
         Service service = (Service)request.getSession().getAttribute("service");
+        DAO.INSTANCE.createServiceLocation(serviceLocation);
         serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
+        request.getSession().removeAttribute("serviceLocation");
+        request.getSession().removeAttribute("service");
+
     }
 
     private void connectInstanceWithOrder()

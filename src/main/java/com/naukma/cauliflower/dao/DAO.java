@@ -94,7 +94,6 @@ public enum DAO {
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
      * */
-
     public int createServiceOrder(Scenario scenario, Integer idServiceInstance) {
         //default status ENTERING
         OrderStatus orderStatus = OrderStatus.ENTERING;
@@ -565,10 +564,25 @@ public enum DAO {
 
         return result;
     }
+
     //KaspYar
     public List<Service> getServices(){
         return null;
     }
-}
+
+
+
+    //KaspYar
+    /**
+     * Creates service location record in database from ServiceLocation object
+     *  @param  serviceLocation ServiceLocation object to write
+     *  @see com.naukma.cauliflower.entities.ServiceLocation
+     * */
+    public int createServiceLocation(ServiceLocation serviceLocation){
+            return 1;
+
+    }
+
+ }
 
 
