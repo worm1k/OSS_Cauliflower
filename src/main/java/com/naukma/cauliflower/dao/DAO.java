@@ -1,5 +1,6 @@
 package com.naukma.cauliflower.dao;
 
+import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import org.apache.log4j.Logger;
 
@@ -76,16 +77,16 @@ public enum DAO {
         }
         return user;
     }
+
+
     public int createServiceOrder(Scenario scenario) {
         //default status ENTERING
         return 1;
 
     }
 
-    public int createServiceInstance(int userId,
-                                     int serviceLocationId, String locationAddress,
-                                     int locationLongitude, int locationLatitude,
-                                     int serviceId)
+    public int createServiceInstance(int userId, ServiceLocation serviceLocation,
+                                        int serviceId)
     {
 
         //default status PLANNED
@@ -95,6 +96,13 @@ public enum DAO {
 
     public int createTask() {
         return 1;
+
+    }
+
+
+
+
+    public void setUserForInstance(int instanceId,int userId){
 
     }
 
