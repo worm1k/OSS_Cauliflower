@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.naming.ldap.PagedResultsControl;
 import javax.smartcardio.CommandAPDU;
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -295,12 +296,26 @@ public enum DAO {
     }
     public ArrayList<ServiceOrder> getOrders(int userId){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
+
         return  result;
 
     }
 
     public ArrayList<ServiceInstance> getInstances(int userId){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM SERVICEINSTANCE WHERE ID_USER = ?");
+            preparedStatement.setInt(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                //result.add(new ServiceInstance());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
         return  result;
 
     }

@@ -27,7 +27,7 @@ public class ServiceInstance implements Serializable {
                            int serviceLocationId, String locationAddress,
                            int locationLongitude, int locationLatitude,
                            int serviceId, int instanceStatusId,
-                           String instanceStatus, int cableId) {
+                           String instanceStatus, int cableId, boolean isBlocked) {
         this.instanceId = instanceId;
         this.userId = userId;
         serviceLocation = new ServiceLocation(serviceLocationId,locationAddress,locationLongitude,locationLatitude);
@@ -39,6 +39,7 @@ public class ServiceInstance implements Serializable {
         this.instanceStatusId = instanceStatusId;
         this.instanceStatus = instanceStatus;
         this.cableId = cableId;
+        this.isBlocked = isBlocked;
     //    this.service = null;
     }
 
@@ -90,5 +91,8 @@ public class ServiceInstance implements Serializable {
     public int getCableId() {
 
         return cableId;
+    }
+    public boolean getIsBlocked(){
+        return this.isBlocked;
     }
 }
