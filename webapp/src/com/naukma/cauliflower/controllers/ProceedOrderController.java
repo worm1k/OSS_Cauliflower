@@ -38,8 +38,8 @@ public class ProceedOrderController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-          user = (User) request.getSession().getAttribute("user");
-         Scenario scenario = (Scenario)request.getSession().getAttribute("scenario");
+        user = (User) request.getSession().getAttribute("user");
+        Scenario scenario = (Scenario)request.getSession().getAttribute("scenario");
 
         //   if(user != null) {
         if(scenario == Scenario.NEW)
@@ -70,72 +70,66 @@ public class ProceedOrderController extends HttpServlet {
 
     }
 
-    private void scenarioNew(HttpServletRequest request){
+    private void scenarioNew(HttpServletRequest request)
+    {
         createNewOrder();
         changeOrderStatus();
         createServiceInstance(request);
         connectInstanceWithOrder();
+        setInstanceBlocked();
         DAO.INSTANCE.createTaskForInstallation(orderId);
-
-
     }
 
-    private void scenarioDisconnect(HttpServletRequest request){
+    private void scenarioDisconnect(HttpServletRequest request)
+    {
         Integer instanceId =  Integer.parseInt(request.getParameter("instanceId"));
         createDisconectOrder(instanceId);
         changeOrderStatus();
+        setInstanceBlocked();
         DAO.INSTANCE.createTaskForProvisioning(orderId);
-
     }
 
     // ACK.1
     private void createNewOrder()
     {
          orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW,null);
-
-
     }
 
     // ACK.3
     private void createDisconectOrder(Integer instanceId)
     {
         orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT, instanceId);
-
-
     }
 
     //ACK 12
-    private void changeOrderStatus(){
-
+    private void changeOrderStatus()
+    {
         DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
-
-
     }
 
     //ACK 12
     private void createServiceInstance(HttpServletRequest request)
     {
-//        int userId = -1;
-//        if(user == null){
-//        }
-
         ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
         Service service = (Service)request.getSession().getAttribute("service");
         serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
-
     }
 
-
-    private void connectInstanceWithOrder(){
+    private void connectInstanceWithOrder()
+    {
         DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
     }
 
+    private void setInstanceBlocked()
+    {
+        DAO.INSTANCE.setInstanceBlocked(serviceInstanceId);
+
+    }
 
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        
     }
 
 

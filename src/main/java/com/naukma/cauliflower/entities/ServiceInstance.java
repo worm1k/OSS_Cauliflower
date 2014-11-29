@@ -15,12 +15,14 @@ public class ServiceInstance implements Serializable {
 //    private String locationAddress;
 //    private int locationLongitude;
 //    private int locationLatitude;
+
     private int serviceId;
  //   private Service service;
     private int instanceStatusId;
     private String instanceStatus;
     private int cableId;
-    
+    private boolean isBlocked;
+
     public ServiceInstance(int instanceId, int userId,
                            int serviceLocationId, String locationAddress,
                            int locationLongitude, int locationLatitude,
