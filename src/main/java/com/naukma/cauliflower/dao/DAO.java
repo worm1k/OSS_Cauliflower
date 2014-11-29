@@ -75,7 +75,7 @@ public enum DAO {
         return user;
     }
 
-    public  int createServiceOrder(String orderStatus, String orderScenarioName){
+    public  int createServiceOrder(OrderStatus orderStatus, String orderScenarioName){
 
         return 1;
 
@@ -90,13 +90,22 @@ public enum DAO {
         return  1;
     }
 
-
     public int createTask(){
-         return 1;
+        return 1;
 
     }
 
-    public void changeOrderStatus(int orderId,String orderStatus ){
+
+    public void changeInstanceStatus(int instanceId,InstanceStatus status){
+
+    }
+
+    public void changeOrderStatus(int orderId, OrderStatus orderStatus ){
+
+    }
+
+    public void changeTaskStatus(int taskId, TaskStatus taskStatus){
+
 
     }
 
