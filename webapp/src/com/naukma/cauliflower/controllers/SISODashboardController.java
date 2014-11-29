@@ -46,5 +46,7 @@ public class SISODashboardController  extends HttpServlet {
         request.setAttribute("orders", orders);
         request.setAttribute("instances", instances);
         request.getRequestDispatcher("dashboard.jsp").forward(request,response);
+        // JSP!!!!!!!
+        ///<% List<ItemObj> myList = (ArrayList<ItemObj>) request.getParameter("list"); %>
     }
 }
