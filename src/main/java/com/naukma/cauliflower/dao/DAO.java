@@ -101,7 +101,7 @@ public enum DAO {
             if (resultSet.next()){
                 idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
             }
-            if (idServiceInstance.equals(null)){
+            if (idServiceInstance == null){
                 preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
                         "VALUES('null', ?,? )");
                 preparedStatement.setInt(1, idOrderScenario);
@@ -198,16 +198,81 @@ public enum DAO {
     }
 
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) {
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
+                                                            "SET ID_ORDERSTATUS = (SELECT ID_ORDERSTATUS " +
+                                                                                    "FROM ORDERSTATUS " +
+                                                                                    "WHERE NAME = ?) " +
+                                                            "WHERE ID_SERVICEORDER = ?");
 
+            preparedStatement.setString(1, orderStatus.toString());
+            preparedStatement.setInt(2, orderId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                connection.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) {
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE TASK " +
+                                                            "SET ID_TASKSTATUS = (SELECT ID_TASKSTATUS " +
+                                                                                "FROM TASKSTATUS " +
+                                                                                "WHERE NAME = ?) " +
+                                                            "WHERE ID_TASK = ?");
 
+            preparedStatement.setString(1, taskStatus.toString());
+            preparedStatement.setInt(2, taskId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                connection.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
-    public void setInstanceBlocked(int instanceId){
+    public void setInstanceBlocked(int instanceId, int isBlocked){
+        //int isBlocked = 1;
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+                    "SET ISACTIVEORDER = ?"+
+                    "WHERE ID = ?");
 
+            preparedStatement.setInt(1, isBlocked);
+            preparedStatement.setInt(2, instanceId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                connection.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 

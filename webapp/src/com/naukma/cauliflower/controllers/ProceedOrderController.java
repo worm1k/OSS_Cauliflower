@@ -105,7 +105,7 @@ public class ProceedOrderController extends HttpServlet {
 
     private void setInstanceBlocked()
     {
-        DAO.INSTANCE.setInstanceBlocked(serviceInstanceId);
+        DAO.INSTANCE.setInstanceBlocked(serviceInstanceId,1);
 
     }
 
