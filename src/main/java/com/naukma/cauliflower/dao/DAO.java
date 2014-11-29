@@ -317,6 +317,12 @@ public enum DAO {
     }
 
     //KaspYar
+
+    /**
+     * Block instance when exist active task on it
+     * @param instanceId id of the instance
+     * @param isBlocked 0 - set instance not blocked, 1 - set instance blocked
+     */
     public void setInstanceBlocked(int instanceId, int isBlocked){
         //int isBlocked = 1;
         Connection connection = getConnection();
