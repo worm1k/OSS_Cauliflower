@@ -351,8 +351,42 @@ public enum DAO {
     }
 
     //KaspYar
+
+    /**
+     * returns List<Task>
+     * @param taskStatusId id of TaskStatus
+     * @param userRoleId id of UserRole
+     * @return
+     */
     public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId){
-        return null;
+        ArrayList<Task> result = new ArrayList<Task>();
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT T.ID_TASK, T.ID_USERROLE, T.ID_SERVICEORDER, T.ID_TASKSTATUS, TS.NAME TS_NAME, T.NAME T_NAME " +
+                                                            "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
+                                                            "WHERE T.ID_TASKSTATUS = ? AND T.ID_USERROLE = ?");
+            preparedStatement.setInt(1, taskStatusId);
+            preparedStatement.setInt(2, userRoleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                result.add(new Task(resultSet.getInt("ID_TASK"), resultSet.getInt("ID_USERROLE"), resultSet.getInt("ID_SERVICEORDER"),
+                                    resultSet.getInt("ID_TASKSTATUS"), resultSet.getString("TS_NAME"), resultSet.getString("T_NAME")));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        result.trimToSize();
+        return result;
     }
     //KaspYar
 
