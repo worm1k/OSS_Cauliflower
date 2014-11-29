@@ -300,16 +300,33 @@ public enum DAO {
         return  result;
 
     }
-
+    /*
+    * public ServiceInstance(int instanceId, int userId,
+                           int serviceLocationId, String locationAddress,
+                           int locationLongitude, int locationLatitude,
+                           int serviceId, int instanceStatusId,
+                           String instanceStatus, int cableId, boolean isBlocked)
+    * */
     public ArrayList<ServiceInstance> getInstances(int userId){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM SERVICEINSTANCE WHERE ID_USER = ?");
+            preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
+                                                            "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.ISACTIVEORDER, " +
+                                                            "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
+                                                            "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                                                                                        "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
+                                                            "INNER JOIN SERVICEINSTANCESTATUS SIS " +
+                                                                "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID " +
+                                                            "WHERE ID_USER = ?");
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                //result.add(new ServiceInstance());
+                result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
+                                resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
+                                resultSet.getInt("L.LONGITUDE"), resultSet.getInt("L.LATITUDE"),
+                                resultSet.getInt("SI.ID_SERVICE"), resultSet.getInt("SI.SERVICE_INSTANCE_STATUS"),
+                                resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.ISACTIVEORDER")== 1)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
