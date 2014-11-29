@@ -149,12 +149,15 @@ public enum DAO {
         return 1;
     }
 
-    public int createTask() {
+    public int createTaskForInstallation(int serviceOrderId) {
         return 1;
 
     }
 
+    public int createTaskForProvisioning(int serviceOrderId) {
+        return 1;
 
+    }
 
 
     public void setUserForInstance(int instanceId,int userId){

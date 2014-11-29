@@ -38,17 +38,25 @@ public class ProceedOrderController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+          user = (User) request.getSession().getAttribute("user");
+         Scenario scenario = (Scenario)request.getSession().getAttribute("scenario");
 
-        user = (User) request.getSession().getAttribute("user");
-     //   if(user != null) {
-            createNewOrder();
-            changeOrderStatus();
-            createServiceInstance(request);
-            connectInstanceWithOrder();
+        //   if(user != null) {
+        if(scenario == Scenario.NEW)
+            scenarioNew(request);
+        else
+            scenarioDisconnect(HttpServletRequest request);
 
-            createTaskForInstallation();
-            createTaskForProvisioning();
 
+//
+//            createNewOrder();
+//            changeOrderStatus();
+//            createServiceInstance(request);
+//            connectInstanceWithOrder();
+//            if(scenario == Scenario.NEW)
+//            DAO.INSTANCE.createTaskForInstallation(orderId);
+//            else
+//            DAO.INSTANCE.createTaskForProvisioning(orderId);
 
 
         // create new order
@@ -62,10 +70,29 @@ public class ProceedOrderController extends HttpServlet {
 
     }
 
+    private void scenarioNew(HttpServletRequest request){
+        createNewOrder();
+        changeOrderStatus();
+        createServiceInstance(request);
+        connectInstanceWithOrder();
+        DAO.INSTANCE.createTaskForInstallation(orderId);
+
+
+    }
+
+    private void scenarioDisconnect(HttpServletRequest request){
+        Integer instanceId =  Integer.parseInt(request.getParameter("instanceId"));
+        orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT,instanceId);
+       // createDisconectOrder();
+        changeOrderStatus();
+        DAO.INSTANCE.createTaskForProvisioning(orderId);
+
+    }
+
     // ACK.1
     private void createNewOrder()
     {
-         orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW);
+         orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW,null);
 
 
     }
@@ -103,17 +130,7 @@ public class ProceedOrderController extends HttpServlet {
         DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
     }
 
-    private void createTaskForInstallation()
-    {
-        DAO.INSTANCE.createTask();
 
-    }
-
-    private void createTaskForProvisioning()
-    {
-        DAO.INSTANCE.createTask();
-
-    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
