@@ -47,24 +47,7 @@ public class ProceedOrderController extends HttpServlet {
         else
             scenarioDisconnect(request);
 
-
-//
-//            createNewOrder();
-//            changeOrderStatus();
-//            createServiceInstance(request);
-//            connectInstanceWithOrder();
-//            if(scenario == Scenario.NEW)
-//            DAO.INSTANCE.createTaskForInstallation(orderId);
-//            else
-//            DAO.INSTANCE.createTaskForProvisioning(orderId);
-
-
-        // create new order
-        //crate instance
-        // check cable
-        // create tasks
-        // change tasks statuses
-        // change instance status
+        
     //    request.setAttribute("name", "value");
     //   request.getRequestDispatcher("index.jsp").forward(request, response);
 
