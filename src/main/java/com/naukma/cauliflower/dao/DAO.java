@@ -1,5 +1,6 @@
 package com.naukma.cauliflower.dao;
 
+import com.naukma.cauliflower.entities.ServiceOrder;
 import com.naukma.cauliflower.entities.User;
 import org.apache.log4j.Logger;
 
@@ -78,7 +79,53 @@ public enum DAO {
     }
     public int createServiceOrder(Scenario scenario) {
         //default status ENTERING
-        return 1;
+        OrderStatus orderStatus = OrderStatus.ENTERING;
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
+            preparedStatement.setString(1,scenario.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int idOrderScenario = 0;
+            if (resultSet.next()){
+                idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
+            }
+            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
+            preparedStatement.setString(1, orderStatus.toString());
+
+            int idOrderStatus = 0;
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
+            }
+
+            preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
+                                                            "VALUES('null', ?,? )");
+            preparedStatement.setInt(1, idOrderScenario);
+            preparedStatement.setInt(2, idOrderStatus);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                return resultSet.getInt("RES");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                connection.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //ServiceOrder serviceOrder = new ServiceOrder();
+
+
+
+        return 0;
 
     }
 
