@@ -67,6 +67,7 @@ public enum DAO {
                 if (!preparedStatement.isClosed()) preparedStatement.close();
                 if (!connection.isClosed())connection.close();
             } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
