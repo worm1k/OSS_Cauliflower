@@ -35,7 +35,8 @@ public class ProceedOrderController extends HttpServlet {
 
         user = (User) request.getSession().getAttribute("user");
         createNewOrder();
-        response.sendRedirect("index.jsp");
+
+
 
 
         // create new order
@@ -51,7 +52,7 @@ public class ProceedOrderController extends HttpServlet {
     // ACK.1
     private void createNewOrder()
     {
-       orderId = DAO.INSTANCE.createServiceOrder("Entering","New");
+       orderId = DAO.INSTANCE.createServiceOrder("Entering", "New");
         createServiceInstance();
         createTaskForInstallation();
 
@@ -60,14 +61,20 @@ public class ProceedOrderController extends HttpServlet {
     // ACK.3
     private void createDisconectOrder()
     {
-        orderId = DAO.INSTANCE.createServiceOrder("Entering","Disconnect");
+        orderId = DAO.INSTANCE.createServiceOrder("Entering", "Disconnect");
+
+
+    }
+
+    private void changeOrderStatus(int orderId){
+        DAO.INSTANCE.changeOrderStatus(orderId,"Processing");
 
 
     }
 
     private void createServiceInstance()
     {
-        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),1,"home",40,40,1,"Planned");
+        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(), 1, "home", 40, 40, 1, "Planned");
 
 
 

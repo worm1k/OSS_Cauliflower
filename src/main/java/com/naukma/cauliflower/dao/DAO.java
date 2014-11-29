@@ -92,7 +92,11 @@ public enum DAO {
 
 
     public int createTask(){
-    return 1;
+         return 1;
+
+    }
+
+    public void changeOrderStatus(int orderId,String orderStatus ){
 
     }
 
