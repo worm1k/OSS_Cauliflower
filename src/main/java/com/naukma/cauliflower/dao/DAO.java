@@ -124,14 +124,15 @@ public enum DAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally{
+        }finally {
             try {
-                connection.close();
-                preparedStatement.close();
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
+
         }
         return 0;
 
@@ -185,14 +186,15 @@ public enum DAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally{
+        }finally {
             try {
-                connection.close();
-                preparedStatement.close();
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
+
         }
 
     }
@@ -213,14 +215,15 @@ public enum DAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally{
+        }finally {
             try {
-                connection.close();
-                preparedStatement.close();
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
+
         }
     }
 
@@ -240,14 +243,15 @@ public enum DAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally{
+        }finally {
             try {
-                connection.close();
-                preparedStatement.close();
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
+
         }
 
     }
@@ -267,14 +271,15 @@ public enum DAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally{
+        }finally {
             try {
-                connection.close();
-                preparedStatement.close();
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
+
         }
 
     }
@@ -355,6 +360,15 @@ public enum DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        finally {
+            try {
+                preparedStatement.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
 
         result.trimToSize();
         return  result;
@@ -434,6 +448,15 @@ public enum DAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
         }
 
         return result;
