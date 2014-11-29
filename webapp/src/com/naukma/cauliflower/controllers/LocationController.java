@@ -21,10 +21,8 @@ public class LocationController {
      */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        //get tasks with taskStatusId TaskStatus.FREE and userRole
-        //List<Task> tasks = getTasksByStatusAndRole(TaskStatus.FREE, user.getUserRoleId());
-        //request.setAttribute("tasks", tasks);
+        //List<ProviderLocation> providerLocations = DAO.INSTANCE.getProviderLocations();
+        //request.setAttribute("providerlocations", providerLocations);
         //request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
