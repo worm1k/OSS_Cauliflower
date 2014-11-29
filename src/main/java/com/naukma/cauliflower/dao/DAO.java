@@ -429,13 +429,18 @@ public enum DAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 //public ProviderLocation(int providerLocationId, String locationAddress, int locationLongitude, int locationLatitude)
-                //result.add(new ProviderLocation());
+                result.add(new ProviderLocation(resultSet.getInt("ID"), resultSet.getString("ADRESS"),
+                                                resultSet.getInt("LONGITUDE"), resultSet.getInt("LATITUDE")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return result;
+    }
+    //KaspYar
+    public List<Service> getServices(){
+        return null;
     }
 }
 
