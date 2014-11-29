@@ -28,6 +28,7 @@ public class ReportGeneratorServlet extends HttpServlet {
 
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=report.xls");
+
         XLSReportGenerator reportGenerator = null;
         try {
             reportGenerator = new XLSReportGenerator("aaa", DAO.INSTANCE.reportTester());

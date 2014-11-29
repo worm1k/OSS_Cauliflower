@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.SQLException;
 
 /**
  * Created by Max on 26.11.2014.
@@ -33,8 +34,8 @@ public class LoginController extends HttpServlet {
         }
         if(user == null){
             res = "NULL";
-        }else
-            res = user.toString();
+       }else
+           res = user.toString();
 
         Writer out = response.getWriter();
         out.write("<h1> Hello,"+res );
