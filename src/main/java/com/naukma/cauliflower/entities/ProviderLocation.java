@@ -5,21 +5,21 @@ package com.naukma.cauliflower.entities;
  */
 public class ProviderLocation {
 
-    private int serviceLocationId;
+    private int providerLocationId;
     private String locationAddress;
     private int locationLongitude;
     private int locationLatitude;
 
 
-    public ProviderLocation(int serviceLocationId, String locationAddress, int locationLongitude, int locationLatitude) {
-        this.serviceLocationId = serviceLocationId;
+    public ProviderLocation(int providerLocationId, String locationAddress, int locationLongitude, int locationLatitude) {
+        this.providerLocationId = providerLocationId;
         this.locationAddress = locationAddress;
         this.locationLongitude = locationLongitude;
         this.locationLatitude = locationLatitude;
     }
 
-    public int getServiceLocationId() {
-        return serviceLocationId;
+    public int getProviderLocationId() {
+        return providerLocationId;
     }
 
     public String getLocationAddress() {

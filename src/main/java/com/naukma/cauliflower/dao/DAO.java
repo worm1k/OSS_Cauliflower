@@ -6,8 +6,6 @@ import org.apache.log4j.Logger;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.naming.ldap.PagedResultsControl;
-import javax.smartcardio.CommandAPDU;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -348,6 +346,35 @@ public enum DAO {
     //KaspYar
     public ArrayList<ServiceInstance> getAllInstances(){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
+                                                                "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.ISACTIVEORDER, " +
+                                                                "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
+                                                                "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                                                                "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
+                                                                "INNER JOIN SERVICEINSTANCESTATUS SIS " +
+                                                                "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID ");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                 /*
+                * public ServiceInstance(int instanceId, int userId,
+                                       int serviceLocationId, String locationAddress,
+                                       int locationLongitude, int locationLatitude,
+                                       int serviceId, int instanceStatusId,
+                                       String instanceStatus, int cableId, boolean isBlocked)
+                * */
+                result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
+                        resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
+                        resultSet.getInt("L.LONGITUDE"), resultSet.getInt("L.LATITUDE"),
+                        resultSet.getInt("SI.ID_SERVICE"), resultSet.getInt("SI.SERVICE_INSTANCE_STATUS"),
+                        resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.ISACTIVEORDER")== 1)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        result.trimToSize();
         return  result;
 
     }
@@ -355,14 +382,28 @@ public enum DAO {
 
     public ResultSet reportTester() throws SQLException
     {
-        Connection conn = getConnection();
-        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM USERS");
-        ResultSet rs = preparedStatement.executeQuery();
-        return rs;
+        Connection connection = getConnection();
+        preparedStatement = connection.prepareStatement("SELECT * FROM USERS");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
     }
     //KaspYar
     public List<ProviderLocation> getProviderLocations(){
-        return null;
+        ArrayList<ProviderLocation> result = new ArrayList<ProviderLocation>();
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * " +
+                                                            "FROM PROVIDERLOCATION PL INNER JOIN LOCATION L ON PL.ID_LOCATION = L.ID");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                //public ProviderLocation(int providerLocationId, String locationAddress, int locationLongitude, int locationLatitude)
+                //result.add(new ProviderLocation());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
 
