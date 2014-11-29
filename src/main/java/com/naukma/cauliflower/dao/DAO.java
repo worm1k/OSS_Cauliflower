@@ -592,7 +592,36 @@ public enum DAO {
 
     //KaspYar
     public List<Service> getServices(){
-        return null;
+        //public Service(int serviceTypeId, String locationAddress,
+        //              int locationLongitude, int locationLatitude,
+        //              String serviceTypeName, String serviceSpeed,
+        //              int providerLocationId, int serviceId)
+        ArrayList<Service> result = new ArrayList<Service>();
+        Connection connection = getConnection();
+        try {
+            PreparedStatement preparedStatement1 = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID" +
+                                                                                "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                                                                                "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
+            ResultSet resultSet = preparedStatement1.executeQuery();
+            while(resultSet.next()){
+                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getInt("L.LONGITUDE"),
+                                        resultSet.getInt("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
+                                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return result;
     }
 
 
