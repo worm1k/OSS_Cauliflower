@@ -1,7 +1,6 @@
 package com.naukma.cauliflower.reports;
 
 import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.entities.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -29,10 +28,9 @@ public class ReportGeneratorServlet extends HttpServlet {
 
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=report.xls");
-        DAO dao = new DAO();
         XLSReportGenerator reportGenerator = null;
         try {
-            reportGenerator = new XLSReportGenerator("aaa", dao.reportTester());
+            reportGenerator = new XLSReportGenerator("aaa", DAO.INSTANCE.reportTester());
         } catch (SQLException e) {
             e.printStackTrace();
         }

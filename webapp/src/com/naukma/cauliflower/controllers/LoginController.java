@@ -1,7 +1,6 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.dao.DAOenum;
 import com.naukma.cauliflower.entities.User;
 
 import javax.servlet.ServletException;
@@ -25,11 +24,10 @@ public class LoginController extends HttpServlet {
         String password = request.getParameter("password");
         String res = "";
 
-        //DAO dao = new DAO();
+
         User user = null;
         try{
-            //user = dao.getUserByLoginAndPassword(username, password);
-            user = DAOenum.INSTANCE.getUserByLoginAndPassword(username, password);
+            user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
         }catch (NullPointerException e){
             res = e.getMessage();
         }
