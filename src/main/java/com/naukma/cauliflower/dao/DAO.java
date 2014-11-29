@@ -300,13 +300,7 @@ public enum DAO {
         return  result;
 
     }
-    /*
-    * public ServiceInstance(int instanceId, int userId,
-                           int serviceLocationId, String locationAddress,
-                           int locationLongitude, int locationLatitude,
-                           int serviceId, int instanceStatusId,
-                           String instanceStatus, int cableId, boolean isBlocked)
-    * */
+
     public ArrayList<ServiceInstance> getInstances(int userId){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
@@ -322,6 +316,13 @@ public enum DAO {
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
+                 /*
+                * public ServiceInstance(int instanceId, int userId,
+                                       int serviceLocationId, String locationAddress,
+                                       int locationLongitude, int locationLatitude,
+                                       int serviceId, int instanceStatusId,
+                                       String instanceStatus, int cableId, boolean isBlocked)
+                * */
                 result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
                                 resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
                                 resultSet.getInt("L.LONGITUDE"), resultSet.getInt("L.LATITUDE"),
@@ -332,7 +333,7 @@ public enum DAO {
             e.printStackTrace();
         }
 
-
+        result.trimToSize();
         return  result;
 
     }
@@ -357,6 +358,9 @@ public enum DAO {
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM USERS");
         ResultSet rs = preparedStatement.executeQuery();
         return rs;
+    }
+    public List<ProviderLocation> getProviderLocations(){
+        return null;
     }
 }
 
