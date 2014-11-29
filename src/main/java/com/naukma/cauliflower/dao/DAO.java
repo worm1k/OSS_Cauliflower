@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.smartcardio.CommandAPDU;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -170,6 +171,29 @@ public enum DAO {
     }
 
     public void changeInstanceStatus(int instanceId, InstanceStatus status) {
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+                                                            "SET SERVICE_INSTANCE_STATUS = (SELECT ID " +
+                                                                                           "FROM SERVICEINSTANCESTATUS " +
+                                                                                            "WHERE NAME = ?) " +
+                                                            "WHERE ID = ?");
+
+            preparedStatement.setString(1, status.toString());
+            preparedStatement.setInt(2, instanceId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                connection.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
