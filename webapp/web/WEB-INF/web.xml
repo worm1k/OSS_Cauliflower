@@ -46,7 +46,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ProceedOrder</servlet-name>
-        <url-pattern>/create</url-pattern>
+        <url-pattern>/proceed</url-pattern>
     </servlet-mapping>
 
     

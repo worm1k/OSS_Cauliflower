@@ -75,6 +75,28 @@ public enum DAO {
         return user;
     }
 
+    public  int createServiceOrder(String orderStatus, String orderScenarioName){
+
+        return 1;
+
+    }
+
+    public  int createServiceInstance( int userId,
+                                          int serviceLocationId, String locationAddress,
+                                          int locationLongitude, int locationLatitude,
+                                          int serviceId,
+                                          String instanceStatus){
+
+        return  1;
+    }
+
+
+    public int createTask(){
+    return 1;
+
+    }
+
+
     public ResultSet reportTester() throws SQLException {
         Connection conn = getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM USERS");

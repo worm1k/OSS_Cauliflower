@@ -1,5 +1,6 @@
 package com.naukma.cauliflower.controllers;
 
+import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.User;
 
 import javax.servlet.ServletException;
@@ -12,8 +13,11 @@ import java.io.IOException;
 /**
  * Created by Max on 29.11.2014.
  */
-@WebServlet(name = "CreateOrderController")
+@WebServlet(name = "ProceedOrderController")
 public class ProceedOrderController extends HttpServlet {
+    private User user;
+    private int orderId = 0;
+    private int serviceInstanceId = 0;
     /*
     ACK.1  ACK.2(OPTIONAL)
     ACK.3
@@ -26,9 +30,14 @@ public class ProceedOrderController extends HttpServlet {
 
      */
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
 
-        User user = (User) request.getSession().getAttribute("user");
+        user = (User) request.getSession().getAttribute("user");
+        createNewOrder();
+        response.sendRedirect("index.jsp");
+
+
         // create new order
         //crate instance
         // check cable
@@ -39,12 +48,48 @@ public class ProceedOrderController extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // ACK.1
+    private void createNewOrder()
+    {
+       orderId = DAO.INSTANCE.createServiceOrder("Entering","New");
+        createServiceInstance();
+        createTaskForInstallation();
+
+    }
+
+    // ACK.3
+    private void createDisconectOrder()
+    {
+        orderId = DAO.INSTANCE.createServiceOrder("Entering","Disconnect");
+
+
+    }
+
+    private void createServiceInstance()
+    {
+        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),1,"home",40,40,1,"Planned");
 
 
 
     }
 
+    private void createTaskForInstallation()
+    {
+
+
+    }
+
+    private void createTaskForProvisioning()
+    {
+
+
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+
+
+    }
 
 
 }

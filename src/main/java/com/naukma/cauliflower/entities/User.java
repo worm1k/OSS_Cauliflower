@@ -30,11 +30,11 @@ public class User implements Serializable {
         return email;
     }
 
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public long getUserRoleId() {
+    public int getUserRoleId() {
         return userRoleId;
     }
 
