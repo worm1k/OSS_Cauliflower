@@ -13,7 +13,7 @@
   <body>
 
 <form action="reports">
-  <input type="submit" value="Get Report">
+  <input type="submit" value="Get Report" >
 </form>
 
   </body>
