@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -277,7 +278,6 @@ public enum DAO {
 
     }
 
-
     public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId){
         return null;
     }
@@ -291,8 +291,34 @@ public enum DAO {
     }
 
     public ServiceOrder getServiceOrder(int taskId){
-    return null;
+        return null;
     }
+    public ArrayList<ServiceOrder> getOrders(int userId){
+        ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
+        return  result;
+
+    }
+
+    public ArrayList<ServiceInstance> getInstances(int userId){
+        ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
+        return  result;
+
+    }
+
+
+    public ArrayList<ServiceOrder> getAllOrders(){
+        ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
+        return  result;
+
+    }
+
+    public ArrayList<ServiceInstance> getAllInstances(){
+        ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
+        return  result;
+
+    }
+
+
     public ResultSet reportTester() throws SQLException
     {
         Connection conn = getConnection();

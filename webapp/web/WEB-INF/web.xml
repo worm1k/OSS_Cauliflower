@@ -49,5 +49,27 @@
         <url-pattern>/proceed</url-pattern>
     </servlet-mapping>
 
+
+    <servlet>
+        <servlet-name>SiSODashboard</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.SISODashboardController</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>SiSODashboard</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+    </servlet-mapping>
+    
+    
+    <servlet>
+        <servlet-name>TaskManager</servlet-name>
+    <servlet-class>com.naukma.cauliflower.controllers.TaskManager</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TaskManager</servlet-name>
+        <url-pattern>/manageTask</url-pattern>
+    </servlet-mapping>
+
+
     
 </web-app>
