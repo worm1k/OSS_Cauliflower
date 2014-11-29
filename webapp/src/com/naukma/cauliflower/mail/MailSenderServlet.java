@@ -26,11 +26,9 @@ public class MailSenderServlet extends HttpServlet {
         Writer out = response.getWriter();
 
         EmailSender emailSender = new EmailSender();
-        /* We will receive user from DAO
-        emailSender.sendEmail(new User(1,1,"mhladchuk@gmail.com","max","gladchuk","22222"),"gg","gg",
 
+        emailSender.sendEmail((User)request.getSession().getAttribute("user"),"gg","gg",
                 EmailSender.getTemplate("/html-mail-template.ftl" ,fullPath));
-         */
         out.write("Email sent");
 
     }

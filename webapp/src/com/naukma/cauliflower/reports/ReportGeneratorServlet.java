@@ -1,7 +1,6 @@
 package com.naukma.cauliflower.reports;
 
 import com.naukma.cauliflower.dao.DAO;
-
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
@@ -35,7 +34,7 @@ public class ReportGeneratorServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        ServletOutputStream outputStream = response.getOutputStream();
+         ServletOutputStream outputStream = response.getOutputStream();
         reportGenerator.createXlsFile().write(outputStream);
         outputStream.flush();
         outputStream.close();

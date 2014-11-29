@@ -34,9 +34,10 @@ public class LoginController extends HttpServlet {
         }
         if(user == null){
             res = "NULL";
-       }else
-           res = user.toString();
-
+       }else{
+            request.getSession().setAttribute("user",user);
+            res = user.toString();
+        }
         Writer out = response.getWriter();
         out.write("<h1> Hello,"+res );
         out.write("</h1>");
