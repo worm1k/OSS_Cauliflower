@@ -131,11 +131,6 @@ public enum DAO {
                 e.printStackTrace();
             }
         }
-
-        //ServiceOrder serviceOrder = new ServiceOrder();
-
-
-
         return 0;
 
     }
