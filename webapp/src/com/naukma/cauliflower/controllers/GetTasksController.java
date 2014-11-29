@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Алексей on 29.11.2014.
  */
-@WebServlet(name = "CreateOrderController")
+@WebServlet(name = "GetTasksController")
 public class GetTasksController {
 
     /*

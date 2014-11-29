@@ -10,7 +10,7 @@ import java.io.IOException;
  * Created by Алексей on 29.11.2014.
  */
 
-@WebServlet(name = "SOSIDashboardController")
+@WebServlet(name = "TaskManager")
 public class TaskManager {
     /*
     SOW.4

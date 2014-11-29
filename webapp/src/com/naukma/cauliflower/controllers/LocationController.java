@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * Created by Алексей on 29.11.2014.
  */
-@WebServlet(name = "CreateOrderController")
+@WebServlet(name = "LocationController")
 public class LocationController {
     /*
      ACK.5
