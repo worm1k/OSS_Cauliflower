@@ -44,6 +44,12 @@ public enum DAO {
         return null;
     }
     //KaspYar
+    /**
+     * Get user by its login and password
+     * @param login user login
+     * @param password user password
+     * @return found user or null if user does not exist
+     * */
     public User getUserByLoginAndPassword(String login, String password) {
         Connection connection = getConnection();
         User user = null;
@@ -81,6 +87,14 @@ public enum DAO {
     }
 
     //KaspYar
+    /**
+     * Creates new service order
+     * @param scenario scenario for the order
+     * @param idServiceInstance id of service instance for disconnect scenario
+     * @return id of created instance
+     * @see com.naukma.cauliflower.dao.Scenario
+     * */
+
     public int createServiceOrder(Scenario scenario, Integer idServiceInstance) {
         //default status ENTERING
         OrderStatus orderStatus = OrderStatus.ENTERING;
@@ -141,6 +155,15 @@ public enum DAO {
 
 
     //KaspYar
+
+    /**
+     * Creates new service instance
+     * @param userId selected user id
+     * @param  serviceLocation location for the instance
+     * @param serviceId in of selected service
+     * @return id of created instance
+     * */
+
     public int createServiceInstance(int userId, ServiceLocation serviceLocation,
                                         int serviceId)
     {
@@ -150,27 +173,55 @@ public enum DAO {
         return 1;
     }
     //KaspYar
+
+    /**
+     * Creates task for installation engineer for selected service order
+     * @param serviceOrderId
+     * @return id of created task
+     * */
     public int createTaskForInstallation(int serviceOrderId) {
         return 1;
 
     }
     //KaspYar
+
+
+    /**
+     * Creates task for provisioning engineer for selected service order
+     * @param serviceOrderId
+     * @return id of created task
+     * */
     public int createTaskForProvisioning(int serviceOrderId) {
         return 1;
 
     }
 
     //KaspYar
+
+    /**
+     * Connects selected instance and selected user
+     * @param instanceId id of the instance
+     * @param userId id of the user    * */
     public void setUserForInstance(int instanceId,int userId){
 
     }
 
     //KaspYar
+
+    /**
+     * Connects selected instance and selected order
+     * @param instanceId id of the instance
+     * @param orderId id of the order    * */
     public void setInstanceForOrder(int instanceId, int orderId){
         
     }
 
     //KaspYar
+    /**
+     * Set selected status for selected instance
+     * @param instanceId id of the instance
+     * @param status status of the instance
+     * */
     public void changeInstanceStatus(int instanceId, InstanceStatus status) {
         Connection connection = getConnection();
         try {
@@ -200,6 +251,11 @@ public enum DAO {
     }
 
     //KaspYar
+    /**
+     * Set selected status for selected order
+     * @param orderId id of the order
+     * @param orderStatus status of the task
+     * */
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) {
         Connection connection = getConnection();
         try {
@@ -228,6 +284,11 @@ public enum DAO {
     }
 
     //KaspYar
+    /**
+     * Set selected status for selected task
+     * @param taskId id of the task
+     * @param taskStatus status of the task
+     * */
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) {
         Connection connection = getConnection();
         try {
@@ -301,6 +362,7 @@ public enum DAO {
     public void createRouter(){
 
     }
+
     //KaspYar
     /**
      *  Returns ServiceOrder for selected task
