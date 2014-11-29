@@ -360,6 +360,48 @@ public enum DAO {
      *  Creates new router
      * */
     public void createRouter(){
+        int amountsOfPorts = 60;
+        Connection connection = getConnection();
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("INSERT INTO ROUTER(ID) VALUES(null)");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID) M FROM ROUTER");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int idRouter = 0;
+            if(resultSet.next()){
+                idRouter = resultSet.getInt("M");
+            }
+            //!!!!!!!!!!!!VERY       BADDD!!!!!!!!!!!!!!
+            preparedStatement = connection.prepareStatement("INSERT INTO PORT(ID_ROUTER) VALUES(?)");
+            preparedStatement.setInt(1, idRouter);
+            for (int i=0;i<amountsOfPorts;i++){
+                preparedStatement.executeUpdate();
+            }
+            connection.commit();
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction of creating new router");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
 
     }
 
