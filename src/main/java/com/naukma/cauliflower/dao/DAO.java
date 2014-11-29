@@ -491,6 +491,25 @@ public enum DAO {
      * */
     public ArrayList<ServiceOrder> getAllOrders(){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
+                                                            "SO.ID_SERVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME " +
+                                                            "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
+                                                            "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSTATUS ");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                //public ServiceOrder(int serviceOrderId, int orderStatusId, String orderStatus,
+                //                     int serviceInstanceId, int orderScenarioId, String orderScenario)
+                result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"),
+                                            resultSet.getString("OS_NAME"), resultSet.getInt("SO.ID_SERVICEINSTANCE"),
+                                            resultSet.getInt("OSC.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME")));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return  result;
 
     }
