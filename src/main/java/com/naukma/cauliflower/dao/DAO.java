@@ -1,8 +1,7 @@
 package com.naukma.cauliflower.dao;
 
 
-import com.naukma.cauliflower.entities.ServiceLocation;
-import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.entities.*;
 import org.apache.log4j.Logger;
 
 import javax.naming.InitialContext;
@@ -13,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 
 /**
@@ -93,7 +93,6 @@ public enum DAO {
             if (resultSet.next()){
                 idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
             }
-            System.out.println("Scenario "+scenario.toString()+"idOrderScenario = " + idOrderScenario);
 
             preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
             preparedStatement.setString(1, orderStatus.toString());
@@ -102,7 +101,6 @@ public enum DAO {
             if (resultSet.next()){
                 idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
             }
-            System.out.println("Orderstatus "+orderStatus.toString()+"idOrderStatus = " + idOrderStatus);
             if (idServiceInstance == null){
                 preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
                         "VALUES(?,? )");
@@ -121,7 +119,6 @@ public enum DAO {
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
             resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                System.out.println("idDerviceorder" +resultSet.getInt("RES"));
                 return resultSet.getInt("RES");
             }
 
@@ -280,6 +277,22 @@ public enum DAO {
 
     }
 
+
+    public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId){
+        return null;
+    }
+
+    public List<Service> getServicesByProviderLocationId(int providerLocationId){
+        return null;
+    }
+
+    public void createRouter(){
+
+    }
+
+    public ServiceOrder getServiceOrder(int taskId){
+    return null;
+    }
     public ResultSet reportTester() throws SQLException
     {
         Connection conn = getConnection();
