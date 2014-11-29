@@ -33,4 +33,20 @@ public class ServiceLocation {
     public int getLocationLatitude() {
         return locationLatitude;
     }
+
+    public void setLocationAddress(String locationAddress) {
+        this.locationAddress = locationAddress;
+    }
+
+    public void setServiceLocationId(int serviceLocationId) {
+        this.serviceLocationId = serviceLocationId;
+    }
+
+    public void setLocationLongitude(int locationLongitude) {
+        this.locationLongitude = locationLongitude;
+    }
+
+    public void setLocationLatitude(int locationLatitude) {
+        this.locationLatitude = locationLatitude;
+    }
 }
