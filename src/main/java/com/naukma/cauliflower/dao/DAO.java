@@ -135,6 +135,9 @@ public enum DAO {
 
     }
 
+
+
+
     public int createServiceInstance(int userId, ServiceLocation serviceLocation,
                                         int serviceId)
     {
@@ -179,6 +182,10 @@ public enum DAO {
 
     }
 
+    public void setInstanceBlocked(int instanceId){
+
+
+    }
 
     public ResultSet reportTester() throws SQLException
     {
