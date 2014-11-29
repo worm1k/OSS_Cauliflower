@@ -1,7 +1,9 @@
 package com.naukma.cauliflower.dao;
 
 
+import com.naukma.cauliflower.entities.ServiceInstance;
 import com.naukma.cauliflower.entities.ServiceLocation;
+import com.naukma.cauliflower.entities.ServiceOrder;
 import com.naukma.cauliflower.entities.User;
 import org.apache.log4j.Logger;
 
@@ -13,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 /**
@@ -279,6 +282,32 @@ public enum DAO {
         }
 
     }
+
+    public ArrayList<ServiceOrder> getOrders(int userId){
+        ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
+        return  result;
+
+    }
+
+    public ArrayList<ServiceInstance> getInstances(int userId){
+        ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
+        return  result;
+
+    }
+
+
+    public ArrayList<ServiceOrder> getAllOrders(){
+        ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
+        return  result;
+
+    }
+
+    public ArrayList<ServiceInstance> getAllInstances(){
+        ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
+        return  result;
+
+    }
+
 
     public ResultSet reportTester() throws SQLException
     {
