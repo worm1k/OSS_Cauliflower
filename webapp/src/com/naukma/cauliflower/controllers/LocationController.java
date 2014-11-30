@@ -29,8 +29,7 @@ public class LocationController {
         }
         request.getSession().setAttribute("serviceLocation", serviceLocation);
 
-        //request.setAttribute("tasks", tasks);
-        //request.getRequestDispatcher("index.jsp").forward(request, response);
+        request.getRequestDispatcher("smthing.jsp").forward(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

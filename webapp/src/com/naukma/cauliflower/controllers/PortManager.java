@@ -30,10 +30,11 @@ public class PortManager {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
         Task task = (Task) request.getAttribute("task");
+
         /*
         ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(task.getTaskId());
         if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {
-            //TODO
+            DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(task.getServiceOrderId(), int cableId)
             DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
             DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
         } else if (serviceOrder.getOrderScenario().equals(Scenario.DISCONNECT.toString())) {
@@ -41,11 +42,8 @@ public class PortManager {
             DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
             DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
         }
-        try {
-            DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+        DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
+        */
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
