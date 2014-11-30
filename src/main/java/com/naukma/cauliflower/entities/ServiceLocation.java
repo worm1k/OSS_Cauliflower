@@ -1,9 +1,11 @@
 package com.naukma.cauliflower.entities;
 
+import java.io.Serializable;
+
 /**
  * Created by Max on 29.11.2014.
  */
-public class ServiceLocation {
+public class ServiceLocation implements Serializable {
 
     private int serviceLocationId;
     private String locationAddress;

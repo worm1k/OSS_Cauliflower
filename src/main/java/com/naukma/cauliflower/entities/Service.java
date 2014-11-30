@@ -1,6 +1,8 @@
 package com.naukma.cauliflower.entities;
 
-public class Service {
+import java.io.Serializable;
+
+public class Service implements Serializable {
     private int serviceId;
     private int providerLocationId;
     private int serviceTypeId;

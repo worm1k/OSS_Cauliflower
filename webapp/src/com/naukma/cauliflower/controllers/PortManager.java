@@ -28,8 +28,9 @@ public class PortManager {
      */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute("user");
+    //    User user = (User) request.getSession().getAttribute("user");
         Task task = (Task) request.getAttribute("task");
+
 
 
         ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(task.getTaskId());
