@@ -151,50 +151,6 @@ public enum DAO {
 
     }
 
-
-
-    //KaspYar
-
-    /**
-     * Creates new service instance
-     * @param userId selected user id
-     * @param  serviceLocation location for the instance
-     * @param serviceId in of selected service
-     * @return id of created instance
-     * */
-
-    public int createServiceInstance(int userId, ServiceLocation serviceLocation,
-                                        int serviceId)
-    {
-
-        //default status PLANNED
-
-        return 1;
-    }
-    //KaspYar
-
-    /**
-     * Creates task for installation engineer for selected service order
-     * @param serviceOrderId
-     * @return id of created task
-     * */
-    public int createTaskForInstallation(int serviceOrderId) {
-        return 1;
-
-    }
-    //KaspYar
-
-
-    /**
-     * Creates task for provisioning engineer for selected service order
-     * @param serviceOrderId
-     * @return id of created task
-     * */
-    public int createTaskForProvisioning(int serviceOrderId) {
-        return 1;
-
-    }
-
     //KaspYar
 
     /**
@@ -464,7 +420,7 @@ public enum DAO {
                     connection.rollback();
                 } catch (SQLException e1) {
                     e1.printStackTrace();
-                    logger.error("ROLLBACK transaction of creating new router");
+                    logger.error("ROLLBACK transaction Failed of creating new router");
                 }
             }
             e.printStackTrace();
@@ -533,7 +489,27 @@ public enum DAO {
      * @param instanceId id of the instance
      * @param orderId id of the order    * */
     public void setInstanceForOrder(int instanceId, int orderId){
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
+                                                            "SET ID_SERVICEINSTANCE = ? " +
+                                                            "WHERE ID_SERVICEORDER = ?");
+            preparedStatement.setInt(1, instanceId);
+            preparedStatement.setInt(2, orderId);
+            preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
     }
 
 
@@ -778,6 +754,49 @@ public enum DAO {
 
     }
 
+
+    //KaspYar
+
+    /**
+     * Creates new service instance
+     * @param userId selected user id
+     * @param  serviceLocation location for the instance
+     * @param serviceId in of selected service
+     * @return id of created instance
+     * */
+
+    public int createServiceInstance(int userId, ServiceLocation serviceLocation,
+                                     int serviceId)
+    {
+
+        //default status PLANNED
+
+        return 1;
+    }
+    //KaspYar
+
+    /**
+     * Creates task for installation engineer for selected service order
+     * @param serviceOrderId
+     * @return id of created task
+     * */
+    public int createTaskForInstallation(int serviceOrderId) {
+        return 1;
+
+    }
+    //KaspYar
+
+
+    /**
+     * Creates task for provisioning engineer for selected service order
+     * @param serviceOrderId
+     * @return id of created task
+     * */
+    public int createTaskForProvisioning(int serviceOrderId) {
+        return 1;
+
+    }
+
     //KaspYar
     // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
     // ServiceInstance.
@@ -796,6 +815,7 @@ public enum DAO {
     public List<Task> getFreeTasksByRoleAndProcessingTasksByUserId(int userRoleId, int userId) {
         return null;
     }
+
 
  }
 

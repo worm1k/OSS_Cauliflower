@@ -24,7 +24,7 @@ public class ProceedOrderController extends HttpServlet {
     private int orderId = -1;
     private int serviceInstanceId = -1;
 
-    /*wrdfddgdggdd twardfghj
+    /*
     ACK.1  ACK.2(OPTIONAL)
     ACK.3
     ACK.4
