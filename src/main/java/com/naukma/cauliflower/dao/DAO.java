@@ -696,16 +696,16 @@ public enum DAO {
     }
 
     //KaspYar
-    // Нужно найти свободный порт, создать кабель на базе этого порта. Этот кабель записать в
-    // ServiceInstance, который принадлежит данному ServiceOrderId.
-    public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) {
+    // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
+    // ServiceInstance.
+    public void createPortAndCableAndAssignToServiceInstance(int serviceInstanceId) {
         return;
     }
 
     //KaspYar
-    //По cable_id в ServiceInstance получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
+    //По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
     //сделать равным null. Сам кабель удалить из базы.
-    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) {
+    public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
 
     }
 
