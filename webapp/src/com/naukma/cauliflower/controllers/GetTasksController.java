@@ -23,8 +23,8 @@ public class GetTasksController {
     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
-        //List<Task> tasks = DAO.INSTANCE.getFreeTasksByRoleAndProcessingTasksByUserId(user.getUserRoleId(), user.getUserId());
-        //request.setAttribute("tasks", tasks);
+        List<Task> tasks = DAO.INSTANCE.getFreeTasksByRoleAndProcessingTasksByUserId(user.getUserRoleId(), user.getUserId());
+        request.setAttribute("tasks", tasks);
         request.getRequestDispatcher("smthing.jsp").forward(request, response);
     }
 
