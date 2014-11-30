@@ -29,14 +29,14 @@ public class CreateRouterController {
         int serviceOrderId = task.getServiceOrderId();
 
         try {
-            //CREATE ROUTER METHOD FROM DAO
+            DAO.INSTANCE.createRouter();
             DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
             DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        //request.getRequestDispatcher("index.jsp").forward(request, response);
+        request.getRequestDispatcher("smthing.jsp").forward(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
