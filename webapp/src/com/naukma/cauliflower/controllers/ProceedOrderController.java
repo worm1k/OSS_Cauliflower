@@ -58,7 +58,7 @@ public class ProceedOrderController extends HttpServlet {
         createNewOrder();
         changeOrderStatus();
         createServiceInstance(request);
-      //  connectInstanceWithOrder();
+        connectInstanceWithOrder();
         setInstanceBlocked();
         DAO.INSTANCE.createTaskForInstallation(orderId);
     }
@@ -102,10 +102,10 @@ public class ProceedOrderController extends HttpServlet {
 
     }
 
-//  //  private void connectInstanceWithOrder()
-//    {
-//        DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
-//    }
+    private void connectInstanceWithOrder()
+    {
+        DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
+    }
 
     private void setInstanceBlocked()
     {

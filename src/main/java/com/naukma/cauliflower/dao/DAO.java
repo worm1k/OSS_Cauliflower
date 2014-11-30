@@ -504,6 +504,21 @@ public enum DAO {
         return result;
     }
 
+
+
+
+    //KaspYar
+    /**
+     * Connects selected instance and selected order
+     * @param instanceId id of the instance
+     * @param orderId id of the order    * */
+    public void setInstanceForOrder(int instanceId, int orderId){
+
+    }
+
+
+
+
     //KaspYar
     /**
      *  Returns ArrayList of orders for selected user
