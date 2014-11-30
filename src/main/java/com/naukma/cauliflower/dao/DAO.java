@@ -202,7 +202,27 @@ public enum DAO {
      * @param instanceId id of the instance
      * @param userId id of the user    * */
     public void setUserForInstance(int instanceId,int userId){
+    Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+                                                            "SET ID_USER = ? " +
+                                                            "WHERE ID = ?");
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, instanceId);
+            preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
     }
 
     //KaspYar
