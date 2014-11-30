@@ -533,7 +533,27 @@ public enum DAO {
      * @param instanceId id of the instance
      * @param orderId id of the order    * */
     public void setInstanceForOrder(int instanceId, int orderId){
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
+                                                            "SET ID_SERVICEINSTANCE = ? " +
+                                                            "WHERE ID_SERVICEORDER = ?");
+            preparedStatement.setInt(1, instanceId);
+            preparedStatement.setInt(2, orderId);
+            preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
     }
 
 
