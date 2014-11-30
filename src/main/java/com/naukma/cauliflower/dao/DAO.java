@@ -469,7 +469,39 @@ public enum DAO {
      * */
 
     public ServiceOrder getServiceOrder(int taskId){
-        return null;
+        ServiceOrder result= null;
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
+                                                            "SO.ID_SERVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME " +
+                                                            "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
+                                                            "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
+                                                            ") INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
+                                                            "WHERE T.ID_TASK = ?");
+            preparedStatement.setInt(1, taskId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                //ServiceOrder(int serviceOrderId, int orderStatusId,
+                                // String orderStatus, int serviceInstanceId,
+                                // int orderScenarioId, String orderScenario)
+                result = new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
+                                            resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+
+        return result;
     }
 
     //KaspYar
