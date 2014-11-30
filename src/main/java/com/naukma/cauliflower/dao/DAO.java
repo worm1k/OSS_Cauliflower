@@ -509,9 +509,25 @@ public enum DAO {
      *  Returns ArrayList of orders for selected user
      *  @param userId  Id of the user
      * */
-    public ArrayList<ServiceOrder> getOrders(int userId){
-        ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
 
+    //trouble in our database: user is not connected with ServiceOrder scenario NEW
+     public ArrayList<ServiceOrder> getOrders(int userId){
+        ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
+        Connection connection = getConnection();
+        try {
+            preparedStatement  = connection.prepareStatement("");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                //ServiceOrder(int serviceOrderId, int orderStatusId,
+                // String orderStatus, int serviceInstanceId,
+                // int orderScenarioId, String orderScenario)
+                result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
+                        resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME")));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return  result;
 
     }
