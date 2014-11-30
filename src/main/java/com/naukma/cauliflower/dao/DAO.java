@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public enum DAO {
     INSTANCE;
     // assumes the current class is called logger
-    private final Logger logger = Logger.getLogger(DAO.class.getName());
+    private final Logger logger = Logger.getLogger(DAO.class);
     private DataSource dataSource;
     private PreparedStatement preparedStatement;
 
