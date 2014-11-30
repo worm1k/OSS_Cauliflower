@@ -464,7 +464,7 @@ public enum DAO {
                     connection.rollback();
                 } catch (SQLException e1) {
                     e1.printStackTrace();
-                    logger.error("ROLLBACK transaction of creating new router");
+                    logger.error("ROLLBACK transaction Failed of creating new router");
                 }
             }
             e.printStackTrace();
