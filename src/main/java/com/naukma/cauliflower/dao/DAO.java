@@ -151,50 +151,6 @@ public enum DAO {
 
     }
 
-
-
-    //KaspYar
-
-    /**
-     * Creates new service instance
-     * @param userId selected user id
-     * @param  serviceLocation location for the instance
-     * @param serviceId in of selected service
-     * @return id of created instance
-     * */
-
-    public int createServiceInstance(int userId, ServiceLocation serviceLocation,
-                                        int serviceId)
-    {
-
-        //default status PLANNED
-
-        return 1;
-    }
-    //KaspYar
-
-    /**
-     * Creates task for installation engineer for selected service order
-     * @param serviceOrderId
-     * @return id of created task
-     * */
-    public int createTaskForInstallation(int serviceOrderId) {
-        return 1;
-
-    }
-    //KaspYar
-
-
-    /**
-     * Creates task for provisioning engineer for selected service order
-     * @param serviceOrderId
-     * @return id of created task
-     * */
-    public int createTaskForProvisioning(int serviceOrderId) {
-        return 1;
-
-    }
-
     //KaspYar
 
     /**
@@ -798,6 +754,49 @@ public enum DAO {
 
     }
 
+
+    //KaspYar
+
+    /**
+     * Creates new service instance
+     * @param userId selected user id
+     * @param  serviceLocation location for the instance
+     * @param serviceId in of selected service
+     * @return id of created instance
+     * */
+
+    public int createServiceInstance(int userId, ServiceLocation serviceLocation,
+                                     int serviceId)
+    {
+
+        //default status PLANNED
+
+        return 1;
+    }
+    //KaspYar
+
+    /**
+     * Creates task for installation engineer for selected service order
+     * @param serviceOrderId
+     * @return id of created task
+     * */
+    public int createTaskForInstallation(int serviceOrderId) {
+        return 1;
+
+    }
+    //KaspYar
+
+
+    /**
+     * Creates task for provisioning engineer for selected service order
+     * @param serviceOrderId
+     * @return id of created task
+     * */
+    public int createTaskForProvisioning(int serviceOrderId) {
+        return 1;
+
+    }
+
     //KaspYar
     // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
     // ServiceInstance.
@@ -816,6 +815,7 @@ public enum DAO {
     public List<Task> getFreeTasksByRoleAndProcessingTasksByUserId(int userRoleId, int userId) {
         return null;
     }
+
 
  }
 
