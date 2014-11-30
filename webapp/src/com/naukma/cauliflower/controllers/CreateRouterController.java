@@ -28,13 +28,9 @@ public class CreateRouterController {
         int taskId = task.getTaskId();
         int serviceOrderId = task.getServiceOrderId();
 
-        try {
-            DAO.INSTANCE.createRouter();
-            DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-            DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        DAO.INSTANCE.createRouter();
+        DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+        DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
 
         request.getRequestDispatcher("smthing.jsp").forward(request, response);
     }
