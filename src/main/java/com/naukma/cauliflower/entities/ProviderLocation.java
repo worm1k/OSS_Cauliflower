@@ -9,11 +9,11 @@ public class ProviderLocation  implements Serializable{
 
     private int providerLocationId;
     private String locationAddress;
-    private int locationLongitude;
-    private int locationLatitude;
+    private double locationLongitude;
+    private double locationLatitude;
 
 
-    public ProviderLocation(int providerLocationId, String locationAddress, int locationLongitude, int locationLatitude) {
+    public ProviderLocation(int providerLocationId, String locationAddress, double locationLongitude, double locationLatitude) {
         this.providerLocationId = providerLocationId;
         this.locationAddress = locationAddress;
         this.locationLongitude = locationLongitude;
@@ -28,11 +28,11 @@ public class ProviderLocation  implements Serializable{
         return locationAddress;
     }
 
-    public int getLocationLongitude() {
+    public double getLocationLongitude() {
         return locationLongitude;
     }
 
-    public int getLocationLatitude() {
+    public double getLocationLatitude() {
         return locationLatitude;
     }
 }

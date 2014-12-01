@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -111,10 +112,11 @@ public enum DAO {
      * Creates new service order
      * @param scenario scenario for the order
      * @param idServiceInstance id of service instance for disconnect scenario
+     * @param calendar service order creation date
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
      * */
-    public int createServiceOrder(Scenario scenario, Integer idServiceInstance) {
+    public int createServiceOrder(Scenario scenario,GregorianCalendar calendar, Integer idServiceInstance) {
         //default status ENTERING
         OrderStatus orderStatus = OrderStatus.ENTERING;
         Connection connection = getConnection();

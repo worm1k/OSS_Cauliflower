@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Max on 29.11.2014.
@@ -39,10 +40,11 @@ public class ProceedOrderController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         user = (User) request.getSession().getAttribute("user");
-        Scenario scenario = (Scenario)request.getSession().getAttribute("scenario");
-        scenario = Scenario.NEW;
+        String scenario = request.getParameter("scenario");
+        scenario = "NEW";
+        //scenario = Scenario.NEW;
         //   if(user != null) {
-        if(scenario == Scenario.NEW)
+        if(scenario.equals(Scenario.NEW.toString()))
             scenarioNew(request);
         else
             scenarioDisconnect(request);
@@ -75,18 +77,27 @@ public class ProceedOrderController extends HttpServlet {
     // ACK.1
     private void createNewOrder()
     {
-         orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW,null);
+
+        orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW,new GregorianCalendar(),null);
     }
 
     // ACK.3
     private void createDisconectOrder(Integer instanceId)
     {
-        orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT, instanceId);
+        orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT,new GregorianCalendar(), instanceId);
     }
+
+
+//    private GregorianCalendar getDate(){
+//        GregorianCalendar calendar = new GregorianCalendar();
+//        calendar.set(GregorianCalendar.YEAR,GregorianCalendar.MONTH,GregorianCalendar.DAY_OF_MONTH);
+//        return calendar;
+//    }
 
     //ACK 12
     private void changeOrderStatus()
     {
+
         DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
     }
 

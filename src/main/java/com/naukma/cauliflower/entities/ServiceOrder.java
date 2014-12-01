@@ -1,6 +1,7 @@
 package com.naukma.cauliflower.entities;
 
 import java.io.Serializable;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Max on 27.11.2014.
@@ -12,6 +13,20 @@ public class ServiceOrder implements Serializable {
     private int serviceInstanceId;
     private int orderScenarioId;
     private String orderScenario;
+    private GregorianCalendar calendar;
+
+
+    public ServiceOrder(int serviceOrderId, int orderStatusId, String orderStatus,
+                        int serviceInstanceId, int orderScenarioId,
+                        String orderScenario, GregorianCalendar calendar) {
+        this.serviceOrderId = serviceOrderId;
+        this.orderStatusId = orderStatusId;
+        this.orderStatus = orderStatus;
+        this.serviceInstanceId = serviceInstanceId;
+        this.orderScenarioId = orderScenarioId;
+        this.orderScenario = orderScenario;
+        this.calendar = calendar;
+    }
 
     public ServiceOrder(int serviceOrderId, int orderStatusId, String orderStatus, int serviceInstanceId, int orderScenarioId, String orderScenario) {
         this.serviceOrderId = serviceOrderId;

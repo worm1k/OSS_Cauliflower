@@ -8,8 +8,8 @@ public class Service implements Serializable {
     private int serviceTypeId;
 
     private String locationAddress;
-    private int locationLongitude;
-    private int locationLatitude;
+    private double locationLongitude;
+    private double locationLatitude;
 
     private String serviceTypeName;
     private String serviceSpeed;
@@ -42,7 +42,7 @@ public class Service implements Serializable {
         return locationAddress;
     }
 
-    public int getLocationLongitude() {
+    public double getLocationLongitude() {
         return locationLongitude;
     }
 
@@ -50,7 +50,7 @@ public class Service implements Serializable {
         return serviceTypeName;
     }
 
-    public int getLocationLatitude() {
+    public double getLocationLatitude() {
         return locationLatitude;
     }
 
