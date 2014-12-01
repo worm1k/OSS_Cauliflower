@@ -33,12 +33,20 @@ public class CreateRouterController extends HttpServlet {
         //RI.9
         //The system should allow creating Devices, Ports and Cables only by Installation Engineer
         if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
-            DAO.INSTANCE.createRouter();
+
+            if (!DAO.INSTANCE.freeAndNotProcessingPortExists()) {
+                DAO.INSTANCE.createRouter();
+            }
+            DAO.INSTANCE.getFreePortAndSetProcessing(true);
+            DAO.INSTANCE.createCable();
+
             DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
             DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
 
+
             request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
-        }else request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
+        }else
+            request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
 
     }
 

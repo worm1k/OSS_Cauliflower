@@ -975,9 +975,8 @@ public enum DAO {
         return 1;
 
     }
+
     //KaspYar
-
-
     /**
      * Creates task for provisioning engineer for selected service order
      * @param serviceOrderId
@@ -986,13 +985,6 @@ public enum DAO {
     public int createTaskForProvisioning(int serviceOrderId) {
         return 1;
 
-    }
-
-    //KaspYar
-    // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
-    // ServiceInstance.
-    public void createPortAndCableAndAssignToServiceInstance(int serviceInstanceId) {
-        return;
     }
 
 
@@ -1067,6 +1059,33 @@ public enum DAO {
     //сделать равным null. Сам кабель удалить из базы.
     //The system should allow deleting of Cables and Circuits.
     public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
+
+    }
+
+    //KaspYar
+    /**
+     * Checks if there is at least one free port that is not processing
+     * @return true if free and not processing port exists otherwise false
+     */
+    public boolean freeAndNotProcessingPortExists() {
+        //У порта два булеан атрибута. Free и Processing.
+        return false;
+    }
+
+    //KaspYar
+    /**
+     * Takes any free port and makes it processing/not processing.
+     * @param processing set's port processing to this param
+     */
+    public void getFreePortAndSetProcessing(boolean processing) {
+
+    }
+
+    //KaspYar
+    /**
+     * Creates a cable without any port referred to it.
+     */
+    public void createCable() {
 
     }
 }
