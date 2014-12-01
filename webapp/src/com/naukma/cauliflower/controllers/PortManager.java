@@ -35,11 +35,11 @@ public class PortManager {
 
         ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(task.getTaskId());
         if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {
-            DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrder.getServiceInstanceId());
+            //DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrder.getServiceInstanceId());
             DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
         }
         else if (serviceOrder.getOrderScenario().equals(Scenario.DISCONNECT.toString())) {
-            DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrder.getServiceInstanceId());
+            //DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrder.getServiceInstanceId());
             DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
         }
         DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
