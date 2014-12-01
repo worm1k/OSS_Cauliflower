@@ -14,8 +14,10 @@ public class Service implements Serializable {
     private String serviceTypeName;
     private String serviceSpeed;
 
+    private double price;
+
     public Service(int serviceTypeId, String locationAddress, int locationLongitude, int locationLatitude,
-                   String serviceTypeName, String serviceSpeed, int providerLocationId, int serviceId) {
+                   String serviceTypeName, String serviceSpeed, int providerLocationId, int serviceId, double price) {
         this.serviceTypeId = serviceTypeId;
         this.locationAddress = locationAddress;
         this.locationLongitude = locationLongitude;
@@ -24,6 +26,7 @@ public class Service implements Serializable {
         this.serviceSpeed = serviceSpeed;
         this.providerLocationId = providerLocationId;
         this.serviceId = serviceId;
+        this.price = price;
     }
 
     public int getServiceId() {
@@ -89,4 +92,8 @@ public class Service implements Serializable {
     public void setServiceSpeed(String serviceSpeed) {
         this.serviceSpeed = serviceSpeed;
     }
+
+    public void setPrice(double price) { this.price = price; }
+
+    public double getPrice() { return price; }
 }
