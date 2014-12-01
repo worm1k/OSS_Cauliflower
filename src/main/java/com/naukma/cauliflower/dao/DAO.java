@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public enum DAO {
     INSTANCE;
     // assumes the current class is called logger
-    private final Logger logger = Logger.getLogger(DAO.class);
+    private static final Logger logger = Logger.getLogger(DAO.class);
     private DataSource dataSource;
     private static final String BD_JNDI = "jdbc/oraclesource"; // no magic numbers
 
@@ -118,6 +118,7 @@ public enum DAO {
      * */
     public int createServiceOrder(Scenario scenario,GregorianCalendar calendar, Integer idServiceInstance) {
         //default status ENTERING
+        System.out.println("CREATE NEW ORDER!");
         OrderStatus orderStatus = OrderStatus.ENTERING;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -129,6 +130,10 @@ public enum DAO {
             if (resultSet.next()){
                 idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
             }
+            {//help
+                System.out.println("Scenario : "+ scenario);
+                System.out.println("idScenario: " + idOrderScenario);
+            }
 
             preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
             preparedStatement.setString(1, orderStatus.toString());
@@ -137,17 +142,27 @@ public enum DAO {
             if (resultSet.next()){
                 idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
             }
+            {//help
+                System.out.println("idOrderStatus: "+ idOrderStatus);
+            }
             if (idServiceInstance == null){
                 preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
                         "VALUES(?,? )");
                 preparedStatement.setInt(1, idOrderScenario);
                 preparedStatement.setInt(2, idOrderStatus);
+                {//help
+                    System.out.println("NULL");
+                }
             }else{
                 preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
                         "VALUES(?, ?,? )");
                 preparedStatement.setInt(1, idServiceInstance.intValue());
                 preparedStatement.setInt(2, idOrderScenario);
                 preparedStatement.setInt(3, idOrderStatus);
+                {//help
+                    System.out.println("NOT NULL");
+                    System.out.println("idServiceInstance "+ idServiceInstance.intValue());
+                }
             }
 
             preparedStatement.executeUpdate();
@@ -155,8 +170,12 @@ public enum DAO {
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
             resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
+                {//help
+                    System.out.println("RETURN : "+ resultSet.getInt("RES"));
+                }
                 return resultSet.getInt("RES");
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -189,6 +208,10 @@ public enum DAO {
                                                             "WHERE ID = ?");
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, instanceId);
+            {//help
+                System.out.println("instanceId: "+ instanceId);
+                System.out.println("userId: "+userId);
+            }
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -223,6 +246,10 @@ public enum DAO {
 
             preparedStatement.setString(1, status.toString());
             preparedStatement.setInt(2, instanceId);
+            {//help
+                System.out.println("InstanceId: "+instanceId);
+                System.out.println("Status : " +status.toString() );
+            }
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -247,6 +274,7 @@ public enum DAO {
      * @param orderStatus status of the task
      * */
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) {
+        System.out.println("CHANGE ORDER STATUS");
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
@@ -258,6 +286,10 @@ public enum DAO {
 
             preparedStatement.setString(1, orderStatus.toString());
             preparedStatement.setInt(2, orderId);
+            {//help
+                System.out.println("orderId: "+orderId);
+                System.out.println("orderStatus: "+orderStatus.toString());
+            }
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -292,6 +324,10 @@ public enum DAO {
 
             preparedStatement.setString(1, taskStatus.toString());
             preparedStatement.setInt(2, taskId);
+            {//help
+                System.out.println("taskId: "+ taskId);
+                System.out.println("taskStatus: "+ taskStatus.toString());
+            }
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -320,6 +356,7 @@ public enum DAO {
         //int isBlocked = 1;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
+        System.out.println("SET INSTANCE BLOCKED!");
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
                     "SET ISACTIVEORDER = ?"+
@@ -327,6 +364,10 @@ public enum DAO {
 
             preparedStatement.setInt(1, isBlocked);
             preparedStatement.setInt(2, instanceId);
+            {//help
+                System.out.println("instanceId: "+instanceId);
+                System.out.println("blocked: "+ isBlocked);
+            }
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -524,6 +565,7 @@ public enum DAO {
     public void setInstanceForOrder(int instanceId, int orderId){
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
+        System.out.println("SET INSTANCE FOR ORDER");
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
                                                             "SET ID_SERVICEINSTANCE = ? " +
@@ -794,6 +836,7 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int res=0;
+        System.out.println("CREATE SERVICE LOCATION!");
 
         try {
             connection.setAutoCommit(false);
@@ -801,22 +844,36 @@ public enum DAO {
             preparedStatement.setString(1,serviceLocation.getLocationAddress());
             preparedStatement.setInt(2, serviceLocation.getLocationLongitude());
             preparedStatement.setInt(3, serviceLocation.getLocationLatitude());
+            {//help
+                System.out.println("Adress: "+serviceLocation.getLocationAddress() + " Longitude: " + serviceLocation.getLocationLongitude()+" Latitude: "+serviceLocation.getLocationLatitude());
+            }
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement("SELECT MAX(ID) MAX_ID FROM LOCATION");
             int id =0;
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()) id = resultSet.getInt("MAX_ID");
+            {//help
+                System.out.println("MAX_ID: " + id);
+            }
 
             preparedStatement = connection.prepareStatement("INSERT INTO SERVICELOCATION(ID_LOCATION) VALUES (?)");
             preparedStatement.setInt(1, id);
+            {//help
+                System.out.println("INSERT INTO SERVICELOCATION(ID_LOCATION) VALUES (?) DONE");
+            }
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement("SELECT MAX(ID) MAX_ID FROM SERVICELOCATION");
             resultSet = preparedStatement.executeQuery();
             if(resultSet.next()) res = resultSet.getInt("MAX_ID");
+            {//help
+                System.out.println("MAX_ID "+res);
+            }
             connection.commit();
-
+            {//help
+                System.out.println("SUCCESSFULL COMMIT" );
+            }
         } catch (SQLException e) {
             if (connection != null) {
                 System.err.print("Transaction is being rolled back");
@@ -830,9 +887,9 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
+                connection.setAutoCommit(true);
                 if (!preparedStatement.isClosed()) preparedStatement.close();
                 if (!connection.isClosed()) connection.close();
-                connection.setAutoCommit(true);
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -859,6 +916,7 @@ public enum DAO {
     {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
+        System.out.println("CREATE SERVICE INSTANCE!");
         int res = 0;
         try {
             connection.setAutoCommit(false);
@@ -866,8 +924,10 @@ public enum DAO {
                                                                                 "VALUES (?,?,?,?)");
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, serviceLocation.getServiceLocationId());
+            System.out.println("SERVICE LOC ID: "+serviceLocation.getServiceLocationId());
+            System.out.println("Service ID: "+ serviceId);
             preparedStatement.setInt(3, serviceId);
-            preparedStatement.setString(4, InstanceStatus.PLANNED.toString());
+            preparedStatement.setInt(4, 1);
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement("SELECT MAX(ID) MAX_ID FROM SERVICEINSTANCE");
@@ -887,9 +947,9 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
+                connection.setAutoCommit(true);
                 if (!preparedStatement.isClosed()) preparedStatement.close();
                 if (!connection.isClosed()) connection.close();
-                connection.setAutoCommit(true);
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
