@@ -5,6 +5,7 @@ import com.naukma.cauliflower.entities.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.List;
  * Created by Алексей on 29.11.2014.
  */
 @WebServlet(name = "GetServicesController")
-public class GetServicesController {
+public class GetServicesController extends HttpServlet {
      /*
      ACK.5
      ACK.6
