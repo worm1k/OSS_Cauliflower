@@ -336,7 +336,8 @@ public enum DAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 result.add(new Task(resultSet.getInt("ID_TASK"), resultSet.getInt("ID_USERROLE"), resultSet.getInt("ID_SERVICEORDER"),
-                                    resultSet.getInt("ID_TASKSTATUS"), resultSet.getString("TS_NAME"), resultSet.getString("T_NAME")));
+                                    resultSet.getInt("ID_TASKSTATUS"), resultSet.getString("TS_NAME"),
+                                    TaskName.valueOf(resultSet.getString("T_NAME"))));
 
             }
         } catch (SQLException e) {
@@ -816,7 +817,11 @@ public enum DAO {
         return null;
     }
 
-
- }
+    //Galya_Sh
+    //просто отримуємо айди юзер ролі яка є Installation Engineer
+    public int getUserRoleIdFor_InstallationEngineer() {
+        return 4;
+    }
+}
 
 

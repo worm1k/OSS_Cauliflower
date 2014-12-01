@@ -1,5 +1,7 @@
 package com.naukma.cauliflower.entities;
 
+import com.naukma.cauliflower.dao.TaskName;
+
 import java.io.Serializable;
 
 /**
@@ -12,9 +14,9 @@ public class Task implements Serializable {
     private int serviceOrderId;
     private int taskStatusId;
     private String taskStatus;
-    private String taskName;
+    private TaskName taskName;
 
-    public Task(int taskId, int userRoleId, int serviceOrderId, int taskStatusId, String taskStatus, String taskName) {
+    public Task(int taskId, int userRoleId, int serviceOrderId, int taskStatusId, String taskStatus, TaskName taskName) {
         this.taskId = taskId;
         this.userRoleId = userRoleId;
         this.serviceOrderId = serviceOrderId;
@@ -44,7 +46,7 @@ public class Task implements Serializable {
         return taskStatus;
     }
 
-    public String getTaskName() {
+    public TaskName getTaskName() {
         return taskName;
     }
 }

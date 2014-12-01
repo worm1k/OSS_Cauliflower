@@ -19,7 +19,8 @@ import java.io.IOException;
 public class CreateRouterController {
 
     /*
-    SOW.6 + CREATE NEXT TASK
+    RI.9
+    SOW.6 ( RI.1 ) + CREATE NEXT TASK
     SOW.5
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,11 +29,16 @@ public class CreateRouterController {
         int taskId = task.getTaskId();
         int serviceOrderId = task.getServiceOrderId();
 
-        DAO.INSTANCE.createRouter();
-        DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-        DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
+        //RI.9
+        //The system should allow creating Devices, Ports and Cables only by Installation Engineer
+        if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
+            DAO.INSTANCE.createRouter();
+            DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+            DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
 
-        request.getRequestDispatcher("smthing.jsp").forward(request, response);
+            request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
+        }else request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
