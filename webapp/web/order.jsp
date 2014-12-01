@@ -101,7 +101,7 @@
             </tbody>
         </table>
 
-        <button type="button" class="btn btn-primary btn-lg center-block btn-proceed">Proceed to Order</button>
+        <button formaction="/proceed" type="button" class="btn btn-primary btn-lg center-block btn-proceed">Proceed to Order</button>
     </div>
 </div>
 
