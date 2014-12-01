@@ -818,22 +818,6 @@ public enum DAO {
     }
 
     //KaspYar
-    // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
-    // ServiceInstance.
-    public void createPortAndCableAndAssignToServiceInstance(int serviceInstanceId) {
-        return;
-    }
-
-    //KaspYar
-    //По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
-    //сделать равным null. Сам кабель удалить из базы.
-    //RI.6
-    //The system should allow deleting of Cables and Circuits.
-    public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
-
-    }
-
-    //KaspYar
     public List<Task> getFreeTasksByRoleAndProcessingTasksByUserId(int userRoleId, int userId) {
         return null;
     }
