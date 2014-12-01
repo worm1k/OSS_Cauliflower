@@ -1,9 +1,6 @@
 package com.naukma.cauliflower.controllers;
 
-import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.dao.InstanceStatus;
-import com.naukma.cauliflower.dao.OrderStatus;
-import com.naukma.cauliflower.dao.Scenario;
+import com.naukma.cauliflower.dao.*;
 import com.naukma.cauliflower.entities.ServiceOrder;
 import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
@@ -32,21 +29,27 @@ public class ProvisioningTaskController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
         Task task = (Task) request.getAttribute("task");
+        int taskId = task.getTaskId();
 
-        if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_ProvisioningEngineer()) {
+        if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {
+            if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_ProvisioningEngineer()) {
 
-            ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(task.getTaskId());
-            if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {
-                DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
-            }
-            else if (serviceOrder.getOrderScenario().equals(Scenario.DISCONNECT.toString())) {
-                DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
-            }
-            DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
-            request.getRequestDispatcher("smthing.jsp").forward(request, response);
+                ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(task.getTaskId());
+                if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {
+                    DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
+                }
+                else if (serviceOrder.getOrderScenario().equals(Scenario.DISCONNECT.toString())) {
+                    DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
+                }
+                DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
+                //TODO unblock order
+                request.getRequestDispatcher("smthing.jsp").forward(request, response);
 
+            } else
+                request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
         } else
-            request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
+            request.getRequestDispatcher("taskalreadycompleted.jsp").forward(request, response);
+
 
 
     }
