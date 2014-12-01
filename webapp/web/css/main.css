@@ -43,7 +43,8 @@ body {
   max-width: 470px;
   margin: 0 auto;
 }
-.btn-signin {
+.btn-signin,
+.btn-proceed {
   margin-top: 24px;
   margin-bottom: 24px;
   margin-left: auto;
@@ -61,4 +62,12 @@ body {
 }
 .item-visible-false {
   display: none;
+}
+.infobox {
+  background-color: #fff;
+  border: 1px solid #c2c1be;
+  border-radius: 2px;
+  padding: 14px;
+  -webkit-box-shadow: rgba(0,0,0,0.298) 0px 1px 4px -1px;
+  box-shadow: rgba(0,0,0,0.298) 0px 1px 4px -1px;
 }

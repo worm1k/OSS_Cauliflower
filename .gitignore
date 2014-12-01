@@ -11,3 +11,6 @@ hs_err_pid*
 
 
 desktop.ini
+src/main/resources/rebel.xml
+*.iml
+webapp/src/rebel.xml
