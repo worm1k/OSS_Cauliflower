@@ -992,7 +992,26 @@ public enum DAO {
     // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
     // ServiceInstance.
     public void createPortAndCableAndAssignToServiceInstance(int serviceInstanceId) {
-        return;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("CALL CreateCircuit(?)");
+            preparedStatement.setInt(1, serviceInstanceId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
 
