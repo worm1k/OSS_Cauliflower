@@ -1047,6 +1047,13 @@ public enum DAO {
         return 4;
     }
 
+    //Galya_Sh
+    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
+    public int getUserRoleIdFor_ProvisioningEngineer() {
+        //TODO
+        return 0;
+    }
+
     //Galya_Sh RI.1
     //The system should document Devices.
     // повертаємо просто всю інформацію для репорту
