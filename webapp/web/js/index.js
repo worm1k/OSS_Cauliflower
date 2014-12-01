@@ -3,6 +3,7 @@ function AngularTestController($scope){
 		text: 'Hello'
 	};
 }
+
 'use strict'
 
 google.maps.Marker.prototype.init = function(parameters){

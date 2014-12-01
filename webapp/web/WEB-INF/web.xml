@@ -79,6 +79,13 @@
         <url-pattern>/register</url-pattern>
     </servlet-mapping>
 
-
+    <servlet>
+        <servlet-name>GetServiceController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.GetServicesController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetServiceController</servlet-name>
+        <url-pattern>/services</url-pattern>
+    </servlet-mapping>
     
 </web-app>
