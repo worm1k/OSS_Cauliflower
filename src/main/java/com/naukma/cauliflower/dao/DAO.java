@@ -24,12 +24,13 @@ public enum DAO {
     private final Logger logger = Logger.getLogger(DAO.class);
     private DataSource dataSource;
     private PreparedStatement preparedStatement;
+    private static final String BD_JNDI = "jdbc/oraclesource"; // no magic numbers
 
     private DAO() {
         InitialContext ic = null;
         try {
             ic = new InitialContext();
-            dataSource = (DataSource) ic.lookup("jdbc/oraclesource");
+            dataSource = (DataSource) ic.lookup(BD_JNDI);
         } catch (NamingException e) {
             e.printStackTrace();
         }
@@ -808,6 +809,8 @@ public enum DAO {
     //KaspYar
     //По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
     //сделать равным null. Сам кабель удалить из базы.
+    //RI.6
+    //The system should allow deleting of Cables and Circuits.
     public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
 
     }
@@ -821,6 +824,39 @@ public enum DAO {
     //просто отримуємо айди юзер ролі яка є Installation Engineer
     public int getUserRoleIdFor_InstallationEngineer() {
         return 4;
+    }
+
+    //Galya_Sh RI.1
+    //The system should document Devices.
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getDevicesForReport() {
+        return null;
+    }
+
+    //Galya_Sh RI.2
+    //The system should document the Ports.
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getPortsForReport() {
+        return null;
+    }
+
+    //Galya_Sh RI.4
+    //The system should document physical link to end user as Cable.
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getCablesForReport() {
+        return null;
+    }
+
+    //Galya_Sh RI.5
+    //The system should document logical entity of provided Service as Circuit.
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getCircuitsForReport() throws SQLException {
+
+        Connection connection = getConnection();
+        preparedStatement = connection.prepareStatement("SELECT * FROM USERROLE");
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
     }
 }
 
