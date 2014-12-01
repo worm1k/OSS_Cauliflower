@@ -1125,6 +1125,15 @@ public enum DAO {
     public Scenario getOrderScenario(int serviceOrderId) {
         return Scenario.NEW;
     }
+
+    /**
+     * Returns status of task
+     * @param taskId
+     * @return status of this task
+     */
+    public TaskStatus getTaskStatus(int taskId) {
+        return null;
+    }
 }
 
 
