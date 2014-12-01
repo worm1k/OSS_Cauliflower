@@ -1,6 +1,7 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.Scenario;
 import com.naukma.cauliflower.dao.TaskStatus;
 import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
@@ -17,7 +18,7 @@ import java.io.IOException;
  */
 
 @WebServlet(name = "CreateRouterController")
-public class CreateRouterController extends HttpServlet {
+public class InstallationTasksController extends HttpServlet {
 
     /*
     RI.9
@@ -33,16 +34,16 @@ public class CreateRouterController extends HttpServlet {
         //RI.9
         //The system should allow creating Devices, Ports and Cables only by Installation Engineer
         if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
-            /* WILL BE DIFFERENT
-            if (!DAO.INSTANCE.freeAndNotProcessingPortExists()) {
-                DAO.INSTANCE.createRouter();
+            Scenario scenario = DAO.INSTANCE.getOrderScenario(serviceOrderId);
+            if (scenario == Scenario.NEW) {
+                if (!DAO.INSTANCE.freePortExists())
+                    DAO.INSTANCE.createRouter();
+                DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
+                DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
+            } else if (scenario == Scenario.DISCONNECT) {
+                //TODO
             }
-            DAO.INSTANCE.getFreePortAndSetProcessing(true);
-            DAO.INSTANCE.createCable();
-
             DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-            DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);*/
-
 
             request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
         }else

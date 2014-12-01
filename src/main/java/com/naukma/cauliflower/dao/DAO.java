@@ -987,6 +987,7 @@ public enum DAO {
 
     }
 
+    /*
     //KaspYar
     // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
     // ServiceInstance.
@@ -1011,7 +1012,7 @@ public enum DAO {
 
         }
 
-    }
+    }*/
 
 
     //KaspYar
@@ -1085,6 +1086,37 @@ public enum DAO {
     //The system should allow deleting of Cables and Circuits.
     public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
 
+    }
+
+    //KaspYar
+    // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
+    // ServiceInstance, полученный из ServiceOrder
+
+    /**
+     * Creates a cable, assigns a free port to it and then assigns this cable to instance associated with service order
+     * @param serviceOrderId id of service order to take service instance from
+     */
+    public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) {
+
+    }
+
+    //KaspYar
+    /**
+     *
+     * @return True if a free port exists, otherwise false
+     */
+    public boolean freePortExists() {
+        return false;
+    }
+
+    //KaspYar
+    /**
+     * Returns scenario type for this service
+     * @param serviceOrderId id of service
+     * @return scenario of service
+     */
+    public Scenario getOrderScenario(int serviceOrderId) {
+        return Scenario.NEW;
     }
 }
 
