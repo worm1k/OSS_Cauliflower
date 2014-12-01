@@ -51,7 +51,7 @@ public class ProceedOrderController extends HttpServlet {
 
 
     //    request.setAttribute("name", "value");
-    //   request.getRequestDispatcher("index.jsp").forward(request, response);
+       request.getRequestDispatcher("dashboard.jsp").forward(request, response);
 
     }
 
@@ -104,8 +104,10 @@ public class ProceedOrderController extends HttpServlet {
     //ACK 12
     private void createServiceInstance(HttpServletRequest request)
     {
-        ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
-        Service service = (Service)request.getSession().getAttribute("service");
+        ServiceLocation serviceLocation = (ServiceLocation)request.getAttribute("serviceLocation");
+                //(ServiceLocation)request.getSession().getAttribute("serviceLocation");
+        Service service = (Service)request.getAttribute("service");
+        //(Service)request.getSession().getAttribute("service");
         DAO.INSTANCE.createServiceLocation(serviceLocation);
         serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
         request.getSession().removeAttribute("serviceLocation");
