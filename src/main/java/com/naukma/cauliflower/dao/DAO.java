@@ -1016,7 +1016,7 @@ public enum DAO {
 
 
     //KaspYar
-    public List<Task> getFreeTasksByRoleAndProcessingTasksByUserId(int userRoleId, int userId) {
+    public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) {
         return null;
     }
 

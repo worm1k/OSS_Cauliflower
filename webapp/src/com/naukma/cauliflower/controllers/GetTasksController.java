@@ -28,7 +28,7 @@ public class GetTasksController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
-        List<Task> tasks = DAO.INSTANCE.getFreeTasksByRoleAndProcessingTasksByUserId(user.getUserRoleId(), user.getUserId());
+        List<Task> tasks = DAO.INSTANCE.getFreeAndProcessingTasksByUserRoleId(user.getUserRoleId());
         request.setAttribute("tasks", tasks);
         request.getRequestDispatcher("smthing.jsp").forward(request, response);
     }
