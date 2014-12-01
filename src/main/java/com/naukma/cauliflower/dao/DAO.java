@@ -433,7 +433,8 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
-                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID " +
+                                                                                //"ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID " +
+                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
                                                                                 "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
                                                                                 "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID " +
                                                                                 "WHERE S.ID_PROVIDER_LOCATION = ? ");
@@ -442,7 +443,8 @@ public enum DAO {
             while(resultSet.next()){
                 result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getInt("L.LONGITUDE"),
                         resultSet.getInt("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
-                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
+                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
+                        //resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -799,14 +801,16 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
-                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID" +
+                                                                                //"ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID" +
+                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE" +
                                                                                 "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
                                                                                 "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getInt("L.LONGITUDE"),
                                         resultSet.getInt("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
-                                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
+                                        //resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
+                                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
