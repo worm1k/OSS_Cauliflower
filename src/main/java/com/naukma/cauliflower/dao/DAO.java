@@ -3,6 +3,7 @@ package com.naukma.cauliflower.dao;
 
 import com.naukma.cauliflower.entities.*;
 import org.apache.log4j.Logger;
+import sun.dc.pr.PRError;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -789,7 +790,54 @@ public enum DAO {
      * */
     public int createServiceLocation(ServiceLocation serviceLocation){
         Connection connection = getConnection();
-            return 1;
+        PreparedStatement preparedStatement = null;
+        int res=0;
+
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("INSERT INTO LOCATION(ADRESS, LONGITUDE, LATITUDE) VALUES(?,?,?)");
+            preparedStatement.setString(1,serviceLocation.getLocationAddress());
+            preparedStatement.setInt(2, serviceLocation.getLocationLongitude());
+            preparedStatement.setInt(3, serviceLocation.getLocationLatitude());
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID) MAX_ID FROM LOCATION");
+            int id =0;
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) id = resultSet.getInt("MAX_ID");
+
+            preparedStatement = connection.prepareStatement("INSERT INTO SERVICELOCATION(ID_LOCATION) VALUES (?)");
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID) MAX_ID FROM SERVICELOCATION");
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) res = resultSet.getInt("MAX_ID");
+            connection.commit();
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new router");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return res;
 
     }
 
