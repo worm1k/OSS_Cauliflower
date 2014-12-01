@@ -841,6 +841,26 @@ public enum DAO {
     //Galya_Sh
     //просто отримуємо айди юзер ролі яка є Installation Engineer
     public int getUserRoleIdFor_InstallationEngineer() {
+        Connection connection = getConnection();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALATION';");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("RES");
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
         return 4;
     }
 
