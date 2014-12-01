@@ -104,10 +104,15 @@ public class ProceedOrderController extends HttpServlet {
     //ACK 12
     private void createServiceInstance(HttpServletRequest request)
     {
-        ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
+        //ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
+        ServiceLocation serviceLocation = new ServiceLocation(-1, "TRY ADRESS", 111, 999);
+
         Service service = (Service)request.getSession().getAttribute("service");
-        DAO.INSTANCE.createServiceLocation(serviceLocation);
-        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
+
+        serviceLocation.setServiceLocationId(DAO.INSTANCE.createServiceLocation(serviceLocation));
+
+        //serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
+        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, 1);
         request.getSession().removeAttribute("serviceLocation");
         request.getSession().removeAttribute("service");
 
@@ -127,7 +132,7 @@ public class ProceedOrderController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        
+        doPost(request,response);
     }
 
 
