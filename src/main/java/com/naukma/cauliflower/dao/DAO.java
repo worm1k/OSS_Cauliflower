@@ -824,14 +824,7 @@ public enum DAO {
         return;
     }
 
-    //KaspYar
-    //По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
-    //сделать равным null. Сам кабель удалить из базы.
-    //RI.6
-    //The system should allow deleting of Cables and Circuits.
-    public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
 
-    }
 
     //KaspYar
     public List<Task> getFreeTasksByRoleAndProcessingTasksByUserId(int userRoleId, int userId) {
@@ -895,6 +888,13 @@ public enum DAO {
         ResultSet resultSet = preparedStatement.executeQuery();
 
         return resultSet;
+    }
+    //Galya_Sh RI.6
+    //По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
+    //сделать равным null. Сам кабель удалить из базы.
+    //The system should allow deleting of Cables and Circuits.
+    public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
+
     }
 }
 
