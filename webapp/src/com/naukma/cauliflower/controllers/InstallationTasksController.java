@@ -39,11 +39,11 @@ public class InstallationTasksController extends HttpServlet {
                 if (!DAO.INSTANCE.freePortExists())
                     DAO.INSTANCE.createRouter();
                 DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
-                DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
             } else if (scenario == Scenario.DISCONNECT) {
-                //TODO
+                DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
             }
             DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+            DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
 
             request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
         }else

@@ -1088,10 +1088,10 @@ public enum DAO {
         return resultSet;
     }
     //Galya_Sh RI.6
-    //По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
+    //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
     //сделать равным null. Сам кабель удалить из базы.
     //The system should allow deleting of Cables and Circuits.
-    public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
+    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) {
 
     }
 
