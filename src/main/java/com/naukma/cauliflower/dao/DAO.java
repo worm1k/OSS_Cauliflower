@@ -23,7 +23,6 @@ public enum DAO {
     // assumes the current class is called logger
     private final Logger logger = Logger.getLogger(DAO.class);
     private DataSource dataSource;
-    private PreparedStatement preparedStatement;
     private static final String BD_JNDI = "jdbc/oraclesource"; // no magic numbers
 
     private DAO() {
@@ -72,6 +71,7 @@ public enum DAO {
     public User getUserByLoginAndPassword(String login, String password) {
         Connection connection = getConnection();
         User user = null;
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT * " +
                     "FROM USERS U INNER JOIN USERROLE UR ON U.ID_USERROLE = UR.ID_USERROLE " +
@@ -117,6 +117,7 @@ public enum DAO {
         //default status ENTERING
         OrderStatus orderStatus = OrderStatus.ENTERING;
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
             preparedStatement.setString(1,scenario.toString());
@@ -177,7 +178,8 @@ public enum DAO {
      * @param instanceId id of the instance
      * @param userId id of the user    * */
     public void setUserForInstance(int instanceId,int userId){
-    Connection connection = getConnection();
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
                                                             "SET ID_USER = ? " +
@@ -208,6 +210,7 @@ public enum DAO {
      * */
     public void changeInstanceStatus(int instanceId, InstanceStatus status) {
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
                                                             "SET SERVICE_INSTANCE_STATUS = (SELECT ID " +
@@ -242,6 +245,7 @@ public enum DAO {
      * */
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) {
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
                                                             "SET ID_ORDERSTATUS = (SELECT ID_ORDERSTATUS " +
@@ -275,6 +279,7 @@ public enum DAO {
      * */
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) {
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("UPDATE TASK " +
                                                             "SET ID_TASKSTATUS = (SELECT ID_TASKSTATUS " +
@@ -311,6 +316,7 @@ public enum DAO {
     public void setInstanceBlocked(int instanceId, int isBlocked){
         //int isBlocked = 1;
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
                     "SET ISACTIVEORDER = ?"+
@@ -346,6 +352,7 @@ public enum DAO {
     public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId){
         ArrayList<Task> result = new ArrayList<Task>();
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT T.ID_TASK, T.ID_USERROLE, T.ID_SERVICEORDER, T.ID_TASKSTATUS, TS.NAME TS_NAME, T.NAME T_NAME " +
                                                             "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
@@ -379,6 +386,7 @@ public enum DAO {
     public List<Service> getServicesByProviderLocationId(int providerLocationId){
         ArrayList<Service> result = new ArrayList<Service>();
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
                                                                                 "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID " +
@@ -415,6 +423,7 @@ public enum DAO {
     public void createRouter(){
         int amountsOfPorts = 60;
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement("INSERT INTO ROUTER(ID) VALUES(null)");
@@ -467,6 +476,7 @@ public enum DAO {
     public ServiceOrder getServiceOrder(int taskId){
         ServiceOrder result= null;
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
                                                             "SO.ID_SERVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME " +
@@ -510,6 +520,7 @@ public enum DAO {
      * @param orderId id of the order    * */
     public void setInstanceForOrder(int instanceId, int orderId){
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
                                                             "SET ID_SERVICEINSTANCE = ? " +
@@ -545,6 +556,7 @@ public enum DAO {
      public ArrayList<ServiceOrder> getOrders(int userId){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
+         PreparedStatement preparedStatement = null;
         try {
             preparedStatement  = connection.prepareStatement("");
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -572,6 +584,7 @@ public enum DAO {
     public ArrayList<ServiceInstance> getInstances(int userId){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
                                                             "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.ISACTIVEORDER, " +
@@ -623,6 +636,7 @@ public enum DAO {
     public ArrayList<ServiceOrder> getAllOrders(){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
                                                             "SO.ID_SERVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME " +
@@ -652,6 +666,7 @@ public enum DAO {
     public ArrayList<ServiceInstance> getAllInstances(){
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
                                                                 "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.ISACTIVEORDER, " +
@@ -688,6 +703,7 @@ public enum DAO {
     public ResultSet reportTester() throws SQLException
     {
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         preparedStatement = connection.prepareStatement("SELECT * FROM USERS");
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
@@ -696,6 +712,7 @@ public enum DAO {
     public List<ProviderLocation> getProviderLocations(){
         ArrayList<ProviderLocation> result = new ArrayList<ProviderLocation>();
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT * " +
                                                             "FROM PROVIDERLOCATION PL INNER JOIN LOCATION L ON PL.ID_LOCATION = L.ID");
@@ -734,12 +751,13 @@ public enum DAO {
         //              int providerLocationId, int serviceId)
         ArrayList<Service> result = new ArrayList<Service>();
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement1 = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
                                                                                 "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID" +
                                                                                 "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
                                                                                 "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
-            ResultSet resultSet = preparedStatement1.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getInt("L.LONGITUDE"),
                                         resultSet.getInt("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
@@ -770,6 +788,7 @@ public enum DAO {
      *  @see com.naukma.cauliflower.entities.ServiceLocation
      * */
     public int createServiceLocation(ServiceLocation serviceLocation){
+        Connection connection = getConnection();
             return 1;
 
     }
@@ -835,6 +854,7 @@ public enum DAO {
     //просто отримуємо айди юзер ролі яка є Installation Engineer
     public int getUserRoleIdFor_InstallationEngineer() {
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALATION';");
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -884,6 +904,7 @@ public enum DAO {
     public ResultSet getCircuitsForReport() throws SQLException {
 
         Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         preparedStatement = connection.prepareStatement("SELECT * FROM USERROLE");
         ResultSet resultSet = preparedStatement.executeQuery();
 
