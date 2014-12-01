@@ -24,19 +24,25 @@ public class RegistrationController extends HttpServlet {
         String userRole="CUSTOMER";
         int userRoleId=1;
 
-        email = (String) request.getAttribute("email");
-        password = (String) request.getAttribute("password");
-        firstName = (String) request.getAttribute("firstName");
-        lastName = (String) request.getAttribute("lastName");
-        phone = (String) request.getAttribute("phone");
+        email = (String) request.getParameter("email");
+        password = (String) request.getParameter("password");
+        firstName = (String) request.getParameter("name");
+        lastName = (String) request.getParameter("surname");
+        phone = (String) request.getParameter("phone");
+
+        /*response.getWriter().println(email);
+        response.getWriter().println(password);
+        response.getWriter().println(firstName);
+        response.getWriter().println(lastName);
+        response.getWriter().println(phone);*/
 
         if(DAO.INSTANCE.checkForEmailUniq(email)){
-            User user = new User(-1,userRoleId,userRole,email,firstName,lastName,phone);
+            User user = new User(userRoleId,userRole,email,firstName,lastName,phone);
             int res = DAO.INSTANCE.createUser(user,password);
             if(res>0){
                 //redirect
             }else{
-                //redirect
+                //response.set
             }
         }
 
