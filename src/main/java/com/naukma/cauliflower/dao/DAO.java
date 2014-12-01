@@ -822,7 +822,7 @@ public enum DAO {
                     connection.rollback();
                 } catch (SQLException e1) {
                     e1.printStackTrace();
-                    logger.error("ROLLBACK transaction Failed of creating new router");
+                    logger.error("ROLLBACK transaction Failed of creating new service location");
                 }
             }
             e.printStackTrace();
@@ -855,10 +855,48 @@ public enum DAO {
     public int createServiceInstance(int userId, ServiceLocation serviceLocation,
                                      int serviceId)
     {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int res = 0;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("INSERT INTO SERVICEINSTANCE(ID_USER, ID_SERVICE_LOCATION, ID_SERVICE, SERVICE_INSTANCE_STATUS) " +
+                                                                                "VALUES (?,?,?,?)");
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, serviceLocation.getServiceLocationId());
+            preparedStatement.setInt(3, serviceId);
+            preparedStatement.setString(4, InstanceStatus.PLANNED.toString());
+            preparedStatement.executeUpdate();
 
-        //default status PLANNED
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID) MAX_ID FROM SERVICEINSTANCE");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) res = resultSet.getInt("MAX_ID");
+            connection.commit();
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new service instance");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
 
-        return 1;
+        }
+
+
+        return res;
     }
     //KaspYar
 
