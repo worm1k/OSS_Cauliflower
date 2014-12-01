@@ -1086,33 +1086,6 @@ public enum DAO {
     public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
 
     }
-
-    //KaspYar
-    /**
-     * Checks if there is at least one free port that is not processing
-     * @return true if free and not processing port exists otherwise false
-     */
-    public boolean freeAndNotProcessingPortExists() {
-        //У порта два булеан атрибута. Free и Processing.
-        return false;
-    }
-
-    //KaspYar
-    /**
-     * Takes any free port and makes it processing/not processing.
-     * @param processing set's port processing to this param
-     */
-    public void getFreePortAndSetProcessing(boolean processing) {
-
-    }
-
-    //KaspYar
-    /**
-     * Creates a cable without any port referred to it.
-     */
-    public void createCable() {
-
-    }
 }
 
 
