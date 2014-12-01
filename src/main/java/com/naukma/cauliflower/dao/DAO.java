@@ -44,6 +44,24 @@ public enum DAO {
         }
         return null;
     }
+
+
+
+
+
+
+    //Halya
+    public int createUser(User us,String password){
+        //if error - return < 0
+        //else return id of created user
+        return 0;
+    }
+
+    public boolean checkForEmailUniq(String email){
+        //true, if no user whis this email```
+        return false;
+    }
+
     //KaspYar
     /**
      * Get user by its login and password

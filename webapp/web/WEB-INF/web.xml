@@ -70,6 +70,15 @@
         <url-pattern>/manageTask</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>Registration</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.RegistrationController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Registration</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+
 
     
 </web-app>
