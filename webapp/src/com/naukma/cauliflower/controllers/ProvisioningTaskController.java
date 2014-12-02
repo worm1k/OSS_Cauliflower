@@ -28,13 +28,12 @@ public class ProvisioningTaskController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
-        Task task = (Task) request.getAttribute("task");
-        int taskId = task.getTaskId();
+        Integer taskId = (Integer) request.getAttribute("taskId");
 
         if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {
             if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_ProvisioningEngineer()) {
 
-                ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(task.getTaskId());
+                ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(taskId);
                 if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {
                     DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
                 }
