@@ -169,6 +169,37 @@ public enum DAO {
         return result;
     }
 
+    //Halya
+    //if error, return <0 (-1)
+    //else, return id of blocked user
+    public int blockUserById(int idForBlock){
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int result = -1;
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ?;");
+            preparedStatement.setInt(1,idForBlock);
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("ID USER: "+idForBlock+" IS BLOCKED");
+            }
+            result = idForBlock;
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
     //KaspYar
     /**
      * Get user by its login and password
