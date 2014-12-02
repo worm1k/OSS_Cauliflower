@@ -3,31 +3,59 @@ package com.naukma.cauliflower.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.Service;
-
+import com.naukma.cauliflower.entities.ServiceLocation;
+import com.naukma.cauliflower.entities.User;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import java.util.List;
 
 
 @WebServlet(name = "GetServicesController")
 public class GetServicesController extends HttpServlet {
 
-
+    private static final  String GO_TO_AUTHENTICATION="auth.jsp";
+    private static final String PROCEED_TO_ORDER_CONTROLLER="/proceed";
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Service> services = DAO.INSTANCE.getServices();
 
+        List<Service> services = DAO.INSTANCE.getServices();
         ObjectMapper mapper = new ObjectMapper();
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
         //return data as json object
+        //Convert Java object to JSON format
         mapper.writeValue(out, services);
+    }
+
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        final ServiceLocation serviceLocation= (ServiceLocation) req.getAttribute("serviceLocation");
+        final Service service = (Service) req.getAttribute("service");
+
+        HttpSession session = req.getSession();
+        session.setAttribute("service",service);
+        session.setAttribute("serviceLocation",serviceLocation);
+        final User user  = (User) session.getAttribute("user");
+
+        if(user ==null){
+            RequestDispatcher requestDispatcher = req.getRequestDispatcher(GO_TO_AUTHENTICATION);
+            requestDispatcher.forward(req,resp);
+        }
+        else
+        {
+            RequestDispatcher requestDispatcher = req.getRequestDispatcher(PROCEED_TO_ORDER_CONTROLLER);
+            requestDispatcher.forward(req,resp);
+        }
+
     }
 }
