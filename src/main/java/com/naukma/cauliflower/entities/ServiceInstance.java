@@ -21,7 +21,7 @@ public class ServiceInstance implements Serializable {
 
     public ServiceInstance(int instanceId, int userId,
                            int serviceLocationId, String locationAddress,
-                           int locationLongitude, int locationLatitude,
+                           double locationLongitude, double locationLatitude,
                            int serviceId, int instanceStatusId,
                            String instanceStatus, int cableId, boolean isBlocked) {
         this.instanceId = instanceId;

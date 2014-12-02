@@ -61,7 +61,7 @@ public enum DAO {
             preparedStatement = connection.prepareStatement("INSERT INTO USERS (ID_USERROLE,E_MAIl,PASSWORD,F_NAME,L_Name,PHONE)" +
                                                            "VALUES (?,?,?,?,?,?)");
             preparedStatement.setInt(1,us.getUserRoleId());
-            preparedStatement.setString(2,us.getEmail());
+            preparedStatement.setString(2, us.getEmail());
             preparedStatement.setString(3,password);
             preparedStatement.setString(4,us.getFirstName());
             preparedStatement.setString(5,us.getLastName());
@@ -515,7 +515,7 @@ public enum DAO {
         System.out.println("SET INSTANCE BLOCKED!");
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
-                    "SET ISACTIVEORDER = ?"+
+                    "SET HAS_ACTIVE_TASK = ?"+
                     "WHERE ID = ?");
 
             preparedStatement.setInt(1, isBlocked);
@@ -597,8 +597,8 @@ public enum DAO {
             preparedStatement.setInt(1, providerLocationId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getInt("L.LONGITUDE"),
-                        resultSet.getInt("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
+                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getDouble("L.LONGITUDE"),
+                        resultSet.getDouble("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
                         resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
                         //resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
             }
@@ -790,7 +790,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
-                                                            "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.ISACTIVEORDER, " +
+                                                            "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
                                                             "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
                                                             "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
                                                                                         "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
@@ -809,9 +809,9 @@ public enum DAO {
                 * */
                 result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
                                 resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
-                                resultSet.getInt("L.LONGITUDE"), resultSet.getInt("L.LATITUDE"),
+                                resultSet.getDouble("L.LONGITUDE"), resultSet.getDouble("L.LATITUDE"),
                                 resultSet.getInt("SI.ID_SERVICE"), resultSet.getInt("SI.SERVICE_INSTANCE_STATUS"),
-                                resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.ISACTIVEORDER")== 1)));
+                                resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.HAS_ACTIVE_TASK")== 1)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -872,7 +872,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
-                                                                "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.ISACTIVEORDER, " +
+                                                                "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
                                                                 "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
                                                                 "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
                                                                 "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
@@ -889,9 +889,9 @@ public enum DAO {
                 * */
                 result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
                         resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
-                        resultSet.getInt("L.LONGITUDE"), resultSet.getInt("L.LATITUDE"),
+                        resultSet.getDouble("L.LONGITUDE"), resultSet.getDouble("L.LATITUDE"),
                         resultSet.getInt("SI.ID_SERVICE"), resultSet.getInt("SI.SERVICE_INSTANCE_STATUS"),
-                        resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.ISACTIVEORDER")== 1)));
+                        resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.HAS_ACTIVE_TASK")== 1)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -923,7 +923,7 @@ public enum DAO {
             while(resultSet.next()){
                 //public ProviderLocation(int providerLocationId, String locationAddress, int locationLongitude, int locationLatitude)
                 result.add(new ProviderLocation(resultSet.getInt("ID"), resultSet.getString("ADRESS"),
-                                                resultSet.getInt("LONGITUDE"), resultSet.getInt("LATITUDE")));
+                                                resultSet.getDouble("LONGITUDE"), resultSet.getDouble("LATITUDE")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -963,8 +963,8 @@ public enum DAO {
                                                                                 "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getInt("L.LONGITUDE"),
-                                        resultSet.getInt("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
+                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getDouble("L.LONGITUDE"),
+                                        resultSet.getDouble("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
                                         //resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
                                         resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
             }
@@ -1002,8 +1002,8 @@ public enum DAO {
             connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement("INSERT INTO LOCATION(ADRESS, LONGITUDE, LATITUDE) VALUES(?,?,?)");
             preparedStatement.setString(1,serviceLocation.getLocationAddress());
-            preparedStatement.setInt(2, serviceLocation.getLocationLongitude());
-            preparedStatement.setInt(3, serviceLocation.getLocationLatitude());
+            preparedStatement.setDouble(2, serviceLocation.getLocationLongitude());
+            preparedStatement.setDouble(3, serviceLocation.getLocationLatitude());
             {//help
                 System.out.println("Adress: "+serviceLocation.getLocationAddress() + " Longitude: " + serviceLocation.getLocationLongitude()+" Latitude: "+serviceLocation.getLocationLatitude());
             }
