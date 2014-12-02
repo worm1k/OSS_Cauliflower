@@ -48,7 +48,7 @@ public enum DAO {
 
 
 
-
+/**---------------------------------------------------------------------HALYA---------------------------------------------------------------------**/
     //Halya
     //if error - return < 0
     //else return id of created user
@@ -217,8 +217,78 @@ public enum DAO {
         //else return null
         return null;
     }
+    //Galya_Sh
+    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
+    public int getUserRoleIdFor_ProvisioningEngineer() {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int result = 0;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG';");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result =  resultSet.getInt("RES");
+            }
 
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
 
+        }
+        return result;
+    }
+
+    //Galya_Sh RI.1
+    //The system should document Devices.
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getDevicesForReport() {
+        return null;
+    }
+
+    //Galya_Sh RI.2
+    //The system should document the Ports.
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getPortsForReport() {
+        return null;
+    }
+
+    //Galya_Sh RI.4
+    //The system should document physical link to end user as Cable.
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getCablesForReport() {
+        return null;
+    }
+
+    //Galya_Sh RI.5
+    //The system should document logical entity of provided Service as Circuit.
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getCircuitsForReport() throws SQLException {
+
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        preparedStatement = connection.prepareStatement("SELECT * FROM USERROLE");
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
+    }
+    //Galya_Sh RI.6
+    //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
+    //сделать равным null. Сам кабель удалить из базы.
+    //The system should allow deleting of Cables and Circuits.
+    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) {
+
+    }
+
+/**---------------------------------------------------------------------END HALYA---------------------------------------------------------------------**/
+
+/**---------------------------------------------------------------------KASPYAR---------------------------------------------------------------------**/
     //KaspYar
     /**
      * Get user by its login and password
@@ -809,7 +879,7 @@ public enum DAO {
                 * */
                 result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
                                 resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
-                                resultSet.getDouble("L.LONGITUDE"), resultSet.getDouble("L.LATITUDE"),
+                        resultSet.getDouble("L.LONGITUDE"), resultSet.getDouble("L.LATITUDE"),
                                 resultSet.getInt("SI.ID_SERVICE"), resultSet.getInt("SI.SERVICE_INSTANCE_STATUS"),
                                 resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.HAS_ACTIVE_TASK")== 1)));
             }
@@ -923,7 +993,7 @@ public enum DAO {
             while(resultSet.next()){
                 //public ProviderLocation(int providerLocationId, String locationAddress, int locationLongitude, int locationLatitude)
                 result.add(new ProviderLocation(resultSet.getInt("ID"), resultSet.getString("ADRESS"),
-                                                resultSet.getDouble("LONGITUDE"), resultSet.getDouble("LATITUDE")));
+                        resultSet.getDouble("LONGITUDE"), resultSet.getDouble("LATITUDE")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -964,9 +1034,9 @@ public enum DAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getDouble("L.LONGITUDE"),
-                                        resultSet.getDouble("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
+                        resultSet.getDouble("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
                                         //resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
-                                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
+                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1203,76 +1273,6 @@ public enum DAO {
         }
         return result;
     }
-
-    //Galya_Sh
-    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
-    public int getUserRoleIdFor_ProvisioningEngineer() {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int result = 0;
-        try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG';");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result =  resultSet.getInt("RES");
-            }
-
-        }catch(SQLException e){
-            e.printStackTrace();
-        }finally{
-            try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-
-        }
-        return result;
-    }
-
-    //Galya_Sh RI.1
-    //The system should document Devices.
-    // повертаємо просто всю інформацію для репорту
-    public ResultSet getDevicesForReport() {
-        return null;
-    }
-
-    //Galya_Sh RI.2
-    //The system should document the Ports.
-    // повертаємо просто всю інформацію для репорту
-    public ResultSet getPortsForReport() {
-        return null;
-    }
-
-    //Galya_Sh RI.4
-    //The system should document physical link to end user as Cable.
-    // повертаємо просто всю інформацію для репорту
-    public ResultSet getCablesForReport() {
-        return null;
-    }
-
-    //Galya_Sh RI.5
-    //The system should document logical entity of provided Service as Circuit.
-    // повертаємо просто всю інформацію для репорту
-    public ResultSet getCircuitsForReport() throws SQLException {
-
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT * FROM USERROLE");
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        return resultSet;
-    }
-    //Galya_Sh RI.6
-    //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
-    //сделать равным null. Сам кабель удалить из базы.
-    //The system should allow deleting of Cables and Circuits.
-    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) {
-
-    }
-
     //KaspYar
     // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
     // ServiceInstance, полученный из ServiceOrder
@@ -1312,6 +1312,13 @@ public enum DAO {
     public TaskStatus getTaskStatus(int taskId) {
         return null;
     }
+    /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
+
+
+    /**---------------------------------------------------------------------IGOR---------------------------------------------------------------------**/
+
+    /**---------------------------------------------------------------------END IGOR---------------------------------------------------------------------**/
+
 }
 
 
