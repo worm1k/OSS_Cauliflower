@@ -49,8 +49,6 @@ public enum DAO {
 
 
 
-
-
     //Halya
     //if error - return < 0
     //else return id of created user
@@ -101,6 +99,7 @@ public enum DAO {
         return result;
     }
 
+    //Halya
     //true, if no user with this email
     public boolean checkForEmailUniq(String email){
         Connection connection = getConnection();
@@ -115,6 +114,41 @@ public enum DAO {
                 checkResult = resultSet.getInt("RES");
             }
             if (checkResult == 0) {
+                result = true;
+            } else {
+                result = false;
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    //Halya
+    //true, if user with this id exist
+    public boolean checkForExistingUserById(int id){
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE Id_User = ?;");
+            preparedStatement.setInt(1,id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int checkResult = -1;
+            if (resultSet.next()){
+                checkResult = resultSet.getInt("RES");
+            }
+            if (checkResult == 1) {
                 result = true;
             } else {
                 result = false;
