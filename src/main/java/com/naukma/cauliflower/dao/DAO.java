@@ -52,10 +52,53 @@ public enum DAO {
 
 
     //Halya
+    //if error - return < 0
+    //else return id of created user
     public int createUser(User us,String password){
-        //if error - return < 0
-        //else return id of created user
-        return 0;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int result = -1;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("INSERT INTO USERS (ID_USERROLE,E_MAIl,PASSWORD,F_NAME,L_Name)" +
+                                                           "VALUES (?,?,?,?,?)");
+            preparedStatement.setInt(1,us.getUserRoleId());
+            preparedStatement.setString(2,us.getEmail());
+            preparedStatement.setString(3,password);
+            preparedStatement.setString(4,us.getFirstName());
+            preparedStatement.setString(5,us.getLastName());
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_USER) MAX_ID FROM USERS");
+            //int idU = 0;
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = resultSet.getInt("MAX_ID");
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.setAutoCommit(true);
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return result;
     }
 
     //true, if no user with this email
