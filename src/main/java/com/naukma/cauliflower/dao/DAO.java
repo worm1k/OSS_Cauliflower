@@ -1371,7 +1371,33 @@ public enum DAO {
      * @see com.naukma.cauliflower.entities.Task
      */
     public Task getTaskById(int taskId){
-        return null;
+        Task task = null;
+        Connection connection= getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT T.ID_TASK, T.ID_TASKSTATUS, T.ID_USERROLE, T.ID_SERVICEORDER, T.NAME, TS.NAME TS_NAME " +
+                                                            "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
+                                                            "WHERE ID_TASK = ?");
+            preparedStatement.setInt(1, taskId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                task = new Task(resultSet.getInt("ID_TASK"), resultSet.getInt("ID_USERROLE"), resultSet.getInt("ID_SERVICEORDER"),
+                        resultSet.getInt("ID_TASKSTATUS"), resultSet.getString("TS_NAME"), TaskName.valueOf(resultSet.getString("NAME")));
+            }
+
+            //Task(int taskId, int userRoleId, int serviceOrderId,
+            // int taskStatusId, String taskStatus, TaskName taskName)
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        return task;
 
     }
 
