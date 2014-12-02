@@ -171,9 +171,9 @@ public enum DAO {
     }
 
     //Halya
-    //if error, return <0 (-1)
-    //else, return id of blocked user
+    //if error, return null
     public int blockUserById(int idForBlock){
+        //return blocked user, not id of user
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int result = -1;
@@ -207,6 +207,7 @@ public enum DAO {
         if(userRoleId==1)return "CUSTOMER";
         return null;
     }
+
 
     //KaspYar
     /**
