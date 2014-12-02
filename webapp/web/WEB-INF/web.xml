@@ -87,5 +87,14 @@
         <servlet-name>GetServiceController</servlet-name>
         <url-pattern>/services</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>BlockAccountController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.BlockAccountController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BlockAccountController</servlet-name>
+        <url-pattern>/blockacc</url-pattern>
+    </servlet-mapping>
     
 </web-app>
