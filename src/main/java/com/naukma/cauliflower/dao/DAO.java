@@ -58,9 +58,38 @@ public enum DAO {
         return 0;
     }
 
+    //true, if no user with this email
     public boolean checkForEmailUniq(String email){
-        //true, if no user whis this email```
-        return false;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE E_Mail = ? ;");
+            preparedStatement.setString(1,email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int checkResult = -1;
+            if (resultSet.next()){
+                checkResult = resultSet.getInt("RES");
+            }
+            if (checkResult == 0) {
+                result = true;
+            } else {
+                result = false;
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     //KaspYar
@@ -1025,11 +1054,12 @@ public enum DAO {
     public int getUserRoleIdFor_InstallationEngineer() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
+        int result = 4;
         try {
             preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG';");
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getInt("RES");
+                result = resultSet.getInt("RES");
             }
 
         }catch(SQLException e){
@@ -1044,14 +1074,35 @@ public enum DAO {
             }
 
         }
-        return 4;
+        return result;
     }
 
     //Galya_Sh
     //просто отримуємо айди юзер ролі яка є Provisioning Engineer
     public int getUserRoleIdFor_ProvisioningEngineer() {
-        //TODO
-        return 0;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int result = 0;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG';");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result =  resultSet.getInt("RES");
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return result;
     }
 
     //Galya_Sh RI.1
