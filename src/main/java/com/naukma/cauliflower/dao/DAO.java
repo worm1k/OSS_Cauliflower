@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ArrayList;
@@ -778,7 +779,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
-                                                            "SO.ID_SERVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME " +
+                                                            "SO.ID_SERVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
                                                             "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
                                                             "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
                                                             ") INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
@@ -788,9 +789,14 @@ public enum DAO {
             if(resultSet.next()){
                 //ServiceOrder(int serviceOrderId, int orderStatusId,
                                 // String orderStatus, int serviceInstanceId,
-                                // int orderScenarioId, String orderScenario)
+                                // int orderScenarioId, String orderScenario, GregorianCalendar calendar, int userId)
+                                //calendar.set(year, month, day);
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
                 result = new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                                            resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"));
+                                            resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                                            gregorianCalendar, resultSet.getInt("ID_USER"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -852,20 +858,27 @@ public enum DAO {
      *  @param userId  Id of the user
      * */
 
-    //trouble in our database: user is not connected with ServiceOrder scenario NEW
+    //trouble in our database: user is not connected with ServiceOrder scenario NEW FIXED!
      public ArrayList<ServiceOrder> getOrders(int userId){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
          PreparedStatement preparedStatement = null;
         try {
-            preparedStatement  = connection.prepareStatement("");
+            preparedStatement  = connection.prepareStatement("SELECT * FROM SERVICEORDER " +
+                                                                "WHERE ID_USER = ?");
+            preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 //ServiceOrder(int serviceOrderId, int orderStatusId,
                 // String orderStatus, int serviceInstanceId,
                 // int orderScenarioId, String orderScenario)
+
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
                 result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                        resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME")));
+                        resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                        gregorianCalendar, resultSet.getInt("ID_USER")));
             }
 
         } catch (SQLException e) {
@@ -939,16 +952,21 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
-                                                            "SO.ID_SERVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME " +
+                                                            "SO.ID_SERVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
                                                             "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
                                                             "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSTATUS ");
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 //public ServiceOrder(int serviceOrderId, int orderStatusId, String orderStatus,
                 //                     int serviceInstanceId, int orderScenarioId, String orderScenario)
+
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
                 result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"),
                                             resultSet.getString("OS_NAME"), resultSet.getInt("SO.ID_SERVICEINSTANCE"),
-                                            resultSet.getInt("OSC.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME")));
+                                            resultSet.getInt("OSC.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                                            gregorianCalendar, resultSet.getInt("ID_USER")));
 
             }
         } catch (SQLException e) {
