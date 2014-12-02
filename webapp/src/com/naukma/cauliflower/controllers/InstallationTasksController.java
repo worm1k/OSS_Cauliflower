@@ -17,7 +17,7 @@ import java.io.IOException;
  * Created by Алексей on 29.11.2014.
  */
 
-@WebServlet(name = "CreateRouterController", urlPatterns = { "/installationController" })
+@WebServlet(name = "CreateRouterController")
 public class InstallationTasksController extends HttpServlet {
 
     /*
@@ -51,6 +51,7 @@ public class InstallationTasksController extends HttpServlet {
                 request.getRequestDispatcher("/provisioningController").forward(request, response);
 
                 //END TO END
+
 
                 request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
             }else
