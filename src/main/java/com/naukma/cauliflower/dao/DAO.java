@@ -1105,7 +1105,7 @@ public enum DAO {
     //KaspYar
 
     /**
-     * Creates task for installation engineer for selected service order
+     * Creates task with status FREE for installation engineer for selected service order
      * @param serviceOrderId
      * @return id of created task
      * */
@@ -1116,7 +1116,7 @@ public enum DAO {
 
     //KaspYar
     /**
-     * Creates task for provisioning engineer for selected service order
+     * Creates task with status FREE for provisioning engineer for selected service order
      * @param serviceOrderId
      * @return id of created task
      * */

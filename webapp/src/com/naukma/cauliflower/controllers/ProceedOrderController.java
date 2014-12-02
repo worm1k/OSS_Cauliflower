@@ -71,7 +71,8 @@ public class ProceedOrderController extends HttpServlet {
         createDisconectOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
-        DAO.INSTANCE.createTaskForProvisioning(orderId);
+        DAO.INSTANCE.createTaskForInstallation(orderId);
+        //   DAO.INSTANCE.createTaskForProvisioning(orderId);
     }
 
     // ACK.1
