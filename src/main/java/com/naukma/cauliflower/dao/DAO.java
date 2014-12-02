@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ArrayList;
@@ -49,6 +50,33 @@ public enum DAO {
 
 
 /**---------------------------------------------------------------------HALYA---------------------------------------------------------------------**/
+    //Galya_Sh
+    //просто отримуємо айди юзер ролі яка є Installation Engineer
+    public int getUserRoleIdFor_InstallationEngineer() {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int result = 4;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG';");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = resultSet.getInt("RES");
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return result;
+    }
     //Halya
     //if error - return < 0
     //else return id of created user
@@ -751,7 +779,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
-                                                            "SO.ID_SERVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME " +
+                                                            "SO.ID_SERVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
                                                             "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
                                                             "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
                                                             ") INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
@@ -761,9 +789,14 @@ public enum DAO {
             if(resultSet.next()){
                 //ServiceOrder(int serviceOrderId, int orderStatusId,
                                 // String orderStatus, int serviceInstanceId,
-                                // int orderScenarioId, String orderScenario)
+                                // int orderScenarioId, String orderScenario, GregorianCalendar calendar, int userId)
+                                //calendar.set(year, month, day);
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
                 result = new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                                            resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"));
+                                            resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                                            gregorianCalendar, resultSet.getInt("ID_USER"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -825,20 +858,27 @@ public enum DAO {
      *  @param userId  Id of the user
      * */
 
-    //trouble in our database: user is not connected with ServiceOrder scenario NEW
+    //trouble in our database: user is not connected with ServiceOrder scenario NEW FIXED!
      public ArrayList<ServiceOrder> getOrders(int userId){
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
          PreparedStatement preparedStatement = null;
         try {
-            preparedStatement  = connection.prepareStatement("");
+            preparedStatement  = connection.prepareStatement("SELECT * FROM SERVICEORDER " +
+                                                                "WHERE ID_USER = ?");
+            preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 //ServiceOrder(int serviceOrderId, int orderStatusId,
                 // String orderStatus, int serviceInstanceId,
                 // int orderScenarioId, String orderScenario)
+
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
                 result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                        resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME")));
+                        resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                        gregorianCalendar, resultSet.getInt("ID_USER")));
             }
 
         } catch (SQLException e) {
@@ -912,16 +952,21 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
-                                                            "SO.ID_SERVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME " +
+                                                            "SO.ID_SERVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
                                                             "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
                                                             "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSTATUS ");
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 //public ServiceOrder(int serviceOrderId, int orderStatusId, String orderStatus,
                 //                     int serviceInstanceId, int orderScenarioId, String orderScenario)
+
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
                 result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"),
                                             resultSet.getString("OS_NAME"), resultSet.getInt("SO.ID_SERVICEINSTANCE"),
-                                            resultSet.getInt("OSC.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME")));
+                                            resultSet.getInt("OSC.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                                            gregorianCalendar, resultSet.getInt("ID_USER")));
 
             }
         } catch (SQLException e) {
@@ -1246,33 +1291,7 @@ public enum DAO {
         return null;
     }
 
-    //Galya_Sh
-    //просто отримуємо айди юзер ролі яка є Installation Engineer
-    public int getUserRoleIdFor_InstallationEngineer() {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int result = 4;
-        try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG';");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result = resultSet.getInt("RES");
-            }
 
-        }catch(SQLException e){
-            e.printStackTrace();
-        }finally{
-            try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-
-        }
-        return result;
-    }
     //KaspYar
     // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
     // ServiceInstance, полученный из ServiceOrder
@@ -1312,6 +1331,21 @@ public enum DAO {
     public TaskStatus getTaskStatus(int taskId) {
         return null;
     }
+
+
+
+    /**
+     * Returns task with given id PK
+     * @param taskId id of the task
+     * @return task object with selected id
+     * @see com.naukma.cauliflower.entities.Task
+     */
+    public Task getTaskById(int taskId){
+        return null;
+
+    }
+
+
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 

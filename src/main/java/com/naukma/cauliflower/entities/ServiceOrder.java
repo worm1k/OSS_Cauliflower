@@ -29,8 +29,10 @@ public class ServiceOrder implements Serializable {
         this.calendar = calendar;
         this.idUser = userId;
     }
-
-    public ServiceOrder(int serviceOrderId, int orderStatusId, String orderStatus, int serviceInstanceId, int orderScenarioId, String orderScenario) {
+/*
+    public ServiceOrder(int serviceOrderId, int orderStatusId, String orderStatus,
+                        int serviceInstanceId, int orderScenarioId,
+                        String orderScenario) {
         this.serviceOrderId = serviceOrderId;
         this.orderStatusId = orderStatusId;
         this.orderStatus = orderStatus;
@@ -38,6 +40,8 @@ public class ServiceOrder implements Serializable {
         this.orderScenarioId = orderScenarioId;
         this.orderScenario = orderScenario;
     }
+    */
+
 
 
     public int getServiceOrderId() {

@@ -3,8 +3,11 @@ package com.naukma.cauliflower.controllers;
 import com.naukma.cauliflower.dao.*;
 import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
+import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -45,10 +48,14 @@ public class ProceedOrderController extends HttpServlet {
             scenarioNew(request);
         else
             scenarioDisconnect(request);
+        ServletContext context = this.getServletContext();
+        RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
+         //for end2end
+        Task task = DAO.INSTANCE.getTaskById(taskId);
+        request.setAttribute("task",task);
+        dispatcher.forward(request, response);
 
-
-    //    request.setAttribute("name", "value");
-       request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+     //  request.getRequestDispatcher("dashboard.jsp").forward(request, response);
 
     }
 
@@ -60,6 +67,7 @@ public class ProceedOrderController extends HttpServlet {
         connectInstanceWithOrder();
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createTaskForInstallation(orderId);
+        //for end2end
         DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
 
     }
@@ -71,8 +79,8 @@ public class ProceedOrderController extends HttpServlet {
         changeOrderStatus();
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createTaskForInstallation(orderId);
+        //for end2end
         DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
-        //   DAO.INSTANCE.createTaskForProvisioning(orderId);
     }
 
     // ACK.1
@@ -94,6 +102,7 @@ public class ProceedOrderController extends HttpServlet {
 //        calendar.set(GregorianCalendar.YEAR,GregorianCalendar.MONTH,GregorianCalendar.DAY_OF_MONTH);
 //        return calendar;
 //    }
+
 
     //ACK 12
     private void changeOrderStatus()
@@ -118,6 +127,7 @@ public class ProceedOrderController extends HttpServlet {
 
     }
 
+
     private void connectInstanceWithOrder()
     {
         DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
@@ -128,7 +138,6 @@ public class ProceedOrderController extends HttpServlet {
         DAO.INSTANCE.setInstanceBlocked(serviceInstanceId,1);
 
     }
-
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
