@@ -13,11 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * Created by Алексей on 29.11.2014.
- */
-
-@WebServlet(name = "CreateRouterController")
 public class InstallationTasksController extends HttpServlet {
 
     /*
