@@ -41,6 +41,7 @@ public class ProvisioningTaskController extends HttpServlet {
                 else if (serviceOrder.getOrderScenario().equals(Scenario.DISCONNECT.toString())) {
                     DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
                 }
+                DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                 DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
                 DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
                 request.getRequestDispatcher("smthing.jsp").forward(request, response);
