@@ -1,9 +1,6 @@
 package com.naukma.cauliflower.controllers;
 
-import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.dao.InstanceStatus;
-import com.naukma.cauliflower.dao.OrderStatus;
-import com.naukma.cauliflower.dao.Scenario;
+import com.naukma.cauliflower.dao.*;
 import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
@@ -24,7 +21,7 @@ public class ProceedOrderController extends HttpServlet {
     private User user;
     private int orderId = -1;
     private int serviceInstanceId = -1;
-
+    private int taskId = -1;
     /*
     ACK.1  ACK.2(OPTIONAL)
     ACK.3
@@ -62,7 +59,9 @@ public class ProceedOrderController extends HttpServlet {
         createServiceInstance(request);
         connectInstanceWithOrder();
         setInstanceBlocked();
-        DAO.INSTANCE.createTaskForInstallation(orderId);
+        taskId = DAO.INSTANCE.createTaskForInstallation(orderId);
+        DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
+
     }
 
     private void scenarioDisconnect(HttpServletRequest request)
@@ -71,7 +70,8 @@ public class ProceedOrderController extends HttpServlet {
         createDisconectOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
-        DAO.INSTANCE.createTaskForInstallation(orderId);
+        taskId = DAO.INSTANCE.createTaskForInstallation(orderId);
+        DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
         //   DAO.INSTANCE.createTaskForProvisioning(orderId);
     }
 
@@ -113,8 +113,8 @@ public class ProceedOrderController extends HttpServlet {
         serviceLocation.setServiceLocationId(DAO.INSTANCE.createServiceLocation(serviceLocation));
         //serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
         serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, 1);
-        request.getSession().removeAttribute("serviceLocation");
-        request.getSession().removeAttribute("service");
+      //  request.getSession().removeAttribute("serviceLocation");
+      //  request.getSession().removeAttribute("service");
 
     }
 
