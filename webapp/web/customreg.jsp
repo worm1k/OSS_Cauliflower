@@ -30,7 +30,7 @@
             </li>
             <li>
               <a href=#>navbtn3</a>
-              /li>
+            </li>
           </ul>
         </div>
       </div>

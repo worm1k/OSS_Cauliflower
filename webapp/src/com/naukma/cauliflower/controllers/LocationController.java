@@ -20,14 +20,7 @@ public class LocationController extends HttpServlet {
         String locationAddress = (String) request.getAttribute("address");
         Integer locationLongitude = (Integer) request.getAttribute("longitude");
         Integer locationLatitude = (Integer) request.getAttribute("latitude");
-        ServiceLocation serviceLocation = (ServiceLocation) request.getSession().getAttribute("serviceLocation");
-        if (serviceLocation != null) {
-            serviceLocation.setLocationAddress(locationAddress);
-            serviceLocation.setLocationLongitude(locationLongitude);
-            serviceLocation.setLocationLatitude(locationLatitude);
-        } else {
-            serviceLocation = new ServiceLocation(-1, locationAddress, locationLongitude, locationLatitude);
-        }
+        ServiceLocation serviceLocation = new ServiceLocation(-1, locationAddress, locationLongitude, locationLatitude);
         request.getSession().setAttribute("serviceLocation", serviceLocation);
 
         request.getRequestDispatcher("smthing.jsp").forward(request, response);

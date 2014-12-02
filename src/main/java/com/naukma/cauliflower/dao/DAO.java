@@ -49,18 +49,156 @@ public enum DAO {
 
 
 
-
-
     //Halya
+    //if error - return < 0
+    //else return id of created user
     public int createUser(User us,String password){
-        //if error - return < 0
-        //else return id of created user
-        return 0;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int result = -1;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("INSERT INTO USERS (ID_USERROLE,E_MAIl,PASSWORD,F_NAME,L_Name,PHONE)" +
+                                                           "VALUES (?,?,?,?,?,?)");
+            preparedStatement.setInt(1,us.getUserRoleId());
+            preparedStatement.setString(2,us.getEmail());
+            preparedStatement.setString(3,password);
+            preparedStatement.setString(4,us.getFirstName());
+            preparedStatement.setString(5,us.getLastName());
+            preparedStatement.setString(6,us.getPhone());
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_USER) MAX_ID FROM USERS");
+            //int idU = 0;
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = resultSet.getInt("MAX_ID");
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.setAutoCommit(true);
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return result;
     }
 
+    //Halya
+    //true, if no user with this email
     public boolean checkForEmailUniq(String email){
-        //true, if no user whis this email```
-        return false;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE E_Mail = ?");
+            preparedStatement.setString(1,email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int checkResult = -1;
+            if (resultSet.next()){
+                checkResult = resultSet.getInt("RES");
+            }
+            if (checkResult == 0) {
+                result = true;
+            } else {
+                result = false;
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    //Halya
+    //true, if user with this id exist
+    public boolean checkForExistingUserById(int id){
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE Id_User = ?;");
+            preparedStatement.setInt(1,id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int checkResult = -1;
+            if (resultSet.next()){
+                checkResult = resultSet.getInt("RES");
+            }
+            if (checkResult == 1) {
+                result = true;
+            } else {
+                result = false;
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    //Halya
+    //if error, return <0 (-1)
+    //else, return id of blocked user
+    public int blockUserById(int idForBlock){
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int result = -1;
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ?;");
+            preparedStatement.setInt(1,idForBlock);
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("ID USER: "+idForBlock+" IS BLOCKED");
+            }
+            result = idForBlock;
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     //KaspYar
@@ -975,9 +1113,8 @@ public enum DAO {
         return 1;
 
     }
+
     //KaspYar
-
-
     /**
      * Creates task for provisioning engineer for selected service order
      * @param serviceOrderId
@@ -988,17 +1125,36 @@ public enum DAO {
 
     }
 
+    /*
     //KaspYar
     // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
     // ServiceInstance.
     public void createPortAndCableAndAssignToServiceInstance(int serviceInstanceId) {
-        return;
-    }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("CALL CreateCircuit(?)");
+            preparedStatement.setInt(1, serviceInstanceId);
+            preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+
+    }*/
 
 
     //KaspYar
-    public List<Task> getFreeTasksByRoleAndProcessingTasksByUserId(int userRoleId, int userId) {
+    public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) {
         return null;
     }
 
@@ -1007,11 +1163,12 @@ public enum DAO {
     public int getUserRoleIdFor_InstallationEngineer() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
+        int result = 4;
         try {
             preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG';");
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getInt("RES");
+                result = resultSet.getInt("RES");
             }
 
         }catch(SQLException e){
@@ -1026,7 +1183,35 @@ public enum DAO {
             }
 
         }
-        return 4;
+        return result;
+    }
+
+    //Galya_Sh
+    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
+    public int getUserRoleIdFor_ProvisioningEngineer() {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int result = 0;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG';");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result =  resultSet.getInt("RES");
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return result;
     }
 
     //Galya_Sh RI.1
@@ -1063,11 +1248,51 @@ public enum DAO {
         return resultSet;
     }
     //Galya_Sh RI.6
-    //По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
+    //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
     //сделать равным null. Сам кабель удалить из базы.
     //The system should allow deleting of Cables and Circuits.
-    public void removeCableFromServiceInstanceAndFreePort(int serviceInstanceId) {
+    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) {
 
+    }
+
+    //KaspYar
+    // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
+    // ServiceInstance, полученный из ServiceOrder
+
+    /**
+     * Creates a cable, assigns a free port to it and then assigns this cable to instance associated with service order
+     * @param serviceOrderId id of service order to take service instance from
+     */
+    public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) {
+
+    }
+
+    //KaspYar
+    /**
+     *
+     * @return True if a free port exists, otherwise false
+     */
+    public boolean freePortExists() {
+        return false;
+    }
+
+    //KaspYar
+    /**
+     * Returns scenario type for this service
+     * @param serviceOrderId id of service
+     * @return scenario of service
+     */
+    public Scenario getOrderScenario(int serviceOrderId) {
+        return Scenario.NEW;
+    }
+
+    /**
+     * Returns status of task
+     * @param taskId
+     * @return status of this task
+     */
+    public TaskStatus getTaskStatus(int taskId) {
+        return null;
     }
 }
 
