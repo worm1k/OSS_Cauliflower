@@ -197,7 +197,7 @@ activeMarker.setEvents({
 
 		var map = $(this).gmap3("get");
 
-		infobox = new InfoBox({
+		var infobox = new InfoBox({
 			content: $('#js-infobox')[0].outerHTML,
 			disableAutoPan: false,
 			pixelOffset: new google.maps.Size(-140, 4),
@@ -321,7 +321,7 @@ var gmapOptions = {
 			mapTypeControl: false,
 			streetViewControl: false,
 			panControl: true,
-			zoomControl: true,
+			zoomControl: true
 		}
 	}
 };
@@ -360,7 +360,7 @@ $(document).ready(function(){
 							var closest = findClosest(marker[0], markers);
 							mapDrawPolyline(gmap, [
 									[ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-									[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+									[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ]
 								], 'blue', true);
 						});
 					});
@@ -432,7 +432,7 @@ $(document).ready(function(){
 								closest = findClosest(marker[0], markers);
 								mapDrawPolyline(gmap, [
 										[ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-										[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+										[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ]
 									], 'blue', true);
 
 								mapSetServiceOptions(closest.marker);
@@ -447,7 +447,7 @@ $(document).ready(function(){
 								closest = findClosest(marker[0], markers);
 								mapDrawPolyline(gmap, [
 										[ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-										[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+										[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ]
 									], 'blue', true);
 								mapSetServiceOptions(closest.marker);
 							});
@@ -651,7 +651,7 @@ function mapDrawPolyline(gmap, path, style, doClear){
 		}
 	})
 }
-mapSetServiceOptions = function(marker){
+function mapSetServiceOptions(marker){
 	console.log(marker);
 	console.log(marker.data.toJsonObj());
 	console.log(marker.data.getArrService());
@@ -667,10 +667,10 @@ var gmap;
 var serviceLocation = {};
 var lastNearestProviderLocation;
 var markerIcons = {
-	red: new google.maps.MarkerImage("/img/icons/marker_red.png"),
-	green: new google.maps.MarkerImage("/img/icons/marker_green.png"),
-	blue: new google.maps.MarkerImage("/img/icons/marker_blue.png"),
-	grey: new google.maps.MarkerImage("/img/icons/marker_grey.png")
+	red: new google.maps.MarkerImage("img/icons/marker_red.png"),
+	green: new google.maps.MarkerImage("img/icons/marker_green.png"),
+	blue: new google.maps.MarkerImage("img/icons/marker_blue.png"),
+	grey: new google.maps.MarkerImage("img/icons/marker_grey.png")
 }
 
 //Active Marker Initialization
@@ -818,7 +818,7 @@ var gmapOptions = {
 			mapTypeControl: false,
 			streetViewControl: false,
 			panControl: true,
-			zoomControl: true,
+			zoomControl: true
 		}
 	}
 };
@@ -857,7 +857,7 @@ $(document).ready(function(){
 							var closest = findClosest(marker[0], markers);
 							mapDrawPolyline(gmap, [
 									[ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-									[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+									[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ]
 								], 'blue', true);
 
 							mapSetServiceOptions(closest.marker);
@@ -889,7 +889,7 @@ $(document).ready(function(){
 								closest = findClosest(marker[0], markers);
 								mapDrawPolyline(gmap, [
 										[ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-										[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+										[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ]
 									], 'blue', true);
 
 								mapSetServiceOptions(closest.marker);
@@ -904,7 +904,7 @@ $(document).ready(function(){
 								closest = findClosest(marker[0], markers);
 								mapDrawPolyline(gmap, [
 										[ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-										[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+										[ closest.marker.object.position.lat(), closest.marker.object.position.lng() ]
 									], 'blue', true);
 								mapSetServiceOptions(closest.marker);
 							});
