@@ -49,6 +49,33 @@ public enum DAO {
 
 
 /**---------------------------------------------------------------------HALYA---------------------------------------------------------------------**/
+    //Galya_Sh
+    //просто отримуємо айди юзер ролі яка є Installation Engineer
+    public int getUserRoleIdFor_InstallationEngineer() {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int result = 4;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG';");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = resultSet.getInt("RES");
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return result;
+    }
     //Halya
     //if error - return < 0
     //else return id of created user
@@ -1246,33 +1273,7 @@ public enum DAO {
         return null;
     }
 
-    //Galya_Sh
-    //просто отримуємо айди юзер ролі яка є Installation Engineer
-    public int getUserRoleIdFor_InstallationEngineer() {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int result = 4;
-        try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG';");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result = resultSet.getInt("RES");
-            }
 
-        }catch(SQLException e){
-            e.printStackTrace();
-        }finally{
-            try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-
-        }
-        return result;
-    }
     //KaspYar
     // Нужно найти свободный порт, сделать его занятым, создать кабель на базе этого порта. Этот кабель записать в
     // ServiceInstance, полученный из ServiceOrder
