@@ -1397,6 +1397,7 @@ public enum DAO {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
+        }
         return task;
 
     }
