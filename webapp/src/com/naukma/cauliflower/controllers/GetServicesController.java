@@ -38,7 +38,7 @@ public class GetServicesController extends HttpServlet {
 //        ToDO: Only for test purposes (Vladmyr)
         ObjectMapper mapper = new ObjectMapper();
 
-        Service service = new Service(1, "locationAddress", 1, 1, "serviceTypeName", "serviceSpeed", 1, 1);
+        Service service = new Service(1, "locationAddress", 1, 1, "serviceTypeName", "serviceSpeed", 1, 1, 0);
 
         List<Service> lstService = new ArrayList<Service>();
         lstService.add(service);
