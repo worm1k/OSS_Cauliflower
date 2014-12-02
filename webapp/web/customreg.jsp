@@ -49,6 +49,7 @@
         <input type=text class=form-control name="surname" placeholder=Surname required>
         <h4>Phone number</h4>
         <input type=text class=form-control name="phone" placeholder=Phone required>
+        <input type=hidden name="userRoleId" value="1" >
         <button class="btn-signin btn btn-lg btn-success btn-block" type=submit>Sign Up</button>
       </form>
     </div>

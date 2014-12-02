@@ -201,6 +201,13 @@ public enum DAO {
         return result;
     }
 
+    //Halya
+    public String getUserRoleNameByUserRoleId (int userRoleId){
+        //return name of userRole or null, if no userRole with this id
+        if(userRoleId==1)return "CUSTOMER";
+        return null;
+    }
+
     //KaspYar
     /**
      * Get user by its login and password
