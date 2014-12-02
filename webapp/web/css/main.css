@@ -71,3 +71,9 @@ body {
   -webkit-box-shadow: rgba(0,0,0,0.298) 0px 1px 4px -1px;
   box-shadow: rgba(0,0,0,0.298) 0px 1px 4px -1px;
 }
+.font-regular {
+    font-weight: normal;
+}
+.border-left {
+    border-left: 1px solid #ddd;
+}
