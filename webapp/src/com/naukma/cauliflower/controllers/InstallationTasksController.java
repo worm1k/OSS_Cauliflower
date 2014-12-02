@@ -17,7 +17,7 @@ import java.io.IOException;
  * Created by Алексей on 29.11.2014.
  */
 
-@WebServlet(name = "CreateRouterController")
+@WebServlet(name = "CreateRouterController", urlPatterns = { "/installationController" })
 public class InstallationTasksController extends HttpServlet {
 
     /*
@@ -43,7 +43,14 @@ public class InstallationTasksController extends HttpServlet {
                     DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
                 }
                 DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
+                int provisioningTaskId = DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
+                //JUST FOR END TO END PURPOSES
+
+                DAO.INSTANCE.changeTaskStatus(provisioningTaskId, TaskStatus.PROCESSING);
+                request.setAttribute("taskId", provisioningTaskId);
+                request.getRequestDispatcher("/provisioningController").forward(request, response);
+
+                //END TO END
 
                 request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
             }else

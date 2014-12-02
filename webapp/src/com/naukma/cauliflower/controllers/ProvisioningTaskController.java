@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * Created by Алексей on 29.11.2014.
  */
-@WebServlet(name = "PortManager")
+@WebServlet(name = "PortManager", urlPatterns = { "provisioningController" })
 public class ProvisioningTaskController extends HttpServlet {
 
     /*
@@ -43,8 +43,11 @@ public class ProvisioningTaskController extends HttpServlet {
                 DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                 DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
                 DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
-                request.getRequestDispatcher("smthing.jsp").forward(request, response);
 
+                //JUST FOR END TO END PURPOSES
+
+                //END TO END
+                request.getRequestDispatcher("smthing.jsp").forward(request, response);
             } else
                 request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
         } else
