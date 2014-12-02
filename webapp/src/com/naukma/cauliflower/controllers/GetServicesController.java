@@ -1,8 +1,8 @@
 package com.naukma.cauliflower.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.Service;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -38,7 +38,7 @@ public class GetServicesController extends HttpServlet {
 //        ToDO: Only for test purposes (Vladmyr)
         ObjectMapper mapper = new ObjectMapper();
 
-        Service service = new Service(1, "locationAddress", 1, 1, "serviceTypeName", "serviceSpeed", 1, 1);
+        Service service = new Service(1, "locationAddress", 1, 1, "serviceTypeName", "serviceSpeed", 1, 1, 1);
 
         List<Service> lstService = new ArrayList<Service>();
         lstService.add(service);
@@ -48,6 +48,6 @@ public class GetServicesController extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         //return data as json object
-        mapper.writeValue(out, lstService);
+        //mapper.writeValue(out, lstService);
     }
 }

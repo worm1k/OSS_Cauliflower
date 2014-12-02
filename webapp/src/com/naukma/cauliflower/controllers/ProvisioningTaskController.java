@@ -42,7 +42,7 @@ public class ProvisioningTaskController extends HttpServlet {
                     DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
                 }
                 DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
-                //TODO unblock order
+                DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
                 request.getRequestDispatcher("smthing.jsp").forward(request, response);
 
             } else
