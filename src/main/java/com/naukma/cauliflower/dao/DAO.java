@@ -58,13 +58,14 @@ public enum DAO {
         int result = -1;
         try {
             connection.setAutoCommit(false);
-            preparedStatement = connection.prepareStatement("INSERT INTO USERS (ID_USERROLE,E_MAIl,PASSWORD,F_NAME,L_Name)" +
-                                                           "VALUES (?,?,?,?,?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO USERS (ID_USERROLE,E_MAIl,PASSWORD,F_NAME,L_Name,PHONE)" +
+                                                           "VALUES (?,?,?,?,?,?)");
             preparedStatement.setInt(1,us.getUserRoleId());
             preparedStatement.setString(2,us.getEmail());
             preparedStatement.setString(3,password);
             preparedStatement.setString(4,us.getFirstName());
             preparedStatement.setString(5,us.getLastName());
+            preparedStatement.setString(6,us.getPhone());
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_USER) MAX_ID FROM USERS");
@@ -106,7 +107,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
-            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE E_Mail = ? ;");
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE E_Mail = ?");
             preparedStatement.setString(1,email);
             ResultSet resultSet = preparedStatement.executeQuery();
             int checkResult = -1;
