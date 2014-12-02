@@ -208,6 +208,13 @@ public enum DAO {
         return null;
     }
 
+    //Halya
+    public User changeUserPasswordById (int userId, String newPassword){
+        //return user, if password has been change successful ,
+        //else return null
+        return null;
+    }
+
 
     //KaspYar
     /**

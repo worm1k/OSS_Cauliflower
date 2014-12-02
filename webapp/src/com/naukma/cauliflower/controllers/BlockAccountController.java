@@ -21,10 +21,10 @@ public class BlockAccountController extends HttpServlet {
         String pathFrom  = request.getHeader("Referer");
         User us = (User)request.getSession().getAttribute("user");
         if(us.getUserRole().equals("ADMINISTRATOR")) {
-            int userIdGorBlock = Integer.parseInt(request.getParameter("userIdForBlock"));
-            if (userIdGorBlock > 0) {
+            int userIdForBlock = Integer.parseInt(request.getParameter("userIdForBlock"));
+            if (userIdForBlock > 0) {
                 //get blocked user
-                int blockedUser = DAO.INSTANCE.blockUserById(userIdGorBlock);
+                int blockedUser = DAO.INSTANCE.blockUserById(userIdForBlock);
                 if (blockedUser > 0 /*res!= null*/) {
                     /*String message = "Your account has been blocked!";
                     ServletContext context = getServletContext();
