@@ -1312,6 +1312,21 @@ public enum DAO {
     public TaskStatus getTaskStatus(int taskId) {
         return null;
     }
+
+
+
+    /**
+     * Returns task with given id PK
+     * @param taskId id of the task
+     * @return task object with selected id
+     * @see com.naukma.cauliflower.entities.Task
+     */
+    public Task getTaskById(int taskId){
+        return null;
+
+    }
+
+
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 

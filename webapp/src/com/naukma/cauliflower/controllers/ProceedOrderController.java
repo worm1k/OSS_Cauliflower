@@ -48,13 +48,11 @@ public class ProceedOrderController extends HttpServlet {
             scenarioNew(request);
         else
             scenarioDisconnect(request);
-    //    request.setAttribute("name", "value");
         ServletContext context = this.getServletContext();
-        RequestDispatcher dispatcher = context.getRequestDispatcher("/");
-
-      //for end2end
-      //  Task tasl = DAO.INSTANCE.getTaskById(taskId)
-       // request.setAttribute("task",);
+        RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
+         //for end2end
+        Task task = DAO.INSTANCE.getTaskById(taskId);
+        request.setAttribute("task",task);
         dispatcher.forward(request, response);
 
      //  request.getRequestDispatcher("dashboard.jsp").forward(request, response);
