@@ -1,0 +1,353 @@
+@import "http://webfonts.ru/import/kurier.css";
+
+
+body{
+	margin: 0;
+	padding: 0;
+	background-image: url("../pics/bckgr.jpg");
+	background-repeat: repeat;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.main_wrapper{
+	width: 1200px;
+	min-height: 800px;
+	margin: auto;
+	background-color: white;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	border-radius: 7px;
+	padding-top: 100px;
+}
+
+.main_cont{
+	width: 600px;
+	min-height: 700px;
+	margin: auto;
+	margin-top: 40px;
+}
+
+a{
+	color: black;
+}
+
+a:hover{
+	color: black;
+	text-decoration: none;
+}
+
+/*------------------------------------------------main------------------------------------------------- */
+
+.logo_pic{
+	width: 350px;
+	height: 287px;
+	background-image: url("../pics/cauliflower.png");
+	margin-top: 50px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.logo_name{
+	width: 350px;
+	height: 75;
+	font-family: 'Lobster', cursive;
+	font-size: 60px;
+	text-align: center;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 0px;
+}
+
+.main_buttons{
+	width: 350px;
+	height: 70px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 100px;
+}
+
+.but {
+	margin-bottom: 7px;
+}
+
+#login_modal{
+
+	 margin: 0px;
+	 position: absolute;
+	 display: none;
+	 background-color: rgba(0, 0, 0, 0.8);
+	 min-width: 1366px;
+	 min-height: 900px;
+	 z-index: 200;
+	 padding-top: 0;
+	 top:0;
+  	 bottom: 0;
+  	 left: 0;
+  	 right: 0;
+}
+
+.login_space{
+	width: 500px;
+	margin: auto;
+	background-color: white;
+	margin-top: 100px;
+	border-radius: 6px;
+
+}
+
+.login_form{
+	width: 400px;
+	margin: auto;
+	padding-top: 30px;
+	 padding-bottom: 30px;
+}
+ 
+
+#reg_modal{
+
+	 margin: 0px;
+	 position: absolute;
+	 display: none;
+	 background-color: rgba(0, 0, 0, 0.8);
+	 min-width: 1366px;
+	 min-height: 900px;
+	 z-index: 200;
+	 padding-top: 0;
+	 top:0;
+     bottom: 0;
+     left: 0;
+     right: 0;
+}
+
+.legend{
+	text-align: center;
+}
+
+.cross{
+	width: 38px;
+	height: 38px;
+	float: right;
+	cursor: pointer;
+}
+
+.reg_space{
+	width: 500px;
+	margin: auto;
+	background-color: white;
+	margin-top: 100px;
+	border-radius: 6px;
+	padding: 40px;
+
+}
+
+.register_button{
+	width: 100px;
+	height: 20px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 20px;
+}
+
+
+/*------------------------------------------------create_order------------------------------------------------- */
+
+.header{
+	width: 100%;
+	height: 53px;
+	border-top-radius: 7px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+	padding-top: 5px;
+	margin-top: -100px;
+}
+
+.header_logo{
+	float: left;
+	height: 45px;
+	width: 200px;
+	margin-left: 10px;
+}
+
+.header_logo_pic{
+	float:left;
+	width: 55px;
+	height: 100%;
+}
+
+.header_logo_name{
+	float: right;
+	font-family: 'Lobster', cursive;
+	font-size: 30px;
+}
+
+.header_logo_name a{
+	color: black;
+}
+
+.header_logo_name a:hover{
+	color: black;
+	text-decoration: none;
+}
+
+.clear{
+	clear: both;
+}
+
+img{
+	height: 100%;
+}
+
+.header_login{
+	float: right;
+	height: auto;
+	width: 150px;
+	margin-right: 10px;
+	text-align: center;
+	font-size: 25px;
+	font-weight: 400;
+	font-style: normal;	color: black;
+}
+
+.header_login a{
+	color: black;
+}
+
+.header_login a:hover{
+	color: black;
+}
+
+.wrapper{
+	padding-top: 50px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.order_info_wrapper{
+	width: 550px;
+	height: 450px;
+	float: left;
+	padding-top: 70px;
+}
+
+
+.order_info{
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	width: 310px;
+	height: 240px;
+	margin: auto;
+	text-align: center;
+}
+
+.order_info_title{
+	padding-top: 15px;
+	width: 100%;
+	height: 60px;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 25px;
+	font-weight: 400;
+	font-style: normal;	color: black;
+	text-align: center;
+	border-radius: 8px;
+}
+
+.order_choise{
+	width: 200px;
+	height: 150px;
+	display: inline-block;
+	padding-left:
+}
+
+.done_button{
+	margin-top: 20px;
+}
+
+.map{
+	background-color: #DDB4EE;
+	width: 550px;
+	height: 450px;
+	float: right;
+
+}
+
+/*------------------------------------------------personel cabinet------------------------------------------------- */
+
+.your_info_wrapper{
+	width: 550px;
+	height: 450px;
+	float: left;
+	
+}
+
+.your_orders{
+	float: left;
+	background-color: white;
+	width: 250px;
+	height: 580px;
+	overflow: auto;
+	border-radius: 6px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.order_title{
+	width: auto;
+	height: 40px; 
+	margin-top: 10px;
+	font-size: 25px;
+	text-align: center;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.order_item{
+	width: 200;
+	height: 100px;
+	border: 1px solid black;
+	margin: auto;
+	margin-top: 20px;
+	
+
+}
+
+.your_services{
+	float: right;
+	background-color: white;
+	width: 250;
+	height: 580px;
+	overflow: auto;
+	border-radius: 6px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.pc_new_order_button{
+	width: auto;
+	height: 34px;
+	text-align: center;
+	margin-top: 36px;
+
+}
+
+/*----------------------------------------------new engineer-----------------------------------------*/
+
+.new_eng_cont{
+	width: 600px;
+	height: 600px;
+	margin: auto;
+	background-color: rgba(0, 0, 0, 0.07);
+	padding-top: 30px;
+	border-radius: 7px;
+	margin-top: 50px;
+}
+
+.eng_legend{
+	text-align: center;
+	font-size: 30px;
+}
+
+.eng_form_item{
+	padding-bottom: 30px;
+}
+
+.create_eng_button{
+	width: 600px;
+	height: 50px;
+	text-align: center;
+}

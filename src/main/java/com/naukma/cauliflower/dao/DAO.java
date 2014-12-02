@@ -205,6 +205,9 @@ public enum DAO {
     public String getUserRoleNameByUserRoleId (int userRoleId){
         //return name of userRole or null, if no userRole with this id
         if(userRoleId==1)return "CUSTOMER";
+        if(userRoleId==2)return "Customer Support Engineer";
+        if(userRoleId==3)return "Provisioning Engineer";
+        if(userRoleId==4)return "Installation Engineer";
         return null;
     }
 
