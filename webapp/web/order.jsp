@@ -9,32 +9,13 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="MapOrder">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="width=device-width, initial-scale=1">
-
     <title>CauliFlower | Operation Support System</title>
 
-    <link rel="icon" href="">
-    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/main.css">
+    <jsp:include page="head.jsp" />
 </head>
 <!-- <body ng-controller="OrderController"> -->
 <body ng-controller="MapOrderController">
-    <header class="navbar navbar-fixed-top">
-        <div class="container">
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a class="txt-uppercase" href="#">navbtn1</a></li>
-                    <li><a class="txt-uppercase" href="#">navbtn2</a></li>
-                    <li><a class="txt-uppercase" href="#">navbtn3</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a class="nav-user"><span class="nav-user-icon glyphicon glyphicon-user glyphicon-small"></span>khytsky.vladimir@gmail.com</a></li>
-                </ul>
-            </div>
-        </div>
-    </header>
+    <jsp:include page="header.jsp" />
 
     <div class="container">
         <h1 class="txt-center txt-bold">CauliFlower OSS</h1>
@@ -125,23 +106,6 @@
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <ul class="list-inline">
-                <li><a href="#">navlink1</a></li>
-                <li><a href="#">navlink2</a></li>
-                <li><a href="#">navlink3</a></li>
-            </ul>
-        </div>
-    </footer>
-
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCP497dnVu2vETnDTcY9ouPNOyCMhccFcs&libraries=places"></script>
-    <script type="text/javascript" src="./vendor/angularjs/angular.min.js"></script>
-    <script type="text/javascript" src="./vendor/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="./vendor/gmap3/dist/gmap3.min.js"></script>
-    <script type="text/javascript" src="./vendor/google-infobox/google-infobox.js"></script>
-    <script type="text/javascript" src="./vendor/geocomplete/jquery.geocomplete.min.js"></script>
-    <!-- custom scripts -->
-    <script type="text/javascript" src="./js/index.js"></script>
+    <jsp:include page="footer.jsp" />
 </body>
 </html>
