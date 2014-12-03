@@ -2,9 +2,9 @@ package com.naukma.cauliflower.dao;
 
 
 import com.naukma.cauliflower.entities.*;
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import sun.dc.pr.PRError;
+
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -36,13 +36,6 @@ public enum DAO {
         } catch (NamingException e) {
             e.printStackTrace();
         }
-        Properties props = new Properties();
-        try {
-            props.load(new FileInputStream("com/naukma/cauliflower/properties/log4j.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        PropertyConfigurator.configure(props);
 
     }
 
