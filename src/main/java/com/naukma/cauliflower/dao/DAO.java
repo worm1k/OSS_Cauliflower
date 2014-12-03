@@ -923,9 +923,11 @@ public enum DAO {
             if(resultSet.next()){
                 idRouter = resultSet.getInt("M");
             }
-            //!!!!!!!!!!!!VERY       BADDD!!!!!!!!!!!!!!
-            preparedStatement = connection.prepareStatement("INSERT INTO PORT(ID_ROUTER) VALUES(?)");
-            preparedStatement.setInt(1, idRouter);
+            StringBuilder sb = new StringBuilder("INSERT ALL ");
+            for(int i=1;i<=amountsOfPorts;i++) sb.append("INTO PORT(ID_ROUTER) VALUES("+idRouter+") ");
+            sb.append("SELECT * FROM DUAL");
+
+            preparedStatement = connection.prepareStatement(sb.toString());
             for (int i=0;i<amountsOfPorts;i++){
                 preparedStatement.executeUpdate();
             }
