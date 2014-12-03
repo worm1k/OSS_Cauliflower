@@ -130,5 +130,4 @@
         <servlet-name>UserInstances</servlet-name>
         <url-pattern>/userInstances</url-pattern>
     </servlet-mapping>
-    
 </web-app>

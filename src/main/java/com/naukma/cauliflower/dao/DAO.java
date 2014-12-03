@@ -4,7 +4,6 @@ package com.naukma.cauliflower.dao;
 import com.naukma.cauliflower.entities.*;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import sun.dc.pr.PRError;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -284,35 +283,44 @@ public enum DAO {
     //Galya_Sh RI.1
     //The system should document Devices.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getDevicesForReport() {
-        return null;
+    public ResultSet getDevicesForReport()  throws SQLException
+    {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        preparedStatement = connection.prepareStatement("SELECT * FROM ROUTER");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
     }
 
     //Galya_Sh RI.2
     //The system should document the Ports.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getPortsForReport() {
-        return null;
+    public ResultSet getPortsForReport()  throws SQLException
+    {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        preparedStatement = connection.prepareStatement("SELECT * FROM PORT");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
     }
 
     //Galya_Sh RI.4
     //The system should document physical link to end user as Cable.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getCablesForReport() {
-        return null;
+    public ResultSet getCablesForReport()  throws SQLException
+    {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        preparedStatement = connection.prepareStatement("SELECT * FROM CABLE");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
     }
 
     //Galya_Sh RI.5
     //The system should document logical entity of provided Service as Circuit.
     // повертаємо просто всю інформацію для репорту
     public ResultSet getCircuitsForReport() throws SQLException {
-
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT * FROM USERROLE");
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        return resultSet;
+        return null;
     }
     //Galya_Sh RI.6
     //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
