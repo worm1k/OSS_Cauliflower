@@ -22,6 +22,7 @@ angular.module('MapOrder', [])
         $scope.serviceLocationAddress;
         $scope.providerLocationAddress;
         $scope.arrService = [];
+        $scope.serviceId = 0;
         $scope.isOpenedInfobox = false;
         $scope.gmap = $("#js-map").gmap3();
 
@@ -212,6 +213,19 @@ angular.module('MapOrder', [])
                 google.maps.event.addListener(infobox, 'closeclick', function(event){
                     $scope.isOpenedInfobox = false;
                 });
+
+                google.maps.event.addListener(infobox, 'domready', function() {
+                    $('#js-proceed-to-order').click(function(){
+                        var serviceId = $('input[name="serviceId"]:checked').val();
+
+                        $('#js-order-form input[name="serviceLocationAddress"]').val($scope.serviceLocationAddress);
+                        $('#js-order-form input[name="serviceLocationLongtitude"]').val(marker.position.lng());
+                        $('#js-order-form input[name="serviceLocationLatitude"]').val(marker.position.lat());
+                        $('#js-order-form input[name="serviceId"]').val(serviceId);
+
+                        $("#js-order-form").submit();
+                    })
+                });
             }
         }
 
@@ -296,10 +310,9 @@ angular.module('MapOrder', [])
         }
 
         function ajaxGetServices(callback){
-            console.log('getServices');
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:10000/webapp_war_exploded/services',
+                url: 'services',
                 dataType: 'json',
                 success: function(jqXHR){
                     console.log(jqXHR);
@@ -326,7 +339,7 @@ angular.module('MapOrder', [])
             grey: new google.maps.MarkerImage("img/icons/marker_grey.png")
         }
 
-//Active Marker Initialization
+        //Active Marker Initialization
         var activeMarker = new MapMarker();
         activeMarker.setValues({
             latLng: [0,0],
@@ -514,7 +527,7 @@ angular.module('MapOrder', [])
                                             closest = findClosest(marker[0], markers);
                                             mapDrawPolyline($scope.gmap, [
                                                 [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-                                                [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+                                                [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ]
                                             ], 'blue', true);
 
                                             mapSetServiceOptions(closest.marker);

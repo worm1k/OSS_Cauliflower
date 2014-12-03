@@ -1359,6 +1359,51 @@ public enum DAO {
         return result;
     }
 
+    //vladmyr
+
+    /**
+     * return Service by Id
+     * @return
+     */
+    public Service getServiceById(int serviceId){
+        Service service = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID WHERE S.ID = ?");
+            preparedStatement.setInt(1, serviceId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                service = new Service(
+                        resultSet.getInt("ID_SERVICE_TYPE"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getString("NAME"),
+                        resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"),
+                        resultSet.getInt("ID"),
+                        resultSet.getDouble("PRICE")
+                );
+            }
+
+            //Task(int taskId, int userRoleId, int serviceOrderId,
+            // int taskStatusId, String taskStatus, TaskName taskName)
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+        return service;
+
+    }
+
     //KaspYar
 
     /**
@@ -1408,8 +1453,6 @@ public enum DAO {
         result.trimToSize();
         return result;
     }
-
-
 
     //KaspYar
     /**
