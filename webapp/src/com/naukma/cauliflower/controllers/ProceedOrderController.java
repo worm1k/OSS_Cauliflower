@@ -40,6 +40,7 @@ public class ProceedOrderController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+        System.out.println("IN PROCEED ORDER");
         user = (User) request.getSession().getAttribute("user");
         String scenario = request.getParameter("scenario");
         scenario = "NEW";

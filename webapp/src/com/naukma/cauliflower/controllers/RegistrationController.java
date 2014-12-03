@@ -69,9 +69,6 @@ public class RegistrationController extends HttpServlet {
                 request.getSession().setAttribute("user",user);
                 String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
                 EmailSender.sendEmail(user, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
-                //redirect to dashboard
-
-                //check for previos page, redirct to max`s servlet or to user dashboard
                 Service service = (Service)request.getSession().getAttribute("service");
                 ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
                 /*response.getWriter().println("new user: ");

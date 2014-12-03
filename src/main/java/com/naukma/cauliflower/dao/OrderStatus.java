@@ -6,6 +6,7 @@ package com.naukma.cauliflower.dao;
 public enum OrderStatus {
         ENTERING,
         PROCESSING,
-        COMPLETED
+        COMPLETED,
+        CANCELLED
 
 }

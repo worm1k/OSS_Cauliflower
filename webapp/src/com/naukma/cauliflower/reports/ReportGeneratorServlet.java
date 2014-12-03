@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -23,46 +21,36 @@ public class ReportGeneratorServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
-
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=report.xls");
-        String methodName = (String) request.getAttribute("reportMethod");
+        String methodName = (String) request.getParameter("reportMethod");
 
-        Method method = null;
         ResultSet resultSet = null;
-        if(methodName!=null && methodName!= "")
-            try {
-                method = DAO.INSTANCE.getClass().getMethod(methodName);
-                resultSet = (ResultSet) method.invoke(DAO.INSTANCE);
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
 
         XLSReportGenerator reportGenerator = null;
         try {
+        if(methodName.equals("Devises"))
+            resultSet = DAO.INSTANCE.getDevicesForReport();
+        else if(methodName.equals("Circuits"))
+            resultSet = DAO.INSTANCE.getCircuitsForReport();
+        else if(methodName.equals("Cables"))
+            resultSet = DAO.INSTANCE.getCablesForReport();
+        else if(methodName.equals("Ports"))
+            resultSet = DAO.INSTANCE.getPortsForReport();
+        if(resultSet == null)
+            resultSet = DAO.INSTANCE.reportTester();
 
-            if(resultSet == null ) resultSet = DAO.INSTANCE.reportTester();
             reportGenerator = new XLSReportGenerator("aaa", resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-         ServletOutputStream outputStream = response.getOutputStream();
+        ServletOutputStream outputStream = response.getOutputStream();
         reportGenerator.createXlsFile().write(outputStream);
         outputStream.flush();
         outputStream.close();
+    }
 
-
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
     }
 }

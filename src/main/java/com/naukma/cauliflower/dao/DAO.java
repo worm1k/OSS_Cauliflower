@@ -449,13 +449,28 @@ public enum DAO {
     //Galya_Sh RI.5
     //The system should document logical entity of provided Service as Circuit.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getCircuitsForReport() throws SQLException {
-
+    public ResultSet getCircuitsForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT * FROM USERROLE");
-        ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT r.ID ROUTER, p.Id PORT, c.ID CABLE, si.ID SERVICE_INSTANCE " +
+                    "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) INNER JOIN CABLE c ON p.Id = C.Id_Port) " +
+                    "INNER JOIN SERVICEINSTANCE si ON C.Id = Si.Id_Cable ");
+            resultSet = preparedStatement.executeQuery();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
 
+        }
         return resultSet;
     }
     //Galya_Sh RI.6

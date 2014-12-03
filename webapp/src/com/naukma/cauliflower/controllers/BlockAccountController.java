@@ -4,7 +4,6 @@ import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.mail.EmailSender;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
