@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebServlet(name = "ProvisioningTaskController")
 public class ProvisioningTaskController extends HttpServlet {
 
     /*
@@ -23,7 +24,8 @@ public class ProvisioningTaskController extends HttpServlet {
      */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute("user");
+        User user = DAO.INSTANCE.getUserByLoginAndPassword("kemi.kondratenko@gmail.com", "kemi");//JUST FOR END TO END
+        //User user = (User) request.getSession().getAttribute("user");
         Integer taskId = (Integer) request.getAttribute("taskId");
 
         if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {
@@ -41,9 +43,9 @@ public class ProvisioningTaskController extends HttpServlet {
                 DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
 
                 //JUST FOR END TO END PURPOSES
-
+                request.getRequestDispatcher("login.jsp").forward(request, response);
                 //END TO END
-                request.getRequestDispatcher("smthing.jsp").forward(request, response);
+                //request.getRequestDispatcher("smthing.jsp").forward(request, response);
             } else
                 request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
         } else
@@ -55,7 +57,7 @@ public class ProvisioningTaskController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-
+        doPost(request, response);
 
     }
 }
