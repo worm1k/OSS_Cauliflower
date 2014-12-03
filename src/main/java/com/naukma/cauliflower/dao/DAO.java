@@ -534,16 +534,16 @@ public enum DAO {
                 System.out.println("idOrderStatus: "+ idOrderStatus);
             }
             if (idServiceInstance == null){
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
-                        "VALUES(?,? )");
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                        "VALUES(?,?,?,? )");
                 preparedStatement.setInt(1, idOrderScenario);
                 preparedStatement.setInt(2, idOrderStatus);
                 {//help
                     System.out.println("NULL");
                 }
             }else{
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
-                        "VALUES(?, ?,? )");
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                        "VALUES(?, ?,? ,?,?)");
                 preparedStatement.setInt(1, idServiceInstance.intValue());
                 preparedStatement.setInt(2, idOrderScenario);
                 preparedStatement.setInt(3, idOrderStatus);
