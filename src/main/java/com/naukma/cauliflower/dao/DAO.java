@@ -967,9 +967,7 @@ public enum DAO {
             sb.append("SELECT * FROM DUAL");
 
             preparedStatement = connection.prepareStatement(sb.toString());
-            for (int i=0;i<amountsOfPorts;i++){
-                preparedStatement.executeUpdate();
-            }
+            preparedStatement.executeUpdate();
             connection.commit();
             {//help
                 System.out.println("SUCCESS!!! CREATE ROUTER");
@@ -1685,6 +1683,12 @@ public enum DAO {
                     "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
                     "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
                     "?, ?);");
+            {//help
+                System.out.println("TaskStatus: "+TaskStatus.FREE.toString());
+                System.out.println("userRole: "+UserRoles.PROVISIONING_ENG.toString());
+                System.out.println("idServiceOrder "+serviceOrderId);
+                System.out.println("taskName: "+TaskName.CREATE_CIRCUIT.toString());
+            }
             preparedStatement.setString(1, TaskStatus.FREE.toString());
             preparedStatement.setString(2, UserRoles.PROVISIONING_ENG.toString());
             preparedStatement.setInt(3, serviceOrderId);
