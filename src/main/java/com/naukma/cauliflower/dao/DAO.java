@@ -1776,7 +1776,7 @@ public enum DAO {
 
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
                     "SET ID_CABLE = ? " +
-                    "WHERE ID = (SELECT ID_SERVICEINSTANCE FROM SERVICEORDER WHERE ID_SERVICEORDER = ?)");
+                    "WHERE ID = (SELECT ID_SRVICEINSTANCE FROM SERVICEORDER WHERE ID_SERVICEORDER = ?)");
             preparedStatement.setInt(1, cableId);
             preparedStatement.setInt(2,serviceOrderId);
             preparedStatement.executeUpdate();
