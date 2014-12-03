@@ -43,8 +43,9 @@ public class ProvisioningTaskController extends HttpServlet {
                 DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
 
                 //JUST FOR END TO END PURPOSES
-                request.getRequestDispatcher("login.jsp").forward(request, response);
+                response.sendRedirect("login.jsp");
                 //END TO END
+
                 //request.getRequestDispatcher("smthing.jsp").forward(request, response);
             } else
                 request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
