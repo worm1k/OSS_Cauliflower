@@ -24,7 +24,7 @@ public class BlockAccountController extends HttpServlet {
             int userIdForBlock = Integer.parseInt(request.getParameter("userIdForBlock"));
             if (userIdForBlock > 0) {
                 //get blocked user
-                int blockedUser = DAO.INSTANCE.blockUserById(userIdForBlock);
+                int blockedUser = DAO.INSTANCE.blockUserById(userIdForBlock).getUserId();
                 if (blockedUser > 0 /*res!= null*/) {
                   //TODO
                    /*
