@@ -27,10 +27,16 @@ public class ChangeCustomerPassword extends HttpServlet {
                 if(newPassword.length()>6) {
                     User userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, newPassword);
                     if(userForNewPass!=null){
-                        String message = "Your password has been changed!\nYour new password: "+newPassword;
-                        ServletContext context = getServletContext();
-                        String fullPath = context.getRealPath("/WEB-INF/mail/");
-                        EmailSender.sendEmail(userForNewPass, "CauliFlower", message, EmailSender.getTemplate("/html-mail-template.ftl", fullPath));
+
+                        //create body
+                        StringBuffer message= new StringBuffer();
+                        message.append("<p>Your password has been changed!</p> <p style=\"text-transform:none;\">Your new password: <b>");
+                        message.append(newPassword);
+                        message.append("</b></p>");
+
+
+                        String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
+                        EmailSender.sendEmail(userForNewPass, EmailSender.CHANGE_PASSWORD, message.toString(), EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
                         //OK
                         //redirect to customer support engineer dashboard
                     }else{

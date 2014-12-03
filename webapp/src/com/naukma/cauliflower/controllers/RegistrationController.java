@@ -65,10 +65,9 @@ public class RegistrationController extends HttpServlet {
             if(resId>0){
                 user = new User(resId,userRoleId,userRole,email,firstName,lastName,phone);
                 request.getSession().setAttribute("user",user);
-                String message = "Thank you for registration in CauliFlower\nYour password: "+password;
-                ServletContext context = getServletContext();
-                String fullPath = context.getRealPath("/WEB-INF/mail/");
-                EmailSender.sendEmail(user, "Registration in CauliFlower", message, EmailSender.getTemplate("/html-mail-template.ftl", fullPath));
+
+                String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
+                EmailSender.sendEmail(user, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
                 //redirect to dashboard
                 response.getWriter().println("new user: ");
                 response.getWriter().println(user);

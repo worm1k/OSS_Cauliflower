@@ -24,7 +24,8 @@
                 </tr>
                 <tr>
                     <td bgcolor="#e61c55" style="padding: 20px 0 30px 0; font-family: Tahoma,Arial, sans-serif; font-size: 20px; line-height: 25px;text-transform:uppercase; border: 1px solid; ">
-                        <p>${body}</p>
+                        <p>Thank you for registration in CauliFlower !</p>
+                        <p style="text-transform:none;"> Your password is : <b>${body}</b></p>
 
                     </td>
                 </tr>
