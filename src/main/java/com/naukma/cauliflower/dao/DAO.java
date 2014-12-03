@@ -704,9 +704,9 @@ public enum DAO {
             preparedStatement.setInt(1, providerLocationId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getDouble("L.LONGITUDE"),
-                        resultSet.getDouble("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
-                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
+                result.add(new Service(resultSet.getInt("ID_SERVICE_TYPE"), resultSet.getString("ADRESS"), resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"), resultSet.getString("NAME"), resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"), resultSet.getInt("ID"), resultSet.getDouble("PRICE")));
                         //resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
             }
         } catch (SQLException e) {
@@ -803,8 +803,8 @@ public enum DAO {
                 GregorianCalendar gregorianCalendar = new GregorianCalendar();
                 Date date = resultSet.getDate("OUR_DATE");
                 gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-                result = new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                                            resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                result = new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"), resultSet.getInt("ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
+                                            resultSet.getInt("ID_SERVICEINSTANCE"), resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
                                             gregorianCalendar, resultSet.getInt("ID_USER"));
             }
         } catch (SQLException e) {
@@ -885,8 +885,8 @@ public enum DAO {
                 GregorianCalendar gregorianCalendar = new GregorianCalendar();
                 Date date = resultSet.getDate("OUR_DATE");
                 gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-                result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                        resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"), resultSet.getInt("ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
+                        resultSet.getInt("ID_SERVICEINSTANCE"), resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
                         gregorianCalendar, resultSet.getInt("ID_USER")));
             }
 
@@ -926,11 +926,11 @@ public enum DAO {
                                        int serviceId, int instanceStatusId,
                                        String instanceStatus, int cableId, boolean isBlocked)
                 * */
-                result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
-                                resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
-                        resultSet.getDouble("L.LONGITUDE"), resultSet.getDouble("L.LATITUDE"),
-                                resultSet.getInt("SI.ID_SERVICE"), resultSet.getInt("SI.SERVICE_INSTANCE_STATUS"),
-                                resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.HAS_ACTIVE_TASK")== 1)));
+                result.add(new ServiceInstance(resultSet.getInt("ID"), resultSet.getInt("ID_USER"),
+                                resultSet.getInt("ID_SERVICE_LOCATION"), resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"), resultSet.getDouble("LATITUDE"),
+                                resultSet.getInt("ID_SERVICE"), resultSet.getInt("SERVICE_INSTANCE_STATUS"),
+                                resultSet.getString("NAME"), resultSet.getInt("ID_CABLE"), (resultSet.getInt("HAS_ACTIVE_TASK")== 1)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -972,9 +972,9 @@ public enum DAO {
                 GregorianCalendar gregorianCalendar = new GregorianCalendar();
                 Date date = resultSet.getDate("OUR_DATE");
                 gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-                result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"),
-                                            resultSet.getString("OS_NAME"), resultSet.getInt("SO.ID_SERVICEINSTANCE"),
-                                            resultSet.getInt("OSC.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"), resultSet.getInt("ID_ORDERSTATUS"),
+                                            resultSet.getString("OS_NAME"), resultSet.getInt("ID_SERVICEINSTANCE"),
+                                            resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
                                             gregorianCalendar, resultSet.getInt("ID_USER")));
 
             }
@@ -1011,11 +1011,11 @@ public enum DAO {
                                        int serviceId, int instanceStatusId,
                                        String instanceStatus, int cableId, boolean isBlocked)
                 * */
-                result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
-                        resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
-                        resultSet.getDouble("L.LONGITUDE"), resultSet.getDouble("L.LATITUDE"),
-                        resultSet.getInt("SI.ID_SERVICE"), resultSet.getInt("SI.SERVICE_INSTANCE_STATUS"),
-                        resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.HAS_ACTIVE_TASK")== 1)));
+                result.add(new ServiceInstance(resultSet.getInt("ID"), resultSet.getInt("ID_USER"),
+                        resultSet.getInt("ID_SERVICE_LOCATION"), resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"), resultSet.getDouble("LATITUDE"),
+                        resultSet.getInt("ID_SERVICE"), resultSet.getInt("SERVICE_INSTANCE_STATUS"),
+                        resultSet.getString("NAME"), resultSet.getInt("ID_CABLE"), (resultSet.getInt("HAS_ACTIVE_TASK")== 1)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
