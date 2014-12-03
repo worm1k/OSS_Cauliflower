@@ -52,6 +52,7 @@ public class ProceedOrderController extends HttpServlet {
         RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
          //for end2end
         Task task = DAO.INSTANCE.getTaskById(taskId);
+        System.out.println("REDIRECTED!!!!!!!!!!!!!!!!");
         request.setAttribute("task",task);
         dispatcher.forward(request, response);
 
