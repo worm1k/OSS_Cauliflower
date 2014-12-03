@@ -66,7 +66,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         int result = 4;
         try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG';");
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG'");
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("RES");
@@ -179,7 +179,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
-            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE Id_User = ?;");
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE Id_User = ?");
             preparedStatement.setInt(1,id);
             ResultSet resultSet = preparedStatement.executeQuery();
             int checkResult = -1;
@@ -209,33 +209,65 @@ public enum DAO {
 
     //Halya
     //if error, return null
-    public int blockUserById(int idForBlock){
+    //TODO add isBlocked
+    public User blockUserById(int idForBlock){
         //return blocked user, not id of user
         Connection connection = getConnection();
+        User resultUser = null;
         PreparedStatement preparedStatement = null;
         int result = -1;
         try {
-            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ?;");
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ?");
             preparedStatement.setInt(1,idForBlock);
             preparedStatement.executeUpdate();
             {//help
                 System.out.println("ID USER: "+idForBlock+" IS BLOCKED");
             }
-            result = idForBlock;
 
-        }catch(SQLException e){
+            preparedStatement = connection.prepareStatement("SELECT *  FROM USERS US"+
+                                                            "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE"+
+                                                            "WHERE ID_USER = ?");
+            preparedStatement.setInt(1,idForBlock);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int idUserRole = resultSet.getInt("ID_USERROLE");
+                String eMail = resultSet.getString("E_MAIL");
+                String fName = resultSet.getString("F_Name");
+                String lName = resultSet.getString("L_Name");
+                String phone = resultSet.getString("PHONE");
+                String nameUR = resultSet.getString("NAME");
+
+                resultUser = new User(idForBlock,idUserRole,nameUR,eMail,fName,lName,phone);
+            }
+            resultSet.close();
+            connection.commit();
+           // result = idForBlock;
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                }
+            }
             e.printStackTrace();
-        }finally{
+        }finally {
             try {
+                connection.setAutoCommit(true);
                 if (!preparedStatement.isClosed()) preparedStatement.close();
                 if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
+
         }
 
-        return result;
+        return resultUser;
     }
 
     //Halya
@@ -261,7 +293,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         int result = 0;
         try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG';");
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG'");
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result =  resultSet.getInt("RES");
