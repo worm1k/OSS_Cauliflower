@@ -21,7 +21,6 @@ public class InstallationTasksController extends HttpServlet {
     SOW.5
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("INSTALLATION TASK CONTROLLER");
         User user = (User) request.getSession().getAttribute("user");
         Task task = (Task) request.getAttribute("task");
         int taskId = task.getTaskId();
@@ -59,7 +58,7 @@ public class InstallationTasksController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+
 
 
     }

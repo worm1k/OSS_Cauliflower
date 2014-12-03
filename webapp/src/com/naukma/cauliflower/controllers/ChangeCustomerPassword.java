@@ -20,7 +20,7 @@ public class ChangeCustomerPassword extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathFrom  = request.getHeader("Referer");
         User us = (User)request.getSession().getAttribute("user");
-        if(us.getUserRole().trim().toLowerCase().equals("customersupportengineer")) {
+        if(us!= null && us.getUserRole().trim().toLowerCase().equals("customersupportengineer")) {
             int userIdForNewPass = Integer.parseInt(request.getParameter("userIdForNewPass"));
             String newPassword = request.getParameter("newPassword");
             if (userIdForNewPass > 0) {
