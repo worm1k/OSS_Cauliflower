@@ -1009,7 +1009,7 @@ public enum DAO {
         System.out.println("SET INSTANCE FOR ORDER");
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
-                                                            "SET ID_SERVICEINSTANCE = ? " +
+                                                            "SET ID_SRVICEINSTANCE = ? " +
                                                             "WHERE ID_SERVICEORDER = ?");
             preparedStatement.setInt(1, instanceId);
             preparedStatement.setInt(2, orderId);
