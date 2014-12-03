@@ -556,11 +556,15 @@ public enum DAO {
             {//help
                 System.out.println("idOrderStatus: "+ idOrderStatus);
             }
+            GregorianCalendar gregorianCalendar = new GregorianCalendar();
+            Date d = gregorianCalendar.getTime();
             if (idServiceInstance == null){
                 preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
                         "VALUES(?,?,?,? )");
                 preparedStatement.setInt(1, idOrderScenario);
                 preparedStatement.setInt(2, idOrderStatus);
+                preparedStatement.setDate(3, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+                preparedStatement.setInt(4, userId);
                 {//help
                     System.out.println("NULL");
                 }
@@ -570,6 +574,8 @@ public enum DAO {
                 preparedStatement.setInt(1, idServiceInstance.intValue());
                 preparedStatement.setInt(2, idOrderScenario);
                 preparedStatement.setInt(3, idOrderStatus);
+                preparedStatement.setDate(4, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+                preparedStatement.setInt(5, userId);
                 {//help
                     System.out.println("NOT NULL");
                     System.out.println("idServiceInstance "+ idServiceInstance.intValue());
@@ -742,6 +748,9 @@ public enum DAO {
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
+        {//help
+            System.out.println("CHANGE TASK STATUS");
+        }
         try {
             preparedStatement = connection.prepareStatement("UPDATE TASK " +
                                                             "SET ID_TASKSTATUS = (SELECT ID_TASKSTATUS " +
@@ -756,6 +765,9 @@ public enum DAO {
                 System.out.println("taskStatus: "+ taskStatus.toString());
             }
             preparedStatement.executeUpdate();
+            {//help
+                System.out.println("SUCCESS!!! CHANGE TASK STATUS");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -787,7 +799,7 @@ public enum DAO {
         System.out.println("SET INSTANCE BLOCKED!");
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
-                    "SET HAS_ACTIVE_TASK = ?"+
+                    "SET HAS_ACTIVE_TASK = ? "+
                     "WHERE ID = ?");
 
             preparedStatement.setInt(1, isBlocked);
@@ -797,7 +809,7 @@ public enum DAO {
                 System.out.println("blocked: "+ isBlocked);
             }
             preparedStatement.executeUpdate();
-
+            System.out.println("SUCCESS! SET INSTANCE BLOCKED!");
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -1009,7 +1021,7 @@ public enum DAO {
         System.out.println("SET INSTANCE FOR ORDER");
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
-                                                            "SET ID_SERVICEINSTANCE = ? " +
+                                                            "SET ID_SRVICEINSTANCE = ? " +
                                                             "WHERE ID_SERVICEORDER = ?");
             preparedStatement.setInt(1, instanceId);
             preparedStatement.setInt(2, orderId);
@@ -1468,14 +1480,22 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int taskId = 0;
-
+        {//help
+            System.out.println("CREATE TASK FOR INSTALLATION");
+        }
         try {
             connection.setAutoCommit(false);
             preparedStatement=connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
                     "VALUES ( " +
                     "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
                     "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
-                    "?, ?);");
+                    "?, ?)");
+            {//HELP
+                System.out.println("taskStatus: " + TaskStatus.FREE.toString());
+                System.out.println("userRole: "+ UserRoles.INSTALLATION_ENG.toString());
+                System.out.println("serviceOrderId " + serviceOrderId);
+                System.out.println("TaskName: "+ TaskName.CREATE_NEW_ROUTER.toString());
+            }
             preparedStatement.setString(1, TaskStatus.FREE.toString());
             preparedStatement.setString(2, UserRoles.INSTALLATION_ENG.toString());
             preparedStatement.setInt(3, serviceOrderId);
@@ -1484,8 +1504,14 @@ public enum DAO {
 
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) taskId = resultSet.getInt("ID_TASK");
+            if(resultSet.next()) taskId = resultSet.getInt("TASK_ID");
+            {//help
+                System.out.println("MAX_ID: "+ taskId);
+            }
             connection.commit();
+            {//help
+                System.out.println("SUCCESS!!! CREATE TASK FOR INSTALLATION");
+            }
         } catch (SQLException e) {
             if (connection != null) {
                 System.err.print("Transaction is being rolled back");
