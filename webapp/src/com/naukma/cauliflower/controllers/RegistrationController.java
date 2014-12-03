@@ -71,8 +71,9 @@ public class RegistrationController extends HttpServlet {
                 response.getWriter().println("new user: ");
                 response.getWriter().println(user);
                 response.getWriter().println(pathFrom);
+
                 //check for previos page, redirct to max`s servlet or to user dashboard
-                //response.sendRedirect(pathFrom);
+                //response.sendRedirect("/proceed"); //max`s
             }else{
                 request.getSession().setAttribute("error","System error, try again later, please");
                 response.sendRedirect(pathFrom);
