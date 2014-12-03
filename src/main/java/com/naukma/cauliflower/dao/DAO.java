@@ -8,6 +8,7 @@ import org.apache.log4j.PropertyConfigurator;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -53,7 +54,11 @@ public enum DAO {
         }
         return null;
     }
-
+    private void close(Connection connection, PreparedStatement preparedStatement) throws SQLException {
+        connection.setAutoCommit(true);
+        if (!preparedStatement.isClosed()) preparedStatement.close();
+        if (!connection.isClosed()) connection.close();
+    }
 
 
 /**---------------------------------------------------------------------HALYA---------------------------------------------------------------------**/
@@ -64,7 +69,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         int result = 4;
         try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG';");
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG'");
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("RES");
@@ -74,8 +79,9 @@ public enum DAO {
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -123,9 +129,10 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                connection.setAutoCommit(true);
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                //connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -159,8 +166,9 @@ public enum DAO {
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -177,7 +185,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
-            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE Id_User = ?;");
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE Id_User = ?");
             preparedStatement.setInt(1,id);
             ResultSet resultSet = preparedStatement.executeQuery();
             int checkResult = -1;
@@ -194,8 +202,9 @@ public enum DAO {
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -207,50 +216,162 @@ public enum DAO {
 
     //Halya
     //if error, return null
-    public int blockUserById(int idForBlock){
-        //return blocked user, not id of user
+    //return blocked user
+    //TODO add isBlocked
+    public User blockUserById(int idForBlock){
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int result = -1;
-        try {
-            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ?;");
-            preparedStatement.setInt(1,idForBlock);
+            User resultUser = null;
+            PreparedStatement preparedStatement = null;
+            try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ? ");
+            preparedStatement.setInt(1, idForBlock);
             preparedStatement.executeUpdate();
             {//help
                 System.out.println("ID USER: "+idForBlock+" IS BLOCKED");
             }
-            result = idForBlock;
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM USERS US "+
+                                                            "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE "+
+                                                            "WHERE ID_USER = ? ");
+            preparedStatement.setInt(1,idForBlock);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int idUserRole = resultSet.getInt("ID_USERROLE");
+                String eMail = resultSet.getString("E_MAIL");
+                String fName = resultSet.getString("F_Name");
+                String lName = resultSet.getString("L_Name");
+                String phone = resultSet.getString("PHONE");
+                String nameUR = resultSet.getString("NAME");
+
+                resultUser = new User(idForBlock,idUserRole,nameUR,eMail,fName,lName,phone);
+            }
+            resultSet.close();
+            connection.commit();
+           // result = idForBlock;
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                //connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+
+        return resultUser;
+    }
+
+    //Halya
+    //return name of userRole or null, if no userRole with this id
+    public String getUserRoleNameByUserRoleId (int userRoleId){
+        Connection connection = getConnection();
+        String result = null;
+        PreparedStatement preparedStatement = null;
+        try {
+
+            preparedStatement = connection.prepareStatement("SELECT NAME RES FROM USERROLE WHERE ID_USERROLE = ?");
+            preparedStatement.setInt(1,userRoleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = resultSet.getString("RES");
+            }
 
         }catch(SQLException e){
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
-        }
 
+        }
+        //if(userRoleId==1)return "CUSTOMER";
+        //if(userRoleId==2)return "Customer Support Engineer";
+        //if(userRoleId==3)return "Provisioning Engineer";
+        //if(userRoleId==4)return "Installation Engineer";
         return result;
     }
 
     //Halya
-    public String getUserRoleNameByUserRoleId (int userRoleId){
-        //return name of userRole or null, if no userRole with this id
-        if(userRoleId==1)return "CUSTOMER";
-        if(userRoleId==2)return "Customer Support Engineer";
-        if(userRoleId==3)return "Provisioning Engineer";
-        if(userRoleId==4)return "Installation Engineer";
-        return null;
-    }
-
-    //Halya
+    //return user, if password has been change successful ,
+    //else return null
+    //TODO add isBlocked
     public User changeUserPasswordById (int userId, String newPassword){
-        //return user, if password has been change successful ,
-        //else return null
-        return null;
+        Connection connection = getConnection();
+        User resultUser = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET PASSWORD = ? WHERE Id_USER = ?");
+            preparedStatement.setString(1,newPassword);
+            preparedStatement.setInt(2,userId);
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println(" FOR ID USER: "+userId+" password was successfully changed");
+            }
+
+            preparedStatement = connection.prepareStatement("SELECT *  FROM USERS US "+
+                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE "+
+                    "WHERE ID_USER = ? ");
+            preparedStatement.setInt(1,userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int idUserRole = resultSet.getInt("ID_USERROLE");
+                String eMail = resultSet.getString("E_MAIL");
+                String fName = resultSet.getString("F_Name");
+                String lName = resultSet.getString("L_Name");
+                String phone = resultSet.getString("PHONE");
+                String nameUR = resultSet.getString("NAME");
+
+                resultUser = new User(userId,idUserRole,nameUR,eMail,fName,lName,phone);
+            }
+            resultSet.close();
+            connection.commit();
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                //connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return resultUser;
     }
     //Galya_Sh
     //просто отримуємо айди юзер ролі яка є Provisioning Engineer
@@ -259,7 +380,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         int result = 0;
         try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG';");
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG'");
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result =  resultSet.getInt("RES");
@@ -269,8 +390,9 @@ public enum DAO {
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -282,13 +404,30 @@ public enum DAO {
 
     //Galya_Sh RI.1
     //The system should document Devices.
-    // повертаємо просто всю інформацію для репорту
-    public ResultSet getDevicesForReport()  throws SQLException
-    {
+    // повертаємо просто всю інформацію для репорту (ROUTER, FREE PORTS, OCCUPIED PORTS)
+    public ResultSet getDevicesForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT * FROM ROUTER");
-        ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, Count(P.Used) FREE, 60 - Count(p.Used) OCCUPIED "+
+                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) "+
+                    "WHERE P.Used  = 0 "+
+                    "GROUP BY r.id ");
+             resultSet = preparedStatement.executeQuery();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
         return resultSet;
     }
 
@@ -366,8 +505,9 @@ public enum DAO {
             e.printStackTrace();
         } finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -380,19 +520,22 @@ public enum DAO {
     //KaspYar
     /**
      * Creates new service order
+     *
+     * @param userId id of the user to create SO
      * @param scenario scenario for the order
      * @param idServiceInstance id of service instance for disconnect scenario
      * @param calendar service order creation date
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
      * */
-    public int createServiceOrder(Scenario scenario,GregorianCalendar calendar, Integer idServiceInstance) {
+    public int createServiceOrder(int userId,Scenario scenario,GregorianCalendar calendar, Integer idServiceInstance) {
         //default status ENTERING
         System.out.println("CREATE NEW ORDER!");
         OrderStatus orderStatus = OrderStatus.ENTERING;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
+            connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
             preparedStatement.setString(1,scenario.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -415,20 +558,26 @@ public enum DAO {
             {//help
                 System.out.println("idOrderStatus: "+ idOrderStatus);
             }
+            GregorianCalendar gregorianCalendar = new GregorianCalendar();
+            Date d = gregorianCalendar.getTime();
             if (idServiceInstance == null){
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
-                        "VALUES(?,? )");
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                        "VALUES(?,?,?,? )");
                 preparedStatement.setInt(1, idOrderScenario);
                 preparedStatement.setInt(2, idOrderStatus);
+                preparedStatement.setDate(3, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+                preparedStatement.setInt(4, userId);
                 {//help
                     System.out.println("NULL");
                 }
             }else{
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS) " +
-                        "VALUES(?, ?,? )");
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                        "VALUES(?, ?,? ,?,?)");
                 preparedStatement.setInt(1, idServiceInstance.intValue());
                 preparedStatement.setInt(2, idOrderScenario);
                 preparedStatement.setInt(3, idOrderStatus);
+                preparedStatement.setDate(4, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+                preparedStatement.setInt(5, userId);
                 {//help
                     System.out.println("NOT NULL");
                     System.out.println("idServiceInstance "+ idServiceInstance.intValue());
@@ -445,14 +594,27 @@ public enum DAO {
                 }
                 return resultSet.getInt("RES");
             }
+            connection.commit();
 
 
         } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new router");
+                }
+            }
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //connection.setAutoCommit(true);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -488,8 +650,9 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -526,8 +689,9 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -566,8 +730,9 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -585,6 +750,9 @@ public enum DAO {
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
+        {//help
+            System.out.println("CHANGE TASK STATUS");
+        }
         try {
             preparedStatement = connection.prepareStatement("UPDATE TASK " +
                                                             "SET ID_TASKSTATUS = (SELECT ID_TASKSTATUS " +
@@ -599,13 +767,17 @@ public enum DAO {
                 System.out.println("taskStatus: "+ taskStatus.toString());
             }
             preparedStatement.executeUpdate();
+            {//help
+                System.out.println("SUCCESS!!! CHANGE TASK STATUS");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -629,7 +801,7 @@ public enum DAO {
         System.out.println("SET INSTANCE BLOCKED!");
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
-                    "SET HAS_ACTIVE_TASK = ?"+
+                    "SET HAS_ACTIVE_TASK = ? "+
                     "WHERE ID = ?");
 
             preparedStatement.setInt(1, isBlocked);
@@ -639,13 +811,14 @@ public enum DAO {
                 System.out.println("blocked: "+ isBlocked);
             }
             preparedStatement.executeUpdate();
-
+            System.out.println("SUCCESS! SET INSTANCE BLOCKED!");
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -684,8 +857,9 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -711,17 +885,18 @@ public enum DAO {
             preparedStatement.setInt(1, providerLocationId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getDouble("L.LONGITUDE"),
-                        resultSet.getDouble("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
-                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
+                result.add(new Service(resultSet.getInt("ID_SERVICE_TYPE"), resultSet.getString("ADRESS"), resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"), resultSet.getString("NAME"), resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"), resultSet.getInt("ID"), resultSet.getDouble("PRICE")));
                         //resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -750,9 +925,11 @@ public enum DAO {
             if(resultSet.next()){
                 idRouter = resultSet.getInt("M");
             }
-            //!!!!!!!!!!!!VERY       BADDD!!!!!!!!!!!!!!
-            preparedStatement = connection.prepareStatement("INSERT INTO PORT(ID_ROUTER) VALUES(?)");
-            preparedStatement.setInt(1, idRouter);
+            StringBuilder sb = new StringBuilder("INSERT ALL ");
+            for(int i=1;i<=amountsOfPorts;i++) sb.append("INTO PORT(ID_ROUTER) VALUES("+idRouter+") ");
+            sb.append("SELECT * FROM DUAL");
+
+            preparedStatement = connection.prepareStatement(sb.toString());
             for (int i=0;i<amountsOfPorts;i++){
                 preparedStatement.executeUpdate();
             }
@@ -771,9 +948,11 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
-                connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+                //connection.setAutoCommit(true);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -810,17 +989,18 @@ public enum DAO {
                 GregorianCalendar gregorianCalendar = new GregorianCalendar();
                 Date date = resultSet.getDate("OUR_DATE");
                 gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-                result = new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                                            resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                result = new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"), resultSet.getInt("ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
+                                            resultSet.getInt("ID_SERVICEINSTANCE"), resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
                                             gregorianCalendar, resultSet.getInt("ID_USER"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
-                connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
+//                connection.setAutoCommit(true);
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -845,7 +1025,7 @@ public enum DAO {
         System.out.println("SET INSTANCE FOR ORDER");
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
-                                                            "SET ID_SERVICEINSTANCE = ? " +
+                                                            "SET ID_SRVICEINSTANCE = ? " +
                                                             "WHERE ID_SERVICEORDER = ?");
             preparedStatement.setInt(1, instanceId);
             preparedStatement.setInt(2, orderId);
@@ -855,8 +1035,9 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -892,14 +1073,24 @@ public enum DAO {
                 GregorianCalendar gregorianCalendar = new GregorianCalendar();
                 Date date = resultSet.getDate("OUR_DATE");
                 gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-                result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                        resultSet.getInt("SO.ID_SERVICEINSTANCE"), resultSet.getInt("SO.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"), resultSet.getInt("ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
+                        resultSet.getInt("ID_SERVICEINSTANCE"), resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
                         gregorianCalendar, resultSet.getInt("ID_USER")));
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                close(connection, preparedStatement);
+//                preparedStatement.close();
+//                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         }
+         result.trimToSize();
         return  result;
 
     }
@@ -933,19 +1124,20 @@ public enum DAO {
                                        int serviceId, int instanceStatusId,
                                        String instanceStatus, int cableId, boolean isBlocked)
                 * */
-                result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
-                                resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
-                        resultSet.getDouble("L.LONGITUDE"), resultSet.getDouble("L.LATITUDE"),
-                                resultSet.getInt("SI.ID_SERVICE"), resultSet.getInt("SI.SERVICE_INSTANCE_STATUS"),
-                                resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.HAS_ACTIVE_TASK")== 1)));
+                result.add(new ServiceInstance(resultSet.getInt("ID"), resultSet.getInt("ID_USER"),
+                                resultSet.getInt("ID_SERVICE_LOCATION"), resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"), resultSet.getDouble("LATITUDE"),
+                                resultSet.getInt("ID_SERVICE"), resultSet.getInt("SERVICE_INSTANCE_STATUS"),
+                                resultSet.getString("NAME"), resultSet.getInt("ID_CABLE"), (resultSet.getInt("HAS_ACTIVE_TASK")== 1)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         finally {
             try {
-                preparedStatement.close();
-                connection.close();
+                close(connection, preparedStatement);
+//                preparedStatement.close();
+//                connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -979,14 +1171,24 @@ public enum DAO {
                 GregorianCalendar gregorianCalendar = new GregorianCalendar();
                 Date date = resultSet.getDate("OUR_DATE");
                 gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-                result.add(new ServiceOrder(resultSet.getInt("SO.ID_SERVICEORDER"), resultSet.getInt("SO.ID_ORDERSTATUS"),
-                                            resultSet.getString("OS_NAME"), resultSet.getInt("SO.ID_SERVICEINSTANCE"),
-                                            resultSet.getInt("OSC.ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"), resultSet.getInt("ID_ORDERSTATUS"),
+                                            resultSet.getString("OS_NAME"), resultSet.getInt("ID_SERVICEINSTANCE"),
+                                            resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
                                             gregorianCalendar, resultSet.getInt("ID_USER")));
 
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                close(connection, preparedStatement);
+//                preparedStatement.close();
+//                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         }
         result.trimToSize();
         return  result;
@@ -1018,14 +1220,24 @@ public enum DAO {
                                        int serviceId, int instanceStatusId,
                                        String instanceStatus, int cableId, boolean isBlocked)
                 * */
-                result.add(new ServiceInstance(resultSet.getInt("SI.ID"), resultSet.getInt("SI.ID_USER"),
-                        resultSet.getInt("SI.ID_SERVICE_LOCATION"), resultSet.getString("L.ADRESS"),
-                        resultSet.getDouble("L.LONGITUDE"), resultSet.getDouble("L.LATITUDE"),
-                        resultSet.getInt("SI.ID_SERVICE"), resultSet.getInt("SI.SERVICE_INSTANCE_STATUS"),
-                        resultSet.getString("SIS.NAME"), resultSet.getInt("SI.ID_CABLE"), (resultSet.getInt("SI.HAS_ACTIVE_TASK")== 1)));
+                result.add(new ServiceInstance(resultSet.getInt("ID"), resultSet.getInt("ID_USER"),
+                        resultSet.getInt("ID_SERVICE_LOCATION"), resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"), resultSet.getDouble("LATITUDE"),
+                        resultSet.getInt("ID_SERVICE"), resultSet.getInt("SERVICE_INSTANCE_STATUS"),
+                        resultSet.getString("NAME"), resultSet.getInt("ID_CABLE"), (resultSet.getInt("HAS_ACTIVE_TASK")== 1)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                close(connection, preparedStatement);
+//                preparedStatement.close();
+//                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         }
 
         result.trimToSize();
@@ -1060,15 +1272,16 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
         }
-
+        result.trimToSize();
         return result;
     }
 
@@ -1089,22 +1302,29 @@ public enum DAO {
         try {
             preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
                                                                                 //"ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID" +
-                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE" +
+                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
                                                                                 "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
                                                                                 "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getDouble("L.LONGITUDE"),
-                        resultSet.getDouble("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
-                                        //resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
-                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
+            while (resultSet.next()){
+                result.add(new Service(
+                        resultSet.getInt("ID_SERVICE_TYPE"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getString("NAME"),
+                        resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"),
+                        resultSet.getInt("ID"),
+                        resultSet.getDouble("PRICE")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -1178,9 +1398,10 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                connection.setAutoCommit(true);
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+//                connection.setAutoCommit(true);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -1238,9 +1459,10 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                connection.setAutoCommit(true);
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+//                connection.setAutoCommit(true);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -1259,7 +1481,64 @@ public enum DAO {
      * @return id of created task
      * */
     public int createTaskForInstallation(int serviceOrderId) {
-        return 1;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int taskId = 0;
+        {//help
+            System.out.println("CREATE TASK FOR INSTALLATION");
+        }
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement=connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
+                    "VALUES ( " +
+                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
+                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
+                    "?, ?)");
+            {//HELP
+                System.out.println("taskStatus: " + TaskStatus.FREE.toString());
+                System.out.println("userRole: "+ UserRoles.INSTALLATION_ENG.toString());
+                System.out.println("serviceOrderId " + serviceOrderId);
+                System.out.println("TaskName: "+ TaskName.CREATE_NEW_ROUTER.toString());
+            }
+            preparedStatement.setString(1, TaskStatus.FREE.toString());
+            preparedStatement.setString(2, UserRoles.INSTALLATION_ENG.toString());
+            preparedStatement.setInt(3, serviceOrderId);
+            preparedStatement.setString(4, TaskName.CREATE_NEW_ROUTER.toString());
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) taskId = resultSet.getInt("TASK_ID");
+            {//help
+                System.out.println("MAX_ID: "+ taskId);
+            }
+            connection.commit();
+            {//help
+                System.out.println("SUCCESS!!! CREATE TASK FOR INSTALLATION");
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating createTaskForInstallation");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                close(connection, preparedStatement);
+//                connection.setAutoCommit(true);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+        return  taskId;
 
     }
 
@@ -1270,7 +1549,51 @@ public enum DAO {
      * @return id of created task
      * */
     public int createTaskForProvisioning(int serviceOrderId) {
-        return 1;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int taskId = 0;
+
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement=connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
+                    "VALUES ( " +
+                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
+                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
+                    "?, ?);");
+            preparedStatement.setString(1, TaskStatus.FREE.toString());
+            preparedStatement.setString(2, UserRoles.PROVISIONING_ENG.toString());
+            preparedStatement.setInt(3, serviceOrderId);
+            preparedStatement.setString(4, TaskName.CREATE_CIRCUIT.toString());
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) taskId = resultSet.getInt("ID_TASK");
+            connection.commit();
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating createTaskForProvisioning");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                close(connection, preparedStatement);
+//                connection.setAutoCommit(true);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return taskId;
 
     }
 
@@ -1326,14 +1649,16 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
         }
+        result.trimToSize();
         return result;
     }
 
@@ -1347,7 +1672,55 @@ public enum DAO {
      * @param serviceOrderId id of service order to take service instance from
      */
     public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int portId = 0;
+        int cableId = 0;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("SELECT MIN(ID) PORT_ID FROM PORT WHERE USED = 0");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) portId = resultSet.getInt("PORT_ID");
 
+            preparedStatement = connection.prepareStatement("INSERT INTO CABLE(ID_PORT) VALUES(?)");
+            preparedStatement.setInt(1, portId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID) CABLE_ID FROM CABLE");
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) cableId = resultSet.getInt("CABLE_ID");
+
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+                    "SET ID_CABLE = ? " +
+                    "WHERE ID = (SELECT ID_SERVICEINSTANCE FROM SERVICEORDER WHERE ID_SERVICEORDER = ?)");
+            preparedStatement.setInt(1, cableId);
+            preparedStatement.setInt(2,serviceOrderId);
+            preparedStatement.executeUpdate();
+            connection.commit();
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating createPortAndCableAndAssignToServiceInstance");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                close(connection, preparedStatement);
+//                connection.setAutoCommit(true);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
     }
 
     //KaspYar
@@ -1356,7 +1729,29 @@ public enum DAO {
      * @return True if a free port exists, otherwise false
      */
     public boolean freePortExists() {
-        return false;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(*) AM FROM PORT WHERE USED = ?");
+            preparedStatement.setInt(1, 0);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) result = (resultSet.getInt("AM") > 0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                close(connection, preparedStatement);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     //KaspYar
@@ -1366,7 +1761,29 @@ public enum DAO {
      * @return scenario of service
      */
     public Scenario getOrderScenario(int serviceOrderId) {
-        return Scenario.NEW;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = connection.prepareStatement("SELECT OS.NAME " +
+                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                    "WHERE SO.ID_SERVICEORDER = ?");
+            preparedStatement.setInt(1, serviceOrderId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) return Scenario.valueOf(resultSet.getString("NAME"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                close(connection, preparedStatement);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     /**
@@ -1391,8 +1808,9 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -1430,8 +1848,9 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+//                if (!preparedStatement.isClosed()) preparedStatement.close();
+//                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
