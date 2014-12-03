@@ -26,10 +26,10 @@ public class BlockAccountController extends HttpServlet {
                 //get blocked user
                 int blockedUser = DAO.INSTANCE.blockUserById(userIdForBlock);
                 if (blockedUser > 0 /*res!= null*/) {
-                    /*String message = "Your account has been blocked!";
-                    ServletContext context = getServletContext();
-                    String fullPath = context.getRealPath("/WEB-INF/mail/");
-                    EmailSender.sendEmail(blockedUser, "CauliFlower", message, EmailSender.getTemplate("/html-mail-template.ftl", fullPath));*/
+                  //TODO
+                   /*
+                    String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
+                    EmailSender.sendEmail(blockedUser, EmailSender.SUBJECT_BANNED,EmailSender.BAN_ACCOUNT, EmailSender.getTemplate("/mailTemplate.ftl", fullPath));*/
                     //OK
                     //redirect to admin dashboard
                 } else {

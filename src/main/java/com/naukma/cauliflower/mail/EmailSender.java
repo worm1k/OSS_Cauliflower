@@ -17,7 +17,12 @@ public class EmailSender {
 	private final static String USER_NAME = "provider.cauliflower.1@gmail.com";
 	private final static String PASSWORD = "u'rebeautiful";
 	private final static String INTERNET_PROVIDER = "INTERNET_PROVIDER";
-	private final static String ENGINEERS = "engineers";
+	private final static String ENGINEERS = "Engineers";
+	public final static String BAN_ACCOUNT="Your account is temporarily unavailable due to security reasons";
+	public final static String SUBJECT_REGISTRATION="Registration in Cauliflower ";
+	public final static String SUBJECT_BANNED="Your account has been blocked";
+	public final static String SUBJECT_NEW_TASK="New Task";
+	public final static String CHANGE_PASSWORD="Password has been changed";
 	private static Session session;
 	
 	static {
@@ -38,7 +43,7 @@ public class EmailSender {
 			}
 		});
 	}
-
+	//
 	/**
 	 *
 	 * @param users  - group of users
