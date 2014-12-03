@@ -588,7 +588,7 @@ public enum DAO {
                     System.out.println("NULL");
                 }
             }else{
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SERVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SRVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
                         "VALUES(?, ?,? ,?,?)");
                 preparedStatement.setInt(1, idServiceInstance.intValue());
                 preparedStatement.setInt(2, idOrderScenario);
@@ -1029,7 +1029,7 @@ public enum DAO {
         }
         try {
             preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
-                    "SO.ID_SERVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                    "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
                     "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
                     "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
                     ") INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
@@ -1045,7 +1045,7 @@ public enum DAO {
                 Date date = resultSet.getDate("OUR_DATE");
                 gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
                 result = new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"), resultSet.getInt("ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                        resultSet.getInt("ID_SERVICEINSTANCE"), resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                        resultSet.getInt("ID_SRVICEINSTANCE"), resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
                         gregorianCalendar, resultSet.getInt("ID_USER"));
             }
             {//help
@@ -1141,7 +1141,7 @@ public enum DAO {
                 Date date = resultSet.getDate("OUR_DATE");
                 gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
                 result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"), resultSet.getInt("ID_ORDERSTATUS"), resultSet.getString("OST_NAME"),
-                        resultSet.getInt("ID_SERVICEINSTANCE"), resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
+                        resultSet.getInt("ID_SRVICEINSTANCE"), resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
                         gregorianCalendar, resultSet.getInt("ID_USER")));
             }
             {//help
@@ -1238,7 +1238,7 @@ public enum DAO {
         }
         try {
             preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
-                    "SO.ID_SERVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                    "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
                     "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
                     "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSTATUS ");
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -1250,7 +1250,7 @@ public enum DAO {
                 Date date = resultSet.getDate("OUR_DATE");
                 gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
                 result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"), resultSet.getInt("ID_ORDERSTATUS"),
-                        resultSet.getString("OS_NAME"), resultSet.getInt("ID_SERVICEINSTANCE"),
+                        resultSet.getString("OS_NAME"), resultSet.getInt("ID_SRVICEINSTANCE"),
                         resultSet.getInt("ID_ORDERSCENARIO"), resultSet.getString("OSC_NAME"),
                         gregorianCalendar, resultSet.getInt("ID_USER")));
 
@@ -1474,7 +1474,8 @@ public enum DAO {
      *  @param  serviceLocation ServiceLocation object to write
      *  @see com.naukma.cauliflower.entities.ServiceLocation
      * */
-    public int createServiceLocation(ServiceLocation serviceLocation){
+
+     public int createServiceLocation(ServiceLocation serviceLocation){
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int res=0;
@@ -1609,6 +1610,9 @@ public enum DAO {
 
         return res;
     }
+
+
+
     //KaspYar
 
     /**
@@ -1697,7 +1701,7 @@ public enum DAO {
                     "VALUES ( " +
                     "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
                     "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
-                    "?, ?);");
+                    "?, ?)");
             {//help
                 System.out.println("TaskStatus: "+TaskStatus.FREE.toString());
                 System.out.println("userRole: "+UserRoles.PROVISIONING_ENG.toString());
@@ -1712,7 +1716,7 @@ public enum DAO {
 
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) taskId = resultSet.getInt("ID_TASK");
+            if(resultSet.next()) taskId = resultSet.getInt("TASK_ID");
             connection.commit();
             {//help
                 System.out.println("SUCCESS!!! CREATE TASK FOR PROVISIONING");
@@ -1743,6 +1747,7 @@ public enum DAO {
         return taskId;
 
     }
+
 
     /*
     //KaspYar
@@ -1842,6 +1847,10 @@ public enum DAO {
                     "WHERE ID = (SELECT ID_SRVICEINSTANCE FROM SERVICEORDER WHERE ID_SERVICEORDER = ?)");
             preparedStatement.setInt(1, cableId);
             preparedStatement.setInt(2,serviceOrderId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("UPDATE PORT SET USED = 1 WHERE ID = ?");
+            preparedStatement.setInt(1,portId);
             preparedStatement.executeUpdate();
             connection.commit();
             {//help
