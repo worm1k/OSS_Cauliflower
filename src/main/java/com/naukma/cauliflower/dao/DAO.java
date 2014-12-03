@@ -150,7 +150,7 @@ public enum DAO {
         boolean result = false;
         try {
             preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE E_Mail = ?");
-            preparedStatement.setString(1,email);
+            preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             int checkResult = -1;
             if (resultSet.next()){
@@ -461,6 +461,7 @@ public enum DAO {
     public ResultSet getCircuitsForReport() throws SQLException {
         return null;
     }
+
     //Galya_Sh RI.6
     //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
     //сделать равным null. Сам кабель удалить из базы.
@@ -1964,6 +1965,34 @@ public enum DAO {
 
     /**---------------------------------------------------------------------IGOR---------------------------------------------------------------------**/
 
+    //Igor REP.3
+    //The system should create RI reports:
+    //        - Most profitable router
+
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getMostProfitableRouterForReport() throws SQLException {
+        return null;
+    }
+
+    //Igor REP.3
+    //The system should create RI reports:
+    //        - Routers utilization and capacity %
+    // відсоток портів користого навантаження і просто інформація про роутер
+
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getUsedRoutersAndCapacityOfPorts() throws SQLException {
+        return null;
+    }
+
+    //Igor REP.4
+    //The system should create RI reports:
+    //        - Profitability by month
+    // відсоток портів користого навантаження і просто інформація про роутер
+
+    // повертаємо просто всю інформацію для репорту
+    public ResultSet getProfitabilityByMonth() throws SQLException {
+        return null;
+    }
 
     /**---------------------------------------------------------------------END IGOR---------------------------------------------------------------------**/
 

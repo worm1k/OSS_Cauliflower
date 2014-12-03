@@ -37,6 +37,12 @@ public class ReportGeneratorServlet extends HttpServlet {
             resultSet = DAO.INSTANCE.getCablesForReport();
         else if(methodName.equals("Ports"))
             resultSet = DAO.INSTANCE.getPortsForReport();
+        else if(methodName.equals("Profitable"))
+            resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
+        else if(methodName.equals("utilizationAndCapacity"))
+            resultSet = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts();
+        else if(methodName.equals("Profitability"))
+            resultSet = DAO.INSTANCE.getProfitabilityByMonth();
         if(resultSet == null)
             resultSet = DAO.INSTANCE.reportTester();
 

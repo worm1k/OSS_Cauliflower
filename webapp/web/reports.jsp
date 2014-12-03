@@ -55,6 +55,21 @@
     <div class="report_text">Get report about all existing ports</div>
     <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Ports"/></div>
   </div>
+  <div class="clear"></div>
+  <div class="report_block">
+    <div class="report_text">Get report about most profitable routers</div>
+    <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Profitable"/></div>
+  </div>
+  <div class="clear"></div>
+  <div class="report_block">
+    <div class="report_text">Get report about routers utilization and capacity </div>
+    <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="utilizationAndCapacity"/></div>
+  </div>
+  <div class="clear"></div>
+  <div class="report_block">
+    <div class="report_text">Get profitability by month </div>
+    <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Profitability"/></div>
+  </div>
 </form>
 
 </div>
