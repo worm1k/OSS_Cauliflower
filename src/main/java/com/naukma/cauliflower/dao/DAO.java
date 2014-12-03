@@ -495,13 +495,15 @@ public enum DAO {
     //KaspYar
     /**
      * Creates new service order
+     *
+     * @param userId id of the user to create SO
      * @param scenario scenario for the order
      * @param idServiceInstance id of service instance for disconnect scenario
      * @param calendar service order creation date
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
      * */
-    public int createServiceOrder(Scenario scenario,GregorianCalendar calendar, Integer idServiceInstance) {
+    public int createServiceOrder(int userId,Scenario scenario,GregorianCalendar calendar, Integer idServiceInstance) {
         //default status ENTERING
         System.out.println("CREATE NEW ORDER!");
         OrderStatus orderStatus = OrderStatus.ENTERING;
