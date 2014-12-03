@@ -1355,8 +1355,28 @@ public enum DAO {
      * @return True if a free port exists, otherwise false
      */
     public boolean freePortExists() {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
 
-        return false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(*) AM FROM PORT WHERE USED = ?");
+            preparedStatement.setInt(1, 0);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) result = (resultSet.getInt("AM") > 0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     //KaspYar
@@ -1366,7 +1386,28 @@ public enum DAO {
      * @return scenario of service
      */
     public Scenario getOrderScenario(int serviceOrderId) {
-        return Scenario.NEW;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = connection.prepareStatement("SELECT OS.NAME " +
+                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                    "WHERE SO.ID_SERVICEORDER = ?");
+            preparedStatement.setInt(1, serviceOrderId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) return Scenario.valueOf(resultSet.getString("NAME"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     /**
