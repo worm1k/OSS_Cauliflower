@@ -209,14 +209,13 @@ public enum DAO {
 
     //Halya
     //if error, return null
+    //return blocked user
     //TODO add isBlocked
     public User blockUserById(int idForBlock){
-        //return blocked user, not id of user
         Connection connection = getConnection();
-        User resultUser = null;
-        PreparedStatement preparedStatement = null;
-        int result = -1;
-        try {
+            User resultUser = null;
+            PreparedStatement preparedStatement = null;
+            try {
             connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ?");
             preparedStatement.setInt(1,idForBlock);
@@ -271,13 +270,37 @@ public enum DAO {
     }
 
     //Halya
+    //return name of userRole or null, if no userRole with this id
     public String getUserRoleNameByUserRoleId (int userRoleId){
-        //return name of userRole or null, if no userRole with this id
-        if(userRoleId==1)return "CUSTOMER";
-        if(userRoleId==2)return "Customer Support Engineer";
-        if(userRoleId==3)return "Provisioning Engineer";
-        if(userRoleId==4)return "Installation Engineer";
-        return null;
+        Connection connection = getConnection();
+        String result = null;
+        PreparedStatement preparedStatement = null;
+        try {
+
+            preparedStatement = connection.prepareStatement("SELECT NAME RES FROM USERROLE WHERE ID_USERROLE = ?");
+            preparedStatement.setInt(1,userRoleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = resultSet.getString("RES");
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        //if(userRoleId==1)return "CUSTOMER";
+        //if(userRoleId==2)return "Customer Support Engineer";
+        //if(userRoleId==3)return "Provisioning Engineer";
+        //if(userRoleId==4)return "Installation Engineer";
+        return result;
     }
 
     //Halya
