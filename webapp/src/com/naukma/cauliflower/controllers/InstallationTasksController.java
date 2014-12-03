@@ -22,7 +22,8 @@ public class InstallationTasksController extends HttpServlet {
     SOW.5
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute("user");
+        User user = DAO.INSTANCE.getUserByLoginAndPassword("slavko.yeapp@yandex.ua", "qwre123456");//JUST FOR END TO END
+        //User user = (User) request.getSession().getAttribute("user");
         Task task = (Task) request.getAttribute("task");
         int taskId = task.getTaskId();
         int serviceOrderId = task.getServiceOrderId();
@@ -49,7 +50,7 @@ public class InstallationTasksController extends HttpServlet {
                 //END TO END
 
 
-                request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
+                //request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
             }else
                 request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
         } else
