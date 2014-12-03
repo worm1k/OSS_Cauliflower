@@ -76,8 +76,9 @@ public class GetServicesController extends HttpServlet {
         final User user  = (User) session.getAttribute("user");
 
         if(user == null){
-            RequestDispatcher requestDispatcher = req.getRequestDispatcher(GO_TO_AUTHENTICATION);
-            requestDispatcher.forward(req,resp);
+            /*RequestDispatcher requestDispatcher = req.getRequestDispatcher(GO_TO_AUTHENTICATION);
+            requestDispatcher.forward(req,resp);*/
+            resp.sendRedirect("auth.jsp");
         }
         else
         {
