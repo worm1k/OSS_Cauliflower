@@ -225,16 +225,16 @@ public enum DAO {
             PreparedStatement preparedStatement = null;
             try {
             connection.setAutoCommit(false);
-            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ?");
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ? ");
             preparedStatement.setInt(1, idForBlock);
             preparedStatement.executeUpdate();
             {//help
                 System.out.println("ID USER: "+idForBlock+" IS BLOCKED");
             }
 
-            preparedStatement = connection.prepareStatement("SELECT *  FROM USERS US"+
-                                                            "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE"+
-                                                            "WHERE ID_USER = ?");
+            preparedStatement = connection.prepareStatement("SELECT * FROM USERS US "+
+                                                            "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE "+
+                                                            "WHERE ID_USER = ? ");
             preparedStatement.setInt(1,idForBlock);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -331,9 +331,9 @@ public enum DAO {
                 System.out.println(" FOR ID USER: "+userId+" password was successfully changed");
             }
 
-            preparedStatement = connection.prepareStatement("SELECT *  FROM USERS US"+
-                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE"+
-                    "WHERE ID_USER = ?");
+            preparedStatement = connection.prepareStatement("SELECT *  FROM USERS US "+
+                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE "+
+                    "WHERE ID_USER = ? ");
             preparedStatement.setInt(1,userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -407,7 +407,30 @@ public enum DAO {
     //The system should document Devices.
     // повертаємо просто всю інформацію для репорту
     public ResultSet getDevicesForReport() {
-        return null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG'");
+             resultSet = preparedStatement.executeQuery();
+           // if (resultSet.next()) {
+                //result =  resultSet.getI("RES");
+           // }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            try {
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return resultSet;
     }
 
     //Galya_Sh RI.2
