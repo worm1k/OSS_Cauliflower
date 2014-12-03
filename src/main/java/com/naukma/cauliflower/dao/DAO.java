@@ -1346,7 +1346,54 @@ public enum DAO {
      * @param serviceOrderId id of service order to take service instance from
      */
     public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int portId = 0;
+        int cableId = 0;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("SELECT MIN(ID) PORT_ID FROM PORT WHERE USED = 0");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) portId = resultSet.getInt("PORT_ID");
 
+            preparedStatement = connection.prepareStatement("INSERT INTO CABLE(ID_PORT) VALUES(?)");
+            preparedStatement.setInt(1, portId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID) CABLE_ID FROM CABLE");
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) cableId = resultSet.getInt("CABLE_ID");
+
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+                    "SET ID_CABLE = ? " +
+                    "WHERE ID = (SELECT ID_SERVICEINSTANCE FROM SERVICEORDER WHERE ID_SERVICEORDER = ?)");
+            preparedStatement.setInt(1, cableId);
+            preparedStatement.setInt(2,serviceOrderId);
+            preparedStatement.executeUpdate();
+            connection.commit();
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating createPortAndCableAndAssignToServiceInstance");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.setAutoCommit(true);
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
     }
 
     //KaspYar
