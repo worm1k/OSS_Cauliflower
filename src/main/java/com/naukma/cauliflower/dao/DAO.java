@@ -1258,7 +1258,49 @@ public enum DAO {
      * @return id of created task
      * */
     public int createTaskForInstallation(int serviceOrderId) {
-        return 1;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int taskId = 0;
+
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement=connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
+                    "VALUES ( " +
+                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
+                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
+                    "?, ?);");
+            preparedStatement.setString(1, TaskStatus.FREE.toString());
+            preparedStatement.setString(2, UserRoles.INSTALLATION_ENG.toString());
+            preparedStatement.setInt(3, serviceOrderId);
+            preparedStatement.setString(4, TaskName.CREATE_NEW_ROUTER.toString());
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) taskId = resultSet.getInt("ID_TASK");
+            connection.commit();
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating createTaskForInstallation");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.setAutoCommit(true);
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+        return  taskId;
 
     }
 
@@ -1269,7 +1311,50 @@ public enum DAO {
      * @return id of created task
      * */
     public int createTaskForProvisioning(int serviceOrderId) {
-        return 1;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int taskId = 0;
+
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement=connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
+                    "VALUES ( " +
+                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
+                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
+                    "?, ?);");
+            preparedStatement.setString(1, TaskStatus.FREE.toString());
+            preparedStatement.setString(2, UserRoles.PROVISIONING_ENG.toString());
+            preparedStatement.setInt(3, serviceOrderId);
+            preparedStatement.setString(4, TaskName.CREATE_CIRCUIT.toString());
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) taskId = resultSet.getInt("ID_TASK");
+            connection.commit();
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating createTaskForProvisioning");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.setAutoCommit(true);
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return taskId;
 
     }
 
