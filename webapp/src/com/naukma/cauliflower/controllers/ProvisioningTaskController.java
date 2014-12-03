@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebServlet(name = "ProvisioningTaskController")
 public class ProvisioningTaskController extends HttpServlet {
 
     /*

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebServlet(name = "InstallationTasksController")
 public class InstallationTasksController extends HttpServlet {
 
     /*
@@ -25,12 +26,14 @@ public class InstallationTasksController extends HttpServlet {
         Task task = (Task) request.getAttribute("task");
         int taskId = task.getTaskId();
         int serviceOrderId = task.getServiceOrderId();
+
         //RI.9
         //The system should allow creating Devices, Ports and Cables only by Installation Engineer
         if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {
             if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
                 Scenario scenario = DAO.INSTANCE.getOrderScenario(serviceOrderId);
                 if (scenario == Scenario.NEW) {
+
                     if (!DAO.INSTANCE.freePortExists())
                         DAO.INSTANCE.createRouter();
                     DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
@@ -58,7 +61,7 @@ public class InstallationTasksController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        doPost(request, response);
 
 
     }
