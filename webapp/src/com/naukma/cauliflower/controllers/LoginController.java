@@ -22,6 +22,8 @@ public class LoginController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
          logger.info(" INFO ::   LoginController");
+
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String res = "";
@@ -34,6 +36,7 @@ public class LoginController extends HttpServlet {
         else{
             request.getSession().setAttribute("user",user);
             res = user.toString();
+            logger.info(" LOGGER ::   LoginController  : user is"+user.getFirstName());
         }
         Writer out = response.getWriter();
         out.write("<h1> Hello,"+res );
