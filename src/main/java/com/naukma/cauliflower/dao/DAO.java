@@ -8,14 +8,9 @@ import sun.dc.pr.PRError;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.*;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.ArrayList;
 
 
 /**
@@ -1073,15 +1068,21 @@ public enum DAO {
         try {
             preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
                                                                                 //"ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID" +
-                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE" +
+                                                                                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
                                                                                 "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
                                                                                 "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                result.add(new Service(resultSet.getInt("S.ID_SERVICE_TYPE"), resultSet.getString("L.ADRESS"), resultSet.getDouble("L.LONGITUDE"),
-                        resultSet.getDouble("L.LATITUDE"), resultSet.getString("ST.NAME"), resultSet.getString("ST.SPEED"),
-                                        //resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID")));
-                        resultSet.getInt("S.ID_PROVIDER_LOCATION"), resultSet.getInt("S.ID"), resultSet.getDouble("S.PRICE")));
+            while (resultSet.next()){
+                result.add(new Service(
+                        resultSet.getInt("ID_SERVICE_TYPE"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getString("NAME"),
+                        resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"),
+                        resultSet.getInt("ID"),
+                        resultSet.getDouble("PRICE")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
