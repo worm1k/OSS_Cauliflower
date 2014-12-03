@@ -80,8 +80,9 @@ public enum DAO {
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -129,9 +130,10 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                connection.setAutoCommit(true);
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                //connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -165,8 +167,9 @@ public enum DAO {
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -200,8 +203,9 @@ public enum DAO {
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -260,9 +264,10 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                connection.setAutoCommit(true);
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                //connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -292,8 +297,9 @@ public enum DAO {
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -356,9 +362,10 @@ public enum DAO {
             e.printStackTrace();
         }finally {
             try {
-                connection.setAutoCommit(true);
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                //connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -384,8 +391,9 @@ public enum DAO {
             e.printStackTrace();
         }finally{
             try {
-                if (!preparedStatement.isClosed()) preparedStatement.close();
-                if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
