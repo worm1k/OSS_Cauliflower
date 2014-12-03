@@ -38,11 +38,11 @@ public enum DAO {
             e.printStackTrace();
         }
         Properties props = new Properties();
-        try {
-            props.load(new FileInputStream("com/naukma/cauliflower/properties/log4j.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            props.load(new FileInputStream("com/naukma/cauliflower/properties/log4j.properties"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+     //   }
         PropertyConfigurator.configure(props);
 
     }
