@@ -3,19 +3,19 @@ package com.naukma.cauliflower.dao;
 
 import com.naukma.cauliflower.entities.*;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import sun.dc.pr.PRError;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 
 /**
@@ -36,6 +36,14 @@ public enum DAO {
         } catch (NamingException e) {
             e.printStackTrace();
         }
+        Properties props = new Properties();
+        try {
+            props.load(new FileInputStream("com/naukma/cauliflower/properties/log4j.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PropertyConfigurator.configure(props);
+
     }
 
     private Connection getConnection() {
