@@ -25,7 +25,6 @@ public class ProceedOrderController extends HttpServlet {
     private int orderId = -1;
     private int serviceInstanceId = -1;
     private int taskId = -1;
-
     /*
     ACK.1  ACK.2(OPTIONAL)
     ACK.3
@@ -53,6 +52,7 @@ public class ProceedOrderController extends HttpServlet {
         RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
          //for end2end
         Task task = DAO.INSTANCE.getTaskById(taskId);
+        System.out.println("REDIRECTED!!!!!!!!!!!!!!!!");
         request.setAttribute("task",task);
         dispatcher.forward(request, response);
 
@@ -88,13 +88,13 @@ public class ProceedOrderController extends HttpServlet {
     private void createNewOrder()
     {
 
-        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.NEW,new GregorianCalendar(),null);
+        orderId = DAO.INSTANCE.createServiceOrder(Scenario.NEW,new GregorianCalendar(),null);
     }
 
     // ACK.3
     private void createDisconectOrder(Integer instanceId)
     {
-        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.DISCONNECT,new GregorianCalendar(), instanceId);
+        orderId = DAO.INSTANCE.createServiceOrder(Scenario.DISCONNECT,new GregorianCalendar(), instanceId);
     }
 
 

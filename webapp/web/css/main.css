@@ -12,9 +12,7 @@ body {
   border-bottom: 2px solid #dbdbdb;
 }
 .footer {
-  margin-top: 40px;
   padding-top: 40px;
-  padding-bottom: 20px;
   border-top: 2px solid #dbdbdb;
 }
 .search-container {
@@ -74,8 +72,8 @@ body {
   box-shadow: rgba(0,0,0,0.298) 0px 1px 4px -1px;
 }
 .font-regular {
-  font-weight: normal;
+    font-weight: normal;
 }
 .border-left {
-  border-left: 1px solid #ddd;
+    border-left: 1px solid #ddd;
 }

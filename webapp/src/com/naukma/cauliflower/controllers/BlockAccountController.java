@@ -22,12 +22,14 @@ public class BlockAccountController extends HttpServlet {
         User us = (User)request.getSession().getAttribute("user");
         if(us.getUserRole().equals("ADMINISTRATOR")) {
             int userIdForBlock = Integer.parseInt(request.getParameter("userIdForBlock"));
-            if (DAO.INSTANCE.checkForExistingUserById(userIdForBlock)) {
+            if (userIdForBlock > 0) {
                 //get blocked user
-                User blockedUser = DAO.INSTANCE.blockUserById(userIdForBlock);
-                if (blockedUser != null) {
+                int blockedUser = DAO.INSTANCE.blockUserById(userIdForBlock);
+                if (blockedUser > 0 /*res!= null*/) {
+                  //TODO
+                   /*
                     String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
-                    EmailSender.sendEmail(blockedUser, EmailSender.SUBJECT_BANNED,EmailSender.BAN_ACCOUNT, EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
+                    EmailSender.sendEmail(blockedUser, EmailSender.SUBJECT_BANNED,EmailSender.BAN_ACCOUNT, EmailSender.getTemplate("/mailTemplate.ftl", fullPath));*/
                     //OK
                     //redirect to admin dashboard
                 } else {
