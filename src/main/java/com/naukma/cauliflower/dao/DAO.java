@@ -405,18 +405,17 @@ public enum DAO {
 
     //Galya_Sh RI.1
     //The system should document Devices.
-    // повертаємо просто всю інформацію для репорту
+    // повертаємо просто всю інформацію для репорту (ROUTER, FREE PORTS, OCCUPIED PORTS)
     public ResultSet getDevicesForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG'");
+            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, Count(P.Used) FREE, 60 - Count(p.Used) OCCUPIED "+
+                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) "+
+                    "WHERE P.Used  = 0 "+
+                    "GROUP BY r.id ");
              resultSet = preparedStatement.executeQuery();
-           // if (resultSet.next()) {
-                //result =  resultSet.getI("RES");
-           // }
-
         }catch(SQLException e){
             e.printStackTrace();
         }finally{
