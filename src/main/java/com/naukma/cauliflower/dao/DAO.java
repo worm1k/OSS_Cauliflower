@@ -411,12 +411,11 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG'");
-             resultSet = preparedStatement.executeQuery();
-           // if (resultSet.next()) {
-                //result =  resultSet.getI("RES");
-           // }
-
+            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, Count(P.Used) FREE, 60 - Count(p.Used) OCCUPIED "+
+                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) "+
+                    "WHERE P.Used  = 0 "+
+                    "GROUP BY r.id ");
+            resultSet = preparedStatement.executeQuery();
         }catch(SQLException e){
             e.printStackTrace();
         }finally{
@@ -1116,8 +1115,7 @@ public enum DAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
 //                preparedStatement.close();
@@ -1380,7 +1378,7 @@ public enum DAO {
                 }
             }
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
 //                connection.setAutoCommit(true);
@@ -1441,7 +1439,7 @@ public enum DAO {
                 }
             }
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
 //                connection.setAutoCommit(true);
