@@ -17,8 +17,6 @@ import java.util.ArrayList;
  */
 public class ReviewUserServiceInstance extends HttpServlet {
     private final static String USER_ACCOUNT="";
-
-
     //todo
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

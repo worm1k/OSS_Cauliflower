@@ -65,14 +65,15 @@ public class RegistrationController extends HttpServlet {
             if(resId>0){
                 user = new User(resId,userRoleId,userRole,email,firstName,lastName,phone);
                 request.getSession().setAttribute("user",user);
-
                 String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
                 EmailSender.sendEmail(user, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
                 //redirect to dashboard
                 response.getWriter().println("new user: ");
                 response.getWriter().println(user);
                 response.getWriter().println(pathFrom);
-                //response.sendRedirect(pathFrom);
+
+                //check for previos page, redirct to max`s servlet or to user dashboard
+                //response.sendRedirect("/proceed"); //max`s
             }else{
                 request.getSession().setAttribute("error","System error, try again later, please");
                 response.sendRedirect(pathFrom);
