@@ -308,10 +308,64 @@ public enum DAO {
     }
 
     //Halya
+    //return user, if password has been change successful ,
+    //else return null
+    //TODO add isBlocked
     public User changeUserPasswordById (int userId, String newPassword){
-        //return user, if password has been change successful ,
-        //else return null
-        return null;
+        Connection connection = getConnection();
+        User resultUser = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET PASSWORD = ? WHERE Id_USER = ?");
+            preparedStatement.setString(1,newPassword);
+            preparedStatement.setInt(2,userId);
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println(" FOR ID USER: "+userId+" password was successfully changed");
+            }
+
+            preparedStatement = connection.prepareStatement("SELECT *  FROM USERS US"+
+                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE"+
+                    "WHERE ID_USER = ?");
+            preparedStatement.setInt(1,userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int idUserRole = resultSet.getInt("ID_USERROLE");
+                String eMail = resultSet.getString("E_MAIL");
+                String fName = resultSet.getString("F_Name");
+                String lName = resultSet.getString("L_Name");
+                String phone = resultSet.getString("PHONE");
+                String nameUR = resultSet.getString("NAME");
+
+                resultUser = new User(userId,idUserRole,nameUR,eMail,fName,lName,phone);
+            }
+            resultSet.close();
+            connection.commit();
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                }
+            }
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.setAutoCommit(true);
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return resultUser;
     }
     //Galya_Sh
     //просто отримуємо айди юзер ролі яка є Provisioning Engineer
