@@ -524,10 +524,13 @@ public enum DAO {
             user = new User(idUser, idUserrole, userrole, eMail, firstName, lastName, phone);
         }
         resultSet.close();
-        close(connection, preparedStatement);
         {//help
             System.out.println("SUCCESS!!! getUserByLoginAndPassword");
-
+        }
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException exc) {
+            logger.warn("Can't close connection or preparedStatement!");
         }
         return user;
     }
