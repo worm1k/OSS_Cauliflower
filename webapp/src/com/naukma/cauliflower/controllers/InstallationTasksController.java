@@ -23,7 +23,7 @@ public class InstallationTasksController extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = DAO.INSTANCE.getUserByLoginAndPassword("slavko.yeapp@yandex.ua", "qwre123456");//JUST FOR END TO END
-        //User user = (User) request.getSession().getAttribute("user");
+        //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
         Task task = (Task) request.getAttribute("task");
         int taskId = task.getTaskId();
         int serviceOrderId = task.getServiceOrderId();

@@ -6,6 +6,7 @@ import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 import sun.org.mozilla.javascript.internal.json.JsonParser;
 
 import javax.servlet.RequestDispatcher;
@@ -70,10 +71,10 @@ public class GetServicesController extends HttpServlet {
         }
 
         HttpSession session = req.getSession();
-        session.setAttribute("service",service);
-        session.setAttribute("serviceLocation",serviceLocation);
+        session.setAttribute(CauliflowerInfo.serviceAttribute,service);
+        session.setAttribute(CauliflowerInfo.serviceLocationAttribute,serviceLocation);
 
-        final User user  = (User) session.getAttribute("user");
+        final User user  = (User) session.getAttribute(CauliflowerInfo.userAttribute);
 
         if(user == null){
             /*RequestDispatcher requestDispatcher = req.getRequestDispatcher(GO_TO_AUTHENTICATION);

@@ -1,7 +1,9 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.UserRoles;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 import com.naukma.cauliflower.mail.EmailSender;
 
 import javax.servlet.ServletException;
@@ -18,8 +20,8 @@ import java.io.IOException;
 public class BlockAccountController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathFrom  = request.getHeader("Referer");
-        User us = (User)request.getSession().getAttribute("user");
-        if(us.getUserRole().equals("ADMINISTRATOR")) {
+        User us = (User)request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        if(us.getUserRole().equals(UserRoles.ADMINISTRATOR.toString())) {
             int userIdForBlock = Integer.parseInt(request.getParameter("userIdForBlock"));
             if (DAO.INSTANCE.checkForExistingUserById(userIdForBlock)) {
                 //get blocked user
@@ -30,15 +32,15 @@ public class BlockAccountController extends HttpServlet {
                     //OK
                     //redirect to admin dashboard
                 } else {
-                    request.getSession().setAttribute("error", "System error, try again later, please");
+                    request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
                     response.sendRedirect(pathFrom);
                 }
             } else {
-                request.getSession().setAttribute("error", "Incorrect user for block");
+                request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "Incorrect user for block");
                 response.sendRedirect(pathFrom);
             }
         }else{
-            request.getSession().setAttribute("error", "You don`t have permission");
+            request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "You don`t have permission");
             response.sendRedirect(pathFrom);
         }
     }

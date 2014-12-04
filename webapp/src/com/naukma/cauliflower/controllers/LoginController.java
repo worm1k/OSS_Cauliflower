@@ -5,6 +5,7 @@ import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 import org.apache.log4j.*;
 
 import javax.servlet.RequestDispatcher;
@@ -34,16 +35,16 @@ public class LoginController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String res = "";
-        Service service = (Service)request.getSession().getAttribute("service");
-        ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
+        Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.serviceAttribute);
+        ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.serviceLocationAttribute);
 
         User user = null;
         user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
         if(user == null) {
-            request.getSession().setAttribute("error","Incorrect login or password!");
+            request.getSession().setAttribute(CauliflowerInfo.errorAttribute,"Incorrect login or password!");
             response.sendRedirect(pathFrom);
         }else{
-            request.getSession().setAttribute("user", user);
+            request.getSession().setAttribute(CauliflowerInfo.userAttribute, user);
             logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
             if(service!=null && servLoc!=null){
                 ServletContext context = getServletContext();
@@ -57,7 +58,7 @@ public class LoginController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        final User user = (User)session.getAttribute("user");
+        final User user = (User)session.getAttribute(CauliflowerInfo.userAttribute);
         ObjectMapper mapper = new ObjectMapper();
         PrintWriter out = response.getWriter();
 
