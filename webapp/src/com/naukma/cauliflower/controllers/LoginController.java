@@ -1,5 +1,6 @@
 package com.naukma.cauliflower.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.User;
 import org.apache.log4j.*;
@@ -9,7 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.sql.SQLException;
 
@@ -44,6 +47,12 @@ public class LoginController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        final User user = (User)session.getAttribute("user");
+        ObjectMapper mapper = new ObjectMapper();
+        PrintWriter out = response.getWriter();
 
+        response.setContentType("application/json;charset=UTF-8");
+        mapper.writeValue(out, user);
     }
 }

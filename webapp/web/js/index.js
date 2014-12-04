@@ -1,5 +1,36 @@
 'use strict'
 
+function User(){
+    var _id;
+    var _email;
+    var _fName;
+    var _lName;
+    var _phone;
+    var _role;
+    var _roleId;
+
+    this.getId = function(){ return _id; }
+    this.setId = function(id){ _id = id; }
+
+    this.getEmail = function(){ return _email; }
+    this.setEmail = function(email){ _email = email; }
+
+    this.getFName = function(){ return _fName; }
+    this.setFName = function(fName){ _fName = fName; }
+
+    this.getLName = function(){ return _lName; }
+    this.setLName = function(lName){ _lName = lName; }
+
+    this.getPhone = function(){ return _phone; }
+    this.setPhome = function(phone){ _phone = phone; }
+
+    this.getRole = function(){ return _role; }
+    this.setRole = function(role){ _role = role; }
+
+    this.getRoleId = function(){ return _roleId; }
+    this.setRoleId = function(roleId){ _roleId = roleId; }
+}
+
 function MapMarker(){
     var _values = {};
     var _options = {};
@@ -17,7 +48,33 @@ function MapMarker(){
 }
 'use strict'
 
-angular.module('MapOrder', [])
+angular.module('NgApp', [])
+    .controller('UserLoginController', function($scope){
+        $scope.user = new User();
+        $scope.userIsLogged = false;
+
+        var ajaxGetUser = function(){
+            $.ajax({
+                type: 'GET',
+                url: 'login',
+                dataType: 'json',
+                success: function(user){
+                    console.log('user:', user);
+                    if(user){
+                        $scope.user = user;
+                        if(user != null){
+                            $scope.$apply(function(){ $scope.userIsLogged = true; });
+                        }
+                    }
+                },
+                error: function(){
+                    console.log('error getting user');
+                }
+            });
+        }
+
+        ajaxGetUser();
+    })
     .controller('MapOrderController', function($scope){
         $scope.serviceLocationAddress;
         $scope.providerLocationAddress;
