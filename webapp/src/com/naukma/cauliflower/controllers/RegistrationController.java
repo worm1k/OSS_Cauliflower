@@ -6,6 +6,7 @@ import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.mail.EmailSender;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -71,15 +72,12 @@ public class RegistrationController extends HttpServlet {
                 EmailSender.sendEmail(user, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
                 Service service = (Service)request.getSession().getAttribute("service");
                 ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
-                /*response.getWriter().println("new user: ");
-                response.getWriter().println(user);
-                response.getWriter().println(pathFrom);
-                response.getWriter().println("Service: " + service);
-                response.getWriter().println("servLoc: " + servLoc);*/
                 if(service!=null && servLoc!=null) {
-                    response.sendRedirect("/proceed"); //max`s
+                    ServletContext context= getServletContext();
+                    RequestDispatcher rd= context.getRequestDispatcher("/proceed");
+                    rd.forward(request, response);
                 }
-                else response.sendRedirect(pathFrom);
+                else response.sendRedirect("dashboard.jsp");
             }else{
                 request.getSession().setAttribute("error","System error, try again later, please");
                 response.sendRedirect(pathFrom);
@@ -88,7 +86,6 @@ public class RegistrationController extends HttpServlet {
             request.getSession().setAttribute("error","User with this e-mail already exist");
             response.sendRedirect(pathFrom);
         }
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

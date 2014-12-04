@@ -2,9 +2,13 @@ package com.naukma.cauliflower.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.entities.Service;
+import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import org.apache.log4j.*;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,24 +30,29 @@ public class LoginController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
          logger.info(" INFO ::   LoginController");
 
-
+        String pathFrom  = request.getHeader("Referer");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String res = "";
-
+        Service service = (Service)request.getSession().getAttribute("service");
+        ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
 
         User user = null;
         user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
-        if(user == null){
-            res = "NULL";}
-        else{
-            request.getSession().setAttribute("user",user);
-            res = user.toString();
-            logger.info(" LOGGER ::   LoginController  : user is"+user.getFirstName());
+        if(user == null) {
+            request.getSession().setAttribute("error","Incorrect login or password!");
+            response.sendRedirect(pathFrom);
+        }else{
+            request.getSession().setAttribute("user", user);
+            logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
+            if(service!=null && servLoc!=null){
+                ServletContext context = getServletContext();
+                RequestDispatcher rd = context.getRequestDispatcher("/proceed");
+                rd.forward(request, response);
+            }else{
+                response.sendRedirect("dashboard.jsp");
+            }
         }
-        Writer out = response.getWriter();
-        out.write("<h1> Hello,"+res );
-        out.write("</h1>");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
