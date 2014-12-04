@@ -1,6 +1,8 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.entities.Service;
+import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.mail.EmailSender;
 
@@ -67,13 +69,17 @@ public class RegistrationController extends HttpServlet {
                 request.getSession().setAttribute("user",user);
                 String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
                 EmailSender.sendEmail(user, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
-                //redirect to dashboard
-                response.getWriter().println("new user: ");
+                Service service = (Service)request.getSession().getAttribute("service");
+                ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
+                /*response.getWriter().println("new user: ");
                 response.getWriter().println(user);
                 response.getWriter().println(pathFrom);
-
-                //check for previos page, redirct to max`s servlet or to user dashboard
-                //response.sendRedirect("/proceed"); //max`s
+                response.getWriter().println("Service: " + service);
+                response.getWriter().println("servLoc: " + servLoc);*/
+                if(service!=null && servLoc!=null) {
+                    response.sendRedirect("/proceed"); //max`s
+                }
+                else response.sendRedirect(pathFrom);
             }else{
                 request.getSession().setAttribute("error","System error, try again later, please");
                 response.sendRedirect(pathFrom);

@@ -40,6 +40,7 @@ public class ProceedOrderController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+        System.out.println("IN PROCEED ORDER");
         user = (User) request.getSession().getAttribute("user");
         String scenario = request.getParameter("scenario");
         scenario = "NEW";
@@ -116,15 +117,15 @@ public class ProceedOrderController extends HttpServlet {
     private void createServiceInstance(HttpServletRequest request)
     {
 
-       // ServiceLocation serviceLocation = (ServiceLocation)request.getAttribute("serviceLocation");
-                                            //(ServiceLocation)request.getSession().getAttribute("serviceLocation");
-        ServiceLocation serviceLocation = new ServiceLocation(-1, "TRY ADRESS", 111, 999);
+        ServiceLocation serviceLocation = //(ServiceLocation)request.getAttribute("serviceLocation");
+                                            (ServiceLocation)request.getSession().getAttribute("serviceLocation");
+        //ServiceLocation serviceLocation = new ServiceLocation(-1, "TRY ADRESS", 111, 999);
         Service service = (Service)request.getSession().getAttribute("service");
         serviceLocation.setServiceLocationId(DAO.INSTANCE.createServiceLocation(serviceLocation));
         //serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
-        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, 1);
-      //  request.getSession().removeAttribute("serviceLocation");
-      //  request.getSession().removeAttribute("service");
+        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation,service.getServiceId());
+        request.getSession().removeAttribute("serviceLocation");
+        request.getSession().removeAttribute("service");
 
     }
 

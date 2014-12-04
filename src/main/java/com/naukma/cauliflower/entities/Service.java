@@ -96,4 +96,19 @@ public class Service implements Serializable {
     public void setPrice(double price) { this.price = price; }
 
     public double getPrice() { return price; }
+
+    @Override
+    public String toString() {
+        return "Service{" +
+                "serviceId=" + serviceId +
+                ", providerLocationId=" + providerLocationId +
+                ", serviceTypeId=" + serviceTypeId +
+                ", locationAddress='" + locationAddress + '\'' +
+                ", locationLongitude=" + locationLongitude +
+                ", locationLatitude=" + locationLatitude +
+                ", serviceTypeName='" + serviceTypeName + '\'' +
+                ", serviceSpeed='" + serviceSpeed + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

@@ -51,4 +51,14 @@ public class ServiceLocation implements Serializable {
     public void setLocationLatitude(double locationLatitude) {
         this.locationLatitude = locationLatitude;
     }
+
+    @Override
+    public String toString() {
+        return "ServiceLocation{" +
+                "serviceLocationId=" + serviceLocationId +
+                ", locationAddress='" + locationAddress + '\'' +
+                ", locationLongitude=" + locationLongitude +
+                ", locationLatitude=" + locationLatitude +
+                '}';
+    }
 }

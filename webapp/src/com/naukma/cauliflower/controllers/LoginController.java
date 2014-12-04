@@ -2,6 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.User;
+import org.apache.log4j.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,9 +18,11 @@ import java.sql.SQLException;
  */
 @WebServlet(name = "LoginController")
 public class LoginController extends HttpServlet {
-
+    private static final Logger logger = Logger.getLogger(LoginController.class);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+         logger.info(" INFO ::   LoginController");
+
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -33,6 +36,7 @@ public class LoginController extends HttpServlet {
         else{
             request.getSession().setAttribute("user",user);
             res = user.toString();
+            logger.info(" LOGGER ::   LoginController  : user is"+user.getFirstName());
         }
         Writer out = response.getWriter();
         out.write("<h1> Hello,"+res );

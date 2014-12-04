@@ -573,7 +573,7 @@ angular.module('MapOrder', [])
 
             });
         });
-});
+    });
 
 function ProviderLocation(){
     var _id;
