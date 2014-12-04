@@ -1,9 +1,11 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.UserRoles;
 import com.naukma.cauliflower.entities.ServiceInstance;
 import com.naukma.cauliflower.entities.ServiceOrder;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,19 +34,19 @@ public class SISODashboardController  extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ArrayList<ServiceOrder> orders = null;
         ArrayList<ServiceInstance> instances = null;
-        User user = (User)request.getSession().getAttribute("user");
+        User user = (User)request.getSession().getAttribute(CauliflowerInfo.userAttribute);
         String role = user.getUserRole();
-        if(role.equals("CUSTOMER")){
+        if(role.equals(UserRoles.CUSTOMER.toString())){
             orders = DAO.INSTANCE.getOrders(user.getUserId());
             instances = DAO.INSTANCE.getInstances(user.getUserId());
         }
-        else if(role.equals("CUST_SUP_ENG")){
+        else if(role.equals(UserRoles.CUST_SUP_ENG.toString())){
             orders = DAO.INSTANCE.getAllOrders();
             instances = DAO.INSTANCE.getAllInstances();
 
         }
-        request.setAttribute("orders", orders);
-        request.setAttribute("instances", instances);
+        request.setAttribute(CauliflowerInfo.ordersAttribute, orders);
+        request.setAttribute(CauliflowerInfo.instancesAttribute, instances);
         request.getRequestDispatcher("dashboard.jsp").forward(request,response);
         // JSP!!!!!!!
         ///<% List<ItemObj> myList = (ArrayList<ItemObj>) request.getParameter("list"); %>

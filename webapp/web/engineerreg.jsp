@@ -48,7 +48,7 @@
         <label class="col-md-4 control-label" for="eng_role">Role</label>
         <div class="col-md-6">
           <select id="eng_role" name="userRoleId" class="form-control">
-            <option value="2">Customer Support Engineer</option>
+            <option value="5">Customer Support Engineer</option>
             <option value="3">Provisioning Engineer</option>
             <option value="4">Installation Engineer</option>
           </select>

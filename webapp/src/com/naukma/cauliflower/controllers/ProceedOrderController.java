@@ -5,6 +5,7 @@ import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -40,7 +41,8 @@ public class ProceedOrderController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        user = (User) request.getSession().getAttribute("user");
+        System.out.println("IN PROCEED ORDER");
+        user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
         String scenario = request.getParameter("scenario");
         scenario = "NEW";
         //scenario = Scenario.NEW;
@@ -116,15 +118,14 @@ public class ProceedOrderController extends HttpServlet {
     private void createServiceInstance(HttpServletRequest request)
     {
 
-       // ServiceLocation serviceLocation = (ServiceLocation)request.getAttribute("serviceLocation");
-                                            //(ServiceLocation)request.getSession().getAttribute("serviceLocation");
-        ServiceLocation serviceLocation = new ServiceLocation(-1, "TRY ADRESS", 111, 999);
-        Service service = (Service)request.getSession().getAttribute("service");
+        ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.serviceLocationAttribute);
+        //ServiceLocation serviceLocation = new ServiceLocation(-1, "TRY ADRESS", 111, 999);
+        Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.serviceAttribute);
         serviceLocation.setServiceLocationId(DAO.INSTANCE.createServiceLocation(serviceLocation));
         //serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
-        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, 1);
-      //  request.getSession().removeAttribute("serviceLocation");
-      //  request.getSession().removeAttribute("service");
+        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation,service.getServiceId());
+        request.getSession().removeAttribute(CauliflowerInfo.serviceAttribute);
+        request.getSession().removeAttribute(CauliflowerInfo.serviceLocationAttribute);
 
     }
 

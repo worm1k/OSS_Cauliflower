@@ -38,14 +38,23 @@
         <ul id="js-service-list" class="unstyled">
             <li ng-repeat="service in arrService">
                 <label class="radio font-regular">
-                    <input type="radio" name="service" value="{{service.getId()}}" checked>
+                    <input type="radio" name="serviceId" value="{{service.getId()}}" checked>
                     <span>{{service.getServiceTypeName()}}</span>,
                     <span>{{service.getServiceSpeed()}} Mbps</span>,
                     <span>{{service.getPrice()}}$</span>
                 </label>
             </li>
         </ul>
-        <button type="button" class="btn btn-sm btn-primary center-block">Add Order</button>
+        <form id="js-order-form" action="services" method="POST">
+            <%-- serviceLocation data --%>
+            <input type="hidden" name="serviceLocationAddress" value="">
+            <input type="hidden" name="serviceLocationLongtitude" value="">
+            <input type="hidden" name="serviceLocationLatitude" value="">
+            <%-- service data --%>
+            <input type="hidden" name="serviceId" value="">
+
+            <button type="button" id="js-proceed-to-order" class="btn btn-sm btn-primary center-block">Add Order</button>
+        </form>
     </div>
 </div>
 

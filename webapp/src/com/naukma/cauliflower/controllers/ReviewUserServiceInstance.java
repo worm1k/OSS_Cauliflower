@@ -3,6 +3,7 @@ package com.naukma.cauliflower.controllers;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.ServiceInstance;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -20,7 +21,7 @@ public class ReviewUserServiceInstance extends HttpServlet {
     //todo
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = (User) req.getAttribute("user");
+        User user = (User) req.getAttribute(CauliflowerInfo.userAttribute);
         ArrayList<ServiceInstance> userInstances = DAO.INSTANCE.getInstances(user.getUserId());
         req.setAttribute("userInstances",userInstances);
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(USER_ACCOUNT);

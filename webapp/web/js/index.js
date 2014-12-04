@@ -1,5 +1,36 @@
 'use strict'
 
+function User(){
+    var _id;
+    var _email;
+    var _fName;
+    var _lName;
+    var _phone;
+    var _role;
+    var _roleId;
+
+    this.getId = function(){ return _id; }
+    this.setId = function(id){ _id = id; }
+
+    this.getEmail = function(){ return _email; }
+    this.setEmail = function(email){ _email = email; }
+
+    this.getFName = function(){ return _fName; }
+    this.setFName = function(fName){ _fName = fName; }
+
+    this.getLName = function(){ return _lName; }
+    this.setLName = function(lName){ _lName = lName; }
+
+    this.getPhone = function(){ return _phone; }
+    this.setPhome = function(phone){ _phone = phone; }
+
+    this.getRole = function(){ return _role; }
+    this.setRole = function(role){ _role = role; }
+
+    this.getRoleId = function(){ return _roleId; }
+    this.setRoleId = function(roleId){ _roleId = roleId; }
+}
+
 function MapMarker(){
     var _values = {};
     var _options = {};
@@ -17,11 +48,38 @@ function MapMarker(){
 }
 'use strict'
 
-angular.module('MapOrder', [])
+angular.module('NgApp', [])
+    .controller('UserLoginController', function($scope){
+        $scope.user = new User();
+        $scope.userIsLogged = false;
+
+        var ajaxGetUser = function(){
+            $.ajax({
+                type: 'GET',
+                url: 'login',
+                dataType: 'json',
+                success: function(user){
+                    console.log('user:', user);
+                    if(user){
+                        $scope.user = user;
+                        if(user != null){
+                            $scope.$apply(function(){ $scope.userIsLogged = true; });
+                        }
+                    }
+                },
+                error: function(){
+                    console.log('error getting user');
+                }
+            });
+        }
+
+        ajaxGetUser();
+    })
     .controller('MapOrderController', function($scope){
         $scope.serviceLocationAddress;
         $scope.providerLocationAddress;
         $scope.arrService = [];
+        $scope.serviceId = 0;
         $scope.isOpenedInfobox = false;
         $scope.gmap = $("#js-map").gmap3();
 
@@ -212,6 +270,19 @@ angular.module('MapOrder', [])
                 google.maps.event.addListener(infobox, 'closeclick', function(event){
                     $scope.isOpenedInfobox = false;
                 });
+
+                google.maps.event.addListener(infobox, 'domready', function() {
+                    $('#js-proceed-to-order').click(function(){
+                        var serviceId = $('input[name="serviceId"]:checked').val();
+
+                        $('#js-order-form input[name="serviceLocationAddress"]').val(JSON.stringify($scope.serviceLocationAddress));
+                        $('#js-order-form input[name="serviceLocationLongtitude"]').val(marker.position.lng());
+                        $('#js-order-form input[name="serviceLocationLatitude"]').val(marker.position.lat());
+                        $('#js-order-form input[name="serviceId"]').val(serviceId);
+
+                        $("#js-order-form").submit();
+                    })
+                });
             }
         }
 
@@ -296,10 +367,9 @@ angular.module('MapOrder', [])
         }
 
         function ajaxGetServices(callback){
-            console.log('getServices');
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:10000/webapp_war_exploded/services',
+                url: 'services',
                 dataType: 'json',
                 success: function(jqXHR){
                     console.log(jqXHR);
@@ -326,7 +396,7 @@ angular.module('MapOrder', [])
             grey: new google.maps.MarkerImage("img/icons/marker_grey.png")
         }
 
-//Active Marker Initialization
+        //Active Marker Initialization
         var activeMarker = new MapMarker();
         activeMarker.setValues({
             latLng: [0,0],
@@ -514,7 +584,7 @@ angular.module('MapOrder', [])
                                             closest = findClosest(marker[0], markers);
                                             mapDrawPolyline($scope.gmap, [
                                                 [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-                                                [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+                                                [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ]
                                             ], 'blue', true);
 
                                             mapSetServiceOptions(closest.marker);
@@ -560,7 +630,7 @@ angular.module('MapOrder', [])
 
             });
         });
-});
+    });
 
 function ProviderLocation(){
     var _id;

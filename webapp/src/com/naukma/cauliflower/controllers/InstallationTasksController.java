@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebServlet(name = "InstallationTasksController")
 public class InstallationTasksController extends HttpServlet {
 
     /*
@@ -21,16 +22,19 @@ public class InstallationTasksController extends HttpServlet {
     SOW.5
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute("user");
+        User user = DAO.INSTANCE.getUserByLoginAndPassword("slavko.yeapp@yandex.ua", "qwre123456");//JUST FOR END TO END
+        //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
         Task task = (Task) request.getAttribute("task");
         int taskId = task.getTaskId();
         int serviceOrderId = task.getServiceOrderId();
+
         //RI.9
         //The system should allow creating Devices, Ports and Cables only by Installation Engineer
         if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {
             if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
                 Scenario scenario = DAO.INSTANCE.getOrderScenario(serviceOrderId);
                 if (scenario == Scenario.NEW) {
+
                     if (!DAO.INSTANCE.freePortExists())
                         DAO.INSTANCE.createRouter();
                     DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
@@ -48,7 +52,7 @@ public class InstallationTasksController extends HttpServlet {
                 //END TO END
 
 
-                request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
+                //request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
             }else
                 request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
         } else
@@ -58,7 +62,7 @@ public class InstallationTasksController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        doPost(request, response);
 
 
     }
