@@ -1,81 +1,93 @@
 body {
-  font: 14px 'Open Sans', Arial, sans-serif;
-  background: #f2f2f2;
-  color: #333;
-  padding-top: 50px;
+    font: 14px 'Open Sans', Arial, sans-serif;
+    background: #f2f2f2;
+    color: #333;
+    padding-top: 50px;
 }
 .navbar-fixed-top,
 .footer {
-  background-color: #e5e5e5;
+    background-color: #e5e5e5;
 }
 .navbar-fixed-top {
-  border-bottom: 2px solid #dbdbdb;
+    border-bottom: 2px solid #dbdbdb;
 }
 .footer {
-  margin-top: 40px;
-  padding-top: 40px;
-  padding-bottom: 20px;
-  border-top: 2px solid #dbdbdb;
+    margin-top: 40px;
+    padding-top: 40px;
+    padding-bottom: 20px;
+    border-top: 2px solid #dbdbdb;
 }
 .search-container {
-  position: relative;
+    position: relative;
 }
 .search {
-  position: absolute;
-  top: 16px;
-  z-index: 2;
+    position: absolute;
+    top: 16px;
+    z-index: 2;
 }
 .txt-center {
-  text-align: center;
+    text-align: center;
 }
 .txt-bold {
-  font-weight: 600;
+    font-weight: 600;
 }
 .navbar-nav > li > a {
-  font-size: 14px;
-  color: #333;
+    font-size: 14px;
+    color: #333;
+}
+.navbar-nav > li.active > a {
+    backgroud-color: #dbdbdb;
 }
 .nav-user-icon {
-  padding-right: 4px;
+    padding-right: 4px;
 }
 .txt-uppercase {
-  text-transform: uppercase;
+    text-transform: uppercase;
 }
 .form-signin {
-  max-width: 470px;
-  margin: 0 auto;
+    max-width: 470px;
+    margin: 0 auto;
 }
 .btn-signin,
 .btn-proceed {
-  margin-top: 24px;
-  margin-bottom: 24px;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 260px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 260px;
 }
 .glyphicon-small {
-  font-size: 0.8em;
+    font-size: 0.8em;
 }
 .google-map {
-  height: 560px;
+    height: 560px;
 }
 .table {
-  font-size: 14px;
+    font-size: 14px;
 }
 .item-visible-false {
-  display: none;
+    display: none;
 }
 .infobox {
-  background-color: #fff;
-  border: 1px solid #c2c1be;
-  border-radius: 2px;
-  padding: 14px;
-  -webkit-box-shadow: rgba(0,0,0,0.298) 0px 1px 4px -1px;
-  box-shadow: rgba(0,0,0,0.298) 0px 1px 4px -1px;
+    background-color: #fff;
+    border: 1px solid #c2c1be;
+    border-radius: 2px;
+    padding: 14px;
+    -webkit-box-shadow: rgba(0,0,0,0.298) 0px 1px 4px -1px;
+    box-shadow: rgba(0,0,0,0.298) 0px 1px 4px -1px;
 }
 .font-regular {
-  font-weight: normal;
+    font-weight: normal;
 }
 .border-left {
-  border-left: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+.img-header-logo {
+    height: 50px;
+    width: auto;
+    padding: 8px;
+}
+.img-logo-homepage {
+    margin-top: 40px;
+    margin-bottom: 40px;
 }

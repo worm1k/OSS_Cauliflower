@@ -16,7 +16,7 @@
     </div>
 </footer>
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCP497dnVu2vETnDTcY9ouPNOyCMhccFcs&libraries=places"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCP497dnVu2vETnDTcY9ouPNOyCMhccFcs&libraries=places&language=en"></script>
 <script type="text/javascript" src="./vendor/angularjs/angular.min.js"></script>
 <script type="text/javascript" src="./vendor/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="./vendor/gmap3/dist/gmap3.min.js"></script>
