@@ -6,6 +6,7 @@ import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.mail.EmailSender;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -77,7 +78,10 @@ public class RegistrationController extends HttpServlet {
                 response.getWriter().println("Service: " + service);
                 response.getWriter().println("servLoc: " + servLoc);*/
                 if(service!=null && servLoc!=null) {
-                    response.sendRedirect("/proceed"); //max`s
+                    //response.sendRedirect("/proceed"); //max`s
+                    ServletContext context= getServletContext();
+                    RequestDispatcher rd= context.getRequestDispatcher("/proceed");
+                    rd.forward(request, response);
                 }
                 else response.sendRedirect(pathFrom);
             }else{

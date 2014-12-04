@@ -4,6 +4,8 @@ import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.User;
 import org.apache.log4j.*;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,7 +25,7 @@ public class LoginController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
          logger.info(" INFO ::   LoginController");
 
-
+        String pathFrom  = request.getHeader("Referer");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String res = "";
@@ -31,16 +33,20 @@ public class LoginController extends HttpServlet {
 
         User user = null;
         user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
-        if(user == null){
-            res = "NULL";}
-        else{
+        if(user == null) {
+            request.getSession().setAttribute("error","Incorrect login or password!");
+            response.sendRedirect(pathFrom);
+        }else{
             request.getSession().setAttribute("user",user);
-            res = user.toString();
+            //res = user.toString();
             logger.info(" LOGGER ::   LoginController  : user is"+user.getFirstName());
+            ServletContext context= getServletContext();
+            RequestDispatcher rd= context.getRequestDispatcher("/proceed");
+            rd.forward(request, response);
         }
-        Writer out = response.getWriter();
+        /*Writer out = response.getWriter();
         out.write("<h1> Hello,"+res );
-        out.write("</h1>");
+        out.write("</h1>");*/
 
 
 

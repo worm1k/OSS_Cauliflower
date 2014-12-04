@@ -43,6 +43,7 @@ public class ProvisioningTaskController extends HttpServlet {
                 DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
 
                 //JUST FOR END TO END PURPOSES
+                request.getSession().removeAttribute("user");
                 response.sendRedirect("login.jsp");
                 //END TO END
 
