@@ -7,7 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="en" ng-app="MapOrder">
+<html lang="en" ng-app="NgApp">
 <head>
     <title>CauliFlower | Operation Support System</title>
     <jsp:include page="head.jsp"/>

@@ -66,7 +66,10 @@ body {
     font-size: 14px;
 }
 .item-visible-false {
-    display: none;
+    display: none !important;
+}
+.item-visible-true {
+    display: block !important;
 }
 .infobox {
     background-color: #fff;

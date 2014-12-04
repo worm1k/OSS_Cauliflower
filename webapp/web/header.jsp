@@ -19,10 +19,12 @@
                 <li><a class="txt-uppercase" href="home.jsp">Home</a></li>
                 <li><a class="txt-uppercase" href="order.jsp">Order</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right" ng-controller="UserLoginController">
                 <!-- user is logged in -->
-                <!-- <li><a class="nav-user"><span class="nav-user-icon glyphicon glyphicon-user glyphicon-small"></span>khytsky.vladimir@gmail.com</a></li> -->
-                <li><a href="auth.jsp" class="nav-user"></span>User cabinet</a></li>
+                <li>
+                    <a href="dashboard.jsp" class="item-visible-{{userIsLogged}}" style="display: none;"><span class="nav-user-icon glyphicon glyphicon-user glyphicon-small"></span>{{user.email}}</a>
+                    <a href="auth.jsp" class="item-visible-{{!userIsLogged}}" ></span>User Cabinet</a>
+                </li>
             </ul>
         </div>
     </div>
