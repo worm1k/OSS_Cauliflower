@@ -9,9 +9,9 @@
 <footer class="footer">
     <div class="container">
         <ul class="list-inline">
-            <li><a href="#">navlink1</a></li>
-            <li><a href="#">navlink2</a></li>
-            <li><a href="#">navlink3</a></li>
+            <li><a href="home.jsp">Home</a></li>
+            <li><a href="order.jsp">Order</a></li>
+            <%--<li><a href="#">navlink3</a></li>--%>
         </ul>
     </div>
 </footer>

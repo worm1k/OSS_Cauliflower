@@ -9,7 +9,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="width=device-width, initial-scale=1">
 
-<link rel="icon" href="">
+<link rel="shortcut icon" href="img/icons/logo.ico" />
 <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="css/main.css">

@@ -41,9 +41,6 @@ public class LoginController extends HttpServlet {
         Writer out = response.getWriter();
         out.write("<h1> Hello,"+res );
         out.write("</h1>");
-
-
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
