@@ -1,6 +1,8 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.entities.Service;
+import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import org.apache.log4j.*;
 
@@ -29,6 +31,8 @@ public class LoginController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String res = "";
+        Service service = (Service)request.getSession().getAttribute("service");
+        ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
 
 
         User user = null;
@@ -37,12 +41,15 @@ public class LoginController extends HttpServlet {
             request.getSession().setAttribute("error","Incorrect login or password!");
             response.sendRedirect(pathFrom);
         }else{
-            request.getSession().setAttribute("user",user);
-            //res = user.toString();
-            logger.info(" LOGGER ::   LoginController  : user is"+user.getFirstName());
-            ServletContext context= getServletContext();
-            RequestDispatcher rd= context.getRequestDispatcher("/proceed");
-            rd.forward(request, response);
+            request.getSession().setAttribute("user", user);
+            logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
+            if(service!=null && servLoc!=null){
+                ServletContext context = getServletContext();
+                RequestDispatcher rd = context.getRequestDispatcher("/proceed");
+                rd.forward(request, response);
+            }else{
+                response.sendRedirect("dashboard.jsp");
+            }
         }
     }
 

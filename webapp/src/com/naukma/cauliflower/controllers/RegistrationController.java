@@ -83,7 +83,7 @@ public class RegistrationController extends HttpServlet {
                     RequestDispatcher rd= context.getRequestDispatcher("/proceed");
                     rd.forward(request, response);
                 }
-                else response.sendRedirect(pathFrom);
+                else response.sendRedirect("dashboard.jsp");
             }else{
                 request.getSession().setAttribute("error","System error, try again later, please");
                 response.sendRedirect(pathFrom);
