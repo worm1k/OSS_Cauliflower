@@ -8,9 +8,10 @@
 $(document).ready(function() {
 
     var isMailValid = 0;
+    var isMailPassword = 0;
 
     $( "#auth_reg_submit" ).click(function() {
-        if(isMailValid)
+        if(isMailValid && isMailPassword)
             $( "#auth_reg_form" ).submit();
         else
             alert("Smth wrong with fields");
@@ -28,6 +29,19 @@ $(document).ready(function() {
         else{
             input.addClass("invalid");
             isMailValid = 0;
+        }
+    });
+    <!--Validating fields on auth form-->
+    $('#auth_reg_password').on('input', function() {
+        var input=$(this);
+        var is_email=input.val().length > 6;
+        if(is_email){
+            input.removeClass("invalid");
+            isMailPassword = 1;
+        }
+        else{
+            input.addClass("invalid");
+            isMailPassword = 0;
         }
     });
 
