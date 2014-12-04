@@ -9,9 +9,12 @@ $(document).ready(function() {
 
     var isMailValid = 0;
     var isMailPassword = 0;
+    var isMailName = 0;
+    var isMailPhone = 0;
+    var isMailSurname = 0;
 
     $( "#auth_reg_submit" ).click(function() {
-        if(isMailValid && isMailPassword)
+        if(isMailValid && isMailPassword && isMailName && isMailPhone && isMailSurname)
             $( "#auth_reg_form" ).submit();
         else
             alert("Smth wrong with fields");
@@ -42,6 +45,45 @@ $(document).ready(function() {
         else{
             input.addClass("invalid");
             isMailPassword = 0;
+        }
+    });
+    <!--Validating fields on auth form-->
+    $('#auth_reg_Name').on('input', function() {
+        var input=$(this);
+        var is_email=input.val().length > 2;
+        if(is_email){
+            input.removeClass("invalid");
+            isMailName = 1;
+        }
+        else{
+            input.addClass("invalid");
+            isMailName = 0;
+        }
+    });
+    <!--Validating fields on auth form-->
+    $('#auth_reg_Phone').on('input', function() {
+        var input=$(this);
+        var is_email = (input.val().length == 10 && $.isNumeric(input.val()));
+        if(is_email){
+            input.removeClass("invalid");
+            isMailPhone = 1;
+        }
+        else{
+            input.addClass("invalid");
+            isMailPhone = 0;
+        }
+    });
+    <!--Validating fields on auth form-->
+    $('#auth_reg_Surname').on('input', function() {
+        var input=$(this);
+        var is_email=input.val().length > 2;
+        if(is_email){
+            input.removeClass("invalid");
+            isMailSurname = 1;
+        }
+        else{
+            input.addClass("invalid");
+            isMailSurname = 0;
         }
     });
 

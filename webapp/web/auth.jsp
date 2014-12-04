@@ -30,18 +30,18 @@
             </form>
         </div>
         <div class="col-xs-6 border-left">
-            <h2 class="txt-center">Registration</h2>
+            <h2 class="txt-center">Registration <br> all fields are required</h2>
             <form class="form-signin" action="register" method="post" id="auth_reg_form">
                 <h4><div  id="auth_email_text">Email</div></h4>
-                <input type="email" class="form-control invalid" placeholder="you@example.com" name="email" id="auth_reg_email" required>
+                <input type="email" class="form-control" placeholder="you@example.com" name="email" id="auth_reg_email" required>
                 <h4>Password</h4>
-                <input type="password" class="form-control invalid" name="password" id="auth_reg_password"  placeholder="secret-password" required>
+                <input type="password" class="form-control" name="password" id="auth_reg_password"  placeholder="secret-password" required>
                 <h4>Name</h4>
-                <input type="text" class="form-control invalid" name="name" id="auth_reg_Name" placeholder="Name" required>
+                <input type="text" class="form-control" name="name" id="auth_reg_Name" placeholder="Name" required>
                 <h4>Surname</h4>
-                <input type="text" class="form-control invalid" name="surname" id="auth_reg_Surname" placeholder="Surname" required>
+                <input type="text" class="form-control" name="surname" id="auth_reg_Surname" placeholder="Surname" required>
                 <h4>Phone number</h4>
-                <input type="text" class="form-control invalid" name="phone" id="auth_reg_Phone" placeholder="Phone" required>
+                <input type="text" class="form-control" name="phone" id="auth_reg_Phone" placeholder="Phone" required>
                 <input type="hidden" name="userRoleId" value="1" >
                 <button class="btn-signin btn btn-lg btn-primary btn-block" id="auth_reg_submit" type="submit">Sign Up</button>
             </form>
