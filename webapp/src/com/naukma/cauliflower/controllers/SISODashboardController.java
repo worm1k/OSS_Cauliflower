@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -36,14 +37,19 @@ public class SISODashboardController  extends HttpServlet {
         ArrayList<ServiceInstance> instances = null;
         User user = (User)request.getSession().getAttribute(CauliflowerInfo.userAttribute);
         String role = user.getUserRole();
-        if(role.equals(UserRoles.CUSTOMER.toString())){
-            orders = DAO.INSTANCE.getOrders(user.getUserId());
-            instances = DAO.INSTANCE.getInstances(user.getUserId());
-        }
-        else if(role.equals(UserRoles.CUST_SUP_ENG.toString())){
-            orders = DAO.INSTANCE.getAllOrders();
-            instances = DAO.INSTANCE.getAllInstances();
+        try {
+            if(role.equals(UserRoles.CUSTOMER.toString())){
+                    orders = DAO.INSTANCE.getOrders(user.getUserId());
+                instances = DAO.INSTANCE.getInstances(user.getUserId());
+            }
+            else if(role.equals(UserRoles.CUST_SUP_ENG.toString())){
+                orders = DAO.INSTANCE.getAllOrders();
+                instances = DAO.INSTANCE.getAllInstances();
 
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         request.setAttribute(CauliflowerInfo.ordersAttribute, orders);
         request.setAttribute(CauliflowerInfo.instancesAttribute, instances);

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet(name = "InstallationTasksController")
 public class InstallationTasksController extends HttpServlet {
@@ -22,7 +23,9 @@ public class InstallationTasksController extends HttpServlet {
     SOW.5
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = DAO.INSTANCE.getUserByLoginAndPassword("slavko.yeapp@yandex.ua", "qwre123456");//JUST FOR END TO END
+        User user = null;//JUST FOR END TO END
+        try {
+            user = DAO.INSTANCE.getUserByLoginAndPassword("slavko.yeapp@yandex.ua", "qwre123456");
         //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
         Task task = (Task) request.getAttribute("task");
         int taskId = task.getTaskId();
@@ -59,6 +62,9 @@ public class InstallationTasksController extends HttpServlet {
             request.getRequestDispatcher("taskalreadycompleted.jsp").forward(request, response);
 
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

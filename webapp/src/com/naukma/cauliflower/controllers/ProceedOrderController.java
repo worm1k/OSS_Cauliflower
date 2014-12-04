@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.GregorianCalendar;
 
 /**
@@ -47,14 +48,25 @@ public class ProceedOrderController extends HttpServlet {
         scenario = "NEW";
         //scenario = Scenario.NEW;
         //   if(user != null) {
+
+        try {
         if(scenario.equals(Scenario.NEW.toString()))
-            scenarioNew(request);
+                scenarioNew(request);
         else
             scenarioDisconnect(request);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         ServletContext context = this.getServletContext();
         RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
          //for end2end
-        Task task = DAO.INSTANCE.getTaskById(taskId);
+        Task task = null;
+        try {
+            task = DAO.INSTANCE.getTaskById(taskId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         request.setAttribute("task",task);
         dispatcher.forward(request, response);
 
@@ -62,8 +74,7 @@ public class ProceedOrderController extends HttpServlet {
 
     }
 
-    private void scenarioNew(HttpServletRequest request)
-    {
+    private void scenarioNew(HttpServletRequest request) throws SQLException {
         createNewOrder();
         changeOrderStatus();
         createServiceInstance(request);
@@ -83,7 +94,11 @@ public class ProceedOrderController extends HttpServlet {
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createTaskForInstallation(orderId);
         //for end2end
-        DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
+        try {
+            DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // ACK.1
@@ -111,7 +126,11 @@ public class ProceedOrderController extends HttpServlet {
     private void changeOrderStatus()
     {
 
-        DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
+        try {
+            DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     //ACK 12
@@ -132,12 +151,20 @@ public class ProceedOrderController extends HttpServlet {
 
     private void connectInstanceWithOrder()
     {
-        DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
+        try {
+            DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setInstanceBlocked()
     {
-        DAO.INSTANCE.setInstanceBlocked(serviceInstanceId,1);
+        try {
+            DAO.INSTANCE.setInstanceBlocked(serviceInstanceId,1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 

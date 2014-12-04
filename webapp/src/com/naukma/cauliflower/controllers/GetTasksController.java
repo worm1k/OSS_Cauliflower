@@ -1,7 +1,6 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.dao.TaskStatus;
 import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
@@ -12,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -29,7 +29,12 @@ public class GetTasksController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
-        List<Task> tasks = DAO.INSTANCE.getFreeAndProcessingTasksByUserRoleId(user.getUserRoleId());
+        List<Task> tasks = null;
+        try {
+            tasks = DAO.INSTANCE.getFreeAndProcessingTasksByUserRoleId(user.getUserRoleId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         request.setAttribute("tasks", tasks);
         request.getRequestDispatcher("smthing.jsp").forward(request, response);
     }

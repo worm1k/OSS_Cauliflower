@@ -2,9 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.*;
 import com.naukma.cauliflower.entities.ServiceOrder;
-import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
-import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet(name = "ProvisioningTaskController")
 public class ProvisioningTaskController extends HttpServlet {
@@ -25,8 +24,10 @@ public class ProvisioningTaskController extends HttpServlet {
      */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = DAO.INSTANCE.getUserByLoginAndPassword("kemi.kondratenko@gmail.com", "kemi");//JUST FOR END TO END
-      //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        User user = null;//JUST FOR END TO END
+        try {
+            user = DAO.INSTANCE.getUserByLoginAndPassword("kemi.kondratenko@gmail.com", "kemi");
+        //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
         Integer taskId = (Integer) request.getAttribute("taskId");
 
         if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {
@@ -54,6 +55,9 @@ public class ProvisioningTaskController extends HttpServlet {
         } else
             request.getRequestDispatcher("taskalreadycompleted.jsp").forward(request, response);
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 
     }

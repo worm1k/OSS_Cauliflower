@@ -6,7 +6,7 @@ import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.sql.SQLException;
 
 /**
@@ -39,7 +38,11 @@ public class LoginController extends HttpServlet {
         ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.serviceLocationAttribute);
 
         User user = null;
-        user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
+        try {
+            user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         if(user == null) {
             request.getSession().setAttribute(CauliflowerInfo.errorAttribute,"Incorrect login or password!");
             response.sendRedirect(pathFrom);
