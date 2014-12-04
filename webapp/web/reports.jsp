@@ -11,10 +11,10 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <link rel="stylesheet" type="text/css" href="../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/style.css" />
   <link href='http://fonts.googleapis.com/css?family=Lobster&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
-  <link rel='stylesheet' href='style/bootstrap.min.css' type='text/css' media='all'>
+  <link rel='stylesheet' href='../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/bootstrap.min.css' type='text/css' media='all'>
   <script src="jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
   <script src="jquery/bootstrap.min.js" type="text/javascript"></script>
 
@@ -28,8 +28,8 @@
 
   <div class="header">
     <a href="main.html"><div class="header_logo">
-      <div class="header_logo_pic"><img src="pics/cauliflower.png"></div>
-      <div class="header_logo_name">Cauliflower</a></div>
+      <div class="header_logo_pic"><img src="../../../../Downloads/OSS_Cauliflower-master/webapp/web/pics/cauliflower.png"></div>
+      <div class="header_logo_name">Cauliflower</div>
 </div></a>
 <div class="header_login"><a href=""> Administrator </a></div>
 </div>
@@ -57,18 +57,19 @@
   </div>
   <div class="clear"></div>
   <div class="report_block">
-    <div class="report_text">Get report about most profitable routers</div>
+    <div class="report_text">Get report about most profitable routers/div>
     <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Profitable"/></div>
   </div>
   <div class="clear"></div>
   <div class="report_block">
-    <div class="report_text">Get report about routers utilization and capacity </div>
+    <div class="report_text">Get report about utilization and capacity</div>
     <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="utilizationAndCapacity"/></div>
   </div>
-  <div class="clear"></div>
-  <div class="report_block">
-    <div class="report_text">Get profitability by month </div>
-    <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Profitability"/></div>
+    <div class="clear"></div>
+    <div class="report_block">
+      <div class="report_text">Get report about profitability</div>
+      <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Profitability"/></div>
+    </div>
   </div>
 </form>
 
