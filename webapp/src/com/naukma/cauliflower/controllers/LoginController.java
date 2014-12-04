@@ -34,7 +34,6 @@ public class LoginController extends HttpServlet {
         Service service = (Service)request.getSession().getAttribute("service");
         ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute("serviceLocation");
 
-
         User user = null;
         user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
         if(user == null) {
