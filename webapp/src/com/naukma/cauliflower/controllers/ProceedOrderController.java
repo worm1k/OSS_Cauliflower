@@ -124,7 +124,7 @@ public class ProceedOrderController extends HttpServlet {
         orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.DISCONNECT, instanceId);
     }
 
-    private void createModifyOrder(Integer instanceId){
+    private void createModifyOrder(Integer instanceId)throws SQLException{
         orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.MODIFY, instanceId);
     }
 

@@ -581,7 +581,7 @@ public enum DAO {
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
      */
-    public int createServiceOrder(int userId, Scenario scenario, GregorianCalendar calendar, Integer idServiceInstance) throws SQLException {
+    public int createServiceOrder(int userId, Scenario scenario, Integer idServiceInstance) throws SQLException {
 
         //default status ENTERING
 
