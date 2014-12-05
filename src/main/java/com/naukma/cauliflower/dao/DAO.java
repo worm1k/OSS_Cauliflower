@@ -577,11 +577,10 @@ public enum DAO {
      * @param userId            id of the user to create SO
      * @param scenario          scenario for the order
      * @param idServiceInstance id of service instance for disconnect scenario
-     * @param calendar          service order creation date
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
      */
-    public int createServiceOrder(int userId, Scenario scenario, GregorianCalendar calendar, Integer idServiceInstance) {
+    public int createServiceOrder(int userId, Scenario scenario, Integer idServiceInstance) {
         //default status ENTERING
 
         OrderStatus orderStatus = OrderStatus.ENTERING;
