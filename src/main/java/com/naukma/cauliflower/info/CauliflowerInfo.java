@@ -16,6 +16,7 @@ public class CauliflowerInfo {
     public static final String TASK_ID_PARAM = "taskId";
     public static final String TASK_STATUS_PARAM = "taskStatus";
     public static final String TASKS_PARAM = "tasks";
+    public static final String TASK_PARAM = "task";
 
     public static final String AUTH_LINK = "auth.jsp";
     public static final String ORDER_LINK = "order.jsp";
