@@ -1,5 +1,12 @@
 'use strict'
 
+$(document).ready(function(){
+    $('#js-logout-lnk').click(function(e){
+        e.preventDefault();
+        $('#js-logout-form').submit();
+    });
+});
+
 function User(){
     var _id;
     var _email;

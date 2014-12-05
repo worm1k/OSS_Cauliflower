@@ -36,7 +36,9 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="dashboard.jsp">Dashboard</a></li>
                                 <li class="divider"><li>
-                                <li><a href="#">Logout</a></li>
+                                <li><a id="js-logout-lnk" href="#">Logout</a>
+                                    <form id="js-logout-form" action="logout" method="POST"></form>
+                                </li>
                             </ul>
                         </li>
                     </c:when>
