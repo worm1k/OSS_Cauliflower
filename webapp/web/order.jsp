@@ -50,6 +50,7 @@
             <input type="hidden" name="serviceLocationAddress" value="">
             <input type="hidden" name="serviceLocationLongtitude" value="">
             <input type="hidden" name="serviceLocationLatitude" value="">
+            <input type="hidden" name="scenario" value="NEW">
             <%-- service data --%>
             <input type="hidden" name="serviceId" value="">
 
