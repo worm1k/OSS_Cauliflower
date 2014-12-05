@@ -1508,11 +1508,27 @@ public enum DAO {
     //KaspYar
 
     /**
-     * Creates task with status FREE for installation engineer for selected service order
+     * Creates task with status FREE for selected engineer for selected service order
      *
      * @param serviceOrderId
+     * @param role  role of the engineer
      * @return id of created task
      */
+    public int createNewTask(int serviceOrderId,UserRoles role) {
+
+        return 1;
+
+    }
+
+
+
+
+        /**
+         * Creates task with status FREE for installation engineer for selected service order
+         *
+         * @param serviceOrderId
+         * @return id of created task
+         */
     public int createTaskForInstallation(int serviceOrderId) {
         {//help
             System.out.println("CREATE TASK FOR INSTALLATION");
