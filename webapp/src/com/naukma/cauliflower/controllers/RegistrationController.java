@@ -70,7 +70,9 @@ public class RegistrationController extends HttpServlet {
         if(DAO.INSTANCE.checkForEmailUniq(email)){
             if(DAO.INSTANCE.checkForPhoneUniq(phone)) {
                 User user = new User(userRoleId, userRole, email, firstName, lastName, phone);
-                System.out.println(user);
+                {//help
+                    System.out.println(user);
+                }
                 int resId = DAO.INSTANCE.createUser(user, password);
                 if (resId > 0) {
                     user = new User(resId, userRoleId, userRole, email, firstName, lastName, phone);
