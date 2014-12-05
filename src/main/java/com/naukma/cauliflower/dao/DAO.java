@@ -4,6 +4,7 @@ package com.naukma.cauliflower.dao;
 import com.naukma.cauliflower.entities.*;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -63,7 +64,7 @@ public enum DAO {
         try {
             UserRoles urName = UserRoles.INSTALLATION_ENG;
             preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-            preparedStatement.setString(1,urName.toString());
+            preparedStatement.setString(1, urName.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("RES");
@@ -378,7 +379,7 @@ public enum DAO {
         try {
             UserRoles urName = UserRoles.PROVISIONING_ENG;
             preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-            preparedStatement.setString(1,urName.toString());
+            preparedStatement.setString(1, urName.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("RES");
@@ -482,13 +483,13 @@ public enum DAO {
     //Halya
     //return true, if no user in db with this phone
     //else return false
-    public boolean checkForPhoneUniq(String phone){
+    public boolean checkForPhoneUniq(String phone) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
             preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE PHONE = ?");
-            preparedStatement.setString(1,phone );
+            preparedStatement.setString(1, phone);
             ResultSet resultSet = preparedStatement.executeQuery();
             int checkResult = -1;
             if (resultSet.next()) {
@@ -580,7 +581,7 @@ public enum DAO {
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
      */
-    public int createServiceOrder(int userId, Scenario scenario, GregorianCalendar calendar, Integer idServiceInstance) throws SQLException{
+    public int createServiceOrder(int userId, Scenario scenario, GregorianCalendar calendar, Integer idServiceInstance) throws SQLException {
 
         //default status ENTERING
 
@@ -591,68 +592,68 @@ public enum DAO {
         {//help
             System.out.println("CREATE NEW ORDER!");
         }
-            connection.setAutoCommit(false);
-            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
-            preparedStatement.setString(1, scenario.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            int idOrderScenario = 0;
-            if (resultSet.next()) {
-                idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
-            }
-            {//help
-                System.out.println("Scenario : " + scenario);
-                System.out.println("idScenario: " + idOrderScenario);
-            }
+        connection.setAutoCommit(false);
+        preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
+        preparedStatement.setString(1, scenario.toString());
+        ResultSet resultSet = preparedStatement.executeQuery();
+        int idOrderScenario = 0;
+        if (resultSet.next()) {
+            idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
+        }
+        {//help
+            System.out.println("Scenario : " + scenario);
+            System.out.println("idScenario: " + idOrderScenario);
+        }
 
-            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
-            preparedStatement.setString(1, orderStatus.toString());
-            int idOrderStatus = 0;
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
-            }
+        preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
+        preparedStatement.setString(1, orderStatus.toString());
+        int idOrderStatus = 0;
+        resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
+        }
+        {//help
+            System.out.println("idOrderStatus: " + idOrderStatus);
+        }
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        Date d = gregorianCalendar.getTime();
+        if (idServiceInstance == null) {
+            preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                    "VALUES(?,?,?,? )");
+            preparedStatement.setInt(1, idOrderScenario);
+            preparedStatement.setInt(2, idOrderStatus);
+            preparedStatement.setDate(3, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+            preparedStatement.setInt(4, userId);
             {//help
-                System.out.println("idOrderStatus: " + idOrderStatus);
+                System.out.println("NULL");
             }
-            GregorianCalendar gregorianCalendar = new GregorianCalendar();
-            Date d = gregorianCalendar.getTime();
-            if (idServiceInstance == null) {
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
-                        "VALUES(?,?,?,? )");
-                preparedStatement.setInt(1, idOrderScenario);
-                preparedStatement.setInt(2, idOrderStatus);
-                preparedStatement.setDate(3, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
-                preparedStatement.setInt(4, userId);
-                {//help
-                    System.out.println("NULL");
-                }
-            } else {
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SRVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
-                        "VALUES(?, ?,? ,?,?)");
-                preparedStatement.setInt(1, idServiceInstance.intValue());
-                preparedStatement.setInt(2, idOrderScenario);
-                preparedStatement.setInt(3, idOrderStatus);
-                preparedStatement.setDate(4, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
-                preparedStatement.setInt(5, userId);
-                {//help
-                    System.out.println("NOT NULL");
-                    System.out.println("idServiceInstance " + idServiceInstance.intValue());
-                }
+        } else {
+            preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SRVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                    "VALUES(?, ?,? ,?,?)");
+            preparedStatement.setInt(1, idServiceInstance.intValue());
+            preparedStatement.setInt(2, idOrderScenario);
+            preparedStatement.setInt(3, idOrderStatus);
+            preparedStatement.setDate(4, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+            preparedStatement.setInt(5, userId);
+            {//help
+                System.out.println("NOT NULL");
+                System.out.println("idServiceInstance " + idServiceInstance.intValue());
             }
-            preparedStatement.executeUpdate();
-            preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                {//help
-                    System.out.println("RETURN : " + resultSet.getInt("RES"));
-                }
-                result = resultSet.getInt("RES");
+        }
+        preparedStatement.executeUpdate();
+        preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
+        resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            {//help
+                System.out.println("RETURN : " + resultSet.getInt("RES"));
             }
+            result = resultSet.getInt("RES");
+        }
 
-            {//help
-                System.out.println("SUCCESS! CREATE NEW ORDER!");
-            }
-        try{
+        {//help
+            System.out.println("SUCCESS! CREATE NEW ORDER!");
+        }
+        try {
             connection.commit();
         } catch (SQLException e) {
             if (connection != null) {
@@ -665,12 +666,12 @@ public enum DAO {
                 }
             }
         }
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException e) {
+            logger.info("Smth wrong with closing connection or preparedStatement!");
+            e.printStackTrace();
+        }
         return result;
     }
 
@@ -1096,7 +1097,10 @@ public enum DAO {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT * FROM SERVICEORDER " +
+        preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +
+                "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
+                "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSTATUS " +
                 "WHERE ID_USER = ?");
         preparedStatement.setInt(1, userId);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -1546,11 +1550,11 @@ public enum DAO {
      * Creates task with status FREE for selected engineer for selected service order
      *
      * @param serviceOrderId
-     * @param role  role of the engineer
-     * @param taskName name of the task
+     * @param role           role of the engineer
+     * @param taskName       name of the task
      * @return id of created task
      */
-    public int createNewTask(int serviceOrderId,UserRoles role, TaskName taskName) {
+    public int createNewTask(int serviceOrderId, UserRoles role, TaskName taskName) {
         {//help
             System.out.println("CREATE TASK");
         }
@@ -1608,14 +1612,12 @@ public enum DAO {
     }
 
 
-
-
-        /**
-         * Creates task with status FREE for installation engineer for selected service order
-         *
-         * @param serviceOrderId
-         * @return id of created task
-         */
+    /**
+     * Creates task with status FREE for installation engineer for selected service order
+     *
+     * @param serviceOrderId
+     * @return id of created task
+     */
     public int createTaskForInstallation(int serviceOrderId) {
         {//help
             System.out.println("CREATE TASK FOR INSTALLATION");
@@ -1970,6 +1972,7 @@ public enum DAO {
         }
         return task;
     }
+
     public ResultSet getMostProfitableRouterForReport() throws SQLException {
         {//help
             System.out.println("getMostProfitableRouterForReport");
@@ -1992,9 +1995,9 @@ public enum DAO {
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 
-    /**---------------------------------------------------------------------IGOR---------------------------------------------------------------------**/
-
-
+    /**
+     * ---------------------------------------------------------------------IGOR---------------------------------------------------------------------*
+     */
 
 
     public ResultSet getUsedRoutersAndCapacityOfPorts() {
