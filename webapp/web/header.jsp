@@ -8,30 +8,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<%--<header class="navbar navbar-fixed-top">--%>
-    <%--<div class="container">--%>
-        <%--<img src="img/logo_xs.png" class="img-responsive img-header-logo pull-left" alt="Cauliflower"/>--%>
-        <%--<div class="collapse navbar-collapse">--%>
-            <%--<ul class="nav navbar-nav">--%>
-                <%--<li><a class="txt-uppercase" href="home.jsp">Home</a></li>--%>
-                <%--<li><a class="txt-uppercase" href="order.jsp">Order</a></li>--%>
-            <%--</ul>--%>
-            <%--<ul class="nav navbar-nav navbar-right" ng-controller="UserLoginController">--%>
-                <%--<li>--%>
-                    <%--<c:choose>--%>
-                        <%--<c:when test="${sessionScope.user ne null && not empty sessionScope.user}">--%>
-                            <%--<a href="dashboard.jsp"><span class="nav-user-icon glyphicon glyphicon-user glyphicon-small"></span>${sessionScope.user.email}</a>--%>
-                        <%--</c:when>--%>
-                        <%--<c:otherwise>--%>
-                            <%--<a href="auth.jsp"></span>User Cabinet</a>--%>
-                        <%--</c:otherwise>--%>
-                    <%--</c:choose>--%>
-                <%--</li>--%>
-            <%--</ul>--%>
-        <%--</div>--%>
-    <%--</div>--%>
-<%--</header>--%>
-
 <header class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
