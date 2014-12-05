@@ -54,7 +54,7 @@ public class LoginController extends HttpServlet {
                 RequestDispatcher rd = context.getRequestDispatcher("/proceed");
                 rd.forward(request, response);
             }else{
-                response.sendRedirect("dashboard.jsp");
+                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             }
         }
     }

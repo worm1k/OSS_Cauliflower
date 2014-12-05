@@ -35,7 +35,7 @@ public class GetTasksController extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        request.setAttribute("tasks", tasks);
+        request.setAttribute(CauliflowerInfo.TASKS_PARAM, tasks);
         request.getRequestDispatcher("smthing.jsp").forward(request, response);
     }
 }

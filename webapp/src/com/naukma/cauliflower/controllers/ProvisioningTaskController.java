@@ -3,6 +3,7 @@ package com.naukma.cauliflower.controllers;
 import com.naukma.cauliflower.dao.*;
 import com.naukma.cauliflower.entities.ServiceOrder;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,7 +29,7 @@ public class ProvisioningTaskController extends HttpServlet {
         try {
             user = DAO.INSTANCE.getUserByLoginAndPassword("kemi.kondratenko@gmail.com", "kemi");
         //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        Integer taskId = (Integer) request.getAttribute("taskId");
+        Integer taskId = (Integer) request.getAttribute(CauliflowerInfo.TASK_ID_PARAM);
 
         if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {
             if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_ProvisioningEngineer()) {

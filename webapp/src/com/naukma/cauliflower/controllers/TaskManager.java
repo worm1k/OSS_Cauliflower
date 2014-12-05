@@ -2,6 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.TaskStatus;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,8 +24,8 @@ public class TaskManager extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        int taskId =  Integer.parseInt(request.getParameter("taskId"));
-        String status = request.getParameter("taskStatus");
+        int taskId =  Integer.parseInt(request.getParameter(CauliflowerInfo.TASK_ID_PARAM));
+        String status = request.getParameter(CauliflowerInfo.TASK_STATUS_PARAM);
         try {
             if(status.equals(TaskStatus.PROCESSING.toString()))
                     DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.FREE);

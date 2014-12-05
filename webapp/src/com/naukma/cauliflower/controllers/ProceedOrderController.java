@@ -40,7 +40,7 @@ public class ProceedOrderController extends HttpServlet {
     {
        // System.out.println("IN PROCEED ORDER");
         user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        String scenario = request.getParameter("scenario");
+        String scenario = request.getParameter(CauliflowerInfo.SCENARIO_PARAM);
        // scenario = "NEW";
         if(user == null) {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
@@ -54,12 +54,12 @@ public class ProceedOrderController extends HttpServlet {
                 scenarioModify(request);
         }
         catch (SQLException e) {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "System error, try again later, please");
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
          //   response.sendRedirect(pathFrom);
         }
         //ServletContext context = this.getServletContext();
         //RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
-        response.sendRedirect("dashboard.jsp");
+        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
 
 
         //for end2end
@@ -90,7 +90,7 @@ public class ProceedOrderController extends HttpServlet {
     }
 
     private void scenarioModify(HttpServletRequest request) throws SQLException{
-        Integer instanceId =  Integer.parseInt(request.getParameter("instanceId"));
+        Integer instanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
         createModifyOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
@@ -99,7 +99,7 @@ public class ProceedOrderController extends HttpServlet {
 
     private void scenarioDisconnect(HttpServletRequest request) throws SQLException
     {
-        Integer instanceId =  Integer.parseInt(request.getParameter("instanceId"));
+        Integer instanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
         createDisconectOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
@@ -138,7 +138,8 @@ public class ProceedOrderController extends HttpServlet {
     //ACK 12
     private void createServiceInstance(HttpServletRequest request)
     {
-        ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
+        ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute(
+                CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
         Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
         serviceLocation.setServiceLocationId(DAO.INSTANCE.createServiceLocation(serviceLocation));
         serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation,service.getServiceId());

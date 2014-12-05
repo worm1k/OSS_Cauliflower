@@ -32,7 +32,7 @@ public class BlockAccountController extends HttpServlet {
                     //OK
                     //redirect to admin dashboard
                 } else {
-                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "System error, try again later, please");
+                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
                     response.sendRedirect(pathFrom);
                 }
             } else {

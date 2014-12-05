@@ -85,9 +85,9 @@ public class RegistrationController extends HttpServlet {
                         ServletContext context = getServletContext();
                         RequestDispatcher rd = context.getRequestDispatcher("/proceed");
                         rd.forward(request, response);
-                    } else response.sendRedirect("dashboard.jsp");
+                    } else response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
                 } else {
-                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "System error, try again later, please");
+                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
                     response.sendRedirect(pathFrom);
                 }
             }else{

@@ -79,7 +79,7 @@ public class GetServicesController extends HttpServlet {
         if(user == null){
             /*RequestDispatcher requestDispatcher = req.getRequestDispatcher(GO_TO_AUTHENTICATION);
             requestDispatcher.forward(req,resp);*/
-            resp.sendRedirect("auth.jsp");
+            resp.sendRedirect(CauliflowerInfo.AUTH_LINK);
         }
         else
         {
