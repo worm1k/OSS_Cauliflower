@@ -55,12 +55,12 @@ public class ProceedOrderController extends HttpServlet {
                 scenarioNew(request);
         else if (scenario.equals(Scenario.DISCONNECT.toString()))
             scenarioDisconnect(request);
-
-        }
         else if (scenario.equals(Scenario.MODIFY.toString()))
+                scenarioModify(request);
+        }
         catch (SQLException e) {
             request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
-            response.sendRedirect(pathFrom);
+         //   response.sendRedirect(pathFrom);
         }
         //ServletContext context = this.getServletContext();
         //RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
@@ -94,7 +94,7 @@ public class ProceedOrderController extends HttpServlet {
 
     }
 
-    private void scenarioModify() throws SQLException{
+    private void scenarioModify(HttpServletRequest request) throws SQLException{
         Integer instanceId =  Integer.parseInt(request.getParameter("instanceId"));
         createModifyOrder(instanceId);
         changeOrderStatus();
