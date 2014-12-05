@@ -20,7 +20,7 @@
 
     <div class="container">
         <h1 class="txt-center txt-bold">CauliFlower OSS</h1>
-
+        <%-- Server message shows here --%>
         <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
             <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
