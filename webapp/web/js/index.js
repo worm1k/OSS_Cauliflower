@@ -1,5 +1,12 @@
 'use strict'
 
+$(document).ready(function(){
+    $('#js-logout-lnk').click(function(e){
+        e.preventDefault();
+        $('#js-logout-form').submit();
+    });
+});
+
 function User(){
     var _id;
     var _email;
@@ -49,32 +56,6 @@ function MapMarker(){
 'use strict'
 
 angular.module('NgApp', [])
-    .controller('UserLoginController', function($scope){
-        $scope.user = new User();
-        $scope.userIsLogged = false;
-
-        var ajaxGetUser = function(){
-            $.ajax({
-                type: 'GET',
-                url: 'login',
-                dataType: 'json',
-                success: function(user){
-                    console.log('user:', user);
-                    if(user){
-                        $scope.user = user;
-                        if(user != null){
-                            $scope.$apply(function(){ $scope.userIsLogged = true; });
-                        }
-                    }
-                },
-                error: function(){
-                    console.log('error getting user');
-                }
-            });
-        }
-
-        ajaxGetUser();
-    })
     .controller('MapOrderController', function($scope){
         $scope.serviceLocationAddress;
         $scope.providerLocationAddress;

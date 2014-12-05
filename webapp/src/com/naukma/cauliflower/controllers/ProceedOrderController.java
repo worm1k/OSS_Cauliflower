@@ -115,17 +115,17 @@ public class ProceedOrderController extends HttpServlet {
     // ACK.1
     private void createNewOrder() throws SQLException
     {
-        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.NEW,new GregorianCalendar(),null);
+        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.NEW,null);
     }
 
     // ACK.3
     private void createDisconectOrder(Integer instanceId) throws SQLException
     {
-        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.DISCONNECT,new GregorianCalendar(), instanceId);
+        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.DISCONNECT, instanceId);
     }
 
     private void createModifyOrder(Integer instanceId){
-        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.MODIFY,new GregorianCalendar(), instanceId);
+        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.MODIFY, instanceId);
     }
 
 
