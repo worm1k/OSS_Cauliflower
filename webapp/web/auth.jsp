@@ -33,7 +33,7 @@
             <form id="auth_log_form" class="form-signin" action="login" method="post" autocomplete="off">
                 <div class="form-group" id="auth_log_email">
                     <h4>Email</h4>
-                    <input type="text" class="form-control" placeholder="you@example.com" data-trigger="manual" data-placement="bottom" data-content="Email address is not valid" name="email" required>
+                    <input type="text" class="form-control" placeholder="you@example.com" data-trigger="manual" data-placement="bottom" data-content="Email address is not valid" name="username" required>
                 </div>
                 <div class="form-group" id="auth_log_password">
                     <h4>Password</h4>
