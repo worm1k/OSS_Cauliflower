@@ -96,3 +96,7 @@ body {
     height: 34px;
     width: auto;
 }
+.required:after{
+    content: '*';
+    color: #d9534f;
+}
