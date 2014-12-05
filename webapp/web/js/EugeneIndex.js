@@ -62,7 +62,7 @@ function popover(that, ms){
 
 $(document).ready(function() {
 
-    $('#auth_reg_email, #auth_log_email').find('input').inputmask({ mask: "*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]", greedy: false });
+    $('#auth_reg_email, #auth_log_email').find('input').inputmask('Regex', { regex: "[a-zA-Z0-9._%-]+@[a-zA-Z0-9-]+\\.[a-zA-Z]{2,4}" });
     $('#auth_reg_Phone').find('input').inputmask('+389999999999');
 
     $('#auth_reg_submit').click(function(e) {
