@@ -1515,8 +1515,60 @@ public enum DAO {
      * @return id of created task
      */
     public int createNewTask(int serviceOrderId,UserRoles role) {
-
-        return 1;
+        {//help
+            System.out.println("CREATE TASK");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int taskId = 0;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
+                    "VALUES ( " +
+                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
+                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
+                    "?, ?)");
+            {//HELP
+                System.out.println("taskStatus: " + TaskStatus.FREE.toString());
+                System.out.println("userRole: " + UserRoles.INSTALLATION_ENG.toString());
+                System.out.println("serviceOrderId " + serviceOrderId);
+                System.out.println("TaskName: " + TaskName.CREATE_NEW_ROUTER.toString());
+            }
+            preparedStatement.setString(1, TaskStatus.FREE.toString());
+            preparedStatement.setString(2, UserRoles.INSTALLATION_ENG.toString());
+            preparedStatement.setInt(3, serviceOrderId);
+            preparedStatement.setString(4, TaskName.CREATE_NEW_ROUTER.toString());
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) taskId = resultSet.getInt("TASK_ID");
+            {//help
+                System.out.println("MAX_ID: " + taskId);
+            }
+            connection.commit();
+            {//help
+                System.out.println("SUCCESS!!! CREATE TASK");
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating createTaskForInstallation");
+                }
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+        return taskId;
 
     }
 
