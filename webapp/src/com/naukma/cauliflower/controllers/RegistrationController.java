@@ -81,6 +81,7 @@ public class RegistrationController extends HttpServlet {
                     EmailSender.sendEmail(user, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
                     Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
                     ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
+                    request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
                     if (service != null && servLoc != null) {
                         ServletContext context = getServletContext();
                         RequestDispatcher rd = context.getRequestDispatcher("/proceed");
