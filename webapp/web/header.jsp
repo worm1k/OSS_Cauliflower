@@ -33,7 +33,7 @@
 <%--</header>--%>
 
 <header class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
+    <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">
                 <img class="img-header-logo" alt="Brand" src="img/logo_xs.png">
