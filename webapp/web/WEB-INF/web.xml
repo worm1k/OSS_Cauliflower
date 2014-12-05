@@ -126,6 +126,7 @@
         <servlet-name>ChangeCustomerPassword</servlet-name>
         <url-pattern>/changepass</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>UserInstances</servlet-name>
         <servlet-class>com.naukma.cauliflower.controllers.ReviewUserServiceInstance</servlet-class>
@@ -133,5 +134,14 @@
     <servlet-mapping>
         <servlet-name>UserInstances</servlet-name>
         <url-pattern>/userInstances</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LogoutController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.LogoutController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutController</servlet-name>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 </web-app>
