@@ -27,7 +27,7 @@ public class ProvisioningTaskController extends HttpServlet {
         User user = null;//JUST FOR END TO END
         try {
             user = DAO.INSTANCE.getUserByLoginAndPassword("kemi.kondratenko@gmail.com", "kemi");
-        //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         Integer taskId = (Integer) request.getAttribute("taskId");
 
         if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {

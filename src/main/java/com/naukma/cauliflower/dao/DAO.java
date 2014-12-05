@@ -1512,9 +1512,10 @@ public enum DAO {
      *
      * @param serviceOrderId
      * @param role  role of the engineer
+     * @param name name of the task
      * @return id of created task
      */
-    public int createNewTask(int serviceOrderId,UserRoles role) {
+    public int createNewTask(int serviceOrderId,UserRoles role,TaskName name) {
 
         return 1;
 
