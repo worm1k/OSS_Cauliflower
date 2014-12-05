@@ -61,7 +61,9 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         int result = 4;
         try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'INSTALLATION_ENG'");
+            String urName = "INSTALLATION_ENG";
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+            preparedStatement.setString(1,urName);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("RES");
@@ -374,7 +376,9 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         int result = 0;
         try {
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = 'PROVISIONING_ENG'");
+            String urName = "PROVISIONING_ENG";
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+            preparedStatement.setString(1,urName);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("RES");
@@ -475,6 +479,12 @@ public enum DAO {
 
     }
 
+    //Halya
+    public boolean checkForPhoneUniq(String phone){
+        //return true, if no user in db with this phone
+        //else return false
+        return true;
+    }
 /**---------------------------------------------------------------------END HALYA---------------------------------------------------------------------**/
 
 /**---------------------------------------------------------------------KASPYAR---------------------------------------------------------------------**/

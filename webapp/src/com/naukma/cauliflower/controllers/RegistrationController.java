@@ -62,25 +62,36 @@ public class RegistrationController extends HttpServlet {
             response.sendRedirect(pathFrom);
         }
         phone = (String) request.getParameter("phone");
+        if(phone==null || phone.length()<10){
+            request.getSession().setAttribute(CauliflowerInfo.errorAttribute,"Incorrect phone");
+            response.sendRedirect(pathFrom);
+        }
 
         if(DAO.INSTANCE.checkForEmailUniq(email)){
-            User user = new User(userRoleId,userRole,email,firstName,lastName,phone);
-            int resId = DAO.INSTANCE.createUser(user,password);
-            if(resId>0){
-                user = new User(resId,userRoleId,userRole,email,firstName,lastName,phone);
-                request.getSession().setAttribute(CauliflowerInfo.userAttribute,user);
-                String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
-                EmailSender.sendEmail(user, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
-                Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.serviceAttribute);
-                ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.serviceLocationAttribute);
-                if(service!=null && servLoc!=null) {
-                    ServletContext context= getServletContext();
-                    RequestDispatcher rd= context.getRequestDispatcher("/proceed");
-                    rd.forward(request, response);
+            if(DAO.INSTANCE.checkForPhoneUniq(phone)) {
+                User user = new User(userRoleId, userRole, email, firstName, lastName, phone);
+                {//help
+                    System.out.println(user);
                 }
-                else response.sendRedirect("dashboard.jsp");
+                int resId = DAO.INSTANCE.createUser(user, password);
+                if (resId > 0) {
+                    user = new User(resId, userRoleId, userRole, email, firstName, lastName, phone);
+                    request.getSession().setAttribute(CauliflowerInfo.userAttribute, user);
+                    String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
+                    EmailSender.sendEmail(user, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
+                    Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.serviceAttribute);
+                    ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.serviceLocationAttribute);
+                    if (service != null && servLoc != null) {
+                        ServletContext context = getServletContext();
+                        RequestDispatcher rd = context.getRequestDispatcher("/proceed");
+                        rd.forward(request, response);
+                    } else response.sendRedirect("dashboard.jsp");
+                } else {
+                    request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
+                    response.sendRedirect(pathFrom);
+                }
             }else{
-                request.getSession().setAttribute(CauliflowerInfo.errorAttribute,"System error, try again later, please");
+                request.getSession().setAttribute(CauliflowerInfo.errorAttribute,"User with this phone already exist");
                 response.sendRedirect(pathFrom);
             }
         }else{

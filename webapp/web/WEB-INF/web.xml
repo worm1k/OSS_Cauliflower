@@ -18,7 +18,6 @@
         <url-pattern>/reports</url-pattern>
     </servlet-mapping>
     
-    
     <servlet>
         <servlet-name>Login</servlet-name>
     <servlet-class>com.naukma.cauliflower.controllers.LoginController</servlet-class>
