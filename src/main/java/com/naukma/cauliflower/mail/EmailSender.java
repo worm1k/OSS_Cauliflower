@@ -83,26 +83,30 @@ public class EmailSender {
 	private static void send( ArrayList<String> emails,String personName, String subject,String body, Template template) {
 		try {
 			Message message = new MimeMessage(session);
-
 			message.setFrom(new InternetAddress(USER_NAME));
+			//setting recipient
 			for(String email:emails) {
 				message.setRecipients(Message.RecipientType.TO,
 				InternetAddress.parse(email));
 			}
 			message.setSubject(subject);
+			//define constant to fill template
+			final String to="to";
+			final String bodyValue="body";
+			final String from="from";
 
 			Map<String, String> rootMap = new HashMap<String, String>();
-			rootMap.put("to", personName);
-			rootMap.put("body", body);
-			rootMap.put("from", INTERNET_PROVIDER);
+			rootMap.put(to, personName);
+			rootMap.put(bodyValue, body);
+			rootMap.put(from, INTERNET_PROVIDER);
 			Writer out = new StringWriter();
 			try {
 				template.process(rootMap, out);
 			} catch (TemplateException e) {
-
+				//todo logger
 				System.out.println("error occured when filling template");
 			} catch (IOException e) {
-
+				//todo logger
 				e.printStackTrace();
 			}
 
@@ -111,6 +115,7 @@ public class EmailSender {
 
 		} catch (MessagingException e) {
 			e.printStackTrace();
+			//todo logger
 		}
 
 	
@@ -129,12 +134,14 @@ public class EmailSender {
 					tempateDir));
 		} catch (IOException e) {
 			e.printStackTrace();
+			//todo logger
 		}
 		Template template = null;
 		try {
 			template = cfg.getTemplate(templateName);
 
 		} catch (IOException e) {
+			//todo logger
 			System.out.println("error occured when getting template file");
 		}
 		return template;
