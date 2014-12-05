@@ -5,7 +5,6 @@ import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 import com.naukma.cauliflower.mail.EmailSender;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +19,7 @@ import java.io.IOException;
 public class ChangeCustomerPassword extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathFrom  = request.getHeader("Referer");
-        User us = (User)request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(us!= null && us.getUserRole().trim().toLowerCase().equals("customersupportengineer")) {
             int userIdForNewPass = Integer.parseInt(request.getParameter("userIdForNewPass"));
             String newPassword = request.getParameter("newPassword");
@@ -41,19 +40,19 @@ public class ChangeCustomerPassword extends HttpServlet {
                         //OK
                         //redirect to customer support engineer dashboard
                     }else{
-                        request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
+                        request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "System error, try again later, please");
                         response.sendRedirect(pathFrom);
                     }
                 }else{
-                    request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "Incorrect new password");
+                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "Incorrect new password");
                     response.sendRedirect(pathFrom);
                 }
             }else{
-                request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "Incorrect user for change his password");
+                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "Incorrect user for change his password");
                 response.sendRedirect(pathFrom);
             }
         }else{
-            request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "You don`t have permission");
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "You don`t have permission");
             response.sendRedirect(pathFrom);
         }
     }

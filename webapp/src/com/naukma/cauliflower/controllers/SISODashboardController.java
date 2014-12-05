@@ -38,7 +38,7 @@ public class SISODashboardController  extends HttpServlet {
 
         ArrayList<ServiceOrder> orders = null;
         ArrayList<ServiceInstance> instances = null;
-        User user = (User)request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(user == null){
             response.sendRedirect("auth.jsp");
         }
@@ -56,11 +56,11 @@ public class SISODashboardController  extends HttpServlet {
             }
 
         } catch (SQLException e) {
-            request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "System error, try again later, please");
             response.sendRedirect(pathFrom);
         }
-        request.setAttribute(CauliflowerInfo.ordersAttribute, orders);
-        request.setAttribute(CauliflowerInfo.instancesAttribute, instances);
+        request.setAttribute(CauliflowerInfo.ORDERS_ATTRIBUTE, orders);
+        request.setAttribute(CauliflowerInfo.INSTANCES_ATTRIBUTE, instances);
         request.getRequestDispatcher("dashboard.jsp").forward(request,response);
         // JSP!!!!!!!
         ///<% List<ItemObj> myList = (ArrayList<ItemObj>) request.getParameter("list"); %>

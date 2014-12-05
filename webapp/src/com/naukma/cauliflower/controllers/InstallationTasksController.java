@@ -26,7 +26,7 @@ public class InstallationTasksController extends HttpServlet {
         User user = null;//JUST FOR END TO END
         try {
             user = DAO.INSTANCE.getUserByLoginAndPassword("slavko.yeapp@yandex.ua", "qwre123456");
-        //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         Task task = (Task) request.getAttribute("task");
         int taskId = task.getTaskId();
         int serviceOrderId = task.getServiceOrderId();

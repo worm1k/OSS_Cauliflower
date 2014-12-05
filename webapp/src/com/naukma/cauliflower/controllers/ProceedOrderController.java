@@ -3,12 +3,9 @@ package com.naukma.cauliflower.controllers;
 import com.naukma.cauliflower.dao.*;
 import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
-import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,19 +34,17 @@ public class ProceedOrderController extends HttpServlet {
     SOW1
     SOW2
     SOW3
-
      */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
        // System.out.println("IN PROCEED ORDER");
-        user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         String scenario = request.getParameter("scenario");
        // scenario = "NEW";
         if(user == null) {
-            response.sendRedirect("auth.jsp");
+            response.sendRedirect(CauliflowerInfo.AUTH_LINK);
         }
-
         try {
         if(scenario.equals(Scenario.NEW.toString()))
                 scenarioNew(request);
@@ -59,7 +54,7 @@ public class ProceedOrderController extends HttpServlet {
                 scenarioModify(request);
         }
         catch (SQLException e) {
-            request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "System error, try again later, please");
          //   response.sendRedirect(pathFrom);
         }
         //ServletContext context = this.getServletContext();
@@ -72,7 +67,7 @@ public class ProceedOrderController extends HttpServlet {
        // try {
 //            task = DAO.INSTANCE.getTaskById(taskId);
 //        } catch (SQLException e) {
-//            request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
+//            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "System error, try again later, please");
 //            response.sendRedirect(pathFrom);
 //        }
 //      //  request.setAttribute("task",task);
@@ -88,7 +83,7 @@ public class ProceedOrderController extends HttpServlet {
         createServiceInstance(request);
         connectInstanceWithOrder();
         setInstanceBlocked();
-        taskId = DAO.INSTANCE.createNewTask(orderId,UserRoles.INSTALLATION_ENG);
+        taskId = DAO.INSTANCE.createNewTask(orderId, UserRoles.INSTALLATION_ENG,TaskName.CONNECT_NEW_PERSON);
         //for end2end
       //  DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
 
@@ -99,7 +94,7 @@ public class ProceedOrderController extends HttpServlet {
         createModifyOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
-        DAO.INSTANCE.createNewTask(orderId,UserRoles.PROVISIONING_ENG);
+        DAO.INSTANCE.createNewTask(orderId,UserRoles.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
     }
 
     private void scenarioDisconnect(HttpServletRequest request) throws SQLException
@@ -108,7 +103,7 @@ public class ProceedOrderController extends HttpServlet {
         createDisconectOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
-        taskId = DAO.INSTANCE.createNewTask(orderId,UserRoles.INSTALLATION_ENG);
+        taskId = DAO.INSTANCE.createNewTask(orderId, UserRoles.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT);
 //        //for end2end
 //        try {
 //            DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
@@ -143,12 +138,12 @@ public class ProceedOrderController extends HttpServlet {
     //ACK 12
     private void createServiceInstance(HttpServletRequest request)
     {
-        ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.serviceLocationAttribute);
-        Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.serviceAttribute);
+        ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
+        Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
         serviceLocation.setServiceLocationId(DAO.INSTANCE.createServiceLocation(serviceLocation));
         serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation,service.getServiceId());
-        request.getSession().removeAttribute(CauliflowerInfo.serviceAttribute);
-        request.getSession().removeAttribute(CauliflowerInfo.serviceLocationAttribute);
+        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
 
     }
 

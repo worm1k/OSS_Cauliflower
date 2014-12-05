@@ -28,7 +28,7 @@ public class GetTasksController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         List<Task> tasks = null;
         try {
             tasks = DAO.INSTANCE.getFreeAndProcessingTasksByUserRoleId(user.getUserRoleId());

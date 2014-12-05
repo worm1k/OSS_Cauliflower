@@ -71,10 +71,10 @@ public class GetServicesController extends HttpServlet {
         }
 
         HttpSession session = req.getSession();
-        session.setAttribute(CauliflowerInfo.serviceAttribute,service);
-        session.setAttribute(CauliflowerInfo.serviceLocationAttribute,serviceLocation);
+        session.setAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE,service);
+        session.setAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE,serviceLocation);
 
-        final User user  = (User) session.getAttribute(CauliflowerInfo.userAttribute);
+        final User user  = (User) session.getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
         if(user == null){
             /*RequestDispatcher requestDispatcher = req.getRequestDispatcher(GO_TO_AUTHENTICATION);

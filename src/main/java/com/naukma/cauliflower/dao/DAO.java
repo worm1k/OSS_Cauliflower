@@ -1512,9 +1512,10 @@ public enum DAO {
      *
      * @param serviceOrderId
      * @param role  role of the engineer
+     * @param taskName name of the task
      * @return id of created task
      */
-    public int createNewTask(int serviceOrderId,UserRoles role) {
+    public int createNewTask(int serviceOrderId,UserRoles role, TaskName taskName) {
         {//help
             System.out.println("CREATE TASK");
         }
@@ -1530,14 +1531,14 @@ public enum DAO {
                     "?, ?)");
             {//HELP
                 System.out.println("taskStatus: " + TaskStatus.FREE.toString());
-                System.out.println("userRole: " + UserRoles.INSTALLATION_ENG.toString());
+                System.out.println("userRole: " + role.toString());
                 System.out.println("serviceOrderId " + serviceOrderId);
-                System.out.println("TaskName: " + TaskName.CREATE_NEW_ROUTER.toString());
+                System.out.println("TaskName: " + taskName.toString());
             }
             preparedStatement.setString(1, TaskStatus.FREE.toString());
-            preparedStatement.setString(2, UserRoles.INSTALLATION_ENG.toString());
+            preparedStatement.setString(2, role.toString());
             preparedStatement.setInt(3, serviceOrderId);
-            preparedStatement.setString(4, TaskName.CREATE_NEW_ROUTER.toString());
+            preparedStatement.setString(4, taskName.toString());
             preparedStatement.executeUpdate();
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -1569,7 +1570,6 @@ public enum DAO {
             }
         }
         return taskId;
-
     }
 
 
@@ -1599,12 +1599,12 @@ public enum DAO {
                 System.out.println("taskStatus: " + TaskStatus.FREE.toString());
                 System.out.println("userRole: " + UserRoles.INSTALLATION_ENG.toString());
                 System.out.println("serviceOrderId " + serviceOrderId);
-                System.out.println("TaskName: " + TaskName.CREATE_NEW_ROUTER.toString());
+                System.out.println("TaskName: " + TaskName.CONNECT_NEW_PERSON.toString());
             }
             preparedStatement.setString(1, TaskStatus.FREE.toString());
             preparedStatement.setString(2, UserRoles.INSTALLATION_ENG.toString());
             preparedStatement.setInt(3, serviceOrderId);
-            preparedStatement.setString(4, TaskName.CREATE_NEW_ROUTER.toString());
+            preparedStatement.setString(4, TaskName.CONNECT_NEW_PERSON.toString());
             preparedStatement.executeUpdate();
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
             ResultSet resultSet = preparedStatement.executeQuery();
