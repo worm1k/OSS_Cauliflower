@@ -25,14 +25,18 @@ public class ProvisioningTaskController extends HttpServlet {
      */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = null;//JUST FOR END TO END
-        try {
-            user = DAO.INSTANCE.getUserByLoginAndPassword("kemi.kondratenko@gmail.com", "kemi");
-        //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+
+        if (user == null) {
+            response.sendRedirect(CauliflowerInfo.AUTH_LINK);
+        }
+
         Integer taskId = (Integer) request.getAttribute(CauliflowerInfo.TASK_ID_PARAM);
 
-        if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {
-            if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_ProvisioningEngineer()) {
+        try {
+
+            if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
+                user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_ProvisioningEngineer()) {
 
                 ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(taskId);
                 if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {
@@ -45,16 +49,9 @@ public class ProvisioningTaskController extends HttpServlet {
                 DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
                 DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
 
-                //JUST FOR END TO END PURPOSES
-             //   request.getSession().removeAttribute("user");
-                response.sendRedirect("login.jsp");
-                //END TO END
-
-                //request.getRequestDispatcher("smthing.jsp").forward(request, response);
+                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             } else
-                request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
-        } else
-            request.getRequestDispatcher("taskalreadycompleted.jsp").forward(request, response);
+                response.sendRedirect(CauliflowerInfo.HOME_LINK);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,9 +60,5 @@ public class ProvisioningTaskController extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        doPost(request, response);
-
-    }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { }
 }
