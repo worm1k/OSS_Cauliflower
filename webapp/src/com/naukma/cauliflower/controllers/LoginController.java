@@ -44,7 +44,7 @@ public class LoginController extends HttpServlet {
             e.printStackTrace();
         }
         if(user == null) {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,"Incorrect login or password!");
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,CauliflowerInfo.LOGIN_ERROR_MESSAGE);
             response.sendRedirect(pathFrom);
         }else{
             request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, user);
