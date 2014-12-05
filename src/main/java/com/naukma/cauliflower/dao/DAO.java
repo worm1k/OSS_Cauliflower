@@ -61,9 +61,9 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         int result = 4;
         try {
-            String urName = "INSTALLATION_ENG";
+            UserRoles urName = UserRoles.INSTALLATION_ENG;
             preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-            preparedStatement.setString(1,urName);
+            preparedStatement.setString(1,urName.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("RES");
@@ -376,9 +376,9 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         int result = 0;
         try {
-            String urName = "PROVISIONING_ENG";
+            UserRoles urName = UserRoles.PROVISIONING_ENG;
             preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-            preparedStatement.setString(1,urName);
+            preparedStatement.setString(1,urName.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("RES");
@@ -480,10 +480,46 @@ public enum DAO {
     }
 
     //Halya
+    //return true, if no user in db with this phone
+    //else return false
     public boolean checkForPhoneUniq(String phone){
-        //return true, if no user in db with this phone
-        //else return false
-        return true;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE PHONE = ?");
+            preparedStatement.setString(1,phone );
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int checkResult = -1;
+            if (resultSet.next()) {
+                checkResult = resultSet.getInt("RES");
+            }
+            if (checkResult == 0) {
+                result = true;
+                {//help
+                    System.out.println("checkForPhoneUniq PHONE " + phone + " IS UNIQ");
+                }
+            } else {
+                result = false;
+                {//help
+                    System.out.println("checkForPhoneUniq USER WITH PHONE " + phone + " IS ALREADY EXISTS ");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 /**---------------------------------------------------------------------END HALYA---------------------------------------------------------------------**/
 
