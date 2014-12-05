@@ -1935,7 +1935,24 @@ public enum DAO {
         }
         return task;
     }
-
+    public ResultSet getMostProfitableRouterForReport() throws SQLException {
+        {//help
+            System.out.println("getMostProfitableRouterForReport");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) " +
+                "FROM SERVICE S INNER JOIN ( " +
+                "  SERVICEINSTANCE SI INNER JOIN ( " +
+                "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                "  ON SI.ID_CABLE = C.ID) " +
+                "ON  S.ID = SI.ID_SERVICE " +
+                "GROUP BY P.ID_ROUTER ");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        {//help
+            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
+        }
+        return resultSet;
+    }
 
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
@@ -1943,9 +1960,7 @@ public enum DAO {
     /**---------------------------------------------------------------------IGOR---------------------------------------------------------------------**/
 
 
-    public ResultSet getMostProfitableRouterForReport() {
-        return null;
-    }
+
 
     public ResultSet getUsedRoutersAndCapacityOfPorts() {
         return null;
