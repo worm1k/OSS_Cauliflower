@@ -581,7 +581,7 @@ public enum DAO {
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
      */
-    public int createServiceOrder(int userId, Scenario scenario, GregorianCalendar calendar, Integer idServiceInstance) {
+    public int createServiceOrder(int userId, Scenario scenario, GregorianCalendar calendar, Integer idServiceInstance) throws SQLException{
         //default status ENTERING
 
         OrderStatus orderStatus = OrderStatus.ENTERING;
@@ -591,7 +591,6 @@ public enum DAO {
         {//help
             System.out.println("CREATE NEW ORDER!");
         }
-        try {
             connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
             preparedStatement.setString(1, scenario.toString());
@@ -649,10 +648,12 @@ public enum DAO {
                 }
                 result = resultSet.getInt("RES");
             }
-            connection.commit();
+
             {//help
                 System.out.println("SUCCESS! CREATE NEW ORDER!");
             }
+        try{
+            connection.commit();
         } catch (SQLException e) {
             if (connection != null) {
                 System.err.print("Transaction is being rolled back");
@@ -663,15 +664,13 @@ public enum DAO {
                     logger.error("ROLLBACK transaction Failed of creating new router");
                 }
             }
-            e.printStackTrace();
-        } finally {
+        }
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
-        }
         return result;
     }
 
