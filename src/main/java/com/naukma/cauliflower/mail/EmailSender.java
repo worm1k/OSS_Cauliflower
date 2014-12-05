@@ -152,6 +152,7 @@ public class EmailSender {
 			//todo logger
 			System.out.println("error occured when getting template file");
 		}
+
 		return template;
 	}
 
