@@ -62,7 +62,7 @@ function popover(that, ms){
 
 $(document).ready(function() {
 
-    $('#auth_reg_email').find('input').inputmask({ mask: "*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]", greedy: false });
+    $('#auth_reg_email, #auth_log_email').find('input').inputmask({ mask: "*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]", greedy: false });
     $('#auth_reg_Phone').find('input').inputmask('+389999999999');
 
     $('#auth_reg_submit').click(function(e) {
@@ -81,6 +81,18 @@ $(document).ready(function() {
         }else{
             $('#auth_reg_Phone').find('input').val(phoneNormalize($('#auth_reg_Phone').find('input').val()));
             $('#auth_reg_form').submit();
+        }
+    });
+
+    $('#auth_log_submit').click(function(e) {
+        e.preventDefault();
+
+        if(!emailCheck('#auth_log_email')){
+            popover('#auth_log_email', 2000);
+        }else if(!passwordCheck('#auth_log_password')){
+            popover('#auth_log_password', 2000);
+        }else{
+            $('#auth_log_form').submit();
         }
     });
 

@@ -24,6 +24,7 @@
 <script type="text/javascript" src="./vendor/google-infobox/google-infobox.js"></script>
 <script type="text/javascript" src="./vendor/geocomplete/jquery.geocomplete.min.js"></script>
 <script type="text/javascript" src="./vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./vendor/bootstrap/dist/js/alert.js"></script>
 <!-- custom scripts -->
 <script type="text/javascript" src="./js/index.js"></script>
 <script type="text/javascript" src="./js/EugeneIndex.js"></script>
