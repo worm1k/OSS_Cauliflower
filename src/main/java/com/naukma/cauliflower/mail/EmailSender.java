@@ -33,9 +33,9 @@ public class EmailSender {
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.smtp.auth", "true");//If true, attempt to authenticate the user using the AUTH command. Defaults to false.
 		props.put("mail.smtp.starttls.enable", "true"); //If true, enables the use of the STARTTLS command  to switch the connection to a TLS-protected connection before issuing any login commands.
-		props.put("mail.smtp.host", GmailEmailProperties.HOST);     //The SMTP server to connect to.
-		props.put("mail.smtp.port", GmailEmailProperties.PORT);//The SMTP server port to connect to
-		props.put("mail.smtp..trust", GmailEmailProperties.HOST);
+		props.put("mail.smtp.host",EmailProperties.SERVER.getHOST());     //The SMTP server to connect to.
+		props.put("mail.smtp.port", EmailProperties.SERVER.getPORT());//The SMTP server port to connect to
+		props.put("mail.smtp..trust",EmailProperties.SERVER.getHOST());
 		//If set, and a socket factory hasn't been specified, enables use of a MailSSLSocketFactory. If set to "*", all hosts are trusted.
 		// If set to a whitespace separated list of hosts, those hosts are trusted.
 		// Otherwise, trust depends on the certificate the server presents.
