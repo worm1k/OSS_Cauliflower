@@ -33,9 +33,16 @@ public class SISODashboardController  extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+      final String pathFrom  = request.getHeader("Referer");
+
         ArrayList<ServiceOrder> orders = null;
         ArrayList<ServiceInstance> instances = null;
         User user = (User)request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        if(user == null){
+            response.sendRedirect("auth.jsp");
+        }
+
         String role = user.getUserRole();
         try {
             if(role.equals(UserRoles.CUSTOMER.toString())){
@@ -49,7 +56,8 @@ public class SISODashboardController  extends HttpServlet {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
+            response.sendRedirect(pathFrom);
         }
         request.setAttribute(CauliflowerInfo.ordersAttribute, orders);
         request.setAttribute(CauliflowerInfo.instancesAttribute, instances);

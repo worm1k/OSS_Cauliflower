@@ -42,33 +42,41 @@ public class ProceedOrderController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        System.out.println("IN PROCEED ORDER");
+       // System.out.println("IN PROCEED ORDER");
         user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
         String scenario = request.getParameter("scenario");
-        scenario = "NEW";
-        //scenario = Scenario.NEW;
-        //   if(user != null) {
+       // scenario = "NEW";
+        if(user == null) {
+            response.sendRedirect("auth.jsp");
+        }
 
         try {
         if(scenario.equals(Scenario.NEW.toString()))
                 scenarioNew(request);
-        else
+        else if (scenario.equals(Scenario.DISCONNECT.toString()))
             scenarioDisconnect(request);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        ServletContext context = this.getServletContext();
-        RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
-         //for end2end
-        Task task = null;
-        try {
-            task = DAO.INSTANCE.getTaskById(taskId);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        else if (scenario.equals(Scenario.MODIFY.toString()))
+        catch (SQLException e) {
+            request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
+            response.sendRedirect(pathFrom);
         }
-        request.setAttribute("task",task);
-        dispatcher.forward(request, response);
+        //ServletContext context = this.getServletContext();
+        //RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
+        response.sendRedirect("dashboard.jsp");
+
+
+        //for end2end
+       // Task task = null;
+       // try {
+//            task = DAO.INSTANCE.getTaskById(taskId);
+//        } catch (SQLException e) {
+//            request.getSession().setAttribute(CauliflowerInfo.errorAttribute, "System error, try again later, please");
+//            response.sendRedirect(pathFrom);
+//        }
+//      //  request.setAttribute("task",task);
+//        dispatcher.forward(request, response);
 
      //  request.getRequestDispatcher("dashboard.jsp").forward(request, response);
 
@@ -82,23 +90,33 @@ public class ProceedOrderController extends HttpServlet {
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createTaskForInstallation(orderId);
         //for end2end
-        DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
+      //  DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
 
     }
 
-    private void scenarioDisconnect(HttpServletRequest request)
+    private void scenarioModify() throws SQLException{
+        Integer instanceId =  Integer.parseInt(request.getParameter("instanceId"));
+        createModifyOrder(instanceId);
+        changeOrderStatus();
+        setInstanceBlocked();
+        DAO.INSTANCE.createTaskForProvisioning(orderId);
+
+
+    }
+
+    private void scenarioDisconnect(HttpServletRequest request) throws SQLException
     {
         Integer instanceId =  Integer.parseInt(request.getParameter("instanceId"));
         createDisconectOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createTaskForInstallation(orderId);
-        //for end2end
-        try {
-            DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        //for end2end
+//        try {
+//            DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     // ACK.1
@@ -114,12 +132,9 @@ public class ProceedOrderController extends HttpServlet {
         orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.DISCONNECT,new GregorianCalendar(), instanceId);
     }
 
-
-//    private GregorianCalendar getDate(){
-//        GregorianCalendar calendar = new GregorianCalendar();
-//        calendar.set(GregorianCalendar.YEAR,GregorianCalendar.MONTH,GregorianCalendar.DAY_OF_MONTH);
-//        return calendar;
-//    }
+    private void createModifyOrder(Integer instanceId){
+        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.MODIFY,new GregorianCalendar(), instanceId);
+    }
 
 
     //ACK 12
@@ -138,10 +153,8 @@ public class ProceedOrderController extends HttpServlet {
     {
 
         ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.serviceLocationAttribute);
-        //ServiceLocation serviceLocation = new ServiceLocation(-1, "TRY ADRESS", 111, 999);
         Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.serviceAttribute);
         serviceLocation.setServiceLocationId(DAO.INSTANCE.createServiceLocation(serviceLocation));
-        //serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation, service.getServiceId());
         serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation,service.getServiceId());
         request.getSession().removeAttribute(CauliflowerInfo.serviceAttribute);
         request.getSession().removeAttribute(CauliflowerInfo.serviceLocationAttribute);
@@ -170,7 +183,7 @@ public class ProceedOrderController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        doPost(request,response);
+       // doPost(request,response);
     }
 
 
