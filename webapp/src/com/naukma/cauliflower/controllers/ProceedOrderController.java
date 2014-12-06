@@ -121,7 +121,7 @@ public class ProceedOrderController extends HttpServlet {
         orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.MODIFY, instanceId);
     }
 
-    private void setNewServiceForTask(HttpServletRequest request){
+    private void setNewServiceForTask(HttpServletRequest request) throws SQLException{
         Service service =(Service)request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
         DAO.INSTANCE.setServiceForTask(taskId,service.getServiceId());
 
