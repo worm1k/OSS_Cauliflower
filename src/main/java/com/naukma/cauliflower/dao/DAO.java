@@ -1968,6 +1968,7 @@ public enum DAO {
                 }
             }
             e.printStackTrace();
+            throw e;
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -2184,7 +2185,7 @@ public enum DAO {
         }
         PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString());
         for (int i=0;i<arrayServiceId.length;i++) {
-            preparedStatement.setInt(i, arrayServiceId[i]);
+            preparedStatement.setInt(i+1, arrayServiceId[i]);
         }
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
