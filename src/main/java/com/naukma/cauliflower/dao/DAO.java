@@ -2126,6 +2126,12 @@ public enum DAO {
                 "ON  S.ID = SI.ID_SERVICE " +
                 "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC");
         ResultSet resultSet = preparedStatement.executeQuery();
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException exc) {
+            logger.warn("Can't close connection or preparedStatement!");
+            exc.printStackTrace();
+        }
         {//help
             System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
         }
@@ -2133,16 +2139,32 @@ public enum DAO {
     }
 
 
-
     /**
      * Sets selected service for selected task for scenario MODIFY
-     * @param taskId selected task
+     *
+     * @param taskId    selected task
      * @param serviceId id of the service to set for task
-     * */
-    public void setServiceForTask(int taskId,int serviceId){
-
-
-
+     */
+    public void setServiceForTask(int taskId, int serviceId) throws SQLException {
+        {//help
+            System.out.println("setServiceForTask");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO TOMODIFY(ID_TASK, ID_SERVICE) " +
+                "VALUES(?,?)");
+        preparedStatement.setInt(1, taskId);
+        preparedStatement.setInt(2, serviceId);
+        preparedStatement.executeUpdate();
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException exc) {
+            logger.warn("Can't close connection or preparedStatement!");
+            exc.printStackTrace();
+        }
+        {//help
+            System.out.println("SUCCESS!!!setServiceForTask");
+        }
+        return;
     }
 
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
