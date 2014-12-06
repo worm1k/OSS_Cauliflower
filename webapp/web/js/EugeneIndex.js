@@ -112,4 +112,5 @@ $(document).ready(function() {
     $('#auth_reg_Phone').on('keyup input', function() {
         phoneCheck(this);
     });
+
 });

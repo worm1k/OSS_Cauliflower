@@ -24,6 +24,10 @@ public class ReportGeneratorServlet extends HttpServlet {
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=report.xls");
         String methodName = (String) request.getParameter("reportMethod");
+        String startDate = (String) request.getParameter("startDate");
+        String endDate = (String) request.getParameter("endDate");
+
+        System.out.println(startDate+" "+endDate);
 
         ResultSet resultSet = null;
 
