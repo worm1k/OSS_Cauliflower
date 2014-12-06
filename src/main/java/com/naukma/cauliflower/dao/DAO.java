@@ -2135,7 +2135,7 @@ public enum DAO {
             System.out.println("getProfitabilityByMonth");
         }
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) " +
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
                 "FROM SERVICE S INNER JOIN ( " +
                 "  SERVICEINSTANCE SI INNER JOIN ( " +
                 "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
