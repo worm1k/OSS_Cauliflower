@@ -21,7 +21,7 @@ public class BlockAccountController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathFrom  = request.getHeader("Referer");
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(us.getUserRole().equals(UserRoles.ADMINISTRATOR.toString())) {
+        if(us!=null && us.getUserRoleId()==CauliflowerInfo.ADMINISTRATOR_ROLE_ID) {
             int userIdForBlock = Integer.parseInt(request.getParameter("userIdForBlock"));
             if (DAO.INSTANCE.checkForExistingUserById(userIdForBlock)) {
                 //get blocked user
@@ -40,7 +40,7 @@ public class BlockAccountController extends HttpServlet {
                 response.sendRedirect(pathFrom);
             }
         }else{
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "You don`t have permission");
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
             response.sendRedirect(pathFrom);
         }
     }

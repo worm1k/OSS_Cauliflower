@@ -271,6 +271,19 @@ public enum DAO {
         return resultUser;
     }
 
+
+    //Halya
+    public User blockUserByEmail(String email) {
+        //return blocked user or null
+        return null;
+    }
+
+    //Halya
+    public boolean checkForExistingUserByEmail(String email) {
+        return true;
+    }
+
+
     //Halya
     //return name of userRole or null, if no userRole with this id
     public String getUserRoleNameByUserRoleId(int userRoleId) {

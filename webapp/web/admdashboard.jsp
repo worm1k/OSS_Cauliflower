@@ -63,30 +63,13 @@
     </form>
   </div>
   <div class="col-xs-6 border-left">
-    <%--<h2 class="txt-center">Registration</h2>--%>
-    <%--<form class="form-signin" action="register" method="post" id="auth_reg_form" autocomplete="off">--%>
-      <%--<div class="form-group" id="auth_reg_email">--%>
-        <%--<h4>Email <span class="required"></span></h4>--%>
-        <%--<input type="text" class="form-control" placeholder="you@example.com" data-trigger="manual" data-placement="bottom" data-content="Email address is not valid" name="email" required>--%>
-      <%--</div>--%>
-      <%--<div class="form-group" id="auth_reg_password">--%>
-        <%--<h4>Password <span class="required"></span></h4>--%>
-        <%--<input type="password" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Password must contain at least 6 symbols" name="password" placeholder="secret-password" required>--%>
-      <%--</div>--%>
-      <%--<div class="form-group" id="auth_reg_Name">--%>
-        <%--<h4>Name <span class="required"></span></h4>--%>
-        <%--<input type="text" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Name is too short" name="name" placeholder="Name" required>--%>
-      <%--</div>--%>
-      <%--<div class="form-group" id="auth_reg_Surname">--%>
-        <%--<h4>Surname <span class="required"></span></h4>--%>
-        <%--<input type="text" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Surname is too short" name="surname" placeholder="Surname" required>--%>
-      <%--</div>--%>
-      <%--<div class="form-group" id="auth_reg_Phone">--%>
-        <%--<h4>Phone number <span class="required"></span></h4>--%>
-        <%--<input type="text" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Phone is not valid" name="phone" placeholder="Phone" required>--%>
-      <%--</div>--%>
-
-      <%--<button class="btn-signin btn btn-lg btn-primary btn-block" id="auth_reg_submit" type="submit">Sign Up</button>--%>
+    <h2 class="txt-center">Block account</h2>
+    <form class="form-signin" action="blockacc" method="post" id="auth_block_form" autocomplete="off">
+      <div class="form-group" id="auth_block_email">
+        <h4>Email <span class="required"></span></h4>
+        <input type="text" class="form-control" placeholder="you@example.com" data-trigger="manual" data-placement="bottom" data-content="Email address is not valid" name="email" required>
+      </div>
+      <button class="btn-signin btn btn-lg btn-primary btn-block" id="auth_block_submit" type="submit">Block</button>
     </form>
   </div>
 </div>
