@@ -2132,6 +2132,19 @@ public enum DAO {
         return resultSet;
     }
 
+
+
+    /**
+     * Sets selected service for selected task for scenario MODIFY
+     * @param taskId selected task
+     * @param serviceId id of the service to set for task
+     * */
+    public void setServiceForTask(int taskId,int serviceId){
+
+
+
+    }
+
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 

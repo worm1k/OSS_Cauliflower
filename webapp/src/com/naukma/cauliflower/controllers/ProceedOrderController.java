@@ -94,7 +94,9 @@ public class ProceedOrderController extends HttpServlet {
         createModifyOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
-        DAO.INSTANCE.createNewTask(orderId,UserRoles.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
+        taskId = DAO.INSTANCE.createNewTask(orderId,UserRoles.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
+        createServiceInstance(request);
+
     }
 
     private void scenarioDisconnect(HttpServletRequest request) throws SQLException
@@ -128,6 +130,11 @@ public class ProceedOrderController extends HttpServlet {
         orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.MODIFY, instanceId);
     }
 
+    private void setNewServiceForTask(HttpServletRequest request){
+        Service service =(Service)request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
+        DAO.INSTANCE.setServiceForTask(taskId,service.getServiceId());
+
+    }
 
     //ACK 12
     private void changeOrderStatus() throws SQLException
