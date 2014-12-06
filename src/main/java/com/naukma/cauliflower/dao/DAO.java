@@ -577,7 +577,6 @@ public enum DAO {
     }
 
 
-
     //Halya
     //return true, if no user in db with this phone
     //else return false
@@ -2099,8 +2098,25 @@ public enum DAO {
      */
 
 
-    public ResultSet getUsedRoutersAndCapacityOfPorts() {
-        return null;
+    public ResultSet getUsedRoutersAndCapacityOfPorts() throws SQLException{
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, Count(P.Used) FREE, 60 - Count(p.Used) OCCUPIED, " +
+                "ROUND((60 - Count(p.Used))/(Count(P.Used)), 2) UTILIZATION\n" +
+                "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
+                "WHERE P.Used  = 0 \n" +
+                "GROUP BY r.id");
+        resultSet = preparedStatement.executeQuery();
+
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException e) {
+            logger.info("Smth wrong with closing connection or preparedStatement!");
+            e.printStackTrace();
+        }
+
+        return resultSet;
     }
 
     public ResultSet getProfitabilityByMonth() {
@@ -2119,7 +2135,7 @@ public enum DAO {
     //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
     //сделать равным null. Сам кабель удалить из базы.
     //The system should allow deleting of Cables and Circuits.
-    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) throws SQLException{
+    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) throws SQLException {
         Connection connection = getConnection();
 
         PreparedStatement preparedStatementSelect = null;
