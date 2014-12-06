@@ -49,25 +49,30 @@ public class LoginController extends HttpServlet {
                 request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.LOGIN_ERROR_MESSAGE);
                 response.sendRedirect(pathFrom);
             } else {
-                request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, user);
-                logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
-                request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-                if (service != null && servLoc != null) {
-                    ServletContext context = getServletContext();
-                    RequestDispatcher rd = context.getRequestDispatcher("/proceed");
-                    rd.forward(request, response);
-                } else {
-                    int userInSessionRoleId = user.getUserRoleId();
-                    if (userInSessionRoleId == CauliflowerInfo.CUSTOM_USER_ROLE_ID)
-                        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                    if (userInSessionRoleId == CauliflowerInfo.ADMINISTRATOR_ROLE_ID)
-                        response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
-                    if (userInSessionRoleId == CauliflowerInfo.PROVISIONING_ENG_ROLE_ID)
-                        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                    if (userInSessionRoleId == CauliflowerInfo.INSTALLATION_ENG_ROLE_ID)
-                        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                    if (userInSessionRoleId == CauliflowerInfo.CUST_SUP_ENG_ROLE_ID)
-                        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                if(user.isBlocked()){
+                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.ACCOUNT_IS_BLOCKED_ERROR_MESSAGE);
+                    response.sendRedirect(pathFrom);
+                }else {
+                    request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, user);
+                    logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
+                    request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+                    if (service != null && servLoc != null) {
+                        ServletContext context = getServletContext();
+                        RequestDispatcher rd = context.getRequestDispatcher("/proceed");
+                        rd.forward(request, response);
+                    } else {
+                        int userInSessionRoleId = user.getUserRoleId();
+                        if (userInSessionRoleId == CauliflowerInfo.CUSTOM_USER_ROLE_ID)
+                            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                        if (userInSessionRoleId == CauliflowerInfo.ADMINISTRATOR_ROLE_ID)
+                            response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                        if (userInSessionRoleId == CauliflowerInfo.PROVISIONING_ENG_ROLE_ID)
+                            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                        if (userInSessionRoleId == CauliflowerInfo.INSTALLATION_ENG_ROLE_ID)
+                            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                        if (userInSessionRoleId == CauliflowerInfo.CUST_SUP_ENG_ROLE_ID)
+                            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                    }
                 }
             }
         }else{

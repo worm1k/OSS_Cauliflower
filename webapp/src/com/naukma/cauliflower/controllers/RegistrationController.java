@@ -77,13 +77,13 @@ public class RegistrationController extends HttpServlet {
 
             if (DAO.INSTANCE.checkForEmailUniq(email)) {
                 if (DAO.INSTANCE.checkForPhoneUniq(phone)) {
-                    User createdUser = new User(userRoleId, userRole, email, firstName, lastName, phone);
+                    User createdUser = new User(0,userRoleId, userRole, email, firstName, lastName, phone,false);
                     {//help
                         System.out.println(createdUser);
                     }
                     int createdUserId = DAO.INSTANCE.createUser(createdUser, password);
                     if (createdUserId > 0) {
-                        createdUser = new User(createdUserId, userRoleId, userRole, email, firstName, lastName, phone);
+                        createdUser = new User(createdUserId, userRoleId, userRole, email, firstName, lastName, phone,false);
                         if(userInSession==null){
                             request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, createdUser);
                             userInSession=createdUser;
