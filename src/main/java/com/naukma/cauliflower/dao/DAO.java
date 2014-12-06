@@ -2076,13 +2076,13 @@ public enum DAO {
             System.out.println("getMostProfitableRouterForReport");
         }
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) " +
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
                 "FROM SERVICE S INNER JOIN ( " +
                 "  SERVICEINSTANCE SI INNER JOIN ( " +
                 "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
                 "  ON SI.ID_CABLE = C.ID) " +
                 "ON  S.ID = SI.ID_SERVICE " +
-                "GROUP BY P.ID_ROUTER ");
+                "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC");
         ResultSet resultSet = preparedStatement.executeQuery();
         {//help
             System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
@@ -2106,7 +2106,7 @@ public enum DAO {
                 "ROUND((60 - Count(p.Used))/(Count(P.Used)), 2) UTILIZATION\n" +
                 "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
                 "WHERE P.Used  = 0 \n" +
-                "GROUP BY r.id");
+                "GROUP BY r.id ");
         resultSet = preparedStatement.executeQuery();
 
         try {
@@ -2119,8 +2119,23 @@ public enum DAO {
         return resultSet;
     }
 
-    public ResultSet getProfitabilityByMonth() {
-        return null;
+    public ResultSet getProfitabilityByMonth() throws SQLException{
+        {//help
+            System.out.println("getProfitabilityByMonth");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) " +
+                "FROM SERVICE S INNER JOIN ( " +
+                "  SERVICEINSTANCE SI INNER JOIN ( " +
+                "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                "  ON SI.ID_CABLE = C.ID) " +
+                "ON  S.ID = SI.ID_SERVICE " +
+                "GROUP BY P.ID_ROUTER ");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        {//help
+            System.out.println("SUCCESS!!!!getProfitabilityByMonth");
+        }
+        return resultSet;
     }
 
     public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
