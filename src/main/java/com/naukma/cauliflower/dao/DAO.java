@@ -1924,7 +1924,7 @@ public enum DAO {
      *
      * @param serviceOrderId id of service order to take service instance from
      */
-    public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) {
+    public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) throws SQLException{
         {//help
             System.out.println("createPortAndCableAndAssignToServiceInstance");
         }
