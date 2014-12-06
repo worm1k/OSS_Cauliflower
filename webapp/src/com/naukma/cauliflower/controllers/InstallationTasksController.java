@@ -35,7 +35,8 @@ public class InstallationTasksController extends HttpServlet {
             //RI.9
             //The system should allow creating Devices, Ports and Cables only by Installation Engineer
             if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
-                user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
+                //user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
+                    user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRoles.INSTALLATION_ENG)) {
 
                 Scenario scenario = DAO.INSTANCE.getOrderScenario(serviceOrderId);
                 if (scenario == Scenario.NEW) {

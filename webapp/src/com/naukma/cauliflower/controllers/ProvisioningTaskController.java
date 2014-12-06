@@ -36,7 +36,8 @@ public class ProvisioningTaskController extends HttpServlet {
         try {
 
             if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
-                user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_ProvisioningEngineer()) {
+                //user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_ProvisioningEngineer()) {
+                    user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRoles.PROVISIONING_ENG)) {
 
                 ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(taskId);
                 if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {

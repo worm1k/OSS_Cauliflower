@@ -1,6 +1,7 @@
 package com.naukma.cauliflower.reports;
 
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.Scenario;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -63,9 +64,11 @@ public class ReportGeneratorServlet extends HttpServlet {
         else if(methodName.equals("Profitability"))
             resultSet = DAO.INSTANCE.getProfitabilityByMonth();
         else if(methodName.equals("New") && startDate!= null && endDate!= null)
-            resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
+            resultSet = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate);
+            //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
         else if(methodName.equals("Disconnect") && startDate!= null && endDate!= null)
-            resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
+            resultSet = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
+            //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
         if(resultSet == null)
             resultSet = DAO.INSTANCE.reportTester();
 

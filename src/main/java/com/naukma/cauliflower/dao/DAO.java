@@ -53,36 +53,86 @@ public enum DAO {
     /**
      * ---------------------------------------------------------------------HALYA---------------------------------------------------------------------*
      */
-    //Galya_Sh
-    //просто отримуємо айди юзер ролі яка є Installation Engineer
-    public int getUserRoleIdFor_InstallationEngineer() {
+
+    public int getUserRoleIdFor(UserRoles userRoles) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        int result = 4;
+        int result = 0;
+        preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+        preparedStatement.setString(1, userRoles.toString());
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            result = resultSet.getInt("RES");
+        }
         try {
-            UserRoles urName = UserRoles.INSTALLATION_ENG;
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-            preparedStatement.setString(1, urName.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result = resultSet.getInt("RES");
-            }
-
+            close(connection, preparedStatement);
         } catch (SQLException e) {
+            logger.info("Smth wrong with closing connection or preparedStatement!");
             e.printStackTrace();
-        } finally {
-            try {
-                close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-
         }
         return result;
     }
+    //Galya_Sh
+    //просто отримуємо айди юзер ролі яка є Installation Engineer
+//    public int getUserRoleIdFor_InstallationEngineer() {
+//        Connection connection = getConnection();
+//        PreparedStatement preparedStatement = null;
+//        int result = 4;
+//        try {
+//            UserRoles urName = UserRoles.INSTALLATION_ENG;
+//            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+//            preparedStatement.setString(1, urName.toString());
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()) {
+//                result = resultSet.getInt("RES");
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                close(connection, preparedStatement);
+//                //if (!preparedStatement.isClosed()) preparedStatement.close();
+//                //if (!connection.isClosed()) connection.close();
+//            } catch (SQLException e) {
+//                logger.info("Smth wrong with closing connection or preparedStatement!");
+//                e.printStackTrace();
+//            }
+//
+//        }
+//        return result;
+//    }
+//
+//    //Galya_Sh
+//    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
+//    public int getUserRoleIdFor_ProvisioningEngineer() {
+//        Connection connection = getConnection();
+//        PreparedStatement preparedStatement = null;
+//        int result = 0;
+//        try {
+//            UserRoles urName = UserRoles.PROVISIONING_ENG;
+//            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+//            preparedStatement.setString(1, urName.toString());
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()) {
+//                result = resultSet.getInt("RES");
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                close(connection, preparedStatement);
+//                //if (!preparedStatement.isClosed()) preparedStatement.close();
+//                //if (!connection.isClosed()) connection.close();
+//            } catch (SQLException e) {
+//                logger.info("Smth wrong with closing connection or preparedStatement!");
+//                e.printStackTrace();
+//            }
+//
+//        }
+//        return result;
+//    }
 
     //Halya
     //if error - return < 0
@@ -473,36 +523,6 @@ public enum DAO {
         return resultUser;
     }
 
-    //Galya_Sh
-    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
-    public int getUserRoleIdFor_ProvisioningEngineer() {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int result = 0;
-        try {
-            UserRoles urName = UserRoles.PROVISIONING_ENG;
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-            preparedStatement.setString(1, urName.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result = resultSet.getInt("RES");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-
-        }
-        return result;
-    }
 
     //Galya_Sh RI.1
     //The system should document Devices.
@@ -555,25 +575,25 @@ public enum DAO {
     //The system should document physical link to end user as Cable.
     // повертаємо просто всю інформацію для репорту
     public ResultSet getCablesForReport() throws SQLException {
-            {//help
-                System.out.println("getCablesForReport");
-            }
-            Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE "+
-                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) "+
-                    "ORDER BY C.Id");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            {//help
-                System.out.println("SUCCESS!!!!getCablesForReport");
-            }
-            return resultSet;
+        {//help
+            System.out.println("getCablesForReport");
         }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE " +
+                "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) " +
+                "ORDER BY C.Id");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        {//help
+            System.out.println("SUCCESS!!!!getCablesForReport");
+        }
+        return resultSet;
+    }
 
 
     //Galya_Sh RI.5
     //The system should document logical entity of provided Service as Circuit.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getCircuitsForReport()  {
+    public ResultSet getCircuitsForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2120,7 +2140,7 @@ public enum DAO {
      */
 
 
-    public ResultSet getUsedRoutersAndCapacityOfPorts() throws SQLException{
+    public ResultSet getUsedRoutersAndCapacityOfPorts() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2139,7 +2159,7 @@ public enum DAO {
         return resultSet;
     }
 
-    public ResultSet getProfitabilityByMonth() throws SQLException{
+    public ResultSet getProfitabilityByMonth() throws SQLException {
         {//help
             System.out.println("getProfitabilityByMonth");
         }
@@ -2154,7 +2174,7 @@ public enum DAO {
         ResultSet resultSet = preparedStatement.executeQuery();
         try {
             close(connection, preparedStatement);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.warn("Smth wrong with closing connection or preparedStatement!");
         }
         {//help
@@ -2163,33 +2183,56 @@ public enum DAO {
         return resultSet;
     }
 
-    public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException{
+    public ResultSet getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
         {//help
-            System.out.println("getNewOrdersPerPeriod");
+            System.out.println("getOrdersPerPeriod");
         }
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) " +
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
                 "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
-                "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ?");
-        preparedStatement.setString(1, Scenario.NEW.toString());
+                "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
+                "GROUP BY OS.NAME ");
+        preparedStatement.setString(1, scenario.toString());
         preparedStatement.setDate(2, sqlStartDate);
         preparedStatement.setDate(3, sqlEndDate);
         ResultSet resultSet = preparedStatement.executeQuery();
         try {
             close(connection, preparedStatement);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.warn("Smth wrong with closing connection or preparedStatement!");
         }
         {//help
-            System.out.println("SUCCESS!!!!getNewOrdersPerPeriod");
+            System.out.println("SUCCESS!!!!getOrdersPerPeriod");
         }
         return resultSet;
-
     }
-
-    public ResultSet DisconnectOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
-        return null;
-    }
+//
+//    public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException{
+//        {//help
+//            System.out.println("getNewOrdersPerPeriod");
+//        }
+//        Connection connection = getConnection();
+//        PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) " +
+//                "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+//                "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ");
+//        preparedStatement.setString(1, Scenario.NEW.toString());
+//        preparedStatement.setDate(2, sqlStartDate);
+//        preparedStatement.setDate(3, sqlEndDate);
+//        ResultSet resultSet = preparedStatement.executeQuery();
+//        try {
+//            close(connection, preparedStatement);
+//        }catch (SQLException e){
+//            logger.warn("Smth wrong with closing connection or preparedStatement!");
+//        }
+//        {//help
+//            System.out.println("SUCCESS!!!!getNewOrdersPerPeriod");
+//        }
+//        return resultSet;
+//    }
+//
+//    public ResultSet DisconnectOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
+//        return null;
+//    }
 
     //IGOR RI.6
     //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
