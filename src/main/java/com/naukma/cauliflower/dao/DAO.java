@@ -576,74 +576,7 @@ public enum DAO {
         return resultSet;
     }
 
-    //Galya_Sh RI.6
-    //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
-    //сделать равным null. Сам кабель удалить из базы.
-    //The system should allow deleting of Cables and Circuits.
-    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) throws SQLException{
-        Connection connection = getConnection();
 
-        PreparedStatement preparedStatementSelect = null;
-        PreparedStatement preparedStatementUpdate = null;
-        ResultSet resultSet = null;
-        final int checkNumber = -1;
-        int siID = checkNumber;
-        int cableID = checkNumber;
-        int portID = checkNumber;
-
-        try {
-            connection.setAutoCommit(false);
-            // ---- GET SI ID, CABLE ID, PORT ID BY SO ID
-            preparedStatementSelect = connection
-                    .prepareStatement("SELECT SI.ID, C.ID_CABLE, C.ID_PORT "
-                            + "FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
-                            + "INNER JOIN CABLE C ON SI.ID_CABLE=C.ID "
-                            + "WHERE SO.ID = ?");
-            preparedStatementSelect.setInt(1, serviceOrderId);
-
-            resultSet = preparedStatementSelect.executeQuery();
-            while (resultSet.next()) {
-                siID = resultSet.getInt(1);
-                cableID = resultSet.getInt(2);
-                portID = resultSet.getInt(3);
-            }
-
-            if (siID != checkNumber && cableID != checkNumber
-                    && portID != checkNumber) {
-
-                // ---- UPDATE PORT USED SET 0
-                preparedStatementUpdate = connection
-                        .prepareStatement("UPDATE PORT USED SET 0 WHERE ID = ?");
-                preparedStatementSelect.setInt(1, portID);
-                preparedStatementUpdate.execute();
-
-                // ---- UPDATE SERVICEINSTANCE ID_CABLE SET NULL
-                preparedStatementUpdate = connection
-                        .prepareStatement("UPDATE SERVICEINSTANCE ID_CABLE SET NULL WHERE ID = ?");
-                preparedStatementSelect.setInt(1, siID);
-                preparedStatementUpdate.execute();
-
-                // ---- DELETE FROM CABLE WHERE ID = cableID
-                preparedStatementUpdate = connection
-                        .prepareStatement("DELETE FROM CABLE WHERE ID = ?");
-                preparedStatementSelect.setInt(1, cableID);
-                preparedStatementUpdate.execute();
-            }
-
-            connection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                close(connection, preparedStatementSelect);
-                close(connection, preparedStatementUpdate);
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-
-        }
-    }
 
     //Halya
     //return true, if no user in db with this phone
@@ -2180,6 +2113,75 @@ public enum DAO {
 
     public ResultSet DisconnectOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
         return null;
+    }
+
+    //IGOR RI.6
+    //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
+    //сделать равным null. Сам кабель удалить из базы.
+    //The system should allow deleting of Cables and Circuits.
+    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) throws SQLException{
+        Connection connection = getConnection();
+
+        PreparedStatement preparedStatementSelect = null;
+        PreparedStatement preparedStatementUpdate = null;
+        ResultSet resultSet = null;
+        final int checkNumber = -1;
+        int siID = checkNumber;
+        int cableID = checkNumber;
+        int portID = checkNumber;
+
+        try {
+            connection.setAutoCommit(false);
+            // ---- GET SI ID, CABLE ID, PORT ID BY SO ID
+            preparedStatementSelect = connection
+                    .prepareStatement("SELECT SI.ID, C.ID_CABLE, C.ID_PORT "
+                            + "FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
+                            + "INNER JOIN CABLE C ON SI.ID_CABLE=C.ID "
+                            + "WHERE SO.ID = ?");
+            preparedStatementSelect.setInt(1, serviceOrderId);
+
+            resultSet = preparedStatementSelect.executeQuery();
+            while (resultSet.next()) {
+                siID = resultSet.getInt(1);
+                cableID = resultSet.getInt(2);
+                portID = resultSet.getInt(3);
+            }
+
+            if (siID != checkNumber && cableID != checkNumber
+                    && portID != checkNumber) {
+
+                // ---- UPDATE PORT USED SET 0
+                preparedStatementUpdate = connection
+                        .prepareStatement("UPDATE PORT USED SET 0 WHERE ID = ?");
+                preparedStatementSelect.setInt(1, portID);
+                preparedStatementUpdate.execute();
+
+                // ---- UPDATE SERVICEINSTANCE ID_CABLE SET NULL
+                preparedStatementUpdate = connection
+                        .prepareStatement("UPDATE SERVICEINSTANCE ID_CABLE SET NULL WHERE ID = ?");
+                preparedStatementSelect.setInt(1, siID);
+                preparedStatementUpdate.execute();
+
+                // ---- DELETE FROM CABLE WHERE ID = cableID
+                preparedStatementUpdate = connection
+                        .prepareStatement("DELETE FROM CABLE WHERE ID = ?");
+                preparedStatementSelect.setInt(1, cableID);
+                preparedStatementUpdate.execute();
+            }
+
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connection, preparedStatementSelect);
+                close(connection, preparedStatementUpdate);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
     }
 
 
