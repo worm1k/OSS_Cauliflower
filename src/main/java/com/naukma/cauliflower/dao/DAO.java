@@ -278,7 +278,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         try {
             connection.setAutoCommit(false);
-            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE E_MAIL = ? ");
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET IS_BLOCKED = 1 WHERE E_MAIL = ? ");
             preparedStatement.setString(1, email);
             preparedStatement.executeUpdate();
             {//help

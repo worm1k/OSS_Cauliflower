@@ -6,6 +6,8 @@ import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 import com.naukma.cauliflower.mail.EmailSender;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,13 +26,17 @@ public class BlockAccountController extends HttpServlet {
         if(us!=null && us.getUserRoleId()==CauliflowerInfo.ADMINISTRATOR_ROLE_ID) {
             String userEmailForBlock = request.getParameter("email");
             if (DAO.INSTANCE.checkForExistingUserByEmail(userEmailForBlock)) {
-                //get blocked user
                 User blockedUser = DAO.INSTANCE.blockUserByEmail(userEmailForBlock);
                 if (blockedUser != null) {
+                    request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
                     String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
                     EmailSender.sendEmail(blockedUser, EmailSender.SUBJECT_BANNED,EmailSender.BAN_ACCOUNT, EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
                     request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_ACCOUNT_BLOCK_MESSAGE);
-                    response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                    if(blockedUser.getUserRoleId()==CauliflowerInfo.ADMINISTRATOR_ROLE_ID) {
+                        ServletContext context = getServletContext();
+                        RequestDispatcher rd = context.getRequestDispatcher("/logout");
+                        rd.forward(request, response);
+                    }else response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                 } else {
                     request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
                     response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
