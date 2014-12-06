@@ -507,15 +507,14 @@ public enum DAO {
     //Galya_Sh RI.1
     //The system should document Devices.
     // повертаємо просто всю інформацію для репорту
-    //TODO fix bug when all ports are occupied
+
     public ResultSet getDevicesForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, Count(P.Used) FREE, 60 - Count(p.Used) OCCUPIED " +
+            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, SUM(P.Used) OCCUPIED, 60 - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "WHERE P.Used  = 0 " +
                     "GROUP BY r.id ");
             resultSet = preparedStatement.executeQuery();
         } catch (SQLException e) {
