@@ -24,6 +24,7 @@ public class GetTasksController extends HttpServlet {
     SOW.4
     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("getTasks");
         User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
         if (user == null) {
@@ -36,7 +37,7 @@ public class GetTasksController extends HttpServlet {
             e.printStackTrace();
         }
         request.setAttribute(CauliflowerInfo.TASKS_PARAM, tasks);
-        request.getRequestDispatcher("smthing.jsp").forward(request, response);
+        request.getRequestDispatcher(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK).forward(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
