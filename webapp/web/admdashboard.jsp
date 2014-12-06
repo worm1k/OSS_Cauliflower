@@ -26,6 +26,13 @@
     </div>
   </c:if>
 
+  <c:if test="${sessionScope.ok ne null && not empty sessionScope.ok}">
+    <div class="alert alert-success alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+      <p><b>Server message:</b> ${sessionScope.ok}</p>
+    </div>
+  </c:if>
+
   <div class="col-xs-6">
     <h2 class="txt-center">Registration of new employee</h2>
     <form id="auth_reg_form" class="form-signin" action="register" method="post" autocomplete="off">

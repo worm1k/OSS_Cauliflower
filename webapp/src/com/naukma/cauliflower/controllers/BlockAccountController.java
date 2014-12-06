@@ -19,29 +19,29 @@ import java.io.IOException;
 @WebServlet(name = "BlockAccountController")
 public class BlockAccountController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathFrom  = request.getHeader("Referer");
+        //String pathFrom  = request.getHeader("Referer");
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(us!=null && us.getUserRoleId()==CauliflowerInfo.ADMINISTRATOR_ROLE_ID) {
-            int userIdForBlock = Integer.parseInt(request.getParameter("userIdForBlock"));
-            if (DAO.INSTANCE.checkForExistingUserById(userIdForBlock)) {
+            String userEmailForBlock = request.getParameter("email");
+            if (DAO.INSTANCE.checkForExistingUserByEmail(userEmailForBlock)) {
                 //get blocked user
-                User blockedUser = DAO.INSTANCE.blockUserById(userIdForBlock);
+                User blockedUser = DAO.INSTANCE.blockUserByEmail(userEmailForBlock);
                 if (blockedUser != null) {
                     String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
                     EmailSender.sendEmail(blockedUser, EmailSender.SUBJECT_BANNED,EmailSender.BAN_ACCOUNT, EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
-                    //OK
-                    //redirect to admin dashboard
+                    request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_ACCOUNT_BLOCK_MESSAGE);
+                    response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                 } else {
                     request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
-                    response.sendRedirect(pathFrom);
+                    response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                 }
             } else {
-                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, "Incorrect user for block");
-                response.sendRedirect(pathFrom);
+                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INCORRECT_USER_FOR_BLOCK_ERROR_MESSAGE);
+                response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
             }
         }else{
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
-            response.sendRedirect(pathFrom);
+            response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
         }
     }
 

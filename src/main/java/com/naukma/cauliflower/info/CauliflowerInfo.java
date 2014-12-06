@@ -38,8 +38,10 @@ public class CauliflowerInfo {
     public static final String USERROLE_ERROR_MESSAGE = "Incorrect user role!";
     public static final String LOGIN_ERROR_MESSAGE = "Incorrect login or password!";
     public static final String PERMISSION_ERROR_MESSAGE = "You don`t have permission!";
+    public static final String INCORRECT_USER_FOR_BLOCK_ERROR_MESSAGE = "Incorrect user for block!";
 
     public static final String OK_REGISTER_EMPLOYEE_MESSAGE = "Employee registred!";
+    public static final String OK_ACCOUNT_BLOCK_MESSAGE = "Account has been blocked!";
 
     public static final int CUSTOM_USER_ROLE_ID = 1;
     public static final int ADMINISTRATOR_ROLE_ID = 2;
