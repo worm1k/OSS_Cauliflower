@@ -3,9 +3,7 @@ package com.naukma.cauliflower.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.UserRoles;
-import com.naukma.cauliflower.entities.ServiceInstance;
-import com.naukma.cauliflower.entities.ServiceOrder;
-import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.entities.*;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
@@ -18,6 +16,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 @WebServlet(name = "SISODashboardController")
@@ -40,6 +39,7 @@ public class SISODashboardController  extends HttpServlet {
 
         ArrayList<ServiceOrder> orders = null;
         ArrayList<ServiceInstance> instances = null;
+        List<Service> lstService = null;
         User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         ObjectMapper mapper = new ObjectMapper();
         PrintWriter out = response.getWriter();
@@ -60,9 +60,12 @@ public class SISODashboardController  extends HttpServlet {
 
             }
 
+            lstService = DAO.INSTANCE.getServices();
+
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put(CauliflowerInfo.INSTANCES_ATTRIBUTE, instances);
             map.put(CauliflowerInfo.ORDERS_ATTRIBUTE, orders);
+            map.put(CauliflowerInfo.SERVICE_ATTRIBUTE, lstService);
             mapper.writeValue(out, map);
         } catch (SQLException e) {
             e.printStackTrace();

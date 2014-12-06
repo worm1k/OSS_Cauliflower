@@ -256,7 +256,7 @@ angular.module('NgApp', [])
                     $('#js-proceed-to-order').click(function(){
                         var serviceId = $('input[name="serviceId"]:checked').val();
 
-                        $('#js-order-form input[name="serviceLocationAddress"]').val(JSON.stringify($scope.serviceLocationAddress));
+                        $('#js-order-form input[name="serviceLocationAddress"]').val($scope.serviceLocationAddress);
                         $('#js-order-form input[name="serviceLocationLongtitude"]').val(marker.position.lng());
                         $('#js-order-form input[name="serviceLocationLatitude"]').val(marker.position.lat());
                         $('#js-order-form input[name="serviceId"]').val(serviceId);
