@@ -2167,6 +2167,53 @@ public enum DAO {
         return;
     }
 
+    public List<Service> getServiceById(int[] arrayServiceId) throws SQLException {
+        {//help
+            System.out.println("getServiceById(arr [])");
+        }
+        ArrayList<Service> result = new ArrayList<Service>();
+        Connection connection = getConnection();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("" +
+                "SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID WHERE S.ID = ? ");
+        for(int i=0;i<arrayServiceId.length - 1;i++){
+            stringBuilder.append(" OR S.ID = ? ");
+        }
+        PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString());
+        for (int i=0;i<arrayServiceId.length;i++) {
+            preparedStatement.setInt(i, arrayServiceId[i]);
+        }
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            result.add(new Service(
+                    resultSet.getInt("ID_SERVICE_TYPE"),
+                    resultSet.getString("ADRESS"),
+                    resultSet.getDouble("LONGITUDE"),
+                    resultSet.getDouble("LATITUDE"),
+                    resultSet.getString("NAME"),
+                    resultSet.getString("SPEED"),
+                    resultSet.getInt("ID_PROVIDER_LOCATION"),
+                    resultSet.getInt("ID"),
+                    resultSet.getDouble("PRICE")
+            ));
+        }
+        try{
+
+            close(connection, preparedStatement);
+        }catch (SQLException e){
+            logger.info("Smth wrong with closing connection or preparedStatement!");
+            e.printStackTrace();
+        }
+        result.trimToSize();
+        {//help
+            System.out.println("SUCCESS!!! getServiceById(arr [])");
+        }
+        return result;
+    }
+
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 
