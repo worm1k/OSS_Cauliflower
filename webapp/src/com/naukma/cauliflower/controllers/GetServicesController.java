@@ -79,6 +79,7 @@ public class GetServicesController extends HttpServlet {
             if (user == null) {
 
                 resp.sendRedirect(CauliflowerInfo.AUTH_LINK);
+
             } else {
                 RequestDispatcher requestDispatcher = req.getRequestDispatcher(PROCEED_TO_ORDER_CONTROLLER);
                 requestDispatcher.forward(req, resp);

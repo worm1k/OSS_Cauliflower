@@ -126,7 +126,7 @@ $(document).ready(function() {
 });
 
 
-$(function(){
-    $("#startDate").datepicker();
-    $("#endDate").datepicker();
-});
+//$(function(){
+//    $("#startDate").datepicker();
+//    $("#endDate").datepicker();
+//});
