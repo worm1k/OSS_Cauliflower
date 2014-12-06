@@ -95,33 +95,24 @@ public class ProceedOrderController extends HttpServlet {
         changeOrderStatus();
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createNewTask(orderId,UserRoles.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
-        createServiceInstance(request);
-
+        setNewServiceForTask(request);
     }
 
     private void scenarioDisconnect(HttpServletRequest request) throws SQLException
     {
         Integer instanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
-        createDisconectOrder(instanceId);
+        createDisconnectOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createNewTask(orderId, UserRoles.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT);
-//        //for end2end
-//        try {
-//            DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
     }
 
-    // ACK.1
     private void createNewOrder() throws SQLException
     {
         orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.NEW,null);
     }
 
-    // ACK.3
-    private void createDisconectOrder(Integer instanceId) throws SQLException
+    private void createDisconnectOrder(Integer instanceId) throws SQLException
     {
         orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.DISCONNECT, instanceId);
     }
@@ -136,13 +127,11 @@ public class ProceedOrderController extends HttpServlet {
 
     }
 
-    //ACK 12
     private void changeOrderStatus() throws SQLException
     {
         DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
     }
 
-    //ACK 12
     private void createServiceInstance(HttpServletRequest request)
     {
         ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute(
