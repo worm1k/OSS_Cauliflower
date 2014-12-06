@@ -554,14 +554,26 @@ public enum DAO {
     //Galya_Sh RI.4
     //The system should document physical link to end user as Cable.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getCablesForReport() {
-        return null;
-    }
+    public ResultSet getCablesForReport() throws SQLException {
+            {//help
+                System.out.println("getCablesForReport");
+            }
+            Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE "+
+                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) "+
+                    "ORDER BY C.Id");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            {//help
+                System.out.println("SUCCESS!!!!getCablesForReport");
+            }
+            return resultSet;
+        }
+
 
     //Galya_Sh RI.5
     //The system should document logical entity of provided Service as Circuit.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getCircuitsForReport() {
+    public ResultSet getCircuitsForReport()  {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
