@@ -2124,10 +2124,9 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, Count(P.Used) FREE, 60 - Count(p.Used) OCCUPIED, " +
-                "ROUND((60 - Count(p.Used))/(Count(P.Used)), 2) UTILIZATION\n" +
+        preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED, " +
+                "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION\n" +
                 "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
-                "WHERE P.Used  = 0 \n" +
                 "GROUP BY r.id ");
         resultSet = preparedStatement.executeQuery();
 
@@ -2160,7 +2159,7 @@ public enum DAO {
         return resultSet;
     }
 
-    public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
+    public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException{
         return null;
     }
 
