@@ -31,31 +31,48 @@ public class LoginController extends HttpServlet {
          logger.info(" INFO ::   LoginController");
 
         String pathFrom  = request.getHeader("Referer");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String res = "";
-        Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
-        ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
+        User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        if(userInSession==null) {
+            String username = request.getParameter("username").toLowerCase();
+            String password = request.getParameter("password");
+            //String res = "";
+            Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
+            ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
 
-        User user = null;
-        try {
-            user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if(user == null) {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,CauliflowerInfo.LOGIN_ERROR_MESSAGE);
-            response.sendRedirect(pathFrom);
-        }else{
-            request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, user);
-            logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
-            if(service!=null && servLoc!=null){
-                ServletContext context = getServletContext();
-                RequestDispatcher rd = context.getRequestDispatcher("/proceed");
-                rd.forward(request, response);
-            }else{
-                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+            User user = null;
+            try {
+                user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+            if (user == null) {
+                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.LOGIN_ERROR_MESSAGE);
+                response.sendRedirect(pathFrom);
+            } else {
+                request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, user);
+                logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
+                request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+                if (service != null && servLoc != null) {
+                    ServletContext context = getServletContext();
+                    RequestDispatcher rd = context.getRequestDispatcher("/proceed");
+                    rd.forward(request, response);
+                } else {
+                    int userInSessionRoleId = user.getUserRoleId();
+                    if (userInSessionRoleId == CauliflowerInfo.CUSTOM_USER_ROLE_ID)
+                        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                    if (userInSessionRoleId == CauliflowerInfo.ADMINISTRATOR_ROLE_ID)
+                        response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                    if (userInSessionRoleId == CauliflowerInfo.PROVISIONING_ENG_ROLE_ID)
+                        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                    if (userInSessionRoleId == CauliflowerInfo.INSTALLATION_ENG_ROLE_ID)
+                        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                    if (userInSessionRoleId == CauliflowerInfo.CUST_SUP_ENG_ROLE_ID)
+                        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                }
+            }
+        }else{
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
+            response.sendRedirect(pathFrom);
         }
     }
 

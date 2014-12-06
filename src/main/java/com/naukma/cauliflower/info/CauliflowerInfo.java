@@ -10,6 +10,7 @@ public class CauliflowerInfo {
     public static final String ERROR_ATTRIBUTE = "error";
     public static final String ORDERS_ATTRIBUTE = "orders";
     public static final String INSTANCES_ATTRIBUTE = "instances";
+    public static final String OK_ATTRIBUTE = "ok";
 
     public static final String SCENARIO_PARAM = "scenario";
     public static final String INSTANCE_ID_PARAM = "instanceId";
@@ -36,4 +37,15 @@ public class CauliflowerInfo {
     public static final String USERROLEID_ERROR_MESSAGE = "Incorrect role id of user for registration!";
     public static final String USERROLE_ERROR_MESSAGE = "Incorrect user role!";
     public static final String LOGIN_ERROR_MESSAGE = "Incorrect login or password!";
+    public static final String PERMISSION_ERROR_MESSAGE = "You don`t have permission!";
+
+    public static final String OK_REGISTER_EMPLOYEE_MESSAGE = "Employee registred!";
+
+    public static final int CUSTOM_USER_ROLE_ID = 1;
+    public static final int ADMINISTRATOR_ROLE_ID = 2;
+    public static final int PROVISIONING_ENG_ROLE_ID = 3;
+    public static final int INSTALLATION_ENG_ROLE_ID = 4;
+    public static final int CUST_SUP_ENG_ROLE_ID = 5;
+
+
 }
