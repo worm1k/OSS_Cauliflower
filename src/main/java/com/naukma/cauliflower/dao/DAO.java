@@ -414,7 +414,6 @@ public enum DAO {
     //Halya
     //return user, if password has been change successful ,
     //else return null
-    //TODO add isBlocked
     public User changeUserPasswordById(int userId, String newPassword) {
         Connection connection = getConnection();
         User resultUser = null;
@@ -508,6 +507,7 @@ public enum DAO {
     //Galya_Sh RI.1
     //The system should document Devices.
     // повертаємо просто всю інформацію для репорту
+    //TODO fix bug when all ports are occupied
     public ResultSet getDevicesForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -537,8 +537,19 @@ public enum DAO {
     //Galya_Sh RI.2
     //The system should document the Ports.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getPortsForReport() {
-        return null;
+    public ResultSet getPortsForReport() throws SQLException {
+        {//help
+            System.out.println("getPortsForReport");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT R.Id ROUTER, P.Id PORT, P.Used USED " +
+                "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                "Order By R.Id, P.Id ");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        {//help
+            System.out.println("SUCCESS!!!!getPortsForReport");
+        }
+        return resultSet;
     }
 
     //Galya_Sh RI.4
