@@ -8,11 +8,9 @@ import org.apache.log4j.PropertyConfigurator;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 
 /**
@@ -20,7 +18,7 @@ import java.util.*;
  */
 public enum DAO {
     INSTANCE;
-    private static final Logger logger = Logger.getLogger(DAO.class);
+    private static final Logger logger = Logger.getLogger(String.class);
     private DataSource dataSource;
     private static final String BD_JNDI = "jdbc/oraclesource"; // no magic numbers
 
@@ -2007,6 +2005,15 @@ public enum DAO {
     public ResultSet getProfitabilityByMonth() {
         return null;
     }
+
+    public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
+        return null;
+    }
+
+    public ResultSet DisconnectOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
+        return null;
+    }
+
 
     /**---------------------------------------------------------------------END IGOR---------------------------------------------------------------------**/
 
