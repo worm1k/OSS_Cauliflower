@@ -211,7 +211,6 @@ public enum DAO {
     //Halya
     //if error, return null
     //return blocked user
-    //TODO add isBlocked
     public User blockUserById(int idForBlock) {
         Connection connection = getConnection();
         User resultUser = null;
@@ -242,7 +241,6 @@ public enum DAO {
             }
             resultSet.close();
             connection.commit();
-            // result = idForBlock;
 
         } catch (SQLException e) {
             if (connection != null) {
@@ -273,14 +271,106 @@ public enum DAO {
 
 
     //Halya
+    //return blocked user or null
     public User blockUserByEmail(String email) {
-        //return blocked user or null
-        return null;
+        Connection connection = getConnection();
+        User resultUser = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE E_MAIL = ? ");
+            preparedStatement.setString(1, email);
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("USER WITH EMAIL " + email + " IS BLOCKED");
+            }
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM USERS US " +
+                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE " +
+                    "WHERE E_MAIL = ? ");
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int idUserRole = resultSet.getInt("ID_USERROLE");
+                int idUser = resultSet.getInt("ID_USER");
+                String fName = resultSet.getString("F_Name");
+                String lName = resultSet.getString("L_Name");
+                String phone = resultSet.getString("PHONE");
+                String nameUR = resultSet.getString("NAME");
+
+                resultUser = new User(idUser, idUserRole, nameUR, email, fName, lName, phone);
+            }
+            resultSet.close();
+            connection.commit();
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                }
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                //connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+
+        return resultUser;
     }
 
     //Halya
+    //true if user with this email exists
     public boolean checkForExistingUserByEmail(String email) {
-        return true;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE E_MAIL = ?");
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int checkResult = -1;
+            if (resultSet.next()) {
+                checkResult = resultSet.getInt("RES");
+            }
+            if (checkResult == 1) {
+                result = true;
+                {//help
+                    System.out.println("USER WITH EMAIL " + email + " EXIST");
+                }
+
+            } else {
+                result = false;
+                {//help
+                    System.out.println("THERE IS NO USER WITH EMAIL " + email);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
 
