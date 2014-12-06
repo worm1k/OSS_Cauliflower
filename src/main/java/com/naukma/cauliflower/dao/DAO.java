@@ -2136,7 +2136,6 @@ public enum DAO {
             logger.info("Smth wrong with closing connection or preparedStatement!");
             e.printStackTrace();
         }
-
         return resultSet;
     }
 
@@ -2153,6 +2152,11 @@ public enum DAO {
                 "ON  S.ID = SI.ID_SERVICE " +
                 "GROUP BY P.ID_ROUTER ");
         ResultSet resultSet = preparedStatement.executeQuery();
+        try {
+            close(connection, preparedStatement);
+        }catch (SQLException e){
+            logger.warn("Smth wrong with closing connection or preparedStatement!");
+        }
         {//help
             System.out.println("SUCCESS!!!!getProfitabilityByMonth");
         }
@@ -2160,7 +2164,27 @@ public enum DAO {
     }
 
     public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException{
-        return null;
+        {//help
+            System.out.println("getNewOrdersPerPeriod");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) " +
+                "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ?");
+        preparedStatement.setString(1, Scenario.NEW.toString());
+        preparedStatement.setDate(2, sqlStartDate);
+        preparedStatement.setDate(3, sqlEndDate);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        try {
+            close(connection, preparedStatement);
+        }catch (SQLException e){
+            logger.warn("Smth wrong with closing connection or preparedStatement!");
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getNewOrdersPerPeriod");
+        }
+        return resultSet;
+
     }
 
     public ResultSet DisconnectOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
