@@ -236,8 +236,9 @@ public enum DAO {
                 String lName = resultSet.getString("L_Name");
                 String phone = resultSet.getString("PHONE");
                 String nameUR = resultSet.getString("NAME");
+                boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
 
-                resultUser = new User(idForBlock, idUserRole, nameUR, eMail, fName, lName, phone);
+                resultUser = new User(idForBlock, idUserRole, nameUR, eMail, fName, lName, phone, isBlocked);
             }
             resultSet.close();
             connection.commit();
@@ -297,8 +298,9 @@ public enum DAO {
                 String lName = resultSet.getString("L_Name");
                 String phone = resultSet.getString("PHONE");
                 String nameUR = resultSet.getString("NAME");
+                boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
 
-                resultUser = new User(idUser, idUserRole, nameUR, email, fName, lName, phone);
+                resultUser = new User(idUser, idUserRole, nameUR, email, fName, lName, phone, isBlocked);
             }
             resultSet.close();
             connection.commit();
@@ -439,8 +441,9 @@ public enum DAO {
                 String lName = resultSet.getString("L_Name");
                 String phone = resultSet.getString("PHONE");
                 String nameUR = resultSet.getString("NAME");
+                boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
 
-                resultUser = new User(userId, idUserRole, nameUR, eMail, fName, lName, phone);
+                resultUser = new User(userId, idUserRole, nameUR, eMail, fName, lName, phone, isBlocked);
             }
             resultSet.close();
             connection.commit();
@@ -717,7 +720,8 @@ public enum DAO {
             String lastName = resultSet.getString("L_NAME");
             String phone = resultSet.getString("PHONE");
             String userrole = resultSet.getString("NAME");
-            user = new User(idUser, idUserrole, userrole, eMail, firstName, lastName, phone);
+            boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
+            user = new User(idUser, idUserrole, userrole, eMail, firstName, lastName, phone, isBlocked);
         }
         resultSet.close();
         {//help
