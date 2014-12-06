@@ -3,6 +3,7 @@ package com.naukma.cauliflower.controllers;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
+import com.naukma.cauliflower.mail.Cryptographer;
 import com.naukma.cauliflower.mail.EmailSender;
 
 import javax.servlet.ServletContext;
@@ -26,7 +27,10 @@ public class ChangeCustomerPassword extends HttpServlet {
             String newPassword = request.getParameter("newPassword");
             if (userIdForNewPass > 0) {
                 if(newPassword.length()>6) {
-                    User userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, newPassword);
+                    //hashing password
+                    final String hashPassword= Cryptographer.hmacSha1(newPassword);
+                    //
+                    User userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, hashPassword);
                     if(userForNewPass!=null){
 
                         //create body

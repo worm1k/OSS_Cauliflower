@@ -5,6 +5,7 @@ import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
+import com.naukma.cauliflower.mail.Cryptographer;
 import com.naukma.cauliflower.mail.EmailSender;
 
 import javax.servlet.RequestDispatcher;
@@ -73,7 +74,10 @@ public class RegistrationController extends HttpServlet {
                 {//help
                     System.out.println(user);
                 }
-                int resId = DAO.INSTANCE.createUser(user, password);
+                //hashing passwords
+                  final String hashPassword= Cryptographer.hmacSha1(password);
+                //
+                int resId = DAO.INSTANCE.createUser(user, hashPassword);
                 if (resId > 0) {
                     user = new User(resId, userRoleId, userRole, email, firstName, lastName, phone);
                     request.getSession().setAttribute(CauliflowerInfo.userAttribute, user);

@@ -6,6 +6,7 @@ import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
+import com.naukma.cauliflower.mail.Cryptographer;
 import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -39,7 +40,10 @@ public class LoginController extends HttpServlet {
 
         User user = null;
         try {
-            user = DAO.INSTANCE.getUserByLoginAndPassword(username, password);
+            //hashing password
+            final String hashPassword= Cryptographer.hmacSha1(password);
+            //
+            user = DAO.INSTANCE.getUserByLoginAndPassword(username, hashPassword);
         } catch (SQLException e) {
             e.printStackTrace();
         }
