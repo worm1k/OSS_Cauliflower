@@ -680,32 +680,35 @@ public enum DAO {
         Connection connection = getConnection();
         User user = null;
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT * " +
-                "FROM USERS U INNER JOIN USERROLE UR ON U.ID_USERROLE = UR.ID_USERROLE " +
-                "WHERE E_MAIL = ? AND PASSWORD = ?");
-        preparedStatement.setString(1, login);
-        preparedStatement.setString(2, password);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            int idUser = resultSet.getInt("ID_USER");
-            int idUserrole = resultSet.getInt("ID_USERROLE");
-            String eMail = resultSet.getString("E_MAIL");
-            String firstName = resultSet.getString("F_NAME");
-            String lastName = resultSet.getString("L_NAME");
-            String phone = resultSet.getString("PHONE");
-            String userrole = resultSet.getString("NAME");
-            boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
-            user = new User(idUser, idUserrole, userrole, eMail, firstName, lastName, phone, isBlocked);
-        }
-        resultSet.close();
-        {//help
-            System.out.println("SUCCESS!!! getUserByLoginAndPassword");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT * " +
+                    "FROM USERS U INNER JOIN USERROLE UR ON U.ID_USERROLE = UR.ID_USERROLE " +
+                    "WHERE E_MAIL = ? AND PASSWORD = ?");
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int idUser = resultSet.getInt("ID_USER");
+                int idUserrole = resultSet.getInt("ID_USERROLE");
+                String eMail = resultSet.getString("E_MAIL");
+                String firstName = resultSet.getString("F_NAME");
+                String lastName = resultSet.getString("L_NAME");
+                String phone = resultSet.getString("PHONE");
+                String userrole = resultSet.getString("NAME");
+                boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
+                user = new User(idUser, idUserrole, userrole, eMail, firstName, lastName, phone, isBlocked);
+            }
+            resultSet.close();
+            {//help
+                System.out.println("SUCCESS!!! getUserByLoginAndPassword");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         return user;
     }
@@ -732,85 +735,86 @@ public enum DAO {
         {//help
             System.out.println("CREATE NEW ORDER!");
         }
-        connection.setAutoCommit(false);
-        preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
-        preparedStatement.setString(1, scenario.toString());
-        ResultSet resultSet = preparedStatement.executeQuery();
-        int idOrderScenario = 0;
-        if (resultSet.next()) {
-            idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
-        }
-        {//help
-            System.out.println("Scenario : " + scenario);
-            System.out.println("idScenario: " + idOrderScenario);
-        }
-
-        preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
-        preparedStatement.setString(1, orderStatus.toString());
-        int idOrderStatus = 0;
-        resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
-        }
-        {//help
-            System.out.println("idOrderStatus: " + idOrderStatus);
-        }
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        Date d = gregorianCalendar.getTime();
-        if (idServiceInstance == null) {
-            preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
-                    "VALUES(?,?,?,? )");
-            preparedStatement.setInt(1, idOrderScenario);
-            preparedStatement.setInt(2, idOrderStatus);
-            preparedStatement.setDate(3, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
-            preparedStatement.setInt(4, userId);
-            {//help
-                System.out.println("NULL");
-            }
-        } else {
-            preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SRVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
-                    "VALUES(?, ?,? ,?,?)");
-            preparedStatement.setInt(1, idServiceInstance.intValue());
-            preparedStatement.setInt(2, idOrderScenario);
-            preparedStatement.setInt(3, idOrderStatus);
-            preparedStatement.setDate(4, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
-            preparedStatement.setInt(5, userId);
-            {//help
-                System.out.println("NOT NULL");
-                System.out.println("idServiceInstance " + idServiceInstance.intValue());
-            }
-        }
-        preparedStatement.executeUpdate();
-        preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
-        resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            {//help
-                System.out.println("RETURN : " + resultSet.getInt("RES"));
-            }
-            result = resultSet.getInt("RES");
-        }
-
-        {//help
-            System.out.println("SUCCESS! CREATE NEW ORDER!");
-        }
         try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
+            preparedStatement.setString(1, scenario.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int idOrderScenario = 0;
+            if (resultSet.next()) {
+                idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
+            }
+            {//help
+                System.out.println("Scenario : " + scenario);
+                System.out.println("idScenario: " + idOrderScenario);
+            }
+
+            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
+            preparedStatement.setString(1, orderStatus.toString());
+            int idOrderStatus = 0;
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
+            }
+            {//help
+                System.out.println("idOrderStatus: " + idOrderStatus);
+            }
+            GregorianCalendar gregorianCalendar = new GregorianCalendar();
+            Date d = gregorianCalendar.getTime();
+            if (idServiceInstance == null) {
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                        "VALUES(?,?,?,? )");
+                preparedStatement.setInt(1, idOrderScenario);
+                preparedStatement.setInt(2, idOrderStatus);
+                preparedStatement.setDate(3, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+                preparedStatement.setInt(4, userId);
+                {//help
+                    System.out.println("NULL");
+                }
+            } else {
+                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SRVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                        "VALUES(?, ?,? ,?,?)");
+                preparedStatement.setInt(1, idServiceInstance.intValue());
+                preparedStatement.setInt(2, idOrderScenario);
+                preparedStatement.setInt(3, idOrderStatus);
+                preparedStatement.setDate(4, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+                preparedStatement.setInt(5, userId);
+                {//help
+                    System.out.println("NOT NULL");
+                    System.out.println("idServiceInstance " + idServiceInstance.intValue());
+                }
+            }
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                {//help
+                    System.out.println("RETURN : " + resultSet.getInt("RES"));
+                }
+                result = resultSet.getInt("RES");
+            }
             connection.commit();
+            {//help
+                System.out.println("SUCCESS! CREATE NEW ORDER!");
+            }
+
         } catch (SQLException e) {
             if (connection != null) {
                 System.err.print("Transaction is being rolled back");
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
-                    e1.printStackTrace();
                     logger.error("ROLLBACK transaction Failed of creating new router");
                 }
             }
-        }
-        try {
-            close(connection, preparedStatement);
-        } catch (SQLException e) {
-            logger.info("Smth wrong with closing connection or preparedStatement!");
-            e.printStackTrace();
+            throw e;
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -829,24 +833,27 @@ public enum DAO {
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
-                "SET ID_USER = ? " +
-                "WHERE ID = ?");
-        preparedStatement.setInt(1, userId);
-        preparedStatement.setInt(2, instanceId);
-        {//help
-            System.out.println("instanceId: " + instanceId);
-            System.out.println("userId: " + userId);
-        }
-        preparedStatement.executeUpdate();
-        {//help
-            System.out.println("SUCCESS!!! SET USER FOR INSTANCE!");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+                    "SET ID_USER = ? " +
+                    "WHERE ID = ?");
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, instanceId);
+            {//help
+                System.out.println("instanceId: " + instanceId);
+                System.out.println("userId: " + userId);
+            }
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("SUCCESS!!! SET USER FOR INSTANCE!");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
     }
 
@@ -864,27 +871,31 @@ public enum DAO {
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
-                "SET SERVICE_INSTANCE_STATUS = (SELECT ID " +
-                "FROM SERVICEINSTANCESTATUS " +
-                "WHERE NAME = ?) " +
-                "WHERE ID = ?");
-        preparedStatement.setString(1, status.toString());
-        preparedStatement.setInt(2, instanceId);
-        {//help
-            System.out.println("InstanceId: " + instanceId);
-            System.out.println("Status : " + status.toString());
-        }
-        preparedStatement.executeUpdate();
-        {//help
-            System.out.println("SUCCESS!!! CHANGE INSTANCE STATUS!");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+                    "SET SERVICE_INSTANCE_STATUS = (SELECT ID " +
+                    "FROM SERVICEINSTANCESTATUS " +
+                    "WHERE NAME = ?) " +
+                    "WHERE ID = ?");
+            preparedStatement.setString(1, status.toString());
+            preparedStatement.setInt(2, instanceId);
+            {//help
+                System.out.println("InstanceId: " + instanceId);
+                System.out.println("Status : " + status.toString());
+            }
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("SUCCESS!!! CHANGE INSTANCE STATUS!");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
+        return;
     }
 
     //KaspYar
@@ -901,28 +912,32 @@ public enum DAO {
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
-                "SET ID_ORDERSTATUS = (SELECT ID_ORDERSTATUS " +
-                "FROM ORDERSTATUS " +
-                "WHERE NAME = ?) " +
-                "WHERE ID_SERVICEORDER = ?");
-
-        preparedStatement.setString(1, orderStatus.toString());
-        preparedStatement.setInt(2, orderId);
-        {//help
-            System.out.println("orderId: " + orderId);
-            System.out.println("orderStatus: " + orderStatus.toString());
-        }
-        preparedStatement.executeUpdate();
-        {//help
-            System.out.println("SUCCESS!!! CHANGE ORDER STATUS");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
+                    "SET ID_ORDERSTATUS = (SELECT ID_ORDERSTATUS " +
+                    "FROM ORDERSTATUS " +
+                    "WHERE NAME = ?) " +
+                    "WHERE ID_SERVICEORDER = ?");
+
+            preparedStatement.setString(1, orderStatus.toString());
+            preparedStatement.setInt(2, orderId);
+            {//help
+                System.out.println("orderId: " + orderId);
+                System.out.println("orderStatus: " + orderStatus.toString());
+            }
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("SUCCESS!!! CHANGE ORDER STATUS");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
+        return;
     }
 
     //KaspYar
@@ -939,28 +954,32 @@ public enum DAO {
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("UPDATE TASK " +
-                "SET ID_TASKSTATUS = (SELECT ID_TASKSTATUS " +
-                "FROM TASKSTATUS " +
-                "WHERE NAME = ?) " +
-                "WHERE ID_TASK = ?");
-
-        preparedStatement.setString(1, taskStatus.toString());
-        preparedStatement.setInt(2, taskId);
-        {//help
-            System.out.println("taskId: " + taskId);
-            System.out.println("taskStatus: " + taskStatus.toString());
-        }
-        preparedStatement.executeUpdate();
-        {//help
-            System.out.println("SUCCESS!!! CHANGE TASK STATUS");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("UPDATE TASK " +
+                    "SET ID_TASKSTATUS = (SELECT ID_TASKSTATUS " +
+                    "FROM TASKSTATUS " +
+                    "WHERE NAME = ?) " +
+                    "WHERE ID_TASK = ?");
+
+            preparedStatement.setString(1, taskStatus.toString());
+            preparedStatement.setInt(2, taskId);
+            {//help
+                System.out.println("taskId: " + taskId);
+                System.out.println("taskStatus: " + taskStatus.toString());
+            }
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("SUCCESS!!! CHANGE TASK STATUS");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
+        return;
     }
 
     //KaspYar
@@ -977,25 +996,29 @@ public enum DAO {
         {//help
             System.out.println("SET INSTANCE BLOCKED!");
         }
-        preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
-                "SET HAS_ACTIVE_TASK = ? " +
-                "WHERE ID = ?");
-        preparedStatement.setInt(1, isBlocked);
-        preparedStatement.setInt(2, instanceId);
-        {//help
-            System.out.println("instanceId: " + instanceId);
-            System.out.println("blocked: " + isBlocked);
-        }
-        preparedStatement.executeUpdate();
-        {//help
-            System.out.println("SUCCESS! SET INSTANCE BLOCKED!");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+                    "SET HAS_ACTIVE_TASK = ? " +
+                    "WHERE ID = ?");
+            preparedStatement.setInt(1, isBlocked);
+            preparedStatement.setInt(2, instanceId);
+            {//help
+                System.out.println("instanceId: " + instanceId);
+                System.out.println("blocked: " + isBlocked);
+            }
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("SUCCESS! SET INSTANCE BLOCKED!");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
+        return;
     }
 
     //KaspYar
@@ -1014,29 +1037,32 @@ public enum DAO {
         ArrayList<Task> result = new ArrayList<Task>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT T.ID_TASK, T.ID_USERROLE, T.ID_SERVICEORDER, T.ID_TASKSTATUS, TS.NAME TS_NAME, T.NAME T_NAME " +
-                "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
-                "WHERE T.ID_TASKSTATUS = ? AND T.ID_USERROLE = ?");
-        preparedStatement.setInt(1, taskStatusId);
-        preparedStatement.setInt(2, userRoleId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            result.add(new Task(resultSet.getInt("ID_TASK"),
-                    resultSet.getInt("ID_USERROLE"),
-                    resultSet.getInt("ID_SERVICEORDER"),
-                    resultSet.getInt("ID_TASKSTATUS"),
-                    resultSet.getString("TS_NAME"),
-                    TaskName.valueOf(resultSet.getString("T_NAME"))));
-
-        }
-        {//help
-            System.out.println("success!   getTasksByStatusAndRole");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT T.ID_TASK, T.ID_USERROLE, T.ID_SERVICEORDER, T.ID_TASKSTATUS, TS.NAME TS_NAME, T.NAME T_NAME " +
+                    "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
+                    "WHERE T.ID_TASKSTATUS = ? AND T.ID_USERROLE = ?");
+            preparedStatement.setInt(1, taskStatusId);
+            preparedStatement.setInt(2, userRoleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new Task(resultSet.getInt("ID_TASK"),
+                        resultSet.getInt("ID_USERROLE"),
+                        resultSet.getInt("ID_SERVICEORDER"),
+                        resultSet.getInt("ID_TASKSTATUS"),
+                        resultSet.getString("TS_NAME"),
+                        TaskName.valueOf(resultSet.getString("T_NAME"))));
+
+            }
+            {//help
+                System.out.println("success!   getTasksByStatusAndRole");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         result.trimToSize();
         return result;
@@ -1057,32 +1083,35 @@ public enum DAO {
         ArrayList<Service> result = new ArrayList<Service>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
-                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
-                "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID " +
-                "WHERE S.ID_PROVIDER_LOCATION = ? ");
-        preparedStatement.setInt(1, providerLocationId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            result.add(new Service(resultSet.getInt("ID_SERVICE_TYPE"),
-                    resultSet.getString("ADRESS"),
-                    resultSet.getDouble("LONGITUDE"),
-                    resultSet.getDouble("LATITUDE"),
-                    resultSet.getString("NAME"),
-                    resultSet.getString("SPEED"),
-                    resultSet.getInt("ID_PROVIDER_LOCATION"),
-                    resultSet.getInt("ID"),
-                    resultSet.getDouble("PRICE")));
-        }
-        {//help
-            System.out.println("SUCCESS !!! getServicesByProviderLocationId");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID " +
+                    "WHERE S.ID_PROVIDER_LOCATION = ? ");
+            preparedStatement.setInt(1, providerLocationId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new Service(resultSet.getInt("ID_SERVICE_TYPE"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getString("NAME"),
+                        resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"),
+                        resultSet.getInt("ID"),
+                        resultSet.getDouble("PRICE")));
+            }
+            {//help
+                System.out.println("SUCCESS !!! getServicesByProviderLocationId");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         result.trimToSize();
         return result;
@@ -1093,7 +1122,7 @@ public enum DAO {
     /**
      * Creates new router
      */
-    public void createRouter() {
+    public void createRouter() throws SQLException {
         {//help
             System.out.println("CREATE ROUTER");
         }
@@ -1126,14 +1155,14 @@ public enum DAO {
                     connection.rollback();
                 } catch (SQLException e1) {
                     e1.printStackTrace();
-                    logger.error("ROLLBACK transaction Failed of creating new router");
+                    logger.error("ROLLBACK transaction Failed of creating createPortAndCableAndAssignToServiceInstance");
                 }
             }
             e.printStackTrace();
+            throw e;
         } finally {
             try {
                 close(connection, preparedStatement);
-
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -1156,34 +1185,37 @@ public enum DAO {
         ServiceOrder result = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
-                "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
-                "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
-                ") INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
-                "WHERE T.ID_TASK = ?");
-        preparedStatement.setInt(1, taskId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            GregorianCalendar gregorianCalendar = new GregorianCalendar();
-            Date date = resultSet.getDate("OUR_DATE");
-            gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-            result = new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"),
-                    resultSet.getInt("ID_ORDERSTATUS"),
-                    resultSet.getString("OST_NAME"),
-                    resultSet.getInt("ID_SRVICEINSTANCE"),
-                    resultSet.getInt("ID_ORDERSCENARIO"),
-                    resultSet.getString("OSC_NAME"),
-                    gregorianCalendar, resultSet.getInt("ID_USER"));
-        }
-        {//help
-            System.out.println("SUCCESS ! getServiceOrder");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
+                    "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                    "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
+                    "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
+                    ") INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
+                    "WHERE T.ID_TASK = ?");
+            preparedStatement.setInt(1, taskId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
+                result = new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"),
+                        resultSet.getInt("ID_ORDERSTATUS"),
+                        resultSet.getString("OST_NAME"),
+                        resultSet.getInt("ID_SRVICEINSTANCE"),
+                        resultSet.getInt("ID_ORDERSCENARIO"),
+                        resultSet.getString("OSC_NAME"),
+                        gregorianCalendar, resultSet.getInt("ID_USER"));
+            }
+            {//help
+                System.out.println("SUCCESS ! getServiceOrder");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         return result;
     }
@@ -1203,20 +1235,23 @@ public enum DAO {
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
-                "SET ID_SRVICEINSTANCE = ? " +
-                "WHERE ID_SERVICEORDER = ?");
-        preparedStatement.setInt(1, instanceId);
-        preparedStatement.setInt(2, orderId);
-        preparedStatement.executeUpdate();
-        {//help
-            System.out.println("SUCCESS!!! SET INSTANCE FOR ORDER");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
+                    "SET ID_SRVICEINSTANCE = ? " +
+                    "WHERE ID_SERVICEORDER = ?");
+            preparedStatement.setInt(1, instanceId);
+            preparedStatement.setInt(2, orderId);
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("SUCCESS!!! SET INSTANCE FOR ORDER");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         return;
     }
@@ -1237,34 +1272,37 @@ public enum DAO {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +
-                "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
-                "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO " +
-                "WHERE SO.ID_USER = ?");
-        preparedStatement.setInt(1, userId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            GregorianCalendar gregorianCalendar = new GregorianCalendar();
-            Date date = resultSet.getDate("OUR_DATE");
-            gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-            result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"),
-                    resultSet.getInt("ID_ORDERSTATUS"),
-                    resultSet.getString("OST_NAME"),
-                    resultSet.getInt("ID_SRVICEINSTANCE"),
-                    resultSet.getInt("ID_ORDERSCENARIO"),
-                    resultSet.getString("OSC_NAME"),
-                    gregorianCalendar,
-                    resultSet.getInt("ID_USER")));
-        }
-        {//help
-            System.out.println("SUCCESS ! GET ORDERS");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +
+                    "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                    "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
+                    "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO " +
+                    "WHERE SO.ID_USER = ?");
+            preparedStatement.setInt(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
+                result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"),
+                        resultSet.getInt("ID_ORDERSTATUS"),
+                        resultSet.getString("OST_NAME"),
+                        resultSet.getInt("ID_SRVICEINSTANCE"),
+                        resultSet.getInt("ID_ORDERSCENARIO"),
+                        resultSet.getString("OSC_NAME"),
+                        gregorianCalendar,
+                        resultSet.getInt("ID_USER")));
+            }
+            {//help
+                System.out.println("SUCCESS ! GET ORDERS");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         result.trimToSize();
         return result;
@@ -1285,37 +1323,40 @@ public enum DAO {
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
-                "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
-                "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
-                "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
-                "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
-                "INNER JOIN SERVICEINSTANCESTATUS SIS " +
-                "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID " +
-                "WHERE ID_USER = ?");
-        preparedStatement.setInt(1, userId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            result.add(new ServiceInstance(resultSet.getInt("ID"),
-                    resultSet.getInt("ID_USER"),
-                    resultSet.getInt("ID_SERVICE_LOCATION"),
-                    resultSet.getString("ADRESS"),
-                    resultSet.getDouble("LONGITUDE"),
-                    resultSet.getDouble("LATITUDE"),
-                    resultSet.getInt("ID_SERVICE"),
-                    resultSet.getInt("SERVICE_INSTANCE_STATUS"),
-                    resultSet.getString("NAME"),
-                    resultSet.getInt("ID_CABLE"),
-                    (resultSet.getInt("HAS_ACTIVE_TASK") == 1)));
-        }
-        {//help
-            System.out.println("SUCCESS !!! GET INSTANCES");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
+                    "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
+                    "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
+                    "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                    "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
+                    "INNER JOIN SERVICEINSTANCESTATUS SIS " +
+                    "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID " +
+                    "WHERE ID_USER = ?");
+            preparedStatement.setInt(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new ServiceInstance(resultSet.getInt("ID"),
+                        resultSet.getInt("ID_USER"),
+                        resultSet.getInt("ID_SERVICE_LOCATION"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getInt("ID_SERVICE"),
+                        resultSet.getInt("SERVICE_INSTANCE_STATUS"),
+                        resultSet.getString("NAME"),
+                        resultSet.getInt("ID_CABLE"),
+                        (resultSet.getInt("HAS_ACTIVE_TASK") == 1)));
+            }
+            {//help
+                System.out.println("SUCCESS !!! GET INSTANCES");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         result.trimToSize();
         return result;
@@ -1334,32 +1375,36 @@ public enum DAO {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
-                "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
-                "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO ");
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            GregorianCalendar gregorianCalendar = new GregorianCalendar();
-            Date date = resultSet.getDate("OUR_DATE");
-            gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-            result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"),
-                    resultSet.getInt("ID_ORDERSTATUS"),
-                    resultSet.getString("OS_NAME"),
-                    resultSet.getInt("ID_SRVICEINSTANCE"),
-                    resultSet.getInt("ID_ORDERSCENARIO"),
-                    resultSet.getString("OSC_NAME"),
-                    gregorianCalendar,
-                    resultSet.getInt("ID_USER")));
-        }
-        {//help
-            System.out.println("SUCCESS GET ALL ORDERS");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+
+            preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
+                    "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                    "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
+                    "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO ");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
+                result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"),
+                        resultSet.getInt("ID_ORDERSTATUS"),
+                        resultSet.getString("OS_NAME"),
+                        resultSet.getInt("ID_SRVICEINSTANCE"),
+                        resultSet.getInt("ID_ORDERSCENARIO"),
+                        resultSet.getString("OSC_NAME"),
+                        gregorianCalendar,
+                        resultSet.getInt("ID_USER")));
+            }
+            {//help
+                System.out.println("SUCCESS GET ALL ORDERS");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         result.trimToSize();
         return result;
@@ -1377,35 +1422,38 @@ public enum DAO {
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
-                "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
-                "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
-                "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
-                "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
-                "INNER JOIN SERVICEINSTANCESTATUS SIS " +
-                "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID ");
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            result.add(new ServiceInstance(resultSet.getInt("ID"),
-                    resultSet.getInt("ID_USER"),
-                    resultSet.getInt("ID_SERVICE_LOCATION"),
-                    resultSet.getString("ADRESS"),
-                    resultSet.getDouble("LONGITUDE"),
-                    resultSet.getDouble("LATITUDE"),
-                    resultSet.getInt("ID_SERVICE"),
-                    resultSet.getInt("SERVICE_INSTANCE_STATUS"),
-                    resultSet.getString("NAME"),
-                    resultSet.getInt("ID_CABLE"),
-                    (resultSet.getInt("HAS_ACTIVE_TASK") == 1)));
-        }
-        {//help
-            System.out.println("SUCCESS !! GET ALL INSTANCES");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
+                    "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
+                    "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
+                    "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                    "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
+                    "INNER JOIN SERVICEINSTANCESTATUS SIS " +
+                    "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID ");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new ServiceInstance(resultSet.getInt("ID"),
+                        resultSet.getInt("ID_USER"),
+                        resultSet.getInt("ID_SERVICE_LOCATION"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getInt("ID_SERVICE"),
+                        resultSet.getInt("SERVICE_INSTANCE_STATUS"),
+                        resultSet.getString("NAME"),
+                        resultSet.getInt("ID_CABLE"),
+                        (resultSet.getInt("HAS_ACTIVE_TASK") == 1)));
+            }
+            {//help
+                System.out.println("SUCCESS !! GET ALL INSTANCES");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         result.trimToSize();
         return result;
@@ -1416,13 +1464,17 @@ public enum DAO {
     public ResultSet reportTester() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT * FROM USERS");
-        ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = null;
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT * FROM USERS");
+            resultSet = preparedStatement.executeQuery();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         return resultSet;
     }
@@ -1439,23 +1491,26 @@ public enum DAO {
         ArrayList<ProviderLocation> result = new ArrayList<ProviderLocation>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT * " +
-                "FROM PROVIDERLOCATION PL INNER JOIN LOCATION L ON PL.ID_LOCATION = L.ID");
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            result.add(new ProviderLocation(resultSet.getInt("ID"),
-                    resultSet.getString("ADRESS"),
-                    resultSet.getDouble("LONGITUDE"),
-                    resultSet.getDouble("LATITUDE")));
-        }
-        {//
-            System.out.println("SUCCESS!!! getProviderLocations");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT * " +
+                    "FROM PROVIDERLOCATION PL INNER JOIN LOCATION L ON PL.ID_LOCATION = L.ID");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new ProviderLocation(resultSet.getInt("ID"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE")));
+            }
+            {//
+                System.out.println("SUCCESS!!! getProviderLocations");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         result.trimToSize();
         return result;
@@ -1473,33 +1528,36 @@ public enum DAO {
         Service service = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
-                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
-                "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID WHERE S.ID = ?");
-        preparedStatement.setInt(1, serviceId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            service = new Service(
-                    resultSet.getInt("ID_SERVICE_TYPE"),
-                    resultSet.getString("ADRESS"),
-                    resultSet.getDouble("LONGITUDE"),
-                    resultSet.getDouble("LATITUDE"),
-                    resultSet.getString("NAME"),
-                    resultSet.getString("SPEED"),
-                    resultSet.getInt("ID_PROVIDER_LOCATION"),
-                    resultSet.getInt("ID"),
-                    resultSet.getDouble("PRICE")
-            );
-        }
-        {//help
-            System.out.println("getServiceById");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID WHERE S.ID = ?");
+            preparedStatement.setInt(1, serviceId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                service = new Service(
+                        resultSet.getInt("ID_SERVICE_TYPE"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getString("NAME"),
+                        resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"),
+                        resultSet.getInt("ID"),
+                        resultSet.getDouble("PRICE")
+                );
+            }
+            {//help
+                System.out.println("getServiceById");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         return service;
 
@@ -1519,31 +1577,34 @@ public enum DAO {
         ArrayList<Service> result = new ArrayList<Service>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
-                "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
-                "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            result.add(new Service(
-                    resultSet.getInt("ID_SERVICE_TYPE"),
-                    resultSet.getString("ADRESS"),
-                    resultSet.getDouble("LONGITUDE"),
-                    resultSet.getDouble("LATITUDE"),
-                    resultSet.getString("NAME"),
-                    resultSet.getString("SPEED"),
-                    resultSet.getInt("ID_PROVIDER_LOCATION"),
-                    resultSet.getInt("ID"),
-                    resultSet.getDouble("PRICE")));
-        }
-        {//
-            System.out.println("SUCCESS!!! getServices");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new Service(
+                        resultSet.getInt("ID_SERVICE_TYPE"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getString("NAME"),
+                        resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"),
+                        resultSet.getInt("ID"),
+                        resultSet.getDouble("PRICE")));
+            }
+            {//
+                System.out.println("SUCCESS!!! getServices");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         result.trimToSize();
         return result;
@@ -1558,7 +1619,7 @@ public enum DAO {
      * @see com.naukma.cauliflower.entities.ServiceLocation
      */
 
-    public int createServiceLocation(ServiceLocation serviceLocation) {
+    public int createServiceLocation(ServiceLocation serviceLocation) throws SQLException {
         {//help
             System.out.println("CREATE SERVICE LOCATION!");
         }
@@ -1607,10 +1668,11 @@ public enum DAO {
                     connection.rollback();
                 } catch (SQLException e1) {
                     e1.printStackTrace();
-                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                    logger.error("ROLLBACK transaction Failed of creating createPortAndCableAndAssignToServiceInstance");
                 }
             }
             e.printStackTrace();
+            throw e;
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1618,7 +1680,6 @@ public enum DAO {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
-
         }
         return res;
     }
@@ -1635,7 +1696,7 @@ public enum DAO {
      * @return id of created instance
      */
 
-    public int createServiceInstance(int userId, ServiceLocation serviceLocation, int serviceId) {
+    public int createServiceInstance(int userId, ServiceLocation serviceLocation, int serviceId) throws SQLException {
         {//help
             System.out.println("CREATE SERVICE INSTANCE!");
         }
@@ -1668,10 +1729,11 @@ public enum DAO {
                     connection.rollback();
                 } catch (SQLException e1) {
                     e1.printStackTrace();
-                    logger.error("ROLLBACK transaction Failed of creating new service instance");
+                    logger.error("ROLLBACK transaction Failed of creating createPortAndCableAndAssignToServiceInstance");
                 }
             }
             e.printStackTrace();
+            throw e;
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1694,7 +1756,7 @@ public enum DAO {
      * @param taskName       name of the task
      * @return id of created task
      */
-    public int createNewTask(int serviceOrderId, UserRoles role, TaskName taskName) {
+    public int createNewTask(int serviceOrderId, UserRoles role, TaskName taskName) throws SQLException {
         {//help
             System.out.println("CREATE TASK");
         }
@@ -1736,10 +1798,11 @@ public enum DAO {
                     connection.rollback();
                 } catch (SQLException e1) {
                     e1.printStackTrace();
-                    logger.error("ROLLBACK transaction Failed of creating createTaskForInstallation");
+                    logger.error("ROLLBACK transaction Failed of creating createPortAndCableAndAssignToServiceInstance");
                 }
             }
             e.printStackTrace();
+            throw e;
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1750,132 +1813,134 @@ public enum DAO {
         }
         return taskId;
     }
-
-
-    /**
-     * Creates task with status FREE for installation engineer for selected service order
-     *
-     * @param serviceOrderId
-     * @return id of created task
-     */
-    public int createTaskForInstallation(int serviceOrderId) {
-        {//help
-            System.out.println("CREATE TASK FOR INSTALLATION");
-        }
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int taskId = 0;
-        try {
-            connection.setAutoCommit(false);
-            preparedStatement = connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
-                    "VALUES ( " +
-                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
-                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
-                    "?, ?)");
-            {//HELP
-                System.out.println("taskStatus: " + TaskStatus.FREE.toString());
-                System.out.println("userRole: " + UserRoles.INSTALLATION_ENG.toString());
-                System.out.println("serviceOrderId " + serviceOrderId);
-                System.out.println("TaskName: " + TaskName.CONNECT_NEW_PERSON.toString());
-            }
-            preparedStatement.setString(1, TaskStatus.FREE.toString());
-            preparedStatement.setString(2, UserRoles.INSTALLATION_ENG.toString());
-            preparedStatement.setInt(3, serviceOrderId);
-            preparedStatement.setString(4, TaskName.CONNECT_NEW_PERSON.toString());
-            preparedStatement.executeUpdate();
-            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) taskId = resultSet.getInt("TASK_ID");
-            {//help
-                System.out.println("MAX_ID: " + taskId);
-            }
-            connection.commit();
-            {//help
-                System.out.println("SUCCESS!!! CREATE TASK FOR INSTALLATION");
-            }
-        } catch (SQLException e) {
-            if (connection != null) {
-                System.err.print("Transaction is being rolled back");
-                try {
-                    connection.rollback();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                    logger.error("ROLLBACK transaction Failed of creating createTaskForInstallation");
-                }
-            }
-            e.printStackTrace();
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-        }
-        return taskId;
-    }
-
-    //KaspYar
-
-    /**
-     * Creates task with status FREE for provisioning engineer for selected service order
-     *
-     * @param serviceOrderId
-     * @return id of created task
-     */
-    public int createTaskForProvisioning(int serviceOrderId) {
-        {//help
-            System.out.println("CREATE TASK FOR PROVISIONING");
-        }
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int taskId = 0;
-        try {
-            connection.setAutoCommit(false);
-            preparedStatement = connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
-                    "VALUES ( " +
-                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
-                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
-                    "?, ?)");
-            {//help
-                System.out.println("TaskStatus: " + TaskStatus.FREE.toString());
-                System.out.println("userRole: " + UserRoles.PROVISIONING_ENG.toString());
-                System.out.println("idServiceOrder " + serviceOrderId);
-                System.out.println("taskName: " + TaskName.CREATE_CIRCUIT.toString());
-            }
-            preparedStatement.setString(1, TaskStatus.FREE.toString());
-            preparedStatement.setString(2, UserRoles.PROVISIONING_ENG.toString());
-            preparedStatement.setInt(3, serviceOrderId);
-            preparedStatement.setString(4, TaskName.CREATE_CIRCUIT.toString());
-            preparedStatement.executeUpdate();
-            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) taskId = resultSet.getInt("TASK_ID");
-            connection.commit();
-            {//help
-                System.out.println("SUCCESS!!! CREATE TASK FOR PROVISIONING");
-            }
-        } catch (SQLException e) {
-            if (connection != null) {
-                System.err.print("Transaction is being rolled back");
-                try {
-                    connection.rollback();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                    logger.error("ROLLBACK transaction Failed of creating createTaskForProvisioning");
-                }
-            }
-            e.printStackTrace();
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-        }
-        return taskId;
-    }
+//
+//
+//    /**
+//     * Creates task with status FREE for installation engineer for selected service order
+//     *
+//     * @param serviceOrderId
+//     * @return id of created task
+//     */
+//    public int createTaskForInstallation(int serviceOrderId) throws  SQLException{
+//        {//help
+//            System.out.println("CREATE TASK FOR INSTALLATION");
+//        }
+//        Connection connection = getConnection();
+//        PreparedStatement preparedStatement = null;
+//        int taskId = 0;
+//        try {
+//            connection.setAutoCommit(false);
+//            preparedStatement = connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
+//                    "VALUES ( " +
+//                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
+//                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
+//                    "?, ?)");
+//            {//HELP
+//                System.out.println("taskStatus: " + TaskStatus.FREE.toString());
+//                System.out.println("userRole: " + UserRoles.INSTALLATION_ENG.toString());
+//                System.out.println("serviceOrderId " + serviceOrderId);
+//                System.out.println("TaskName: " + TaskName.CONNECT_NEW_PERSON.toString());
+//            }
+//            preparedStatement.setString(1, TaskStatus.FREE.toString());
+//            preparedStatement.setString(2, UserRoles.INSTALLATION_ENG.toString());
+//            preparedStatement.setInt(3, serviceOrderId);
+//            preparedStatement.setString(4, TaskName.CONNECT_NEW_PERSON.toString());
+//            preparedStatement.executeUpdate();
+//            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()) taskId = resultSet.getInt("TASK_ID");
+//            {//help
+//                System.out.println("MAX_ID: " + taskId);
+//            }
+//            connection.commit();
+//            {//help
+//                System.out.println("SUCCESS!!! CREATE TASK FOR INSTALLATION");
+//            }
+//        } catch (SQLException e) {
+//            if (connection != null) {
+//                System.err.print("Transaction is being rolled back");
+//                try {
+//                    connection.rollback();
+//                } catch (SQLException e1) {
+//                    e1.printStackTrace();
+//                    logger.error("ROLLBACK transaction Failed of creating createPortAndCableAndAssignToServiceInstance");
+//                }
+//            }
+//            e.printStackTrace();
+//            throw e;
+//        } finally {
+//            try {
+//                close(connection, preparedStatement);
+//            } catch (SQLException e) {
+//                logger.info("Smth wrong with closing connection or preparedStatement!");
+//                e.printStackTrace();
+//            }
+//        }
+//        return taskId;
+//    }
+//
+//    //KaspYar
+//
+//    /**
+//     * Creates task with status FREE for provisioning engineer for selected service order
+//     *
+//     * @param serviceOrderId
+//     * @return id of created task
+//     */
+//    public int createTaskForProvisioning(int serviceOrderId) throws SQLException{
+//        {//help
+//            System.out.println("CREATE TASK FOR PROVISIONING");
+//        }
+//        Connection connection = getConnection();
+//        PreparedStatement preparedStatement = null;
+//        int taskId = 0;
+//        try {
+//            connection.setAutoCommit(false);
+//            preparedStatement = connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
+//                    "VALUES ( " +
+//                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
+//                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
+//                    "?, ?)");
+//            {//help
+//                System.out.println("TaskStatus: " + TaskStatus.FREE.toString());
+//                System.out.println("userRole: " + UserRoles.PROVISIONING_ENG.toString());
+//                System.out.println("idServiceOrder " + serviceOrderId);
+//                System.out.println("taskName: " + TaskName.CREATE_CIRCUIT.toString());
+//            }
+//            preparedStatement.setString(1, TaskStatus.FREE.toString());
+//            preparedStatement.setString(2, UserRoles.PROVISIONING_ENG.toString());
+//            preparedStatement.setInt(3, serviceOrderId);
+//            preparedStatement.setString(4, TaskName.CREATE_CIRCUIT.toString());
+//            preparedStatement.executeUpdate();
+//            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()) taskId = resultSet.getInt("TASK_ID");
+//            connection.commit();
+//            {//help
+//                System.out.println("SUCCESS!!! CREATE TASK FOR PROVISIONING");
+//            }
+//        } catch (SQLException e) {
+//        if (connection != null) {
+//            System.err.print("Transaction is being rolled back");
+//            try {
+//                connection.rollback();
+//            } catch (SQLException e1) {
+//                e1.printStackTrace();
+//                logger.error("ROLLBACK transaction Failed of creating createPortAndCableAndAssignToServiceInstance");
+//            }
+//        }
+//        e.printStackTrace();
+//        throw e;
+//    } finally {
+//        try {
+//            close(connection, preparedStatement);
+//        } catch (SQLException e) {
+//            logger.info("Smth wrong with closing connection or preparedStatement!");
+//            e.printStackTrace();
+//        }
+//    }
+//        return taskId;
+//    }
 
     //KaspYar
     public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) throws SQLException {
@@ -1885,30 +1950,33 @@ public enum DAO {
         ArrayList<Task> result = new ArrayList<Task>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT T.ID_TASK, T.ID_TASKSTATUS, T.ID_USERROLE, T.ID_SERVICEORDER, " +
-                "T.NAME, TS.NAME TS_NAME " +
-                "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
-                "WHERE ID_USERROLE = ? AND ((TS.NAME = ?) OR (TS.NAME = ?))");
-        preparedStatement.setInt(1, userRoleId);
-        preparedStatement.setString(2, TaskStatus.FREE.toString());
-        preparedStatement.setString(3, TaskStatus.PROCESSING.toString());
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            result.add(new Task(resultSet.getInt("ID_TASK"),
-                    resultSet.getInt("ID_USERROLE"),
-                    resultSet.getInt("ID_SERVICEORDER"),
-                    resultSet.getInt("ID_TASKSTATUS"),
-                    resultSet.getString("TS_NAME"),
-                    TaskName.valueOf(resultSet.getString("NAME"))));
-        }
-        {//help
-            System.out.println("SUCCESS!!! getFreeAndProcessingTasksByUserRoleId");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT T.ID_TASK, T.ID_TASKSTATUS, T.ID_USERROLE, T.ID_SERVICEORDER, " +
+                    "T.NAME, TS.NAME TS_NAME " +
+                    "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
+                    "WHERE ID_USERROLE = ? AND ((TS.NAME = ?) OR (TS.NAME = ?))");
+            preparedStatement.setInt(1, userRoleId);
+            preparedStatement.setString(2, TaskStatus.FREE.toString());
+            preparedStatement.setString(3, TaskStatus.PROCESSING.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new Task(resultSet.getInt("ID_TASK"),
+                        resultSet.getInt("ID_USERROLE"),
+                        resultSet.getInt("ID_SERVICEORDER"),
+                        resultSet.getInt("ID_TASKSTATUS"),
+                        resultSet.getString("TS_NAME"),
+                        TaskName.valueOf(resultSet.getString("NAME"))));
+            }
+            {//help
+                System.out.println("SUCCESS!!! getFreeAndProcessingTasksByUserRoleId");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         result.trimToSize();
         return result;
@@ -1924,7 +1992,7 @@ public enum DAO {
      *
      * @param serviceOrderId id of service order to take service instance from
      */
-    public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) throws SQLException{
+    public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) throws SQLException {
         {//help
             System.out.println("createPortAndCableAndAssignToServiceInstance");
         }
@@ -1932,7 +2000,6 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         int portId = 0;
         int cableId = 0;
-
         try {
             connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement("SELECT MIN(ID) PORT_ID FROM PORT WHERE USED = 0");
@@ -1991,18 +2058,21 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
-        preparedStatement = connection.prepareStatement("SELECT COUNT(*) AM FROM PORT WHERE USED = ?");
-        preparedStatement.setInt(1, 0);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) result = (resultSet.getInt("AM") > 0);
-        {//help
-            System.out.println("SUCCESS!!! freePortExists");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT COUNT(*) AM FROM PORT WHERE USED = ?");
+            preparedStatement.setInt(1, 0);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) result = (resultSet.getInt("AM") > 0);
+            {//help
+                System.out.println("SUCCESS!!! freePortExists");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         return result;
     }
@@ -2022,20 +2092,23 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         Scenario result = null;
-        preparedStatement = connection.prepareStatement("SELECT OS.NAME " +
-                "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
-                "WHERE SO.ID_SERVICEORDER = ?");
-        preparedStatement.setInt(1, serviceOrderId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) result = Scenario.valueOf(resultSet.getString("NAME"));
-        {//help
-            System.out.println("SUCCESS!!! getOrderScenario");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT OS.NAME " +
+                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                    "WHERE SO.ID_SERVICEORDER = ?");
+            preparedStatement.setInt(1, serviceOrderId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) result = Scenario.valueOf(resultSet.getString("NAME"));
+            {//help
+                System.out.println("SUCCESS!!! getOrderScenario");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         return result;
     }
@@ -2053,22 +2126,25 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         TaskStatus result = null;
-        preparedStatement = connection.prepareStatement("SELECT TS.NAME " +
-                "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
-                "WHERE T.ID_TASK =?");
-        preparedStatement.setInt(1, taskId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            result = TaskStatus.valueOf(resultSet.getString("NAME"));
-        }
-        {//help
-            System.out.println("SUCCESS!!!getTaskStatus");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT TS.NAME " +
+                    "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
+                    "WHERE T.ID_TASK =?");
+            preparedStatement.setInt(1, taskId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = TaskStatus.valueOf(resultSet.getString("NAME"));
+            }
+            {//help
+                System.out.println("SUCCESS!!!getTaskStatus");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         return result;
     }
@@ -2088,28 +2164,31 @@ public enum DAO {
         Task task = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT T.ID_TASK, T.ID_TASKSTATUS, T.ID_USERROLE, " +
-                "T.ID_SERVICEORDER, T.NAME, TS.NAME TS_NAME " +
-                "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
-                "WHERE ID_TASK = ?");
-        preparedStatement.setInt(1, taskId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            task = new Task(resultSet.getInt("ID_TASK"),
-                    resultSet.getInt("ID_USERROLE"),
-                    resultSet.getInt("ID_SERVICEORDER"),
-                    resultSet.getInt("ID_TASKSTATUS"),
-                    resultSet.getString("TS_NAME"),
-                    TaskName.valueOf(resultSet.getString("NAME")));
-        }
-        {//help
-            System.out.println("SUCCESS!!!getTaskById");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT T.ID_TASK, T.ID_TASKSTATUS, T.ID_USERROLE, " +
+                    "T.ID_SERVICEORDER, T.NAME, TS.NAME TS_NAME " +
+                    "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
+                    "WHERE ID_TASK = ?");
+            preparedStatement.setInt(1, taskId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                task = new Task(resultSet.getInt("ID_TASK"),
+                        resultSet.getInt("ID_USERROLE"),
+                        resultSet.getInt("ID_SERVICEORDER"),
+                        resultSet.getInt("ID_TASKSTATUS"),
+                        resultSet.getString("TS_NAME"),
+                        TaskName.valueOf(resultSet.getString("NAME")));
+            }
+            {//help
+                System.out.println("SUCCESS!!!getTaskById");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         return task;
     }
@@ -2119,19 +2198,24 @@ public enum DAO {
             System.out.println("getMostProfitableRouterForReport");
         }
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
-                "FROM SERVICE S INNER JOIN ( " +
-                "  SERVICEINSTANCE SI INNER JOIN ( " +
-                "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
-                "  ON SI.ID_CABLE = C.ID) " +
-                "ON  S.ID = SI.ID_SERVICE " +
-                "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC");
-        ResultSet resultSet = preparedStatement.executeQuery();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
+                    "FROM SERVICE S INNER JOIN ( " +
+                    "  SERVICEINSTANCE SI INNER JOIN ( " +
+                    "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                    "  ON SI.ID_CABLE = C.ID) " +
+                    "ON  S.ID = SI.ID_SERVICE " +
+                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC");
+            resultSet = preparedStatement.executeQuery();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         {//help
             System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
@@ -2151,16 +2235,23 @@ public enum DAO {
             System.out.println("setServiceForTask");
         }
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO TOMODIFY(ID_TASK, ID_SERVICE) " +
-                "VALUES(?,?)");
-        preparedStatement.setInt(1, taskId);
-        preparedStatement.setInt(2, serviceId);
-        preparedStatement.executeUpdate();
+        PreparedStatement preparedStatement = null;
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException exc) {
-            logger.warn("Can't close connection or preparedStatement!");
-            exc.printStackTrace();
+            preparedStatement = connection.prepareStatement("INSERT INTO TOMODIFY(ID_TASK, ID_SERVICE) " +
+                    "VALUES(?,?)");
+            preparedStatement.setInt(1, taskId);
+            preparedStatement.setInt(2, serviceId);
+            preparedStatement.executeUpdate();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
         }
         {//help
             System.out.println("SUCCESS!!!setServiceForTask");
@@ -2180,33 +2271,39 @@ public enum DAO {
                 "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
                 "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
                 "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID WHERE S.ID = ? ");
-        for(int i=0;i<arrayServiceId.length - 1;i++){
+        for (int i = 0; i < arrayServiceId.length - 1; i++) {
             stringBuilder.append(" OR S.ID = ? ");
         }
-        PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString());
-        for (int i=0;i<arrayServiceId.length;i++) {
-            preparedStatement.setInt(i+1, arrayServiceId[i]);
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(stringBuilder.toString());
+            for (int i = 0; i < arrayServiceId.length; i++) {
+                preparedStatement.setInt(i + 1, arrayServiceId[i]);
+            }
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result.add(new Service(
+                        resultSet.getInt("ID_SERVICE_TYPE"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getString("NAME"),
+                        resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"),
+                        resultSet.getInt("ID"),
+                        resultSet.getDouble("PRICE")
+                ));
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            result.add(new Service(
-                    resultSet.getInt("ID_SERVICE_TYPE"),
-                    resultSet.getString("ADRESS"),
-                    resultSet.getDouble("LONGITUDE"),
-                    resultSet.getDouble("LATITUDE"),
-                    resultSet.getString("NAME"),
-                    resultSet.getString("SPEED"),
-                    resultSet.getInt("ID_PROVIDER_LOCATION"),
-                    resultSet.getInt("ID"),
-                    resultSet.getDouble("PRICE")
-            ));
-        }
-        try{
-
-            close(connection, preparedStatement);
-        }catch (SQLException e){
-            logger.info("Smth wrong with closing connection or preparedStatement!");
-            e.printStackTrace();
+        {//help
+            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
         }
         result.trimToSize();
         {//help
@@ -2227,17 +2324,23 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED, " +
-                "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION\n" +
-                "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
-                "GROUP BY r.id ");
-        resultSet = preparedStatement.executeQuery();
-
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException e) {
-            logger.info("Smth wrong with closing connection or preparedStatement!");
-            e.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED, " +
+                    "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION\n" +
+                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
+                    "GROUP BY r.id ");
+            resultSet = preparedStatement.executeQuery();
+
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
         }
         return resultSet;
     }
@@ -2247,18 +2350,24 @@ public enum DAO {
             System.out.println("getProfitabilityByMonth");
         }
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
-                "FROM SERVICE S INNER JOIN ( " +
-                "  SERVICEINSTANCE SI INNER JOIN ( " +
-                "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
-                "  ON SI.ID_CABLE = C.ID) " +
-                "ON  S.ID = SI.ID_SERVICE " +
-                "GROUP BY P.ID_ROUTER ");
-        ResultSet resultSet = preparedStatement.executeQuery();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException e) {
-            logger.warn("Smth wrong with closing connection or preparedStatement!");
+            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
+                    "FROM SERVICE S INNER JOIN ( " +
+                    "  SERVICEINSTANCE SI INNER JOIN ( " +
+                    "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                    "  ON SI.ID_CABLE = C.ID) " +
+                    "ON  S.ID = SI.ID_SERVICE " +
+                    "GROUP BY P.ID_ROUTER ");
+            resultSet = preparedStatement.executeQuery();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         {//help
             System.out.println("SUCCESS!!!!getProfitabilityByMonth");
@@ -2271,18 +2380,25 @@ public enum DAO {
             System.out.println("getOrdersPerPeriod");
         }
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
-                "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
-                "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
-                "GROUP BY OS.NAME ");
-        preparedStatement.setString(1, scenario.toString());
-        preparedStatement.setDate(2, sqlStartDate);
-        preparedStatement.setDate(3, sqlEndDate);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException e) {
-            logger.warn("Smth wrong with closing connection or preparedStatement!");
+            preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
+                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                    "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
+                    "GROUP BY OS.NAME ");
+
+            preparedStatement.setString(1, scenario.toString());
+            preparedStatement.setDate(2, sqlStartDate);
+            preparedStatement.setDate(3, sqlEndDate);
+            resultSet = preparedStatement.executeQuery();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
         }
         {//help
             System.out.println("SUCCESS!!!!getOrdersPerPeriod");
