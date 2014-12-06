@@ -18,7 +18,7 @@ public class Cryptographer {
 
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
     private static  String KEY;
-
+    private static int MAX_STRING_LENGTH=36;
     static {
         generateKey();
     }
@@ -50,7 +50,7 @@ public class Cryptographer {
 
     private static void generateKey(){
 
-        KEY=hmacSha1("cauliflower"," ");
+        KEY=hmacSha1("cauliflower","secret");
     }
 
     private static String toHexString(byte[] bytes) {
@@ -61,7 +61,7 @@ public class Cryptographer {
             formatter.format("%02x", b);
         }
         StringBuffer buffer= new StringBuffer(formatter.toString());
-        return buffer.substring(0,36).toString();
+        return buffer.substring(0,MAX_STRING_LENGTH).toString();
     }
 }
 

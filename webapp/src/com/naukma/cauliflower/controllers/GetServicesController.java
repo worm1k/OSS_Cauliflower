@@ -23,7 +23,7 @@ import java.util.List;
 @WebServlet(name = "GetServicesController")
 public class GetServicesController extends HttpServlet {
 
-    //private static final  String GO_TO_AUTHENTICATION="auth.jsp";
+
     private static final String PROCEED_TO_ORDER_CONTROLLER="/proceed";
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,11 +37,9 @@ public class GetServicesController extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
-//
 //        //return data as json object
 //        //Convert Java object to JSON format
         mapper.writeValue(out, services);
-
 //        Service service = DAO.INSTANCE.getServiceById(1);
 //        mapper.writeValue(out, service);
     }
@@ -79,8 +77,7 @@ public class GetServicesController extends HttpServlet {
             session.setAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE, serviceLocation);
 
             if (user == null) {
-            /*RequestDispatcher requestDispatcher = req.getRequestDispatcher(GO_TO_AUTHENTICATION);
-            requestDispatcher.forward(req,resp);*/
+
                 resp.sendRedirect(CauliflowerInfo.AUTH_LINK);
             } else {
                 RequestDispatcher requestDispatcher = req.getRequestDispatcher(PROCEED_TO_ORDER_CONTROLLER);
