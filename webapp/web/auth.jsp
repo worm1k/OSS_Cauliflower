@@ -32,11 +32,11 @@
             <h2 class="txt-center">Login</h2>
             <form id="auth_log_form" class="form-signin" action="login" method="post" autocomplete="off">
                 <div class="form-group" id="auth_log_email">
-                    <h4>Email</h4>
+                    <h4>Email <span class="required"></span></h4>
                     <input type="text" class="form-control" placeholder="you@example.com" data-trigger="manual" data-placement="bottom" data-content="Email address is not valid" name="username" required>
                 </div>
                 <div class="form-group" id="auth_log_password">
-                    <h4>Password</h4>
+                    <h4>Password <span class="required"></span></h4>
                     <input type="password" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Password must contain at least 6 symbols" name="password" placeholder="secret-password" required>
                     <a href="#">Forgot your password?</a>
                 </div>

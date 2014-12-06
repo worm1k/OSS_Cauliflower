@@ -2,6 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +22,7 @@ public class LocationController extends HttpServlet {
         Integer locationLongitude = (Integer) request.getAttribute("longitude");
         Integer locationLatitude = (Integer) request.getAttribute("latitude");
         ServiceLocation serviceLocation = new ServiceLocation(-1, locationAddress, locationLongitude, locationLatitude);
-        request.getSession().setAttribute("serviceLocation", serviceLocation);
+        request.getSession().setAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE, serviceLocation);
 
         request.getRequestDispatcher("smthing.jsp").forward(request, response);
     }

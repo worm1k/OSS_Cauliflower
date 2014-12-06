@@ -14,7 +14,20 @@ public class User implements Serializable {
     private String firstName;
     private String lastName;
     private String phone;
+    private boolean isBlocked;
 
+    public User(int userId, int userRoleId, String userRole, String email, String firstName, String lastName, String phone, boolean isBlocked) {
+        this.userId = userId;
+        this.userRoleId = userRoleId;
+        this.userRole = userRole;
+        this.email = email;
+
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.isBlocked = isBlocked;
+    }
+/*
     public User(int userId, int userRoleId, String userRole, String email, String firstName, String lastName, String phone) {
         this.userId = userId;
         this.userRoleId = userRoleId;
@@ -35,6 +48,7 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.phone = phone;
     }
+    */
 
     public String getEmail() {
         return email;
@@ -65,6 +79,9 @@ public class User implements Serializable {
         return phone;
     }
 
+    public boolean isBlocked() {
+        return isBlocked;
+    }
 
     @Override
     public String toString() {

@@ -4,14 +4,13 @@ package com.naukma.cauliflower.dao;
 import com.naukma.cauliflower.entities.*;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 
 /**
@@ -19,7 +18,7 @@ import java.util.*;
  */
 public enum DAO {
     INSTANCE;
-    private static final Logger logger = Logger.getLogger(DAO.class);
+    private static final Logger logger = Logger.getLogger(String.class);
     private DataSource dataSource;
     private static final String BD_JNDI = "jdbc/oraclesource"; // no magic numbers
 
@@ -54,36 +53,86 @@ public enum DAO {
     /**
      * ---------------------------------------------------------------------HALYA---------------------------------------------------------------------*
      */
-    //Galya_Sh
-    //просто отримуємо айди юзер ролі яка є Installation Engineer
-    public int getUserRoleIdFor_InstallationEngineer() {
+
+    public int getUserRoleIdFor(UserRoles userRoles) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        int result = 4;
+        int result = 0;
+        preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+        preparedStatement.setString(1, userRoles.toString());
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            result = resultSet.getInt("RES");
+        }
         try {
-            String urName = "INSTALLATION_ENG";
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-            preparedStatement.setString(1,urName);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result = resultSet.getInt("RES");
-            }
-
+            close(connection, preparedStatement);
         } catch (SQLException e) {
+            logger.info("Smth wrong with closing connection or preparedStatement!");
             e.printStackTrace();
-        } finally {
-            try {
-                close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-
         }
         return result;
     }
+    //Galya_Sh
+    //просто отримуємо айди юзер ролі яка є Installation Engineer
+//    public int getUserRoleIdFor_InstallationEngineer() {
+//        Connection connection = getConnection();
+//        PreparedStatement preparedStatement = null;
+//        int result = 4;
+//        try {
+//            UserRoles urName = UserRoles.INSTALLATION_ENG;
+//            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+//            preparedStatement.setString(1, urName.toString());
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()) {
+//                result = resultSet.getInt("RES");
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                close(connection, preparedStatement);
+//                //if (!preparedStatement.isClosed()) preparedStatement.close();
+//                //if (!connection.isClosed()) connection.close();
+//            } catch (SQLException e) {
+//                logger.info("Smth wrong with closing connection or preparedStatement!");
+//                e.printStackTrace();
+//            }
+//
+//        }
+//        return result;
+//    }
+//
+//    //Galya_Sh
+//    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
+//    public int getUserRoleIdFor_ProvisioningEngineer() {
+//        Connection connection = getConnection();
+//        PreparedStatement preparedStatement = null;
+//        int result = 0;
+//        try {
+//            UserRoles urName = UserRoles.PROVISIONING_ENG;
+//            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+//            preparedStatement.setString(1, urName.toString());
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()) {
+//                result = resultSet.getInt("RES");
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                close(connection, preparedStatement);
+//                //if (!preparedStatement.isClosed()) preparedStatement.close();
+//                //if (!connection.isClosed()) connection.close();
+//            } catch (SQLException e) {
+//                logger.info("Smth wrong with closing connection or preparedStatement!");
+//                e.printStackTrace();
+//            }
+//
+//        }
+//        return result;
+//    }
 
     //Halya
     //if error - return < 0
@@ -212,7 +261,6 @@ public enum DAO {
     //Halya
     //if error, return null
     //return blocked user
-    //TODO add isBlocked
     public User blockUserById(int idForBlock) {
         Connection connection = getConnection();
         User resultUser = null;
@@ -238,12 +286,12 @@ public enum DAO {
                 String lName = resultSet.getString("L_Name");
                 String phone = resultSet.getString("PHONE");
                 String nameUR = resultSet.getString("NAME");
+                boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
 
-                resultUser = new User(idForBlock, idUserRole, nameUR, eMail, fName, lName, phone);
+                resultUser = new User(idForBlock, idUserRole, nameUR, eMail, fName, lName, phone, isBlocked);
             }
             resultSet.close();
             connection.commit();
-            // result = idForBlock;
 
         } catch (SQLException e) {
             if (connection != null) {
@@ -271,6 +319,112 @@ public enum DAO {
 
         return resultUser;
     }
+
+
+    //Halya
+    //return blocked user or null
+    public User blockUserByEmail(String email) {
+        Connection connection = getConnection();
+        User resultUser = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("UPDATE USERS SET IS_BLOCKED = 1 WHERE E_MAIL = ? ");
+            preparedStatement.setString(1, email);
+            preparedStatement.executeUpdate();
+            {//help
+                System.out.println("USER WITH EMAIL " + email + " IS BLOCKED");
+            }
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM USERS US " +
+                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE " +
+                    "WHERE E_MAIL = ? ");
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int idUserRole = resultSet.getInt("ID_USERROLE");
+                int idUser = resultSet.getInt("ID_USER");
+                String fName = resultSet.getString("F_Name");
+                String lName = resultSet.getString("L_Name");
+                String phone = resultSet.getString("PHONE");
+                String nameUR = resultSet.getString("NAME");
+                boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
+
+                resultUser = new User(idUser, idUserRole, nameUR, email, fName, lName, phone, isBlocked);
+            }
+            resultSet.close();
+            connection.commit();
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                }
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                //connection.setAutoCommit(true);
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+
+        return resultUser;
+    }
+
+    //Halya
+    //true if user with this email exists
+    public boolean checkForExistingUserByEmail(String email) {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE E_MAIL = ?");
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int checkResult = -1;
+            if (resultSet.next()) {
+                checkResult = resultSet.getInt("RES");
+            }
+            if (checkResult == 1) {
+                result = true;
+                {//help
+                    System.out.println("USER WITH EMAIL " + email + " EXIST");
+                }
+
+            } else {
+                result = false;
+                {//help
+                    System.out.println("THERE IS NO USER WITH EMAIL " + email);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
 
     //Halya
     //return name of userRole or null, if no userRole with this id
@@ -310,7 +464,6 @@ public enum DAO {
     //Halya
     //return user, if password has been change successful ,
     //else return null
-    //TODO add isBlocked
     public User changeUserPasswordById(int userId, String newPassword) {
         Connection connection = getConnection();
         User resultUser = null;
@@ -337,8 +490,9 @@ public enum DAO {
                 String lName = resultSet.getString("L_Name");
                 String phone = resultSet.getString("PHONE");
                 String nameUR = resultSet.getString("NAME");
+                boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
 
-                resultUser = new User(userId, idUserRole, nameUR, eMail, fName, lName, phone);
+                resultUser = new User(userId, idUserRole, nameUR, eMail, fName, lName, phone, isBlocked);
             }
             resultSet.close();
             connection.commit();
@@ -369,48 +523,18 @@ public enum DAO {
         return resultUser;
     }
 
-    //Galya_Sh
-    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
-    public int getUserRoleIdFor_ProvisioningEngineer() {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int result = 0;
-        try {
-            String urName = "PROVISIONING_ENG";
-            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-            preparedStatement.setString(1,urName);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result = resultSet.getInt("RES");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
-
-        }
-        return result;
-    }
 
     //Galya_Sh RI.1
     //The system should document Devices.
     // повертаємо просто всю інформацію для репорту
+
     public ResultSet getDevicesForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, Count(P.Used) FREE, 60 - Count(p.Used) OCCUPIED " +
+            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, SUM(P.Used) OCCUPIED, 60 - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "WHERE P.Used  = 0 " +
                     "GROUP BY r.id ");
             resultSet = preparedStatement.executeQuery();
         } catch (SQLException e) {
@@ -432,16 +556,39 @@ public enum DAO {
     //Galya_Sh RI.2
     //The system should document the Ports.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getPortsForReport() {
-        return null;
+    public ResultSet getPortsForReport() throws SQLException {
+        {//help
+            System.out.println("getPortsForReport");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT R.Id ROUTER, P.Id PORT, P.Used USED " +
+                "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                "Order By R.Id, P.Id ");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        {//help
+            System.out.println("SUCCESS!!!!getPortsForReport");
+        }
+        return resultSet;
     }
 
     //Galya_Sh RI.4
     //The system should document physical link to end user as Cable.
     // повертаємо просто всю інформацію для репорту
-    public ResultSet getCablesForReport() {
-        return null;
+    public ResultSet getCablesForReport() throws SQLException {
+        {//help
+            System.out.println("getCablesForReport");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE " +
+                "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) " +
+                "ORDER BY C.Id");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        {//help
+            System.out.println("SUCCESS!!!!getCablesForReport");
+        }
+        return resultSet;
     }
+
 
     //Galya_Sh RI.5
     //The system should document logical entity of provided Service as Circuit.
@@ -471,19 +618,48 @@ public enum DAO {
         return resultSet;
     }
 
-    //Galya_Sh RI.6
-    //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
-    //сделать равным null. Сам кабель удалить из базы.
-    //The system should allow deleting of Cables and Circuits.
-    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) {
-
-    }
 
     //Halya
-    public boolean checkForPhoneUniq(String phone){
-        //return true, if no user in db with this phone
-        //else return false
-        return true;
+    //return true, if no user in db with this phone
+    //else return false
+    public boolean checkForPhoneUniq(String phone) {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE PHONE = ?");
+            preparedStatement.setString(1, phone);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int checkResult = -1;
+            if (resultSet.next()) {
+                checkResult = resultSet.getInt("RES");
+            }
+            if (checkResult == 0) {
+                result = true;
+                {//help
+                    System.out.println("checkForPhoneUniq PHONE " + phone + " IS UNIQ");
+                }
+            } else {
+                result = false;
+                {//help
+                    System.out.println("checkForPhoneUniq USER WITH PHONE " + phone + " IS ALREADY EXISTS ");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 /**---------------------------------------------------------------------END HALYA---------------------------------------------------------------------**/
 
@@ -518,7 +694,8 @@ public enum DAO {
             String lastName = resultSet.getString("L_NAME");
             String phone = resultSet.getString("PHONE");
             String userrole = resultSet.getString("NAME");
-            user = new User(idUser, idUserrole, userrole, eMail, firstName, lastName, phone);
+            boolean isBlocked = (resultSet.getInt("IS_BLOCKED") == 1);
+            user = new User(idUser, idUserrole, userrole, eMail, firstName, lastName, phone, isBlocked);
         }
         resultSet.close();
         {//help
@@ -541,11 +718,11 @@ public enum DAO {
      * @param userId            id of the user to create SO
      * @param scenario          scenario for the order
      * @param idServiceInstance id of service instance for disconnect scenario
-     * @param calendar          service order creation date
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
      */
-    public int createServiceOrder(int userId, Scenario scenario, GregorianCalendar calendar, Integer idServiceInstance) {
+    public int createServiceOrder(int userId, Scenario scenario, Integer idServiceInstance) throws SQLException {
+
         //default status ENTERING
 
         OrderStatus orderStatus = OrderStatus.ENTERING;
@@ -555,68 +732,69 @@ public enum DAO {
         {//help
             System.out.println("CREATE NEW ORDER!");
         }
-        try {
-            connection.setAutoCommit(false);
-            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
-            preparedStatement.setString(1, scenario.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            int idOrderScenario = 0;
-            if (resultSet.next()) {
-                idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
-            }
-            {//help
-                System.out.println("Scenario : " + scenario);
-                System.out.println("idScenario: " + idOrderScenario);
-            }
+        connection.setAutoCommit(false);
+        preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
+        preparedStatement.setString(1, scenario.toString());
+        ResultSet resultSet = preparedStatement.executeQuery();
+        int idOrderScenario = 0;
+        if (resultSet.next()) {
+            idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
+        }
+        {//help
+            System.out.println("Scenario : " + scenario);
+            System.out.println("idScenario: " + idOrderScenario);
+        }
 
-            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
-            preparedStatement.setString(1, orderStatus.toString());
-            int idOrderStatus = 0;
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
-            }
+        preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
+        preparedStatement.setString(1, orderStatus.toString());
+        int idOrderStatus = 0;
+        resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            idOrderStatus = resultSet.getInt("ID_ORDERSTATUS");
+        }
+        {//help
+            System.out.println("idOrderStatus: " + idOrderStatus);
+        }
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        Date d = gregorianCalendar.getTime();
+        if (idServiceInstance == null) {
+            preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                    "VALUES(?,?,?,? )");
+            preparedStatement.setInt(1, idOrderScenario);
+            preparedStatement.setInt(2, idOrderStatus);
+            preparedStatement.setDate(3, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+            preparedStatement.setInt(4, userId);
             {//help
-                System.out.println("idOrderStatus: " + idOrderStatus);
+                System.out.println("NULL");
             }
-            GregorianCalendar gregorianCalendar = new GregorianCalendar();
-            Date d = gregorianCalendar.getTime();
-            if (idServiceInstance == null) {
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
-                        "VALUES(?,?,?,? )");
-                preparedStatement.setInt(1, idOrderScenario);
-                preparedStatement.setInt(2, idOrderStatus);
-                preparedStatement.setDate(3, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
-                preparedStatement.setInt(4, userId);
-                {//help
-                    System.out.println("NULL");
-                }
-            } else {
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SRVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
-                        "VALUES(?, ?,? ,?,?)");
-                preparedStatement.setInt(1, idServiceInstance.intValue());
-                preparedStatement.setInt(2, idOrderScenario);
-                preparedStatement.setInt(3, idOrderStatus);
-                preparedStatement.setDate(4, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
-                preparedStatement.setInt(5, userId);
-                {//help
-                    System.out.println("NOT NULL");
-                    System.out.println("idServiceInstance " + idServiceInstance.intValue());
-                }
+        } else {
+            preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SRVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                    "VALUES(?, ?,? ,?,?)");
+            preparedStatement.setInt(1, idServiceInstance.intValue());
+            preparedStatement.setInt(2, idOrderScenario);
+            preparedStatement.setInt(3, idOrderStatus);
+            preparedStatement.setDate(4, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
+            preparedStatement.setInt(5, userId);
+            {//help
+                System.out.println("NOT NULL");
+                System.out.println("idServiceInstance " + idServiceInstance.intValue());
             }
-            preparedStatement.executeUpdate();
-            preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                {//help
-                    System.out.println("RETURN : " + resultSet.getInt("RES"));
-                }
-                result = resultSet.getInt("RES");
+        }
+        preparedStatement.executeUpdate();
+        preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
+        resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            {//help
+                System.out.println("RETURN : " + resultSet.getInt("RES"));
             }
+            result = resultSet.getInt("RES");
+        }
+
+        {//help
+            System.out.println("SUCCESS! CREATE NEW ORDER!");
+        }
+        try {
             connection.commit();
-            {//help
-                System.out.println("SUCCESS! CREATE NEW ORDER!");
-            }
         } catch (SQLException e) {
             if (connection != null) {
                 System.err.print("Transaction is being rolled back");
@@ -627,14 +805,12 @@ public enum DAO {
                     logger.error("ROLLBACK transaction Failed of creating new router");
                 }
             }
+        }
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException e) {
+            logger.info("Smth wrong with closing connection or preparedStatement!");
             e.printStackTrace();
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
-            }
         }
         return result;
     }
@@ -1061,8 +1237,11 @@ public enum DAO {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement("SELECT * FROM SERVICEORDER " +
-                "WHERE ID_USER = ?");
+        preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +
+                "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
+                "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO " +
+                "WHERE SO.ID_USER = ?");
         preparedStatement.setInt(1, userId);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
@@ -1158,7 +1337,7 @@ public enum DAO {
         preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
                 "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
                 "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
-                "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSTATUS ");
+                "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO ");
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             GregorianCalendar gregorianCalendar = new GregorianCalendar();
@@ -1508,6 +1687,72 @@ public enum DAO {
     //KaspYar
 
     /**
+     * Creates task with status FREE for selected engineer for selected service order
+     *
+     * @param serviceOrderId
+     * @param role           role of the engineer
+     * @param taskName       name of the task
+     * @return id of created task
+     */
+    public int createNewTask(int serviceOrderId, UserRoles role, TaskName taskName) {
+        {//help
+            System.out.println("CREATE TASK");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int taskId = 0;
+        try {
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("INSERT INTO TASK(ID_TASKSTATUS, ID_USERROLE, ID_SERVICEORDER, NAME) " +
+                    "VALUES ( " +
+                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
+                    "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
+                    "?, ?)");
+            {//HELP
+                System.out.println("taskStatus: " + TaskStatus.FREE.toString());
+                System.out.println("userRole: " + role.toString());
+                System.out.println("serviceOrderId " + serviceOrderId);
+                System.out.println("TaskName: " + taskName.toString());
+            }
+            preparedStatement.setString(1, TaskStatus.FREE.toString());
+            preparedStatement.setString(2, role.toString());
+            preparedStatement.setInt(3, serviceOrderId);
+            preparedStatement.setString(4, taskName.toString());
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) taskId = resultSet.getInt("TASK_ID");
+            {//help
+                System.out.println("MAX_ID: " + taskId);
+            }
+            connection.commit();
+            {//help
+                System.out.println("SUCCESS!!! CREATE TASK");
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                System.err.print("Transaction is being rolled back");
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed of creating createTaskForInstallation");
+                }
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+        return taskId;
+    }
+
+
+    /**
      * Creates task with status FREE for installation engineer for selected service order
      *
      * @param serviceOrderId
@@ -1531,12 +1776,12 @@ public enum DAO {
                 System.out.println("taskStatus: " + TaskStatus.FREE.toString());
                 System.out.println("userRole: " + UserRoles.INSTALLATION_ENG.toString());
                 System.out.println("serviceOrderId " + serviceOrderId);
-                System.out.println("TaskName: " + TaskName.CREATE_NEW_ROUTER.toString());
+                System.out.println("TaskName: " + TaskName.CONNECT_NEW_PERSON.toString());
             }
             preparedStatement.setString(1, TaskStatus.FREE.toString());
             preparedStatement.setString(2, UserRoles.INSTALLATION_ENG.toString());
             preparedStatement.setInt(3, serviceOrderId);
-            preparedStatement.setString(4, TaskName.CREATE_NEW_ROUTER.toString());
+            preparedStatement.setString(4, TaskName.CONNECT_NEW_PERSON.toString());
             preparedStatement.executeUpdate();
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_TASK) TASK_ID FROM TASK");
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -1868,24 +2113,231 @@ public enum DAO {
         return task;
     }
 
+    public ResultSet getMostProfitableRouterForReport() throws SQLException {
+        {//help
+            System.out.println("getMostProfitableRouterForReport");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
+                "FROM SERVICE S INNER JOIN ( " +
+                "  SERVICEINSTANCE SI INNER JOIN ( " +
+                "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                "  ON SI.ID_CABLE = C.ID) " +
+                "ON  S.ID = SI.ID_SERVICE " +
+                "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException exc) {
+            logger.warn("Can't close connection or preparedStatement!");
+            exc.printStackTrace();
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
+        }
+        return resultSet;
+    }
+
+
+    /**
+     * Sets selected service for selected task for scenario MODIFY
+     *
+     * @param taskId    selected task
+     * @param serviceId id of the service to set for task
+     */
+    public void setServiceForTask(int taskId, int serviceId) throws SQLException {
+        {//help
+            System.out.println("setServiceForTask");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO TOMODIFY(ID_TASK, ID_SERVICE) " +
+                "VALUES(?,?)");
+        preparedStatement.setInt(1, taskId);
+        preparedStatement.setInt(2, serviceId);
+        preparedStatement.executeUpdate();
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException exc) {
+            logger.warn("Can't close connection or preparedStatement!");
+            exc.printStackTrace();
+        }
+        {//help
+            System.out.println("SUCCESS!!!setServiceForTask");
+        }
+        return;
+    }
 
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 
-    /**---------------------------------------------------------------------IGOR---------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------IGOR---------------------------------------------------------------------*
+     */
 
 
-    public ResultSet getMostProfitableRouterForReport() {
-        return null;
+    public ResultSet getUsedRoutersAndCapacityOfPorts() throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED, " +
+                "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION\n" +
+                "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
+                "GROUP BY r.id ");
+        resultSet = preparedStatement.executeQuery();
+
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException e) {
+            logger.info("Smth wrong with closing connection or preparedStatement!");
+            e.printStackTrace();
+        }
+        return resultSet;
     }
 
-    public ResultSet getUsedRoutersAndCapacityOfPorts() {
-        return null;
+    public ResultSet getProfitabilityByMonth() throws SQLException {
+        {//help
+            System.out.println("getProfitabilityByMonth");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
+                "FROM SERVICE S INNER JOIN ( " +
+                "  SERVICEINSTANCE SI INNER JOIN ( " +
+                "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                "  ON SI.ID_CABLE = C.ID) " +
+                "ON  S.ID = SI.ID_SERVICE " +
+                "GROUP BY P.ID_ROUTER ");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException e) {
+            logger.warn("Smth wrong with closing connection or preparedStatement!");
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getProfitabilityByMonth");
+        }
+        return resultSet;
     }
 
-    public ResultSet getProfitabilityByMonth() {
-        return null;
+    public ResultSet getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
+        {//help
+            System.out.println("getOrdersPerPeriod");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
+                "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
+                "GROUP BY OS.NAME ");
+        preparedStatement.setString(1, scenario.toString());
+        preparedStatement.setDate(2, sqlStartDate);
+        preparedStatement.setDate(3, sqlEndDate);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        try {
+            close(connection, preparedStatement);
+        } catch (SQLException e) {
+            logger.warn("Smth wrong with closing connection or preparedStatement!");
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getOrdersPerPeriod");
+        }
+        return resultSet;
     }
+//
+//    public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException{
+//        {//help
+//            System.out.println("getNewOrdersPerPeriod");
+//        }
+//        Connection connection = getConnection();
+//        PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) " +
+//                "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+//                "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ");
+//        preparedStatement.setString(1, Scenario.NEW.toString());
+//        preparedStatement.setDate(2, sqlStartDate);
+//        preparedStatement.setDate(3, sqlEndDate);
+//        ResultSet resultSet = preparedStatement.executeQuery();
+//        try {
+//            close(connection, preparedStatement);
+//        }catch (SQLException e){
+//            logger.warn("Smth wrong with closing connection or preparedStatement!");
+//        }
+//        {//help
+//            System.out.println("SUCCESS!!!!getNewOrdersPerPeriod");
+//        }
+//        return resultSet;
+//    }
+//
+//    public ResultSet DisconnectOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
+//        return null;
+//    }
+
+    //IGOR RI.6
+    //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
+    //сделать равным null. Сам кабель удалить из базы.
+    //The system should allow deleting of Cables and Circuits.
+    public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) throws SQLException {
+        Connection connection = getConnection();
+
+        PreparedStatement preparedStatementSelect = null;
+        PreparedStatement preparedStatementUpdate = null;
+        ResultSet resultSet = null;
+        final int checkNumber = -1;
+        int siID = checkNumber;
+        int cableID = checkNumber;
+        int portID = checkNumber;
+
+        try {
+            connection.setAutoCommit(false);
+            // ---- GET SI ID, CABLE ID, PORT ID BY SO ID
+            preparedStatementSelect = connection
+                    .prepareStatement("SELECT SI.ID, C.ID_CABLE, C.ID_PORT "
+                            + "FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
+                            + "INNER JOIN CABLE C ON SI.ID_CABLE=C.ID "
+                            + "WHERE SO.ID = ?");
+            preparedStatementSelect.setInt(1, serviceOrderId);
+
+            resultSet = preparedStatementSelect.executeQuery();
+            while (resultSet.next()) {
+                siID = resultSet.getInt(1);
+                cableID = resultSet.getInt(2);
+                portID = resultSet.getInt(3);
+            }
+
+            if (siID != checkNumber && cableID != checkNumber
+                    && portID != checkNumber) {
+
+                // ---- UPDATE PORT USED SET 0
+                preparedStatementUpdate = connection
+                        .prepareStatement("UPDATE PORT USED SET 0 WHERE ID = ?");
+                preparedStatementSelect.setInt(1, portID);
+                preparedStatementUpdate.execute();
+
+                // ---- UPDATE SERVICEINSTANCE ID_CABLE SET NULL
+                preparedStatementUpdate = connection
+                        .prepareStatement("UPDATE SERVICEINSTANCE ID_CABLE SET NULL WHERE ID = ?");
+                preparedStatementSelect.setInt(1, siID);
+                preparedStatementUpdate.execute();
+
+                // ---- DELETE FROM CABLE WHERE ID = cableID
+                preparedStatementUpdate = connection
+                        .prepareStatement("DELETE FROM CABLE WHERE ID = ?");
+                preparedStatementSelect.setInt(1, cableID);
+                preparedStatementUpdate.execute();
+            }
+
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connection, preparedStatementSelect);
+                close(connection, preparedStatementUpdate);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+    }
+
 
     /**---------------------------------------------------------------------END IGOR---------------------------------------------------------------------**/
 

@@ -22,7 +22,7 @@ public class ReviewUserServiceInstance extends HttpServlet {
     //todo
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = (User) req.getAttribute(CauliflowerInfo.userAttribute);
+        User user = (User) req.getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         ArrayList<ServiceInstance> userInstances = null;
         try {
             userInstances = DAO.INSTANCE.getInstances(user.getUserId());

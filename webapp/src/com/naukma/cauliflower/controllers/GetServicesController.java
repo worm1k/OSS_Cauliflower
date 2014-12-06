@@ -23,7 +23,7 @@ import java.util.List;
 @WebServlet(name = "GetServicesController")
 public class GetServicesController extends HttpServlet {
 
-    private static final  String GO_TO_AUTHENTICATION="auth.jsp";
+    //private static final  String GO_TO_AUTHENTICATION="auth.jsp";
     private static final String PROCEED_TO_ORDER_CONTROLLER="/proceed";
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -49,42 +49,46 @@ public class GetServicesController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String serviceLocationAddress = req.getParameter("serviceLocationAddress");
-        String serviceLocationLongtitude = req.getParameter("serviceLocationLongtitude");
-        String serviceLocationLatitude = req.getParameter("serviceLocationLatitude");
-
-        String serviceId = req.getParameter("serviceId");
-
-        Service service = null;
-        ServiceLocation serviceLocation = null;
-
-        try{
-            serviceLocation = new ServiceLocation(
-                    0,
-                    serviceLocationAddress,
-                    Double.parseDouble(serviceLocationLongtitude),
-                    Double.parseDouble(serviceLocationLatitude)
-            );
-            service = DAO.INSTANCE.getServiceById(Integer.parseInt(serviceId));
-        }catch(Exception ex){
-            ex.printStackTrace();
-        }
-
+        String pathFrom  = req.getHeader("Referer");
         HttpSession session = req.getSession();
-        session.setAttribute(CauliflowerInfo.serviceAttribute,service);
-        session.setAttribute(CauliflowerInfo.serviceLocationAttribute,serviceLocation);
+        final User user  = (User) session.getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        if(user==null || user.getUserRoleId()==CauliflowerInfo.CUSTOM_USER_ROLE_ID) {
+            String serviceLocationAddress = req.getParameter("serviceLocationAddress");
+            String serviceLocationLongtitude = req.getParameter("serviceLocationLongtitude");
+            String serviceLocationLatitude = req.getParameter("serviceLocationLatitude");
 
-        final User user  = (User) session.getAttribute(CauliflowerInfo.userAttribute);
+            String serviceId = req.getParameter("serviceId");
 
-        if(user == null){
+            Service service = null;
+            ServiceLocation serviceLocation = null;
+
+            try {
+                serviceLocation = new ServiceLocation(
+                        0,
+                        serviceLocationAddress,
+                        Double.parseDouble(serviceLocationLongtitude),
+                        Double.parseDouble(serviceLocationLatitude)
+                );
+                service = DAO.INSTANCE.getServiceById(Integer.parseInt(serviceId));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+
+            session.setAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE, service);
+            session.setAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE, serviceLocation);
+
+            if (user == null) {
             /*RequestDispatcher requestDispatcher = req.getRequestDispatcher(GO_TO_AUTHENTICATION);
             requestDispatcher.forward(req,resp);*/
-            resp.sendRedirect("auth.jsp");
-        }
-        else
-        {
-            RequestDispatcher requestDispatcher = req.getRequestDispatcher(PROCEED_TO_ORDER_CONTROLLER);
-            requestDispatcher.forward(req,resp);
+                resp.sendRedirect(CauliflowerInfo.AUTH_LINK);
+            } else {
+                RequestDispatcher requestDispatcher = req.getRequestDispatcher(PROCEED_TO_ORDER_CONTROLLER);
+                requestDispatcher.forward(req, resp);
+            }
+        }else{
+            req.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
+            resp.sendRedirect(pathFrom);
         }
 
     }

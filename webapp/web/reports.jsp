@@ -17,7 +17,21 @@
   <link rel='stylesheet' href='../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/bootstrap.min.css' type='text/css' media='all'>
   <script src="jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
   <script src="jquery/bootstrap.min.js" type="text/javascript"></script>
+  <script>
+  </script>
 
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+
+  <script>
+  $(function(){
+  $("#startDate").datepicker();
+  $("#endDate").datepicker();
+  });
+  </script>
+
+  <jsp:include page="head.jsp"/>
 
 </head>
 
@@ -69,6 +83,18 @@
     <div class="report_block">
       <div class="report_text">Get report about profitability</div>
       <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Profitability"/></div>
+    </div>
+    <p>start date: <input type="text" id="startDate" name="startDate"></p>
+    <p>end date: <input type="text" id="endDate" name="endDate"></p>
+    <div class="clear"></div>
+    <div class="report_block">
+      <div class="report_text">Get report about new orders per period</div>
+      <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="New"/></div>
+    </div>
+    <div class="clear"></div>
+    <div class="report_block">
+      <div class="report_text">Get report about disconnect orders per period</div>
+      <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Disconnect"/></div>
     </div>
   </div>
 </form>

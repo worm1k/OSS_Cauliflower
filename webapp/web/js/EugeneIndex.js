@@ -62,7 +62,7 @@ function popover(that, ms){
 
 $(document).ready(function() {
 
-    $('#auth_reg_email, #auth_log_email').find('input').inputmask({ mask: "*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]", greedy: false });
+    $('#auth_reg_email, #auth_log_email, #auth_block_email').find('input').inputmask('Regex', { regex: "[a-zA-Z0-9._%-]+@[a-zA-Z0-9-]+\\.[a-zA-Z]{2,4}" });
     $('#auth_reg_Phone').find('input').inputmask('+389999999999');
 
     $('#auth_reg_submit').click(function(e) {
@@ -96,8 +96,18 @@ $(document).ready(function() {
         }
     });
 
+    $('#auth_block_submit').click(function(e) {
+        e.preventDefault();
+
+        if(!emailCheck('#auth_block_email')){
+            popover('#auth_block_email', 2000);
+        }else{
+            $('#auth_block_form').submit();
+        }
+    });
+
     <!--Validating fields on auth form-->
-    $('#auth_reg_email, #auth_log_email').on('keyup input', function() {
+    $('#auth_reg_email, #auth_log_email, #auth_block_email').on('keyup input', function() {
         emailCheck(this);
     });
     <!--Validating fields on auth form-->
@@ -112,4 +122,11 @@ $(document).ready(function() {
     $('#auth_reg_Phone').on('keyup input', function() {
         phoneCheck(this);
     });
+
+});
+
+
+$(function(){
+    $("#startDate").datepicker();
+    $("#endDate").datepicker();
 });

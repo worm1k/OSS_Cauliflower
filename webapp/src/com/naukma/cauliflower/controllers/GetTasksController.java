@@ -24,18 +24,21 @@ public class GetTasksController extends HttpServlet {
     SOW.4
     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
+        if (user == null) {
+            response.sendRedirect(CauliflowerInfo.HOME_LINK);
+        }
         List<Task> tasks = null;
         try {
             tasks = DAO.INSTANCE.getFreeAndProcessingTasksByUserRoleId(user.getUserRoleId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        request.setAttribute("tasks", tasks);
+        request.setAttribute(CauliflowerInfo.TASKS_PARAM, tasks);
         request.getRequestDispatcher("smthing.jsp").forward(request, response);
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
 }

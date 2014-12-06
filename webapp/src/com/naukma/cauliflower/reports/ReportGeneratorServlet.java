@@ -1,6 +1,7 @@
 package com.naukma.cauliflower.reports;
 
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.Scenario;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by Max on 26.11.2014.
@@ -24,6 +27,23 @@ public class ReportGeneratorServlet extends HttpServlet {
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=report.xls");
         String methodName = (String) request.getParameter("reportMethod");
+        String startDate = (String) request.getParameter("startDate");
+        String endDate = (String) request.getParameter("endDate");
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        java.sql.Date sqlStartDate = null;
+        java.sql.Date sqlEndDate = null;
+        if(startDate!= null && endDate!= null)
+        try {
+
+            java.util.Date date = formatter.parse(startDate);
+            sqlStartDate = new java.sql.Date(date.getTime());
+
+            java.util.Date date2 = formatter.parse(endDate);
+            sqlEndDate = new java.sql.Date(date2.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         ResultSet resultSet = null;
 
@@ -43,6 +63,12 @@ public class ReportGeneratorServlet extends HttpServlet {
             resultSet = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts();
         else if(methodName.equals("Profitability"))
             resultSet = DAO.INSTANCE.getProfitabilityByMonth();
+        else if(methodName.equals("New") && startDate!= null && endDate!= null)
+            resultSet = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate);
+            //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
+        else if(methodName.equals("Disconnect") && startDate!= null && endDate!= null)
+            resultSet = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
+            //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
         if(resultSet == null)
             resultSet = DAO.INSTANCE.reportTester();
 

@@ -25,6 +25,12 @@
 <script type="text/javascript" src="./vendor/geocomplete/jquery.geocomplete.min.js"></script>
 <script type="text/javascript" src="./vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="./vendor/bootstrap/dist/js/alert.js"></script>
+
+<%--it works incorrect--%>
+<%--<script src="http://code.jquery.com/jquery-1.10.2.js"></script>--%>
+<%--<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>--%>
+<%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">--%>
+
 <!-- custom scripts -->
 <script type="text/javascript" src="./js/index.js"></script>
 <script type="text/javascript" src="./js/EugeneIndex.js"></script>

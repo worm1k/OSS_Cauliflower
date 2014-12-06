@@ -1,10 +1,9 @@
 package com.naukma.cauliflower.controllers;
 
-import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.dao.Scenario;
-import com.naukma.cauliflower.dao.TaskStatus;
+import com.naukma.cauliflower.dao.*;
 import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,18 +22,22 @@ public class InstallationTasksController extends HttpServlet {
     SOW.5
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = null;//JUST FOR END TO END
-        try {
-            user = DAO.INSTANCE.getUserByLoginAndPassword("slavko.yeapp@yandex.ua", "qwre123456");
-        //  User user = (User) request.getSession().getAttribute(CauliflowerInfo.userAttribute);
-        Task task = (Task) request.getAttribute("task");
+        User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        if (user == null) {
+            response.sendRedirect(CauliflowerInfo.AUTH_LINK);
+        }
+
+        Task task = (Task) request.getAttribute(CauliflowerInfo.TASK_PARAM);
         int taskId = task.getTaskId();
         int serviceOrderId = task.getServiceOrderId();
 
-        //RI.9
-        //The system should allow creating Devices, Ports and Cables only by Installation Engineer
-        if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING) {
-            if(user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
+        try {
+            //RI.9
+            //The system should allow creating Devices, Ports and Cables only by Installation Engineer
+            if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
+                //user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
+                    user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRoles.INSTALLATION_ENG)) {
+
                 Scenario scenario = DAO.INSTANCE.getOrderScenario(serviceOrderId);
                 if (scenario == Scenario.NEW) {
 
@@ -45,31 +48,18 @@ public class InstallationTasksController extends HttpServlet {
                     DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
                 }
                 DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                int provisioningTaskId = DAO.INSTANCE.createTaskForProvisioning(serviceOrderId);
-                //JUST FOR END TO END PURPOSES
+                DAO.INSTANCE.createNewTask(serviceOrderId, UserRoles.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
+                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
 
-                DAO.INSTANCE.changeTaskStatus(provisioningTaskId, TaskStatus.PROCESSING);
-                request.setAttribute("taskId", provisioningTaskId);
-                request.getRequestDispatcher("/provisioningController").forward(request, response);
-
-                //END TO END
-
-
-                //request.getRequestDispatcher("smthing.jsp?created=true").forward(request, response);
-            }else
-                request.getRequestDispatcher("smthing.jsp?created=you%20have%20no%20rihts%20for%20that").forward(request, response);
-        } else
-            request.getRequestDispatcher("taskalreadycompleted.jsp").forward(request, response);
-
-
-        } catch (SQLException e) {
+            } else
+                response.sendRedirect(CauliflowerInfo.HOME_LINK);
+        } catch(SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-
 
     }
 }
