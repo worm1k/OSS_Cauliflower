@@ -60,13 +60,7 @@ public class SISODashboardController  extends HttpServlet {
 
             }
 
-            int[] arrServiceId = new int[instances.size()];
-
-            for(int i = 0; i < instances.size(); i++){
-                arrServiceId[i] = instances.get(i).getServiceId();
-            }
-
-            lstService = DAO.INSTANCE.getServiceById(arrServiceId);
+            lstService = DAO.INSTANCE.getServices();
 
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put(CauliflowerInfo.INSTANCES_ATTRIBUTE, instances);

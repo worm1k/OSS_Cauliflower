@@ -261,7 +261,7 @@ angular.module('NgApp', [])
                         $('#js-order-form input[name="serviceLocationLatitude"]').val(marker.position.lat());
                         $('#js-order-form input[name="serviceId"]').val(serviceId);
 
-                        $("#js-order-form").submit();
+                        //$("#js-order-form").submit();
                     })
                 });
             }

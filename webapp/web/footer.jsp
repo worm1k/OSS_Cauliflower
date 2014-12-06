@@ -32,5 +32,8 @@
 <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">--%>
 
 <!-- custom scripts -->
+<script type="text/javascript" src="./js/MapDashboardController.js"></script>
+<script type="text/javascript" src="./js/ServiceInstance.js"></script>
+<script type="text/javascript" src="./js/ServiceOrder.js"></script>
 <script type="text/javascript" src="./js/index.js"></script>
 <script type="text/javascript" src="./js/EugeneIndex.js"></script>
