@@ -40,17 +40,17 @@ public class ProceedOrderController extends HttpServlet {
     {
        // System.out.println("IN PROCEED ORDER");
         user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        String scenario = request.getParameter(CauliflowerInfo.SCENARIO_PARAM);
+        Scenario scenario =(Scenario) request.getSession().getAttribute(CauliflowerInfo.SCENARIO_PARAM);
        // scenario = "NEW";
         if(user == null) {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
         }
         try {
-        if(scenario.equals(Scenario.NEW.toString()))
+        if(scenario == Scenario.NEW)
                 scenarioNew(request);
-        else if (scenario.equals(Scenario.DISCONNECT.toString()))
+        else if (scenario == Scenario.DISCONNECT)
             scenarioDisconnect(request);
-        else if (scenario.equals(Scenario.MODIFY.toString()))
+        else if (scenario == Scenario.MODIFY)
                 scenarioModify(request);
         }
         catch (SQLException e) {
