@@ -35,8 +35,8 @@ public class LoginController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String res = "";
-        Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.serviceAttribute);
-        ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.serviceLocationAttribute);
+        Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
+        ServiceLocation servLoc = (ServiceLocation)request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
 
         User user = null;
         try {
@@ -48,10 +48,10 @@ public class LoginController extends HttpServlet {
             e.printStackTrace();
         }
         if(user == null) {
-            request.getSession().setAttribute(CauliflowerInfo.errorAttribute,"Incorrect login or password!");
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,"Incorrect login or password!");
             response.sendRedirect(pathFrom);
         }else{
-            request.getSession().setAttribute(CauliflowerInfo.userAttribute, user);
+            request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, user);
             logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
             if(service!=null && servLoc!=null){
                 ServletContext context = getServletContext();
@@ -65,7 +65,7 @@ public class LoginController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        final User user = (User)session.getAttribute(CauliflowerInfo.userAttribute);
+        final User user = (User)session.getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         ObjectMapper mapper = new ObjectMapper();
         PrintWriter out = response.getWriter();
 
