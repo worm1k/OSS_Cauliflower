@@ -2313,6 +2313,15 @@ public enum DAO {
         return result;
     }
 
+    /**
+     * Method changes the service for service instance taking a new service from a task
+     * @param taskId Task to take service from
+     * @param serviceInstanceId Service Instance that will be changed
+     */
+    public void changeServiceForServiceInstance(int taskId, int serviceInstanceId) {
+
+    }
+
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 
