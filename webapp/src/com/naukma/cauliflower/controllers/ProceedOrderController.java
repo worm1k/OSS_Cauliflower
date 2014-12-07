@@ -132,8 +132,7 @@ public class ProceedOrderController extends HttpServlet {
         DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
     }
 
-    private void createServiceInstance(HttpServletRequest request)
-    {
+    private void createServiceInstance(HttpServletRequest request) throws SQLException {
         ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute(
                 CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
         Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
