@@ -68,6 +68,13 @@
             <version>3.8.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>7.0.12</version>
+        </dependency>
+
+
 
 
     </dependencies>
