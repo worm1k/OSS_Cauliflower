@@ -1708,13 +1708,13 @@ public enum DAO {
             connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement("INSERT INTO SERVICEINSTANCE(ID_USER, ID_SERVICE_LOCATION, " +
                     "ID_SERVICE, SERVICE_INSTANCE_STATUS) " +
-                    "VALUES (?,?,?,?)");
+                    "VALUES (?,?,?, (SELECT SIS.ID FROM SERVICEINSTANCESTATUS SIS WHERE NAME = ? ) )");
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, serviceLocation.getServiceLocationId());
             System.out.println("SERVICE LOC ID: " + serviceLocation.getServiceLocationId());
             System.out.println("Service ID: " + serviceId);
             preparedStatement.setInt(3, serviceId);
-            preparedStatement.setInt(4, 1);
+            preparedStatement.setString(4, InstanceStatus.PLANNED.toString());
             preparedStatement.executeUpdate();
             preparedStatement = connection.prepareStatement("SELECT MAX(ID) MAX_ID FROM SERVICEINSTANCE");
             ResultSet resultSet = preparedStatement.executeQuery();
