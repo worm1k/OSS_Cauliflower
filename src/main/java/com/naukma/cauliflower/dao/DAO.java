@@ -542,7 +542,7 @@ public enum DAO {
             e.printStackTrace();
         } finally {
             try {
-                close(connection, preparedStatement);
+                connection.close();
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
@@ -562,13 +562,23 @@ public enum DAO {
             System.out.println("getPortsForReport");
         }
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT R.Id ROUTER, P.Id PORT, P.Used USED " +
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+        preparedStatement = connection.prepareStatement("SELECT R.Id ROUTER, P.Id PORT, P.Used USED " +
                 "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                 "Order By R.Id, P.Id ");
-        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet = preparedStatement.executeQuery();
         {//help
             System.out.println("SUCCESS!!!!getPortsForReport");
         }
+    }finally {
+        try {
+            connection.close();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
         return resultSet;
     }
 
@@ -580,12 +590,22 @@ public enum DAO {
             System.out.println("getCablesForReport");
         }
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE " +
-                "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) " +
-                "ORDER BY C.Id");
-        ResultSet resultSet = preparedStatement.executeQuery();
-        {//help
-            System.out.println("SUCCESS!!!!getCablesForReport");
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE " +
+                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) " +
+                    "ORDER BY C.Id");
+            resultSet = preparedStatement.executeQuery();
+            {//help
+                System.out.println("SUCCESS!!!!getCablesForReport");
+            }
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
         }
         return resultSet;
     }
@@ -606,8 +626,8 @@ public enum DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                close(connection, preparedStatement);
+                try {
+                    connection.close();
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
@@ -1471,7 +1491,7 @@ public enum DAO {
             resultSet = preparedStatement.executeQuery();
         } finally {
             try {
-                close(connection, preparedStatement);
+                connection.close();
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2202,17 +2222,17 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
+            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
                     "FROM SERVICE S INNER JOIN ( " +
                     "  SERVICEINSTANCE SI INNER JOIN ( " +
                     "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
                     "  ON SI.ID_CABLE = C.ID) " +
                     "ON  S.ID = SI.ID_SERVICE " +
-                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC");
+                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC ");
             resultSet = preparedStatement.executeQuery();
         } finally {
             try {
-                close(connection, preparedStatement);
+                connection.close();
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2250,9 +2270,6 @@ public enum DAO {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
             }
-        }
-        {//help
-            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
         }
         {//help
             System.out.println("SUCCESS!!!setServiceForTask");
@@ -2343,7 +2360,7 @@ public enum DAO {
 
         } finally {
             try {
-                close(connection, preparedStatement);
+                connection.close();
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2363,7 +2380,7 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT" +
+            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
                     "FROM SERVICE S INNER JOIN ( " +
                     "  SERVICEINSTANCE SI INNER JOIN ( " +
                     "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
@@ -2373,7 +2390,7 @@ public enum DAO {
             resultSet = preparedStatement.executeQuery();
         } finally {
             try {
-                close(connection, preparedStatement);
+                connection.close();
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2404,7 +2421,7 @@ public enum DAO {
             resultSet = preparedStatement.executeQuery();
         } finally {
             try {
-                close(connection, preparedStatement);
+                connection.close();
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
