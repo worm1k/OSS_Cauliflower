@@ -689,10 +689,10 @@ public enum DAO {
 
     /**
      * Get user by its login and password
-     *
      * @param login    user login
      * @param password user password
      * @return found user or null if user does not exist
+     * @throws java.sql.SQLException
      */
     public User getUserByLoginAndPassword(String login, String password) throws SQLException {
         {//help
@@ -744,6 +744,7 @@ public enum DAO {
      * @param idServiceInstance id of service instance for disconnect scenario
      * @return id of created instance
      * @see com.naukma.cauliflower.dao.Scenario
+     * @throws java.sql.SQLException
      */
     public int createServiceOrder(int userId, Scenario scenario, Integer idServiceInstance) throws SQLException {
 
@@ -844,9 +845,9 @@ public enum DAO {
 
     /**
      * Connects selected instance and selected user
-     *
      * @param instanceId id of the instance
-     * @param userId     id of the user    *
+     * @param userId     id of the user
+     * @throws java.sql.SQLException*
      */
     public void setUserForInstance(int instanceId, int userId) throws SQLException {
         {//help
@@ -881,10 +882,11 @@ public enum DAO {
     //KaspYar
 
     /**
-     * Set selected status for selected instance
-     *
+     * Sets selected status for selected instance
      * @param instanceId id of the instance
      * @param status     status of the instance
+     * @see com.naukma.cauliflower.dao.InstanceStatus
+     * @throws java.sql.SQLException
      */
     public void changeInstanceStatus(int instanceId, InstanceStatus status) throws SQLException {
         {//help
@@ -923,9 +925,10 @@ public enum DAO {
 
     /**
      * Set selected status for selected order
-     *
      * @param orderId     id of the order
      * @param orderStatus status of the task
+     * @see com.naukma.cauliflower.dao.OrderStatus
+     * @throws java.sql.SQLException
      */
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) throws SQLException {
         {//help
@@ -965,9 +968,10 @@ public enum DAO {
 
     /**
      * Set selected status for selected task
-     *
      * @param taskId     id of the task
      * @param taskStatus status of the task
+     * @see com.naukma.cauliflower.dao.TaskStatus
+     * @throws java.sql.SQLException
      */
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) throws SQLException {
         {//help
@@ -1007,9 +1011,9 @@ public enum DAO {
 
     /**
      * Block instance when exist active task on it
-     *
      * @param instanceId id of the instance
      * @param isBlocked  0 - set instance not blocked, 1 - set instance blocked
+     * @throws java.sql.SQLException
      */
     public void setInstanceBlocked(int instanceId, int isBlocked) throws SQLException {
         Connection connection = getConnection();
@@ -1045,11 +1049,11 @@ public enum DAO {
     //KaspYar
 
     /**
-     * returns List<Task>
-     *
+     * Returns tasks for selected usergroup with seleceted status
      * @param taskStatusId id of TaskStatus
      * @param userRoleId   id of UserRole
-     * @return
+     * @return List<Task> of tasks
+     * @throws java.sql.SQLException
      */
     public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId) throws SQLException {
         {//help
@@ -1094,9 +1098,10 @@ public enum DAO {
      * returns all Services of Provider Location with certain id
      *
      * @param providerLocationId id of Provider Location
-     * @return ArrayList<Service>
+     * @return ArrayList<Service> of services
+     * @see com.naukma.cauliflower.entities.Service
+     * @throws java.sql.SQLException
      */
-
     public List<Service> getServicesByProviderLocationId(int providerLocationId) throws SQLException {
         {//help
             System.out.println("getServicesByProviderLocationId");
@@ -1142,6 +1147,7 @@ public enum DAO {
 
     /**
      * Creates new router
+     * @throws java.sql.SQLException
      */
     public void createRouter() throws SQLException {
         {//help
@@ -1197,6 +1203,9 @@ public enum DAO {
      * Returns ServiceOrder for selected task
      *
      * @param taskId Id of the task
+     * @return found ServiceOrder
+     * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.ServiceOrder
      */
 
     public ServiceOrder getServiceOrder(int taskId) throws SQLException {
@@ -1248,7 +1257,8 @@ public enum DAO {
      * Connects selected instance and selected order
      *
      * @param instanceId id of the instance
-     * @param orderId    id of the order    *
+     * @param orderId    id of the order
+     * @throws java.sql.SQLException
      */
     public void setInstanceForOrder(int instanceId, int orderId) throws SQLException {
         {//help
@@ -1284,6 +1294,9 @@ public enum DAO {
      * Returns ArrayList of orders for selected user
      *
      * @param userId Id of the user
+     * @return ArrayList of orders
+     * @see com.naukma.cauliflower.entities.ServiceOrder
+     * @throws java.sql.SQLException
      */
 
     public ArrayList<ServiceOrder> getOrders(int userId) throws SQLException {
@@ -1335,6 +1348,9 @@ public enum DAO {
      * Returns ArrayList of instances for selected user
      *
      * @param userId Id of the user
+     * @return ArrayList of instances
+     * @see com.naukma.cauliflower.entities.ServiceInstance
+     * @throws java.sql.SQLException
      */
 
     public ArrayList<ServiceInstance> getInstances(int userId) throws SQLException {
@@ -1388,6 +1404,10 @@ public enum DAO {
 
     /**
      * Returns ArrayList of all orders
+     *
+     * @return ArrayList of ServiceOrder
+     * @see com.naukma.cauliflower.entities.ServiceOrder
+     * @throws java.sql.SQLException
      */
     public ArrayList<ServiceOrder> getAllOrders() throws SQLException {
         {//help
@@ -1435,6 +1455,10 @@ public enum DAO {
 
     /**
      * Returns ArrayList of all instances
+     *
+     * @return ArrayList of ServiceInstance
+     * @see com.naukma.cauliflower.entities.ServiceInstance
+     * @throws java.sql.SQLException
      */
     public ArrayList<ServiceInstance> getAllInstances() throws SQLException {
         {//help
@@ -1503,7 +1527,10 @@ public enum DAO {
     //KaspYar
 
     /**
-     * @return all Provider Locations
+     * Returns list of all Provider Locations existing in the system
+     * @return List of Provider Locations
+     * @see com.naukma.cauliflower.entities.ProviderLocation
+     * @throws java.sql.SQLException
      */
     public List<ProviderLocation> getProviderLocations() throws SQLException {
         {//
@@ -1540,7 +1567,11 @@ public enum DAO {
     //vladmyr
 
     /**
-     * @return Service by Id
+     * Returns Service by its Id
+     * @param serviceId if of the Service
+     * @return if exist - Service, otherwise - null
+     * @see com.naukma.cauliflower.entities.Service
+     * @throws java.sql.SQLException
      */
     public Service getServiceById(int serviceId) throws SQLException {
         {//help
@@ -1589,7 +1620,9 @@ public enum DAO {
     /**
      * return List<Services> of all Services
      *
-     * @return
+     * @return List of Services
+     * @see com.naukma.cauliflower.entities.Service
+     * @throws java.sql.SQLException
      */
     public List<Service> getServices() throws SQLException {
         {//
@@ -1638,6 +1671,8 @@ public enum DAO {
      *
      * @param serviceLocation ServiceLocation object to write
      * @see com.naukma.cauliflower.entities.ServiceLocation
+     * @return id of the created ServiceLocation
+     * @throws java.sql.SQLException
      */
 
     public int createServiceLocation(ServiceLocation serviceLocation) throws SQLException {
@@ -1713,8 +1748,9 @@ public enum DAO {
      *
      * @param userId          selected user id
      * @param serviceLocation location for the instance
-     * @param serviceId       in of selected service
+     * @param serviceId       id of selected service
      * @return id of created instance
+     * @throws java.sql.SQLException
      */
 
     public int createServiceInstance(int userId, ServiceLocation serviceLocation, int serviceId) throws SQLException {
@@ -1776,6 +1812,7 @@ public enum DAO {
      * @param role           role of the engineer
      * @param taskName       name of the task
      * @return id of created task
+     * @throws java.sql.SQLException
      */
     public int createNewTask(int serviceOrderId, UserRoles role, TaskName taskName) throws SQLException {
         {//help
@@ -1964,6 +2001,16 @@ public enum DAO {
 //    }
 
     //KaspYar
+
+
+   /**
+    * Returns List of task with status FREE and PROCESSING for selected usergroup
+    * @param userRoleId id of the usergroup
+    * @return List of tasks
+    * @throws java.sql.SQLException
+    * @see com.naukma.cauliflower.dao.TaskStatus
+    * @see com.naukma.cauliflower.dao.UserRoles
+    * */
     public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) throws SQLException {
         {//help
             System.out.println("getFreeAndProcessingTasksByUserRoleId");
@@ -2012,6 +2059,7 @@ public enum DAO {
      * Creates a cable, assigns a free port to it and then assigns this cable to instance associated with service order
      *
      * @param serviceOrderId id of service order to take service instance from
+     * @throws java.sql.SQLException
      */
     public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) throws SQLException {
         {//help
@@ -2070,7 +2118,9 @@ public enum DAO {
     //KaspYar
 
     /**
+     * Checks if free ports exist
      * @return True if a free port exists, otherwise false
+     * @throws java.sql.SQLException
      */
     public boolean freePortExists() throws SQLException {
         {//help
@@ -2105,6 +2155,7 @@ public enum DAO {
      *
      * @param serviceOrderId id of service
      * @return scenario of service
+     * @throws java.sql.SQLException
      */
     public Scenario getOrderScenario(int serviceOrderId) throws SQLException {
         {//help
@@ -2136,9 +2187,10 @@ public enum DAO {
 
     /**
      * Returns status of task
-     *
-     * @param taskId
-     * @return status of this task
+     * @param taskId id of the task
+     * @return Status of this task
+     * @see com.naukma.cauliflower.dao.TaskStatus
+     * @throws java.sql.SQLException
      */
     public TaskStatus getTaskStatus(int taskId) throws SQLException {
         {//help
@@ -2177,6 +2229,7 @@ public enum DAO {
      * @param taskId id of the task
      * @return task object with selected id
      * @see com.naukma.cauliflower.entities.Task
+     * @throws java.sql.SQLException
      */
     public Task getTaskById(int taskId) throws SQLException {
         {//help
@@ -2214,6 +2267,12 @@ public enum DAO {
         return task;
     }
 
+    /**
+     * Creates ResultSet to generate report on most profitable router
+     * @return ResultSet of the sql request
+     * @see java.sql.ResultSet
+     * @throws java.sql.SQLException
+     * */
     public ResultSet getMostProfitableRouterForReport() throws SQLException {
         {//help
             System.out.println("getMostProfitableRouterForReport");
@@ -2250,6 +2309,7 @@ public enum DAO {
      *
      * @param taskId    selected task
      * @param serviceId id of the service to set for task
+     * @throws java.sql.SQLException
      */
     public void setServiceForTask(int taskId, int serviceId) throws SQLException {
         {//help
@@ -2277,6 +2337,14 @@ public enum DAO {
         return;
     }
 
+    /**
+     * Returns services of selected ids
+     * @param arrayServiceId array of service ids
+     * @return List of Services
+     * @see java.util.List
+     * @see com.naukma.cauliflower.entities.Service
+     * @throws java.sql.SQLException
+     * */
     public List<Service> getServiceById(int[] arrayServiceId) throws SQLException {
         {//help
             System.out.println("getServiceById(arr [])");
@@ -2334,6 +2402,7 @@ public enum DAO {
      * Method changes the service for service instance taking a new service from a task
      * @param taskId Task to take service from
      * @param serviceInstanceId Service Instance that will be changed
+     * @throws java.sql.SQLException
      */
     public void changeServiceForServiceInstance(int taskId, int serviceInstanceId) {
 
