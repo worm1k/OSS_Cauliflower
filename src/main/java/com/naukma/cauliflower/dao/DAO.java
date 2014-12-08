@@ -54,6 +54,12 @@ public enum DAO {
      * ---------------------------------------------------------------------HALYA---------------------------------------------------------------------*
      */
 
+    /**
+     * Returns id of specific UserRole
+     * @param userRole UserRole to get id for
+     * @return id of specific UserRole in database
+     * @throws SQLException
+     */
     public int getUserRoleIdFor(UserRole userRole) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -137,6 +143,13 @@ public enum DAO {
     //Halya
     //if error - return < 0
     //else return id of created user
+
+    /**
+     *
+     * @param us User to create
+     * @param password User password
+     * @return -1 if error occured, otherwise id of created user
+     */
     public int createUser(User us, String password) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -188,6 +201,12 @@ public enum DAO {
 
     //Halya
     //true, if no user with this email
+
+    /**
+     * Checks if user with specified email exists in database.
+     * @param email email to check
+     * @return true if exists, false if doesn't
+     */
     public boolean checkForEmailUniq(String email) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -222,8 +241,11 @@ public enum DAO {
         return result;
     }
 
-    //Halya
-    //true, if user with this id exist
+    /**
+     * Checks if user with specified id exists in database.
+     * @param id id to check
+     * @return true if user exists, false if doesn't
+     */
     public boolean checkForExistingUserById(int id) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -258,9 +280,11 @@ public enum DAO {
         return result;
     }
 
-    //Halya
-    //if error, return null
-    //return blocked user
+    /**
+     * Blocks a user by his id.
+     * @param idForBlock id of a user who should be blocked
+     * @return Null if error occured, otherwise an instance of User who was blocked
+     */
     public User blockUserById(int idForBlock) {
         Connection connection = getConnection();
         User resultUser = null;
@@ -321,8 +345,11 @@ public enum DAO {
     }
 
 
-    //Halya
-    //return blocked user or null
+    /**
+     * Blocks a user by his id.
+     * @param email email of a user who should be blocked
+     * @return Null if error occured, otherwise an instance of User who was blocked
+     */
     public User blockUserByEmail(String email) {
         Connection connection = getConnection();
         User resultUser = null;
@@ -382,8 +409,11 @@ public enum DAO {
         return resultUser;
     }
 
-    //Halya
-    //true if user with this email exists
+    /**
+     * Checks if user with specified email exists in database.
+     * @param email email to check
+     * @return true if user exists, false if doesn't
+     */
     public boolean checkForExistingUserByEmail(String email) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -425,9 +455,11 @@ public enum DAO {
         return result;
     }
 
-
-    //Halya
-    //return name of userRole or null, if no userRole with this id
+    /**
+     * Get user role name by user role id.
+     * @param userRoleId user role id to return name for
+     * @return null if there is no user role with this id, otherwise user role name
+     */
     public String getUserRoleNameByUserRoleId(int userRoleId) {
         Connection connection = getConnection();
         String result = null;
@@ -461,9 +493,12 @@ public enum DAO {
         return result;
     }
 
-    //Halya
-    //return user, if password has been change successful ,
-    //else return null
+    /**
+     * Change the password for user.
+     * @param userId User id to change password for.
+     * @param newPassword New password for the user.
+     * @return Instance of User if his password was changed succesfully, otherwise null.
+     */
     public User changeUserPasswordById(int userId, String newPassword) {
         Connection connection = getConnection();
         User resultUser = null;
@@ -527,7 +562,6 @@ public enum DAO {
     //Galya_Sh RI.1
     //The system should document Devices.
     // повертаємо просто всю інформацію для репорту
-
     public ResultSet getDevicesForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
