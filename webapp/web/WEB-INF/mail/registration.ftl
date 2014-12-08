@@ -182,3 +182,32 @@
         </table>
     </div>
     <!-- =====  end maps image  ====== -->
+
+
+    <div >
+        <table width="580" border="0" cellspacing="0" cellpadding="0" align="center">
+            <tr><td height='40'></td></tr>
+            <tr>
+                <td style='background:#F6F6F6; border-radius:6px;-moz-border-radius:6px;-webkit-border-radius:6px'>
+                    <table width="480" border="0" cellspacing="0" cellpadding="0" align="center">
+                        <tr><td height='25'></td></tr>
+                        <tr>
+                            <td>
+                                <div  style='text-align: center;'>
+                                    <h2 style="font-size: 20px;">Dear ,<b>${to}</b></h2>
+                                    <br>
+                                    <p>Thank you for registration in CauliFlower !<br>Your password is :
+                                    </p>
+                                    <br><br>
+                                    <a href="#" class='link2' style='color:#ffffff'>${body}</a>
+                                    <br>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr><td height='24'></td></tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- =====  end password   ====== -->
