@@ -1,5 +1,8 @@
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.Scenario;
 import com.naukma.cauliflower.dao.UserRoles;
+import com.naukma.cauliflower.entities.ServiceLocation;
+import com.naukma.cauliflower.entities.ServiceOrder;
 import com.naukma.cauliflower.entities.User;
 import oracle.jdbc.pool.OracleConnectionPoolDataSource;
 import org.junit.BeforeClass;
@@ -9,13 +12,14 @@ import javax.naming.*;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.sql.SQLException;
+import java.util.List;
 
 
 /**
  * Created by Max on 07.12.2014.
  */
 
-public class UserTest {
+public class DAOTester {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -42,6 +46,8 @@ public class UserTest {
         }
     }
 
+  //  private int userIdTest = 0;
+
     @Test
     public void testUser() throws SQLException {
         DAO dao = DAO.INSTANCE;
@@ -52,6 +58,17 @@ public class UserTest {
 
         assert (user.getEmail().equals(userRes.getEmail()));
         assert (userId == userRes.getUserId());
+       // userIdTest = userId;
 
     }
+
+
+//    @Test
+//    public void testOrder() throws SQLException{
+//      int orderId = DAO.INSTANCE.createServiceOrder(userIdTest, Scenario.NEW,null);
+//      List<ServiceOrder>res = DAO.INSTANCE.getOrders(userIdTest);
+//        res.
+//
+//    }
+
 }
