@@ -5,7 +5,6 @@ import com.naukma.cauliflower.entities.*;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -55,12 +54,12 @@ public enum DAO {
      * ---------------------------------------------------------------------HALYA---------------------------------------------------------------------*
      */
 
-    public int getUserRoleIdFor(UserRoles userRoles) throws SQLException {
+    public int getUserRoleIdFor(UserRole userRole) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int result = 0;
         preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-        preparedStatement.setString(1, userRoles.toString());
+        preparedStatement.setString(1, userRole.toString());
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
             result = resultSet.getInt("RES");
@@ -1814,7 +1813,7 @@ public enum DAO {
      * @return id of created task
      * @throws java.sql.SQLException
      */
-    public int createNewTask(int serviceOrderId, UserRoles role, TaskName taskName) throws SQLException {
+    public int createNewTask(int serviceOrderId, UserRole role, TaskName taskName) throws SQLException {
         {//help
             System.out.println("CREATE TASK");
         }
@@ -2009,7 +2008,7 @@ public enum DAO {
     * @return List of tasks
     * @throws java.sql.SQLException
     * @see com.naukma.cauliflower.dao.TaskStatus
-    * @see com.naukma.cauliflower.dao.UserRoles
+    * @see UserRole
     * */
     public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) throws SQLException {
         {//help

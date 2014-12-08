@@ -1,19 +1,14 @@
 import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.dao.Scenario;
-import com.naukma.cauliflower.dao.UserRoles;
-import com.naukma.cauliflower.entities.ServiceLocation;
-import com.naukma.cauliflower.entities.ServiceOrder;
+import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.User;
 import oracle.jdbc.pool.OracleConnectionPoolDataSource;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.JUnitCore;
 
 import javax.naming.*;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.sql.SQLException;
-import java.util.List;
 
 
 /**
@@ -53,7 +48,7 @@ public class DAOTester {
     public void testUser() throws SQLException {
         DAO dao = DAO.INSTANCE;
 
-        UserRoles role = UserRoles.ADMINISTRATOR;
+        UserRole role = UserRole.ADMINISTRATOR;
         int idStub = -1;
         int userRoleId = 1;
         String email = "aaaaaaafdgdfh";

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.GregorianCalendar;
 
 /**
  * Created by Max on 29.11.2014.
@@ -83,7 +82,7 @@ public class ProceedOrderController extends HttpServlet {
         createServiceInstance(request);
         connectInstanceWithOrder();
         setInstanceBlocked();
-        taskId = DAO.INSTANCE.createNewTask(orderId, UserRoles.INSTALLATION_ENG,TaskName.CONNECT_NEW_PERSON);
+        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.CONNECT_NEW_PERSON);
         //for end2end
       //  DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.PROCESSING);
 
@@ -94,7 +93,7 @@ public class ProceedOrderController extends HttpServlet {
         createModifyOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
-        taskId = DAO.INSTANCE.createNewTask(orderId,UserRoles.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
+        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
         setNewServiceForTask(request);
     }
 
@@ -104,7 +103,7 @@ public class ProceedOrderController extends HttpServlet {
         createDisconnectOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
-        taskId = DAO.INSTANCE.createNewTask(orderId, UserRoles.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT);
+        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT);
     }
 
     private void createNewOrder() throws SQLException

@@ -2,7 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.dao.UserRoles;
+import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.*;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 
@@ -50,11 +50,11 @@ public class SISODashboardController  extends HttpServlet {
 
         String role = user.getUserRole();
         try {
-            if(role.equals(UserRoles.CUSTOMER.toString())){
+            if(role.equals(UserRole.CUSTOMER.toString())){
                 orders = DAO.INSTANCE.getOrders(user.getUserId());
                 instances = DAO.INSTANCE.getInstances(user.getUserId());
             }
-            else if(role.equals(UserRoles.CUST_SUP_ENG.toString())){
+            else if(role.equals(UserRole.CUST_SUP_ENG.toString())){
                 orders = DAO.INSTANCE.getAllOrders();
                 instances = DAO.INSTANCE.getAllInstances();
 
