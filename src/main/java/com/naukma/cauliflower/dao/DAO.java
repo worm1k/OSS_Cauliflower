@@ -199,9 +199,6 @@ public enum DAO {
         return result;
     }
 
-    //Halya
-    //true, if no user with this email
-
     /**
      * Checks if user with specified email exists in database.
      * @param email email to check
@@ -558,10 +555,10 @@ public enum DAO {
         return resultUser;
     }
 
-
-    //Galya_Sh RI.1
-    //The system should document Devices.
-    // повертаємо просто всю інформацію для репорту
+    /**
+     * Get information about all the routers, sum of occupied and sum of free ports on each router.
+     * @return ResultSet with routers(each row contains router id, sum of occupied, sum of free ports for this router)
+     */
     public ResultSet getDevicesForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -587,9 +584,11 @@ public enum DAO {
         return resultSet;
     }
 
-    //Galya_Sh RI.2
-    //The system should document the Ports.
-    // повертаємо просто всю інформацію для репорту
+    /**
+     * Get information about all the ports in system.
+     * @return ResultSet with ports (each row contains router id, port id, port used or not value)
+     * @throws SQLException
+     */
     public ResultSet getPortsForReport() throws SQLException {
         {//help
             System.out.println("getPortsForReport");
@@ -615,9 +614,11 @@ public enum DAO {
         return resultSet;
     }
 
-    //Galya_Sh RI.4
-    //The system should document physical link to end user as Cable.
-    // повертаємо просто всю інформацію для репорту
+    /**
+     * Get information about all the cables in system.
+     * @return ResultSet with cables (each row contains cable id and instance service id, where this cable is connected to)
+     * @throws SQLException
+     */
     public ResultSet getCablesForReport() throws SQLException {
         {//help
             System.out.println("getCablesForReport");
@@ -644,9 +645,10 @@ public enum DAO {
     }
 
 
-    //Galya_Sh RI.5
-    //The system should document logical entity of provided Service as Circuit.
-    // повертаємо просто всю інформацію для репорту
+    /**
+     * Get information about all the circuits in system.
+     * @return ResultSet with circuits(each row contains router id, port id, cable id, service instance id)
+     */
     public ResultSet getCircuitsForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -672,10 +674,11 @@ public enum DAO {
         return resultSet;
     }
 
-
-    //Halya
-    //return true, if no user in db with this phone
-    //else return false
+    /**
+     * Checks if there isn't such phone number in the system.
+     * @param phone Phone number to check.
+     * @return true if phone number exists, false if doesn't
+     */
     public boolean checkForPhoneUniq(String phone) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
