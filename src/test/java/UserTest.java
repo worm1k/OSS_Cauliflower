@@ -45,13 +45,13 @@ public class UserTest {
     @Test
     public void testUser() throws SQLException {
         DAO dao = DAO.INSTANCE;
-        User user = new User(-1,1, UserRoles.ADMINISTRATOR.toString(),"aaa","aaa","aaa","123",false);
-        String password = "12345678";
+        User user = new User(-1,1, UserRoles.ADMINISTRATOR.toString(),"aaaaaaafdgdfh","aaa","aaa","123",false);
+        String password = "1234567891sfsdg";
         int userId = dao.createUser(user,password);
         User userRes = dao.getUserByLoginAndPassword(user.getEmail(),password);
 
         assert (user.getEmail().equals(userRes.getEmail()));
-      //  assert (userId == userRes.getUserId());
+        assert (userId == userRes.getUserId());
 
     }
 }

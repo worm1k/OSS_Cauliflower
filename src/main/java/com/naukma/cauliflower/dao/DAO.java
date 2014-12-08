@@ -46,7 +46,7 @@ public enum DAO {
 
     private void close(Connection connection, PreparedStatement preparedStatement) throws SQLException {
         connection.setAutoCommit(true);
-       // if (!preparedStatement.isClosed()) preparedStatement.close();
+        if (!preparedStatement.isClosed()) preparedStatement.close();
         if (!connection.isClosed()) connection.close();
     }
 
