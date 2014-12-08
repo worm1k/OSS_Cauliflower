@@ -33,7 +33,7 @@ public class ChangeCustomerPassword extends HttpServlet {
                     if(userForNewPass!=null){
 
                         //create body
-                        StringBuffer message= new StringBuffer();
+                        StringBuilder message= new StringBuilder();
                         message.append("<p>Your password has been changed!</p> <p style=\"text-transform:none;\">Your new password: <b>");
                         message.append(newPassword);
                         message.append("</b></p>");
