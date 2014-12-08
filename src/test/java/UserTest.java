@@ -4,6 +4,7 @@ import com.naukma.cauliflower.entities.User;
 import oracle.jdbc.pool.OracleConnectionPoolDataSource;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.JUnitCore;
 
 import javax.naming.*;
 import javax.naming.InitialContext;
@@ -45,13 +46,43 @@ public class UserTest {
     @Test
     public void testUser() throws SQLException {
         DAO dao = DAO.INSTANCE;
-        User user = new User(-1,1, UserRoles.ADMINISTRATOR.toString(),"aaaaaaafdgdfh","aaa","aaa","123",false);
+
+        UserRoles role = UserRoles.ADMINISTRATOR;
+        int idStub = -1;
+        int userRoleId = 1;
+        String email = "aaaaaaafdgdfh";
+        String firstName = "FirstName";
+        String lastName = "LastName";
+        String phoneNumber = "12345";
+        boolean isBlocked = false;
         String password = "1234567891sfsdg";
+        String newPassword = "12345"; //will be used for change password method
+
+        User user = new User(idStub, userRoleId, role.toString(), email, firstName, lastName, phoneNumber, isBlocked);
+
         int userId = dao.createUser(user,password);
-        User userRes = dao.getUserByLoginAndPassword(user.getEmail(),password);
+        assert(dao.checkForExistingUserById(userId));
+        assert(dao.checkForExistingUserByEmail(email));
 
-        assert (user.getEmail().equals(userRes.getEmail()));
-        assert (userId == userRes.getUserId());
 
+        User userRes = dao.getUserByLoginAndPassword(email,password);
+        assert(userId == userRes.getUserId());
+        assert(userRes.getUserRoleId() == dao.getUserRoleIdFor(role));
+        assert(userRes.getUserRole().equals(role.toString()));
+        assert(dao.getUserRoleNameByUserRoleId(userRoleId).equals(role.toString()));
+        assert(userRes.getEmail().equals(email));
+        assert(userRes.getFirstName().equals(firstName));
+        assert(userRes.getLastName().equals(lastName));
+        assert(userRes.getPhone().equals(phoneNumber));
+        assert(userRes.isBlocked() == isBlocked);
+
+        userRes = dao.blockUserById(userId);
+        assert(userRes.isBlocked() == true);
+
+        userRes = dao.blockUserByEmail(email);
+        assert(userRes.isBlocked() == true);
+
+        userRes = dao.changeUserPasswordById(userId, newPassword);
+        assert(userRes.equals(dao.getUserByLoginAndPassword(email, newPassword)));
     }
 }
