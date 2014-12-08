@@ -96,5 +96,36 @@ public class User implements Serializable {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (isBlocked != user.isBlocked) return false;
+        if (userId != user.userId) return false;
+        if (userRoleId != user.userRoleId) return false;
+        if (!email.equals(user.email)) return false;
+        if (!firstName.equals(user.firstName)) return false;
+        if (!lastName.equals(user.lastName)) return false;
+        if (!phone.equals(user.phone)) return false;
+        if (!userRole.equals(user.userRole)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId;
+        result = 31 * result + userRoleId;
+        result = 31 * result + userRole.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + firstName.hashCode();
+        result = 31 * result + lastName.hashCode();
+        result = 31 * result + phone.hashCode();
+        result = 31 * result + (isBlocked ? 1 : 0);
+        return result;
+    }
 }
 

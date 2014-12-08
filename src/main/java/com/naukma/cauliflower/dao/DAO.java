@@ -2404,8 +2404,27 @@ public enum DAO {
      * @param serviceInstanceId Service Instance that will be changed
      * @throws java.sql.SQLException
      */
-    public void changeServiceForServiceInstance(int taskId, int serviceInstanceId) {
-
+    public void changeServiceForServiceInstance(int taskId, int serviceInstanceId) throws SQLException{
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try{
+            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+                    "SET ID_SERVICE = (SELECT ID_SERVICE " +
+                    "FROM TASK T INNER JOIN TOMODIFY TMOD ON TMOD.ID_TASK = T.ID " +
+                    "WHERE T.ID = ?) " +
+                    "WHERE ID = ?");
+            preparedStatement.setInt(1, taskId);
+            preparedStatement.setInt(2, serviceInstanceId);
+            preparedStatement.executeUpdate();
+        }finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return;
     }
 
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
