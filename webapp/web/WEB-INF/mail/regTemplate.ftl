@@ -134,7 +134,7 @@
 
 </head>
 <body bgcolor="#d1d3d4" style="padding-top: 0;padding-bottom: 0;background-repeat: repeat;width: 100% !important;-webkit-text-size-adjust: 100%;-webkit-font-smoothing: antialiased;margin: 0;-ms-text-size-adjust: 100%;">
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tableContent bgBody" align="center" style="font-family: Helvetica, sans-serif;vertical-align: top;">
+<table width="580" border="0" cellspacing="0" cellpadding="0" class="tableContent bgBody" align="center" style="font-family: Helvetica, sans-serif;vertical-align: top;">
     <!-- =============== START HEADER =============== -->
 
     <tr>
