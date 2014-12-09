@@ -108,5 +108,6 @@
 </div>
 
 <jsp:include page="footer.jsp"/>
+<script type="text/javascript" src="./js/indexSlavko.js"></script>
 </body>
 </html>
