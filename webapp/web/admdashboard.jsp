@@ -1,3 +1,6 @@
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
+<%@ page import="com.naukma.cauliflower.entities.User" %>
+<%@ page import="com.naukma.cauliflower.dao.UserRole" %>
 <%--
   Created by IntelliJ IDEA.
   User: Артем
@@ -7,6 +10,18 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<c:if test="${empty sessionScope.user}">
+  <%response.sendRedirect("home.jsp");%>
+</c:if>
+
+<c:if test="${sessionScope.user ne null && not empty sessionScope.user}">
+  <%User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+    if(user.getUserRole().equals(UserRole.ADMINISTRATOR))
+      response.sendRedirect("home.jsp");%>
+</c:if>
+
+
 <!DOCTYPE html>
 <html lang="en" ng-app="NgApp">
 <head>
@@ -39,10 +54,10 @@
       <div class="form-group" id="auth_reg_role">
         <h4>Role <span class="required"></span></h4>
         <div >
-          <select id="eng_role" name="userRoleId" class="form-control">
-            <option value="5">Customer Support Engineer</option>
-            <option value="3">Provisioning Engineer</option>
-            <option value="4">Installation Engineer</option>
+          <select id="eng_role" name="userRole" class="form-control">
+            <option value="CUST_SUP_ENG">Customer Support Engineer</option>
+            <option value="PROVISIONING_ENG">Provisioning Engineer</option>
+            <option value="INSTALLATION_ENG">Installation Engineer</option>
           </select>
         </div>
       </div>

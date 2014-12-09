@@ -1,3 +1,5 @@
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
+<%@ page import="com.naukma.cauliflower.entities.User" %>
 <%--
   Created by IntelliJ IDEA.
   User: Vladmyr
@@ -6,6 +8,13 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%--<c:if test="${sessionScope.user ne null && not empty sessionScope.user}">--%>
+    <%--<%User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);--%>
+        <%--if(user.getUserRoleId()!=CauliflowerInfo.CUSTOM_USER_ROLE_ID)--%>
+            <%--response.sendRedirect("home.jsp");%>--%>
+<%--</c:if>--%>
+
 <!DOCTYPE html>
 <html lang="en" ng-app="NgApp">
 <head>

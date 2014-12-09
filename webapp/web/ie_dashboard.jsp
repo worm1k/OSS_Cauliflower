@@ -54,7 +54,11 @@
                     <td>{{task.taskName}}</td>
                     <td>{{task.taskStatus}}</td>
                     <td>
-                        <button class="btn btn-xs btn-info">Subscribe</button>
+                        <form action="" method="POST">
+                            <input type="hidden" name="taskId" value="{{task.taskId}}"/>
+                            <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
+                            <button class="btn btn-xs btn-info">Subscribe</button>
+                        </form>
                     </td>
                 </tr>
             </tbody>

@@ -23,17 +23,18 @@ public class TaskManager extends HttpServlet {
     */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        String pathFrom  = request.getHeader("Referer");
         int taskId =  Integer.parseInt(request.getParameter(CauliflowerInfo.TASK_ID_PARAM));
         String status = request.getParameter(CauliflowerInfo.TASK_STATUS_PARAM);
         try {
             if(status.equals(TaskStatus.PROCESSING.toString()))
-                    DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.FREE);
+                DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.FREE);
             else if(status.equals(TaskStatus.FREE.toString()))
-            DAO.INSTANCE.changeTaskStatus(taskId,TaskStatus.PROCESSING);
+                DAO.INSTANCE.changeTaskStatus(taskId,TaskStatus.PROCESSING);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        response.sendRedirect(pathFrom);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

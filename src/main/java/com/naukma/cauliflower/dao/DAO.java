@@ -2531,6 +2531,9 @@ public enum DAO {
 
     }
 
+    public int getUserRoleIdByUserRoleName(String userRole){
+        return 0;
+    }
 
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 

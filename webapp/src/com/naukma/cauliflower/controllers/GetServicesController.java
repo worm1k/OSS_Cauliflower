@@ -2,6 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
@@ -50,7 +51,7 @@ public class GetServicesController extends HttpServlet {
         String pathFrom  = req.getHeader("Referer");
         HttpSession session = req.getSession();
         final User user  = (User) session.getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(user==null || user.getUserRoleId()==CauliflowerInfo.CUSTOM_USER_ROLE_ID) {
+        if(user==null || user.getUserRole().equals(UserRole.CUSTOMER)) {
             String serviceLocationAddress = req.getParameter("serviceLocationAddress");
             String serviceLocationLongtitude = req.getParameter("serviceLocationLongtitude");
             String serviceLocationLatitude = req.getParameter("serviceLocationLatitude");

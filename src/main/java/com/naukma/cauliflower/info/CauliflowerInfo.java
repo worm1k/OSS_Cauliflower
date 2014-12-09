@@ -24,7 +24,7 @@ public class CauliflowerInfo {
     public static final String HOME_LINK = "home.jsp";
     public static final String DASHBOARD_LINK = "dashboard.jsp";
     public static final String ADMIN_DASHBOARD_LINK = "admdashboard.jsp";
-    public static final String INSTALL_ENGINEER_DASHBOARD_LINK = "instengdashboard.jsp";
+    public static final String INSTALL_ENGINEER_DASHBOARD_LINK = "ie_dashboard.jsp";
 
 
     public static final String SYSTEM_ERROR_MESSAGE = "System error, try again later, please";
@@ -46,11 +46,6 @@ public class CauliflowerInfo {
     public static final String OK_REGISTER_EMPLOYEE_MESSAGE = "Employee registred!";
     public static final String OK_ACCOUNT_BLOCK_MESSAGE = "Account has been blocked!";
 
-    public static final int CUSTOM_USER_ROLE_ID = 1;
-    public static final int ADMINISTRATOR_ROLE_ID = 2;
-    public static final int PROVISIONING_ENG_ROLE_ID = 3;
-    public static final int INSTALLATION_ENG_ROLE_ID = 4;
-    public static final int CUST_SUP_ENG_ROLE_ID = 5;
 
 
 }
