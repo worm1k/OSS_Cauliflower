@@ -151,7 +151,7 @@ public enum DAO {
      * @param password User password
      * @return -1 if error occured, otherwise id of created user
      */
-    public int createUser(User us, String password) {
+    public int createUser(User us, String password) throws SQLException  {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int result = -1;
@@ -206,7 +206,7 @@ public enum DAO {
      * @param email email to check
      * @return true if exists, false if doesn't
      */
-    public boolean checkForEmailUniq(String email) {
+    public boolean checkForEmailUniq(String email) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -224,8 +224,6 @@ public enum DAO {
                 result = false;
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -246,7 +244,7 @@ public enum DAO {
      * @param id id to check
      * @return true if user exists, false if doesn't
      */
-    public boolean checkForExistingUserById(int id) {
+    public boolean checkForExistingUserById(int id) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -264,9 +262,7 @@ public enum DAO {
                 result = false;
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
@@ -286,7 +282,7 @@ public enum DAO {
      * @param idForBlock id of a user who should be blocked
      * @return Null if error occured, otherwise an instance of User who was blocked
      */
-    public User blockUserById(int idForBlock) {
+    public User blockUserById(int idForBlock) throws SQLException {
         Connection connection = getConnection();
         User resultUser = null;
         PreparedStatement preparedStatement = null;
@@ -352,7 +348,7 @@ public enum DAO {
      * @param email email of a user who should be blocked
      * @return Null if error occured, otherwise an instance of User who was blocked
      */
-    public User blockUserByEmail(String email) {
+    public User blockUserByEmail(String email) throws SQLException {
         Connection connection = getConnection();
         User resultUser = null;
         PreparedStatement preparedStatement = null;
@@ -417,7 +413,7 @@ public enum DAO {
      * @param email email to check
      * @return true if user exists, false if doesn't
      */
-    public boolean checkForExistingUserByEmail(String email) {
+    public boolean checkForExistingUserByEmail(String email) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -442,9 +438,7 @@ public enum DAO {
                 }
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
@@ -464,7 +458,7 @@ public enum DAO {
      * @param userRoleId user role id to return name for
      * @return null if there is no user role with this id, otherwise user role name
      */
-    public String getUserRoleNameByUserRoleId(int userRoleId) {
+    public String getUserRoleNameByUserRoleId(int userRoleId) throws SQLException {
         Connection connection = getConnection();
         String result = null;
         PreparedStatement preparedStatement = null;
@@ -477,8 +471,6 @@ public enum DAO {
                 result = resultSet.getString("RES");
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -504,7 +496,7 @@ public enum DAO {
      * @param newPassword New password for the user.
      * @return Instance of User if his password was changed succesfully, otherwise null.
      */
-    public User changeUserPasswordById(int userId, String newPassword) {
+    public User changeUserPasswordById(int userId, String newPassword) throws SQLException {
         Connection connection = getConnection();
         User resultUser = null;
         PreparedStatement preparedStatement = null;
@@ -568,7 +560,7 @@ public enum DAO {
      *
      * @return ResultSet with routers(each row contains router id, sum of occupied, sum of free ports for this router)
      */
-    public XLSReportGenerator getDevicesForReport() {
+    public XLSReportGenerator getDevicesForReport() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -620,6 +612,7 @@ public enum DAO {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
+                logger.warn("Can't close connection or preparedStatement");
                 e.printStackTrace();
             }
         }
@@ -665,7 +658,7 @@ public enum DAO {
      *
      * @return ResultSet with circuits(each row contains router id, port id, cable id, service instance id)
      */
-    public XLSReportGenerator getCircuitsForReport() {
+    public XLSReportGenerator getCircuitsForReport() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -676,9 +669,7 @@ public enum DAO {
                     "INNER JOIN SERVICEINSTANCE si ON C.Id = Si.Id_Cable ");
             resultSet = preparedStatement.executeQuery();
             reportGenerator = new XLSReportGenerator("Circuits", resultSet);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
@@ -698,7 +689,7 @@ public enum DAO {
      * @param phone Phone number to check.
      * @return true if phone number exists, false if doesn't
      */
-    public boolean checkForPhoneUniq(String phone) {
+    public boolean checkForPhoneUniq(String phone) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -722,9 +713,7 @@ public enum DAO {
                 }
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
