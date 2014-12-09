@@ -57,6 +57,7 @@ public enum DAO {
 
     /**
      * Returns id of specific UserRole
+     *
      * @param userRole UserRole to get id for
      * @return id of specific UserRole in database
      * @throws SQLException
@@ -146,8 +147,7 @@ public enum DAO {
     //else return id of created user
 
     /**
-     *
-     * @param us User to create
+     * @param us       User to create
      * @param password User password
      * @return -1 if error occured, otherwise id of created user
      */
@@ -202,6 +202,7 @@ public enum DAO {
 
     /**
      * Checks if user with specified email exists in database.
+     *
      * @param email email to check
      * @return true if exists, false if doesn't
      */
@@ -241,6 +242,7 @@ public enum DAO {
 
     /**
      * Checks if user with specified id exists in database.
+     *
      * @param id id to check
      * @return true if user exists, false if doesn't
      */
@@ -280,6 +282,7 @@ public enum DAO {
 
     /**
      * Blocks a user by his id.
+     *
      * @param idForBlock id of a user who should be blocked
      * @return Null if error occured, otherwise an instance of User who was blocked
      */
@@ -345,6 +348,7 @@ public enum DAO {
 
     /**
      * Blocks a user by his id.
+     *
      * @param email email of a user who should be blocked
      * @return Null if error occured, otherwise an instance of User who was blocked
      */
@@ -409,6 +413,7 @@ public enum DAO {
 
     /**
      * Checks if user with specified email exists in database.
+     *
      * @param email email to check
      * @return true if user exists, false if doesn't
      */
@@ -455,6 +460,7 @@ public enum DAO {
 
     /**
      * Get user role name by user role id.
+     *
      * @param userRoleId user role id to return name for
      * @return null if there is no user role with this id, otherwise user role name
      */
@@ -493,7 +499,8 @@ public enum DAO {
 
     /**
      * Change the password for user.
-     * @param userId User id to change password for.
+     *
+     * @param userId      User id to change password for.
      * @param newPassword New password for the user.
      * @return Instance of User if his password was changed succesfully, otherwise null.
      */
@@ -558,6 +565,7 @@ public enum DAO {
 
     /**
      * Get information about all the routers, sum of occupied and sum of free ports on each router.
+     *
      * @return ResultSet with routers(each row contains router id, sum of occupied, sum of free ports for this router)
      */
     public XLSReportGenerator getDevicesForReport() {
@@ -587,6 +595,7 @@ public enum DAO {
 
     /**
      * Get information about all the ports in system.
+     *
      * @return ResultSet with ports (each row contains router id, port id, port used or not value)
      * @throws SQLException
      */
@@ -598,27 +607,28 @@ public enum DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         XLSReportGenerator reportGenerator = null;
-        try{
-        preparedStatement = connection.prepareStatement("SELECT R.Id ROUTER, P.Id PORT, P.Used USED " +
-                "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                "Order By R.Id, P.Id ");
-        resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Ports", resultSet);
-        {//help
-            System.out.println("SUCCESS!!!!getPortsForReport");
-        }
-    }finally {
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException e){
-            e.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT R.Id ROUTER, P.Id PORT, P.Used USED " +
+                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                    "Order By R.Id, P.Id ");
+            resultSet = preparedStatement.executeQuery();
+            reportGenerator = new XLSReportGenerator("Ports", resultSet);
+            {//help
+                System.out.println("SUCCESS!!!!getPortsForReport");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
         return reportGenerator;
     }
 
     /**
      * Get information about all the cables in system.
+     *
      * @return ResultSet with cables (each row contains cable id and instance service id, where this cable is connected to)
      * @throws SQLException
      */
@@ -639,10 +649,10 @@ public enum DAO {
             {//help
                 System.out.println("SUCCESS!!!!getCablesForReport");
             }
-        }finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -652,6 +662,7 @@ public enum DAO {
 
     /**
      * Get information about all the circuits in system.
+     *
      * @return ResultSet with circuits(each row contains router id, port id, cable id, service instance id)
      */
     public XLSReportGenerator getCircuitsForReport() {
@@ -668,8 +679,8 @@ public enum DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-                try {
-                    close(connection, preparedStatement);
+            try {
+                close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
@@ -683,6 +694,7 @@ public enum DAO {
 
     /**
      * Checks if there isn't such phone number in the system.
+     *
      * @param phone Phone number to check.
      * @return true if phone number exists, false if doesn't
      */
@@ -732,6 +744,7 @@ public enum DAO {
 
     /**
      * Get user by its login and password
+     *
      * @param login    user login
      * @param password user password
      * @return found user or null if user does not exist
@@ -786,8 +799,8 @@ public enum DAO {
      * @param scenario          scenario for the order
      * @param idServiceInstance id of service instance for disconnect scenario
      * @return id of created instance
-     * @see com.naukma.cauliflower.dao.Scenario
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.dao.Scenario
      */
     public int createServiceOrder(int userId, Scenario scenario, Integer idServiceInstance) throws SQLException {
 
@@ -888,6 +901,7 @@ public enum DAO {
 
     /**
      * Connects selected instance and selected user
+     *
      * @param instanceId id of the instance
      * @param userId     id of the user
      * @throws java.sql.SQLException*
@@ -926,10 +940,11 @@ public enum DAO {
 
     /**
      * Sets selected status for selected instance
+     *
      * @param instanceId id of the instance
      * @param status     status of the instance
-     * @see com.naukma.cauliflower.dao.InstanceStatus
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.dao.InstanceStatus
      */
     public void changeInstanceStatus(int instanceId, InstanceStatus status) throws SQLException {
         {//help
@@ -968,10 +983,11 @@ public enum DAO {
 
     /**
      * Set selected status for selected order
+     *
      * @param orderId     id of the order
      * @param orderStatus status of the task
-     * @see com.naukma.cauliflower.dao.OrderStatus
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.dao.OrderStatus
      */
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) throws SQLException {
         {//help
@@ -1011,10 +1027,11 @@ public enum DAO {
 
     /**
      * Set selected status for selected task
+     *
      * @param taskId     id of the task
      * @param taskStatus status of the task
-     * @see com.naukma.cauliflower.dao.TaskStatus
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.dao.TaskStatus
      */
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) throws SQLException {
         {//help
@@ -1054,6 +1071,7 @@ public enum DAO {
 
     /**
      * Block instance when exist active task on it
+     *
      * @param instanceId id of the instance
      * @param isBlocked  0 - set instance not blocked, 1 - set instance blocked
      * @throws java.sql.SQLException
@@ -1093,6 +1111,7 @@ public enum DAO {
 
     /**
      * Returns tasks for selected usergroup with seleceted status
+     *
      * @param taskStatusId id of TaskStatus
      * @param userRoleId   id of UserRole
      * @return List<Task> of tasks
@@ -1142,8 +1161,8 @@ public enum DAO {
      *
      * @param providerLocationId id of Provider Location
      * @return ArrayList<Service> of services
-     * @see com.naukma.cauliflower.entities.Service
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.Service
      */
     public List<Service> getServicesByProviderLocationId(int providerLocationId) throws SQLException {
         {//help
@@ -1190,6 +1209,7 @@ public enum DAO {
 
     /**
      * Creates new router
+     *
      * @throws java.sql.SQLException
      */
     public void createRouter() throws SQLException {
@@ -1338,8 +1358,8 @@ public enum DAO {
      *
      * @param userId Id of the user
      * @return ArrayList of orders
-     * @see com.naukma.cauliflower.entities.ServiceOrder
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.ServiceOrder
      */
 
     public ArrayList<ServiceOrder> getOrders(int userId) throws SQLException {
@@ -1392,8 +1412,8 @@ public enum DAO {
      *
      * @param userId Id of the user
      * @return ArrayList of instances
-     * @see com.naukma.cauliflower.entities.ServiceInstance
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.ServiceInstance
      */
 
     public ArrayList<ServiceInstance> getInstances(int userId) throws SQLException {
@@ -1449,8 +1469,8 @@ public enum DAO {
      * Returns ArrayList of all orders
      *
      * @return ArrayList of ServiceOrder
-     * @see com.naukma.cauliflower.entities.ServiceOrder
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.ServiceOrder
      */
     public ArrayList<ServiceOrder> getAllOrders() throws SQLException {
         {//help
@@ -1500,8 +1520,8 @@ public enum DAO {
      * Returns ArrayList of all instances
      *
      * @return ArrayList of ServiceInstance
-     * @see com.naukma.cauliflower.entities.ServiceInstance
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.ServiceInstance
      */
     public ArrayList<ServiceInstance> getAllInstances() throws SQLException {
         {//help
@@ -1571,9 +1591,10 @@ public enum DAO {
 
     /**
      * Returns list of all Provider Locations existing in the system
+     *
      * @return List of Provider Locations
-     * @see com.naukma.cauliflower.entities.ProviderLocation
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.ProviderLocation
      */
     public List<ProviderLocation> getProviderLocations() throws SQLException {
         {//
@@ -1611,10 +1632,11 @@ public enum DAO {
 
     /**
      * Returns Service by its Id
+     *
      * @param serviceId if of the Service
      * @return if exist - Service, otherwise - null
-     * @see com.naukma.cauliflower.entities.Service
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.Service
      */
     public Service getServiceById(int serviceId) throws SQLException {
         {//help
@@ -1664,8 +1686,8 @@ public enum DAO {
      * return List<Services> of all Services
      *
      * @return List of Services
-     * @see com.naukma.cauliflower.entities.Service
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.Service
      */
     public List<Service> getServices() throws SQLException {
         {//
@@ -1713,9 +1735,9 @@ public enum DAO {
      * Creates service location record in database from ServiceLocation object
      *
      * @param serviceLocation ServiceLocation object to write
-     * @see com.naukma.cauliflower.entities.ServiceLocation
      * @return id of the created ServiceLocation
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.ServiceLocation
      */
 
     public int createServiceLocation(ServiceLocation serviceLocation) throws SQLException {
@@ -2046,14 +2068,15 @@ public enum DAO {
     //KaspYar
 
 
-   /**
-    * Returns List of task with status FREE and PROCESSING for selected usergroup
-    * @param userRoleId id of the usergroup
-    * @return List of tasks
-    * @throws java.sql.SQLException
-    * @see com.naukma.cauliflower.dao.TaskStatus
-    * @see UserRole
-    * */
+    /**
+     * Returns List of task with status FREE and PROCESSING for selected usergroup
+     *
+     * @param userRoleId id of the usergroup
+     * @return List of tasks
+     * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.dao.TaskStatus
+     * @see UserRole
+     */
     public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) throws SQLException {
         {//help
             System.out.println("getFreeAndProcessingTasksByUserRoleId");
@@ -2162,6 +2185,7 @@ public enum DAO {
 
     /**
      * Checks if free ports exist
+     *
      * @return True if a free port exists, otherwise false
      * @throws java.sql.SQLException
      */
@@ -2230,10 +2254,11 @@ public enum DAO {
 
     /**
      * Returns status of task
+     *
      * @param taskId id of the task
      * @return Status of this task
-     * @see com.naukma.cauliflower.dao.TaskStatus
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.dao.TaskStatus
      */
     public TaskStatus getTaskStatus(int taskId) throws SQLException {
         {//help
@@ -2271,8 +2296,8 @@ public enum DAO {
      *
      * @param taskId id of the task
      * @return task object with selected id
-     * @see com.naukma.cauliflower.entities.Task
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.Task
      */
     public Task getTaskById(int taskId) throws SQLException {
         {//help
@@ -2312,10 +2337,11 @@ public enum DAO {
 
     /**
      * Creates ResultSet to generate report on most profitable router
+     *
      * @return ResultSet of the sql request
-     * @see java.sql.ResultSet
      * @throws java.sql.SQLException
-     * */
+     * @see java.sql.ResultSet
+     */
     public XLSReportGenerator getMostProfitableRouterForReport() throws SQLException {
         {//help
             System.out.println("getMostProfitableRouterForReport");
@@ -2384,12 +2410,13 @@ public enum DAO {
 
     /**
      * Returns services of selected ids
+     *
      * @param arrayServiceId array of service ids
      * @return List of Services
+     * @throws java.sql.SQLException
      * @see java.util.List
      * @see com.naukma.cauliflower.entities.Service
-     * @throws java.sql.SQLException
-     * */
+     */
     public List<Service> getServiceById(int[] arrayServiceId) throws SQLException {
         {//help
             System.out.println("getServiceById(arr [])");
@@ -2445,14 +2472,15 @@ public enum DAO {
 
     /**
      * Method changes the service for service instance taking a new service from a task
-     * @param taskId Task to take service from
+     *
+     * @param taskId            Task to take service from
      * @param serviceInstanceId Service Instance that will be changed
      * @throws java.sql.SQLException
      */
-    public void changeServiceForServiceInstance(int taskId, int serviceInstanceId) throws SQLException{
+    public void changeServiceForServiceInstance(int taskId, int serviceInstanceId) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        try{
+        try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
                     "SET ID_SERVICE = (SELECT ID_SERVICE " +
                     "FROM TASK T INNER JOIN TOMODIFY TMOD ON TMOD.ID_TASK = T.ID " +
@@ -2461,7 +2489,7 @@ public enum DAO {
             preparedStatement.setInt(1, taskId);
             preparedStatement.setInt(2, serviceInstanceId);
             preparedStatement.executeUpdate();
-        }finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
@@ -2475,13 +2503,31 @@ public enum DAO {
 
     /**
      * Checks if service instance is blocked
-     * @param serviceInstanceId  if of the instance
+     *
+     * @param serviceInstanceId if of the instance
      * @return true if instance is blocked, otherwise - false
      * @throws java.sql.SQLException
-     * */
-    public boolean isInstanceBlocked(int serviceInstanceId) throws SQLException{
-
-        return false;
+     */
+    public boolean isInstanceBlocked(int serviceInstanceId) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT HAS_ACTIVE_TASK IS_BLOCKED FROM SERVICEINSTANCE WHERE ID = ? ");
+            preparedStatement.setInt(1, serviceInstanceId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                result = (resultSet.getInt("IS_BLOCKED") == 1);
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return result;
 
     }
 
@@ -2496,9 +2542,10 @@ public enum DAO {
 
     /**
      * Prepare ResultSet  to generate report on used routers and port capacity
-     *@return ResultSet for sql request
-     *@throws java.sql.SQLException
-     * */
+     *
+     * @return ResultSet for sql request
+     * @throws java.sql.SQLException
+     */
     public XLSReportGenerator getUsedRoutersAndCapacityOfPorts() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -2510,7 +2557,7 @@ public enum DAO {
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
                     "GROUP BY r.id ");
             resultSet = preparedStatement.executeQuery();
-reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
+            reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -2527,9 +2574,10 @@ reportGenerator = new XLSReportGenerator("Routers and capacity of ports", result
 
     /**
      * Prepare ResultSet  to generate report on the most profitable router
-     *@return ResultSet for sql request
-     *@throws java.sql.SQLException
-     * */
+     *
+     * @return ResultSet for sql request
+     * @throws java.sql.SQLException
+     */
 
     public XLSReportGenerator getProfitabilityByMonth() throws SQLException {
         {//help
@@ -2564,16 +2612,16 @@ reportGenerator = new XLSReportGenerator("Routers and capacity of ports", result
     }
 
 
-
     /**
      * Prepare ResultSet  to generate report on service orders by date
-     * @param scenario order scenario
-     * @param sqlEndDate date to start searching orders
+     *
+     * @param scenario     order scenario
+     * @param sqlEndDate   date to start searching orders
      * @param sqlStartDate date to end searching orders
-     *@return ResultSet for sql request
+     * @return ResultSet for sql request
+     * @throws java.sql.SQLException
      * @see com.naukma.cauliflower.dao.Scenario
-     *@throws java.sql.SQLException
-     * */
+     */
 
     public XLSReportGenerator getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
 
@@ -2594,7 +2642,7 @@ reportGenerator = new XLSReportGenerator("Routers and capacity of ports", result
             preparedStatement.setDate(2, sqlStartDate);
             preparedStatement.setDate(3, sqlEndDate);
             resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Get "+scenario+" orders", resultSet);
+            reportGenerator = new XLSReportGenerator("Get " + scenario + " orders", resultSet);
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -2644,9 +2692,10 @@ reportGenerator = new XLSReportGenerator("Routers and capacity of ports", result
 
     /**
      * Breaks circuit
-     *@param serviceOrderId id of order connected with circuit
-     *@throws java.sql.SQLException
-     * */
+     *
+     * @param serviceOrderId id of order connected with circuit
+     * @throws java.sql.SQLException
+     */
     public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) throws SQLException {
         Connection connection = getConnection();
 
