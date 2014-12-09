@@ -112,7 +112,7 @@ public class ProceedOrderController extends HttpServlet {
         boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
         if(blocked)
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
-            response.sendRedirect(CauliflowerInfo.ORDER_LINK);
+            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
 
     }
 
