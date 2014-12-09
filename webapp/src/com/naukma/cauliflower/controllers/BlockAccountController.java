@@ -23,7 +23,7 @@ public class BlockAccountController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //String pathFrom  = request.getHeader("Referer");
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(us!=null && us.getUserRole().equals(UserRole.ADMINISTRATOR)) {
+        if(us!=null && us.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
             String userEmailForBlock = request.getParameter("email");
             if (DAO.INSTANCE.checkForExistingUserByEmail(userEmailForBlock)) {
                 User blockedUser = DAO.INSTANCE.blockUserByEmail(userEmailForBlock);
@@ -33,7 +33,7 @@ public class BlockAccountController extends HttpServlet {
                     String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
                     EmailSender.sendEmail(blockedUser, EmailSender.SUBJECT_BANNED,EmailSender.BAN_ACCOUNT, EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
                     request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_ACCOUNT_BLOCK_MESSAGE);
-                    if(blockedUser.getUserRole().equals(UserRole.ADMINISTRATOR)) {
+                    if(blockedUser.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
                         ServletContext context = getServletContext();
                         RequestDispatcher rd = context.getRequestDispatcher("/logout");
                         rd.forward(request, response);

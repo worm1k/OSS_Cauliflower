@@ -51,7 +51,7 @@ public class GetServicesController extends HttpServlet {
         String pathFrom  = req.getHeader("Referer");
         HttpSession session = req.getSession();
         final User user  = (User) session.getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(user==null || user.getUserRole().equals(UserRole.CUSTOMER)) {
+        if(user==null || user.getUserRole().equals(UserRole.CUSTOMER.toString())) {
             String serviceLocationAddress = req.getParameter("serviceLocationAddress");
             String serviceLocationLongtitude = req.getParameter("serviceLocationLongtitude");
             String serviceLocationLatitude = req.getParameter("serviceLocationLatitude");

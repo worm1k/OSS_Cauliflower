@@ -17,7 +17,7 @@
 
 <c:if test="${sessionScope.user ne null && not empty sessionScope.user}">
   <%User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-    if(user.getUserRole().equals(UserRole.ADMINISTRATOR))
+    if(!user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()))
       response.sendRedirect("home.jsp");%>
 </c:if>
 

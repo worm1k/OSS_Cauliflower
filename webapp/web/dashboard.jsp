@@ -1,3 +1,6 @@
+<%@ page import="com.naukma.cauliflower.entities.User" %>
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
+<%@ page import="com.naukma.cauliflower.dao.UserRole" %>
 <%--
   Created by IntelliJ IDEA.
   User: Vladmyr
@@ -6,6 +9,14 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+    if(user==null || (user!=null && !user.getUserRole().equals(UserRole.CUSTOMER.toString())))
+        response.sendRedirect("home.jsp");
+%>
+
+
 <!DOCTYPE html>
 <html lang="en" ng-app="MapDashboard">
 <head>
