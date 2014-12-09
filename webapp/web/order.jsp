@@ -1,5 +1,6 @@
 <%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
 <%@ page import="com.naukma.cauliflower.entities.User" %>
+<%@ page import="com.naukma.cauliflower.dao.UserRole" %>
 <%--
   Created by IntelliJ IDEA.
   User: Vladmyr
@@ -9,11 +10,10 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%--<c:if test="${sessionScope.user ne null && not empty sessionScope.user}">--%>
-    <%--<%User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);--%>
-        <%--if(user.getUserRoleId()!=CauliflowerInfo.CUSTOM_USER_ROLE_ID)--%>
-            <%--response.sendRedirect("home.jsp");%>--%>
-<%--</c:if>--%>
+<%
+    User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+    if(user!=null && !user.getUserRole().equals(UserRole.CUSTOMER.toString()))
+        response.sendRedirect("home.jsp");%>
 
 <!DOCTYPE html>
 <html lang="en" ng-app="NgApp">

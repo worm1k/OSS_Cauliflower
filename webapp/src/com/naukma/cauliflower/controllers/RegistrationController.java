@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by Артем on 01.12.2014.
@@ -36,17 +37,25 @@ public class RegistrationController extends HttpServlet {
         }
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
-        if((userInSession==null && userRole.equals(UserRole.CUSTOMER)) ||
-                (userInSession!=null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR)
-                        && !userRole.equals(UserRole.CUSTOMER))) {
+        if((userInSession==null && userRole.equals(UserRole.CUSTOMER.toString())) ||
+                (userInSession!=null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())
+                        && !userRole.equals(UserRole.CUSTOMER.toString()))) {
             String email;
             String password;
             String firstName;
             String lastName;
             String phone;
-            int userRoleId;
+            int userRoleId=0;
+            try {
+                if(userRole.equals(UserRole.CUSTOMER.toString())) userRoleId = DAO.INSTANCE.getUserRoleIdFor(UserRole.CUSTOMER);
+                if(userRole.equals(UserRole.PROVISIONING_ENG.toString())) userRoleId = DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG);
+                if(userRole.equals(UserRole.CUST_SUP_ENG.toString())) userRoleId = DAO.INSTANCE.getUserRoleIdFor(UserRole.CUST_SUP_ENG);
+                if(userRole.equals(UserRole.INSTALLATION_ENG.toString())) userRoleId = DAO.INSTANCE.getUserRoleIdFor(UserRole.INSTALLATION_ENG);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
-            userRoleId = DAO.INSTANCE.getUserRoleIdByUserRoleName(userRole);
+
             if (userRoleId <= 0) {
                 request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.USERROLEID_ERROR_MESSAGE);
                 response.sendRedirect(pathFrom);
@@ -100,13 +109,13 @@ public class RegistrationController extends HttpServlet {
                         Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
                         ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
                         request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-                        if (userInSession.getUserRole().equals(UserRole.CUSTOMER) && service != null && servLoc != null) {
+                        if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString()) && service != null && servLoc != null) {
                             ServletContext context = getServletContext();
                             RequestDispatcher rd = context.getRequestDispatcher("/proceed");
                             rd.forward(request, response);
                         } else {
-                            if (userInSession.getUserRole().equals(UserRole.CUSTOMER)) response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                            if (userInSession.getUserRole().equals(UserRole.ADMINISTRATOR)) {
+                            if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString())) response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                            if (userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
                                 request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_REGISTER_EMPLOYEE_MESSAGE);
                                 response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                             }

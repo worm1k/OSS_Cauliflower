@@ -38,7 +38,7 @@ public class GetTasksController extends HttpServlet {
         User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
         if (user == null) {
-            response.sendRedirect(CauliflowerInfo.HOME_LINK);
+            mapper.writeValue(out, null);
         }
         List<Task> tasks = null;
         try {
@@ -53,7 +53,7 @@ public class GetTasksController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("getTasks");
+        /*System.out.println("getTasks");
         User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         System.out.println("User = "+user);
 
@@ -68,6 +68,6 @@ public class GetTasksController extends HttpServlet {
         }
         System.out.println("TASKS = "+tasks);
         request.setAttribute(CauliflowerInfo.TASKS_PARAM, tasks);
-        request.getRequestDispatcher(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK).forward(request, response);
+        request.getRequestDispatcher(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK).forward(request, response);*/
     }
 }
