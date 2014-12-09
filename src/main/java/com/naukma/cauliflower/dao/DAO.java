@@ -2463,6 +2463,14 @@ public enum DAO {
         return;
     }
 
+
+    public boolean isInstanceBlocked(int serviceInstanceId){
+
+        return false;
+
+    }
+
+
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 
