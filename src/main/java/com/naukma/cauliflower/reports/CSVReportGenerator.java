@@ -12,7 +12,7 @@ public class CSVReportGenerator {
     public CSVReportGenerator() {
     }
 
-    public String buildCSV(ResultSet resultSet) throws Exception {
+    public String buildCSV(ResultSet resultSet) throws SQLException {
 
         StringBuilder stringBuilder = new StringBuilder("");
         ResultSetMetaData meta;

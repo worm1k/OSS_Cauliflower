@@ -2,6 +2,7 @@ package com.naukma.cauliflower.dao;
 
 
 import com.naukma.cauliflower.entities.*;
+import com.naukma.cauliflower.reports.XLSReportGenerator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -559,29 +560,29 @@ public enum DAO {
      * Get information about all the routers, sum of occupied and sum of free ports on each router.
      * @return ResultSet with routers(each row contains router id, sum of occupied, sum of free ports for this router)
      */
-    public ResultSet getDevicesForReport() {
+    public XLSReportGenerator getDevicesForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        XLSReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, SUM(P.Used) OCCUPIED, 60 - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "GROUP BY r.id ");
             resultSet = preparedStatement.executeQuery();
+            reportGenerator = new XLSReportGenerator("Devices", resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
-                connection.close();
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
         }
-        return resultSet;
+        return reportGenerator;
     }
 
     /**
@@ -589,29 +590,31 @@ public enum DAO {
      * @return ResultSet with ports (each row contains router id, port id, port used or not value)
      * @throws SQLException
      */
-    public ResultSet getPortsForReport() throws SQLException {
+    public XLSReportGenerator getPortsForReport() throws SQLException {
         {//help
             System.out.println("getPortsForReport");
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        XLSReportGenerator reportGenerator = null;
         try{
         preparedStatement = connection.prepareStatement("SELECT R.Id ROUTER, P.Id PORT, P.Used USED " +
                 "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                 "Order By R.Id, P.Id ");
         resultSet = preparedStatement.executeQuery();
+            reportGenerator = new XLSReportGenerator("Ports", resultSet);
         {//help
             System.out.println("SUCCESS!!!!getPortsForReport");
         }
     }finally {
         try {
-            connection.close();
+            close(connection, preparedStatement);
         } catch (SQLException e){
             e.printStackTrace();
         }
     }
-        return resultSet;
+        return reportGenerator;
     }
 
     /**
@@ -619,29 +622,31 @@ public enum DAO {
      * @return ResultSet with cables (each row contains cable id and instance service id, where this cable is connected to)
      * @throws SQLException
      */
-    public ResultSet getCablesForReport() throws SQLException {
+    public XLSReportGenerator getCablesForReport() throws SQLException {
         {//help
             System.out.println("getCablesForReport");
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        XLSReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE " +
                     "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) " +
                     "ORDER BY C.Id");
             resultSet = preparedStatement.executeQuery();
+            reportGenerator = new XLSReportGenerator("Cables", resultSet);
             {//help
                 System.out.println("SUCCESS!!!!getCablesForReport");
             }
         }finally {
             try {
-                connection.close();
+                close(connection, preparedStatement);
             } catch (SQLException e){
                 e.printStackTrace();
             }
         }
-        return resultSet;
+        return reportGenerator;
     }
 
 
@@ -649,20 +654,22 @@ public enum DAO {
      * Get information about all the circuits in system.
      * @return ResultSet with circuits(each row contains router id, port id, cable id, service instance id)
      */
-    public ResultSet getCircuitsForReport() {
+    public XLSReportGenerator getCircuitsForReport() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        XLSReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT r.ID ROUTER, p.Id PORT, c.ID CABLE, si.ID SERVICE_INSTANCE " +
                     "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) INNER JOIN CABLE c ON p.Id = C.Id_Port) " +
                     "INNER JOIN SERVICEINSTANCE si ON C.Id = Si.Id_Cable ");
             resultSet = preparedStatement.executeQuery();
+            reportGenerator = new XLSReportGenerator("Circuits", resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
                 try {
-                    connection.close();
+                    close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
@@ -671,7 +678,7 @@ public enum DAO {
             }
 
         }
-        return resultSet;
+        return reportGenerator;
     }
 
     /**
@@ -2309,13 +2316,14 @@ public enum DAO {
      * @see java.sql.ResultSet
      * @throws java.sql.SQLException
      * */
-    public ResultSet getMostProfitableRouterForReport() throws SQLException {
+    public XLSReportGenerator getMostProfitableRouterForReport() throws SQLException {
         {//help
             System.out.println("getMostProfitableRouterForReport");
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        XLSReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
                     "FROM SERVICE S INNER JOIN ( " +
@@ -2325,9 +2333,10 @@ public enum DAO {
                     "ON  S.ID = SI.ID_SERVICE " +
                     "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC ");
             resultSet = preparedStatement.executeQuery();
+            reportGenerator = new XLSReportGenerator("Most Profitable Router", resultSet);
         } finally {
             try {
-                connection.close();
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2336,7 +2345,7 @@ public enum DAO {
         {//help
             System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
         }
-        return resultSet;
+        return reportGenerator;
     }
 
 
@@ -2471,20 +2480,21 @@ public enum DAO {
      */
 
 
-    public ResultSet getUsedRoutersAndCapacityOfPorts() throws SQLException {
+    public XLSReportGenerator getUsedRoutersAndCapacityOfPorts() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        XLSReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED, " +
                     "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION\n" +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
                     "GROUP BY r.id ");
             resultSet = preparedStatement.executeQuery();
-
+reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
         } finally {
             try {
-                connection.close();
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2493,16 +2503,17 @@ public enum DAO {
         {//help
             System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
         }
-        return resultSet;
+        return reportGenerator;
     }
 
-    public ResultSet getProfitabilityByMonth() throws SQLException {
+    public XLSReportGenerator getProfitabilityByMonth() throws SQLException {
         {//help
             System.out.println("getProfitabilityByMonth");
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        XLSReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
                     "FROM SERVICE S INNER JOIN ( " +
@@ -2512,9 +2523,10 @@ public enum DAO {
                     "ON  S.ID = SI.ID_SERVICE " +
                     "GROUP BY P.ID_ROUTER ");
             resultSet = preparedStatement.executeQuery();
+            reportGenerator = new XLSReportGenerator("Profitability by month", resultSet);
         } finally {
             try {
-                connection.close();
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2523,16 +2535,17 @@ public enum DAO {
         {//help
             System.out.println("SUCCESS!!!!getProfitabilityByMonth");
         }
-        return resultSet;
+        return reportGenerator;
     }
 
-    public ResultSet getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
+    public XLSReportGenerator getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
         {//help
             System.out.println("getOrdersPerPeriod");
         }
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
+        XLSReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
                     "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
@@ -2543,9 +2556,10 @@ public enum DAO {
             preparedStatement.setDate(2, sqlStartDate);
             preparedStatement.setDate(3, sqlEndDate);
             resultSet = preparedStatement.executeQuery();
+            reportGenerator = new XLSReportGenerator("Get "+scenario+" orders", resultSet);
         } finally {
             try {
-                connection.close();
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2554,7 +2568,7 @@ public enum DAO {
         {//help
             System.out.println("SUCCESS!!!!getOrdersPerPeriod");
         }
-        return resultSet;
+        return reportGenerator;
     }
 //
 //    public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException{
