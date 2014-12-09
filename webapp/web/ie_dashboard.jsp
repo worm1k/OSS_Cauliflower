@@ -48,53 +48,53 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="task in arrTaskFree">
+                    <tr ng-repeat="task in arrTaskFree">
+                        <td>{{$index + 1}}</td>
+                        <td>{{task.taskId}}</td>
+                        <td>{{task.taskName}}</td>
+                        <td>{{task.taskStatus}}</td>
+                        <td>
+                            <form action="manageTask" method="POST">
+                                <input type="hidden" name="taskId" value="{{task.taskId}}"/>
+                                <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
+                                <button class="btn btn-xs btn-info">Subscribe</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>
+    <div class="col-xs-6 border-left">
+        <h2 class="txt-center">My active tasks</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Id</th>
+                        <th>Scenario</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            <tbody>
+                <tr ng-repeat="task in arrTaskSubscribed">
                     <td>{{$index + 1}}</td>
                     <td>{{task.taskId}}</td>
                     <td>{{task.taskName}}</td>
                     <td>{{task.taskStatus}}</td>
-                    <td>
-                        <form action="" method="POST">
+                    <td >
+                        <button class="btn btn-xs btn-default">Open</button>
+                        <form action="manageTask" method="POST">
                             <input type="hidden" name="taskId" value="{{task.taskId}}"/>
                             <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
-                            <button class="btn btn-xs btn-info">Subscribe</button>
+                            <button class="btn btn-xs btn-danger">Unsubscribe</button>
                         </form>
                     </td>
                 </tr>
             </tbody>
-          </table>
-      </div>
-      <div class="col-xs-6 border-left">
-        <h2 class="txt-center">My active tasks</h2>
-        <form class="form-proc_tasks" action="" method="post" id="form-proc_tasks" autocomplete="off">
-          <table class="table table-striped">
-            <thead>
-            <tr>
-              <th>#</th>
-              <th>Id</th>
-              <th>Scenario</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <%--<tr ng-repeat="order in serviceInstance.arrServiceOrder">--%>
-            <tr>
-              <td>1</td>
-              <td>1</td>
-              <td>Add</td>
-              <td>Entering</td>
-              <td>
-                <!-- <button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-cog"></span></button> -->
-                <button class="btn btn-xs btn-default">Open</button>
-                <button class="btn btn-xs btn-danger">Unsubscribe</button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </form>
-      </div>
+        </table>
     </div>
+</div>
 
 <jsp:include page="footer.jsp"/>
 </body>

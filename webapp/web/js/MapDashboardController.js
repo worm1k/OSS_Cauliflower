@@ -5,7 +5,7 @@ angular.module('MapDashboard', [])
 		$scope.gmap = $("#js-map").gmap3();
 		$scope.arrServiceInstance = [];
 		$scope.arrProviderLocation = [];
-		$scope.arrService;
+		$scope.arrService = [];
 
 		$scope.serviceInstance;
 		$scope.service;
@@ -450,8 +450,12 @@ angular.module('MapDashboard', [])
             }
 
 		$scope.$apply(function(){ $scope.serviceInstance = $scope.arrServiceInstance[0]; })
+            if($scope.arrServiceInstance.length != 0){
+                updateGeneralInfo();
+            }else{
+                mapZoomCamera($scope.gmap, 3);
+            }
 
-		updateGeneralInfo();
 
 		$(document).ready(function(){
 			//init
@@ -462,7 +466,7 @@ angular.module('MapDashboard', [])
 			mapAddMarkers($scope.gmap, $scope.arrServiceInstanceMapMarker);
 			mapAddMarkers($scope.gmap, $scope.arrProviderLocationMapMarker);
 			mapConnectServiceAndProviderLocations();
-            updateGeneralInfo();
+            if($scope.arrServiceInstance.length != 0){ updateGeneralInfo(); }
 		})
 
         });
