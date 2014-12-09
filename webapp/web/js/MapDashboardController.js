@@ -1,20 +1,5 @@
 'use strict'
 
-var arrOrder =[
-	{"serviceOrderId":1,"orderStatusId":3,"orderStatus":"PROCESSING","serviceInstanceId":1,"orderScenarioId":1,"orderScenario":"NEW"},
-	{"serviceOrderId":2,"orderStatusId":3,"orderStatus":"PROCESSING","serviceInstanceId":2,"orderScenarioId":1,"orderScenario":"NEW"}
-];
-var arrInstance = [
-	{"instanceId":1,"userId":21,"serviceLocation":{"serviceLocationId":1,"locationAddress":"\"Volodymyra Mayakovs'koho avenue, 36/7, Kyiv, Kyiv city, Ukraine\"","locationLongitude":30.613856299999952,"locationLatitude":50.5113353},"serviceId":4,"instanceStatusId":1,"instanceStatus":"DISCONNECTED","cableId":0,"isBlocked":true},
-	{"instanceId":2,"userId":21,"serviceLocation":{"serviceLocationId":2,"locationAddress":"\"Mykoly Zakrevs'koho street, 49А, Kyiv, Kyiv city, Ukraine\"","locationLongitude":30.61818838119507,"locationLatitude":50.50856870002049},"serviceId":2,"instanceStatusId":1,"instanceStatus":"DISCONNECTED","cableId":0,"isBlocked":true}
-];
-var arrService = [
-	{"serviceId":3,"providerLocationId":1,"serviceTypeId":3,"locationAddress":"locationAddress1","locationLongitude":30.623188018798828,"locationLatitude":50.50551183400235,"serviceTypeName":"PLATINUM","serviceSpeed":"100","price":70.0},
-	{"serviceId":2,"providerLocationId":1,"serviceTypeId":2,"locationAddress":"locationAddress1","locationLongitude":30.623188018798828,"locationLatitude":50.50551183400235,"serviceTypeName":"GOLD","serviceSpeed":"40","price":45.0},
-	{"serviceId":1,"providerLocationId":1,"serviceTypeId":1,"locationAddress":"locationAddress1","locationLongitude":30.623188018798828,"locationLatitude":50.50551183400235,"serviceTypeName":"SILVER","serviceSpeed":"20","price":30.0},
-	{"serviceId":4,"providerLocationId":2,"serviceTypeId":3,"locationAddress":"locationAddress3","locationLongitude":30.607738494873047,"locationLatitude":50.5159916936212,"serviceTypeName":"PLATINUM","serviceSpeed":"100","price":70.0}
-];
-
 angular.module('MapDashboard', [])
 	.controller('MapDashboardController', function($scope){
 		$scope.gmap = $("#js-map").gmap3();
