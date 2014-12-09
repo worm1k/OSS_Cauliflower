@@ -1,6 +1,7 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
@@ -38,7 +39,7 @@ public class RegistrationController extends HttpServlet {
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
         if((userInSession==null && userRoleId==CauliflowerInfo.CUSTOM_USER_ROLE_ID) ||
-                (userInSession!=null && userInSession.getUserRoleId()==CauliflowerInfo.ADMINISTRATOR_ROLE_ID
+                (userInSession!=null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR)
                         && userRoleId!=CauliflowerInfo.CUSTOM_USER_ROLE_ID)) {
             String email;
             String password;
@@ -101,13 +102,13 @@ public class RegistrationController extends HttpServlet {
                         Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
                         ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
                         request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-                        if (userInSession.getUserRoleId()==CauliflowerInfo.CUSTOM_USER_ROLE_ID && service != null && servLoc != null) {
+                        if (userInSession.getUserRole().equals(UserRole.CUSTOMER) && service != null && servLoc != null) {
                             ServletContext context = getServletContext();
                             RequestDispatcher rd = context.getRequestDispatcher("/proceed");
                             rd.forward(request, response);
                         } else {
-                            if (userInSession.getUserRoleId()==CauliflowerInfo.CUSTOM_USER_ROLE_ID) response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                            if (userInSession.getUserRoleId()==CauliflowerInfo.ADMINISTRATOR_ROLE_ID) {
+                            if (userInSession.getUserRole().equals(UserRole.CUSTOMER)) response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                            if (userInSession.getUserRole().equals(UserRole.ADMINISTRATOR)) {
                                 request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_REGISTER_EMPLOYEE_MESSAGE);
                                 response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                             }

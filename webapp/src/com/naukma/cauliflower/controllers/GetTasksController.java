@@ -53,5 +53,21 @@ public class GetTasksController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("getTasks");
+        User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        System.out.println("User = "+user);
+
+        if (user == null) {
+            response.sendRedirect(CauliflowerInfo.HOME_LINK);
+        }
+        List<Task> tasks = null;
+        try {
+            tasks = DAO.INSTANCE.getFreeAndProcessingTasksByUserRoleId(user.getUserRoleId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("TASKS = "+tasks);
+        request.setAttribute(CauliflowerInfo.TASKS_PARAM, tasks);
+        request.getRequestDispatcher(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK).forward(request, response);
     }
 }

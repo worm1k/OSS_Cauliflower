@@ -46,11 +46,6 @@ public class CauliflowerInfo {
     public static final String OK_REGISTER_EMPLOYEE_MESSAGE = "Employee registred!";
     public static final String OK_ACCOUNT_BLOCK_MESSAGE = "Account has been blocked!";
 
-    public static final int CUSTOM_USER_ROLE_ID = 1;
-    public static final int ADMINISTRATOR_ROLE_ID = 2;
-    public static final int PROVISIONING_ENG_ROLE_ID = 3;
-    public static final int INSTALLATION_ENG_ROLE_ID = 4;
-    public static final int CUST_SUP_ENG_ROLE_ID = 5;
 
 
 }
