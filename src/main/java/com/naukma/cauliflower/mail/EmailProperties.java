@@ -5,32 +5,30 @@ package com.naukma.cauliflower.mail;
  */
 public enum EmailProperties {
 
-    SERVER("smtp.gmail.com",587);
+    SERVER("smtp.gmail.com", 587);
 
 
-    private String HOST;
-    private Integer PORT;
+    private String host;
+    private Integer port;
 
-    EmailProperties(String HOST, Integer PORT) {
-        this.HOST = HOST;
-        this.PORT = PORT;
+    EmailProperties(String host, Integer port) {
+        this.host = host;
+        this.port = port;
     }
 
-
-    public String getHOST() {
-        return HOST;
+    public String getHost() {
+        return host;
     }
 
-    public void setHOST(String HOST) {
-        this.HOST = HOST;
+    public void setHost(String host) {
+        this.host = host;
     }
 
-    public Integer getPORT() {
-        return PORT;
+    public Integer getPort() {
+        return port;
     }
 
-    public void setPORT(Integer PORT) {
-        this.PORT = PORT;
+    public void setPort(Integer port) {
+        this.port = port;
     }
-
 }

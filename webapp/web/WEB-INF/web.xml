@@ -153,4 +153,13 @@
         <servlet-name>GetTasksController</servlet-name>
         <url-pattern>/gettasks</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>instengdashboard</servlet-name>
+        <jsp-file>/instengdashboard.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>instengdashboard</servlet-name>
+        <url-pattern>/instengdashboard</url-pattern>
+    </servlet-mapping>
 </web-app>

@@ -1,7 +1,6 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.dao.UserRoles;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 import com.naukma.cauliflower.mail.EmailSender;

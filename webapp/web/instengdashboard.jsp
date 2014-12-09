@@ -10,14 +10,16 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
-  /*System.out.println("dashboard");
-  List<Task> tasks=(List<Task>)request.getSession().getAttribute(CauliflowerInfo.TASKS_PARAM);
-  //System.out.println(tasks);
-//  if(tasks==null) request.getRequestDispatcher("gettasks").forward(request, response);
-  request.getRequestDispatcher("/gettasks").forward(request, response);
-  //*/
-%>
+
+<%--<%--%>
+  <%--System.out.println("dashboard");--%>
+  <%--List<Task> tasks=(List<Task>)request.getSession().getAttribute(CauliflowerInfo.TASKS_PARAM);--%>
+  <%--//System.out.println(tasks);--%>
+  <%--if(tasks==null) response.sendRedirect("gettasks");--%>
+  <%--else System.out.println(tasks);--%>
+  <%--//request.getRequestDispatcher("/gettasks").forward(request, response);--%>
+<%--%>--%>
+
 <!DOCTYPE html>
 <html lang="en" ng-app="NgApp">
 <head>
@@ -47,147 +49,65 @@
   <div class="col-xs-6">
     <h2 class="txt-center">New tasks</h2>
     <form class="form-proc_tasks" action="" method="post" id="form-ent_tasks" autocomplete="off">
-      <table class="table table-condensed">
+      <table class="table table-striped">
+        <thead>
         <tr>
+          <th>#</th>
+          <th>Id</th>
+          <th>Scenario</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <%--<tr ng-repeat="order in serviceInstance.arrServiceOrder">--%>
+        <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>Add</td>
+          <td>Entering</td>
           <td>
-            <input type="checkbox" name="myTextEditBox" value="checked1" />
-          </td>
-          <td>
-            First task
+            <!-- <button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-cog"></span></button> -->
+            <button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash"></span></button>
           </td>
         </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked2" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked3" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked4" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked5" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked6" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
+        </tbody>
       </table>
-      <button class="btn-signin btn btn-lg btn-primary btn-block" id="ent_to_proc_submit" type="submit">Processing</button>
     </form>
   </div>
   <div class="col-xs-6 border-left">
     <h2 class="txt-center">Processing tasks</h2>
     <form class="form-proc_tasks" action="" method="post" id="form-proc_tasks" autocomplete="off">
-      <table class="table table-condensed">
+      <table class="table table-striped">
+        <thead>
         <tr>
+          <th>#</th>
+          <th>Id</th>
+          <th>Scenario</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <%--<tr ng-repeat="order in serviceInstance.arrServiceOrder">--%>
+        <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>Add</td>
+          <td>Entering</td>
           <td>
-            <input type="checkbox" name="myTextEditBox" value="checked1" />
-          </td>
-          <td>
-            First task
+            <!-- <button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-cog"></span></button> -->
+            <button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash"></span></button>
+            <button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash"></span></button>
           </td>
         </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked2" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked3" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked4" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked5" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked6" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked6" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked6" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="myTextEditBox" value="checked6" />
-          </td>
-          <td>
-            First task
-          </td>
-        </tr>
+        </tbody>
       </table>
-      <button class="btn-signin btn btn-lg btn-primary btn-block" id="proc_to_comp_submit" type="submit">Complete</button>
-      <button class="btn-signin btn btn-lg btn-primary btn-block" id="proc_to_ent_submit" type="submit">Entering</button>
     </form>
-  </div>
-  <div>
-    <b>
-      <button class="btn-signin btn btn-lg btn-primary btn-block" id="get_order" type="submit">Order</button>
-    </b>
   </div>
 </div>
 
 <jsp:include page="footer.jsp"/>
+<script type="text/javascript" src="./js/indexSlavko.js"></script>
 </body>
 </html>

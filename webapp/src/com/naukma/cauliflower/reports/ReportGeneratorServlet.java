@@ -22,8 +22,7 @@ import java.text.SimpleDateFormat;
 public class ReportGeneratorServlet extends HttpServlet {
 
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=report.xls");
         String methodName = (String) request.getParameter("reportMethod");
@@ -33,46 +32,55 @@ public class ReportGeneratorServlet extends HttpServlet {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         java.sql.Date sqlStartDate = null;
         java.sql.Date sqlEndDate = null;
-        if(startDate!= null && endDate!= null)
-        try {
+        if (startDate != null && endDate != null)
+            try {
 
-            java.util.Date date = formatter.parse(startDate);
-            sqlStartDate = new java.sql.Date(date.getTime());
+                java.util.Date date = formatter.parse(startDate);
+                sqlStartDate = new java.sql.Date(date.getTime());
 
-            java.util.Date date2 = formatter.parse(endDate);
-            sqlEndDate = new java.sql.Date(date2.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+                java.util.Date date2 = formatter.parse(endDate);
+                sqlEndDate = new java.sql.Date(date2.getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
         ResultSet resultSet = null;
 
         XLSReportGenerator reportGenerator = null;
         try {
-        if(methodName.equals("Devises"))
-            resultSet = DAO.INSTANCE.getDevicesForReport();
-        else if(methodName.equals("Circuits"))
-            resultSet = DAO.INSTANCE.getCircuitsForReport();
-        else if(methodName.equals("Cables"))
-            resultSet = DAO.INSTANCE.getCablesForReport();
-        else if(methodName.equals("Ports"))
-            resultSet = DAO.INSTANCE.getPortsForReport();
-        else if(methodName.equals("Profitable"))
-            resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
-        else if(methodName.equals("utilizationAndCapacity"))
-            resultSet = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts();
-        else if(methodName.equals("Profitability"))
-            resultSet = DAO.INSTANCE.getProfitabilityByMonth();
-        else if(methodName.equals("New") && startDate!= null && endDate!= null)
-            resultSet = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate);
-            //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
-        else if(methodName.equals("Disconnect") && startDate!= null && endDate!= null)
-            resultSet = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
+            if (methodName.equals("Devises"))
+                //resultSet = DAO.INSTANCE.getDevicesForReport();
+                reportGenerator = DAO.INSTANCE.getDevicesForReport();
+            else if (methodName.equals("Circuits"))
+                //resultSet =
+                reportGenerator = DAO.INSTANCE.getCircuitsForReport();
+            else if (methodName.equals("Cables"))
+                //resultSet =
+                reportGenerator = DAO.INSTANCE.getCablesForReport();
+            else if (methodName.equals("Ports"))
+                //resultSet =
+                reportGenerator = DAO.INSTANCE.getPortsForReport();
+            else if (methodName.equals("Profitable"))
+                //resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
+                reportGenerator = DAO.INSTANCE.getMostProfitableRouterForReport();
+            else if (methodName.equals("utilizationAndCapacity"))
+                //resultSet =
+                reportGenerator = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts();
+            else if (methodName.equals("Profitability"))
+                //resultSet =
+                reportGenerator = DAO.INSTANCE.getProfitabilityByMonth();
+            else if (methodName.equals("New") && startDate != null && endDate != null)
+                //resultSet =
+                reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate);
+                //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
+            else if (methodName.equals("Disconnect") && startDate != null && endDate != null)
+                //resultSet =
+                reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
             //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
-        if(resultSet == null)
-            resultSet = DAO.INSTANCE.reportTester();
+            if (resultSet == null)
+                resultSet = DAO.INSTANCE.reportTester();
 
-            reportGenerator = new XLSReportGenerator("aaa", resultSet);
+            //reportGenerator = new XLSReportGenerator("aaa", resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,7 +90,6 @@ public class ReportGeneratorServlet extends HttpServlet {
         outputStream.close();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
 }

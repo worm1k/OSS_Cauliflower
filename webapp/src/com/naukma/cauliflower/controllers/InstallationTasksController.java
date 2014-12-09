@@ -36,7 +36,7 @@ public class InstallationTasksController extends HttpServlet {
             //The system should allow creating Devices, Ports and Cables only by Installation Engineer
             if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
                 //user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
-                    user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRoles.INSTALLATION_ENG)) {
+                    user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
 
                 Scenario scenario = DAO.INSTANCE.getOrderScenario(serviceOrderId);
                 if (scenario == Scenario.NEW) {
@@ -48,7 +48,7 @@ public class InstallationTasksController extends HttpServlet {
                     DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
                 }
                 DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                DAO.INSTANCE.createNewTask(serviceOrderId, UserRoles.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
+                DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
                 response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
 
             } else

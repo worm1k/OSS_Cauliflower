@@ -38,9 +38,7 @@ public class XLSReportGenerator {
     private static final int INITIAL_CELL_WIDTH = 3000;
 
     private static final int INITIAL_LETTER_WIDTH = 250;
-    /**
-     * Value = {@value}, row position to start filling data with .
-     */
+
     private static final int FILTER_WIDTH_OFFSET = 1250;
 
     /**
@@ -94,7 +92,7 @@ public class XLSReportGenerator {
     private void generateDocument() throws SQLException {
         //Calculates initial width for every column
         int totalColumnCount = metaData.getColumnCount() + TABLE_LEFT_OFFSET + TABLE_RIGHT_OFFSET;
-        double totalWidth = ((COMPANY_NAME_FONT_SIZE / 1.6) / (totalColumnCount)) * PROVIDER_NAME.length() * 256;
+        double totalWidth = ((Math.max(COMPANY_NAME_FONT_SIZE, REPORT_NAME_FONT_SIZE) / 1.6) / (totalColumnCount)) * PROVIDER_NAME.length() * 256;
         double width = totalWidth / (totalColumnCount);
         for (int i = 0; i < totalColumnCount; i++) {
             sheet.setColumnWidth(i, (int) width);
@@ -119,19 +117,19 @@ public class XLSReportGenerator {
         CellRangeAddress reportNameRegion = new CellRangeAddress(
                 2,                          //first row (0-based)
                 2, //last row  (0-based)
-                1,                                                        //first column (0-based)
-                totalColumnCount - 2                                      //last column  (0-based)
+                0,                                                        //first column (0-based)
+                totalColumnCount - 1                                      //last column  (0-based)
         );
 
         CellRangeAddress leftSeparator = new CellRangeAddress(
-                DATA_Y_OFFSET - 1,
+                DATA_Y_OFFSET,
                 DATA_Y_OFFSET + rowsInserted,
                 0,
                 0
         );
 
         CellRangeAddress rightSeparator = new CellRangeAddress(
-                DATA_Y_OFFSET - 1,
+                DATA_Y_OFFSET,
                 DATA_Y_OFFSET + rowsInserted,
                 totalColumnCount - 1,
                 totalColumnCount - 1
@@ -201,10 +199,10 @@ public class XLSReportGenerator {
         //Fill the merged region with report name
         row = CellUtil.getRow(2, sheet);
         row.setHeight((short) MERGE_REPORT_ROW_HEIGHT);
-        cell = CellUtil.getCell(row, TABLE_LEFT_OFFSET);
+        cell = CellUtil.getCell(row, 0);
         CellUtil.setCellStyleProperty(cell, workbook, "fillForegroundColor", HSSFColor.WHITE.index);
         CellUtil.setCellStyleProperty(cell, workbook, "fillPattern", CellStyle.SOLID_FOREGROUND);
-        CellUtil.setCellStyleProperty(cell, workbook, "alignment", HSSFCellStyle.ALIGN_LEFT);
+        CellUtil.setCellStyleProperty(cell, workbook, "alignment", HSSFCellStyle.ALIGN_CENTER);
         CellUtil.setCellStyleProperty(cell, workbook, "verticalAlignment", HSSFCellStyle.VERTICAL_BOTTOM);
         cell.getCellStyle().setFont(reportNameCellFont);
         cell.setCellValue(reportName);
