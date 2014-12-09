@@ -18,7 +18,6 @@ import java.util.List;
 
 /**
  * Created by Алексей on 29.11.2014.
- * TODO user.getUserRoleId() add
  */
 
 @WebServlet(name = "GetTasksController")
@@ -42,8 +41,7 @@ public class GetTasksController extends HttpServlet {
         }
         List<Task> tasks = null;
         try {
-            //tasks = DAO.INSTANCE.getFreeAndProcessingTasksByUserRoleId(user.getUserRoleId());
-            tasks = DAO.INSTANCE.getFreeAndProcessingTasksByUserRoleId(4);
+            tasks = DAO.INSTANCE.getFreeAndProcessingTasksByUserRoleId(user.getUserRoleId());
         } catch (SQLException e) {
             e.printStackTrace();
         }

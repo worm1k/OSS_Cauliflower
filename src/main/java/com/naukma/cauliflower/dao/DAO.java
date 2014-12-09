@@ -2080,6 +2080,7 @@ public enum DAO {
     public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) throws SQLException {
         {//help
             System.out.println("getFreeAndProcessingTasksByUserRoleId");
+            System.out.println("UserRoleId:" + userRoleId);
         }
         ArrayList<Task> result = new ArrayList<Task>();
         Connection connection = getConnection();

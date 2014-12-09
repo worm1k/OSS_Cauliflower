@@ -31,9 +31,17 @@ public class ProvisioningTaskController extends HttpServlet {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
         }
 
-        Integer taskId = (Integer) request.getAttribute(CauliflowerInfo.TASK_ID_PARAM);
+        //Integer taskId = (Integer) request.getAttribute(CauliflowerInfo.TASK_ID_PARAM);
 
         try {
+            System.out.println("before");
+            Integer taskId = Integer.parseInt(request.getParameter(CauliflowerInfo.TASK_ID_PARAM));
+            {//help
+                System.out.println(taskId);
+                System.out.println(DAO.INSTANCE.getTaskStatus(taskId));
+                System.out.println(user.getUserRoleId());
+                System.out.println(DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG));
+            }
 
             if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
                 user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG)) {
