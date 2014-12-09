@@ -2,6 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
@@ -66,16 +67,16 @@ public class LoginController extends HttpServlet {
                         RequestDispatcher rd = context.getRequestDispatcher("/proceed");
                         rd.forward(request, response);
                     } else {
-                        int userInSessionRoleId = user.getUserRoleId();
-                        if (userInSessionRoleId == CauliflowerInfo.CUSTOM_USER_ROLE_ID)
+                        String userInSessionRole = user.getUserRole();
+                        if (userInSessionRole.equals(UserRole.CUSTOMER))
                             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                        if (userInSessionRoleId == CauliflowerInfo.ADMINISTRATOR_ROLE_ID)
+                        if (userInSessionRole.equals(UserRole.ADMINISTRATOR))
                             response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
-                        if (userInSessionRoleId == CauliflowerInfo.PROVISIONING_ENG_ROLE_ID)
+                        if (userInSessionRole.equals(UserRole.PROVISIONING_ENG))
                             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                        if (userInSessionRoleId == CauliflowerInfo.INSTALLATION_ENG_ROLE_ID)
+                        if (userInSessionRole.equals(UserRole.INSTALLATION_ENG))
                             response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
-                        if (userInSessionRoleId == CauliflowerInfo.CUST_SUP_ENG_ROLE_ID)
+                        if (userInSessionRole.equals(UserRole.CUST_SUP_ENG))
                             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
                     }
                 }
