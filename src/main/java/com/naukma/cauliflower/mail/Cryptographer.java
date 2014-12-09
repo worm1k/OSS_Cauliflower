@@ -63,5 +63,10 @@ public class Cryptographer {
         StringBuffer buffer= new StringBuffer(formatter.toString());
         return buffer.substring(0,MAX_STRING_LENGTH).toString();
     }
+
+
+    public static void main(String[] args) {
+        System.out.println(Cryptographer.hmacSha1("123456"));
+    }
 }
 
