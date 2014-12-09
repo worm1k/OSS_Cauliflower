@@ -2464,7 +2464,13 @@ public enum DAO {
     }
 
 
-    public boolean isInstanceBlocked(int serviceInstanceId){
+    /**
+     * Checks if service instance is blocked
+     * @param serviceInstanceId  if of the instance
+     * @return true if instance is blocked, otherwise - false
+     * @throws java.sql.SQLException
+     * */
+    public boolean isInstanceBlocked(int serviceInstanceId) throws SQLException{
 
         return false;
 
@@ -2479,6 +2485,11 @@ public enum DAO {
      */
 
 
+    /**
+     * Prepare ResultSet  to generate report on used routers and port capacity
+     *@return ResultSet for sql request
+     *@throws java.sql.SQLException
+     * */
     public ResultSet getUsedRoutersAndCapacityOfPorts() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -2503,6 +2514,13 @@ public enum DAO {
         }
         return resultSet;
     }
+
+
+    /**
+     * Prepare ResultSet  to generate report on the most profitable router
+     *@return ResultSet for sql request
+     *@throws java.sql.SQLException
+     * */
 
     public ResultSet getProfitabilityByMonth() throws SQLException {
         {//help
@@ -2533,6 +2551,17 @@ public enum DAO {
         }
         return resultSet;
     }
+
+
+    /**
+     * Prepare ResultSet  to generate report on service orders by date
+     * @param scenario order scenario
+     * @param sqlEndDate date to start searching orders
+     * @param sqlStartDate date to end searching orders
+     *@return ResultSet for sql request
+     * @see com.naukma.cauliflower.dao.Scenario
+     *@throws java.sql.SQLException
+     * */
 
     public ResultSet getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
         {//help
@@ -2596,6 +2625,13 @@ public enum DAO {
     //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
     //сделать равным null. Сам кабель удалить из базы.
     //The system should allow deleting of Cables and Circuits.
+
+
+    /**
+     * Breaks circuit
+     *@param serviceOrderId id of order connected with circuit
+     *@throws java.sql.SQLException
+     * */
     public void removeCableFromServiceInstanceAndFreePort(int serviceOrderId) throws SQLException {
         Connection connection = getConnection();
 

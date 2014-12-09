@@ -107,7 +107,7 @@ public class ProceedOrderController extends HttpServlet {
         taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT);
     }
 
-    private void checkBlocked(int serviceInstanceId,HttpServletRequest request,HttpServletResponse response) throws IOException {
+    private void checkBlocked(int serviceInstanceId,HttpServletRequest request,HttpServletResponse response) throws IOException, SQLException {
 
         boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
         if(blocked)
