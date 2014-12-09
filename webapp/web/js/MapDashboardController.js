@@ -466,7 +466,11 @@ angular.module('MapDashboard', [])
 			mapAddMarkers($scope.gmap, $scope.arrServiceInstanceMapMarker);
 			mapAddMarkers($scope.gmap, $scope.arrProviderLocationMapMarker);
 			mapConnectServiceAndProviderLocations();
-            if($scope.arrServiceInstance.length != 0){ updateGeneralInfo(); }
+            if($scope.arrServiceInstance.length != 0){
+                updateGeneralInfo();
+            }else{
+                mapZoomCamera($scope.gmap, 3);
+            }
 		})
 
         });

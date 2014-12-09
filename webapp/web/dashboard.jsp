@@ -39,7 +39,7 @@
             <select class="form-control" ng-model="serviceInstance"
                     ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
             </select>
-            <h3>General</h3>
+            <h3>General Information:</h3>
             <dl class="dl-horizontal">
                 <dt>Id:</dt>
                 <dd>{{serviceInstance.id}}</dd>

@@ -6,7 +6,6 @@ angular.module('IEDashboard', [])
         $scope.arrTaskFree = [];
         $scope.arrTaskSubscribed = [];
         $scope.arrTaskCompleted = [];
-        $scope.test = 'test';
 
         function setTasksByStatus(arrTask){
             for(var i = 0; i < arrTask.length; i++){

@@ -18,7 +18,7 @@
     <jsp:include page="header.jsp"/>
 
     <div class="container">
-        <h1 class="txt-center txt-bold">{{test}} CauliFlower OSS</h1>
+        <h1 class="txt-center txt-bold">CauliFlower OSS</h1>
         <h2 class="txt-center">Installation Engineer Dashboard</h2>
         <%--Server message shows here--%>
         <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
@@ -82,12 +82,16 @@
                     <td>{{task.taskId}}</td>
                     <td>{{task.taskName}}</td>
                     <td>{{task.taskStatus}}</td>
-                    <td >
-                        <button class="btn btn-xs btn-default">Open</button>
+                    <td>
+                        <form action="installationController" method="POST">
+                            <input type="hidden" name="taskId" value="{{task.taskId}}"/>
+                            <input type="hidden" name="serviceOrderId" value="{{task.serviceOrderId}}"/>
+                            <button type="submit" class="btn btn-xs btn-success">Done</button>
+                        </form>
                         <form action="manageTask" method="POST">
                             <input type="hidden" name="taskId" value="{{task.taskId}}"/>
                             <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
-                            <button class="btn btn-xs btn-danger">Unsubscribe</button>
+                            <button type="submit" class="btn btn-xs btn-danger">Unsubscribe</button>
                         </form>
                     </td>
                 </tr>
