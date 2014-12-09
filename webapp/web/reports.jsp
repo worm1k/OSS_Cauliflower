@@ -50,6 +50,8 @@
 <div class="clear"></div>
 <form action="reports" method="post">
 <div class="report_title">Reports</div>
+<input type="radio" name="extension" value="xls" checked> XLS
+<input type="radio" name="extension" value="csv"> CSV
 <div class="report_block">
   <div class="report_text">Get report about all installed devises</div>
   <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Devises"/></div>
