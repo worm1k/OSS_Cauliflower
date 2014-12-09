@@ -92,6 +92,11 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/ojdbc14.jar</systemPath> <!-- must match file name -->
         </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>3.1</version>
+        </dependency>
 
     </dependencies>
 </project>
