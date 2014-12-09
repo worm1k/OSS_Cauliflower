@@ -38,7 +38,7 @@ public class GetTasksController extends HttpServlet {
         User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
         if (user == null) {
-            response.sendRedirect(CauliflowerInfo.HOME_LINK);
+            mapper.writeValue(out, null);
         }
         List<Task> tasks = null;
         try {

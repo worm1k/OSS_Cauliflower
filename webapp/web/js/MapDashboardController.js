@@ -5,7 +5,7 @@ angular.module('MapDashboard', [])
 		$scope.gmap = $("#js-map").gmap3();
 		$scope.arrServiceInstance = [];
 		$scope.arrProviderLocation = [];
-		$scope.arrService = arrService;
+		$scope.arrService;
 
 		$scope.serviceInstance;
 		$scope.service;
