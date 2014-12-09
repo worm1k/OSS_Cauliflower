@@ -5,6 +5,7 @@ import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 import com.naukma.cauliflower.mail.Cryptographer;
 import com.naukma.cauliflower.mail.EmailSender;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +19,7 @@ import java.io.IOException;
  */
 @WebServlet(name = "ChangeCustomerPassword")
 public class ChangeCustomerPassword extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(LoginController.class);
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathFrom  = request.getHeader("Referer");
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
@@ -27,9 +29,10 @@ public class ChangeCustomerPassword extends HttpServlet {
             if (userIdForNewPass > 0) {
                 if(newPassword.length()>6) {
                     //hashing password
-                    final String hashPassword= Cryptographer.hmacSha1(newPassword);
+                    final String hashedPassword= Cryptographer.hmacSha1(newPassword);
+                    logger.info(" reg controller :: hashed password form"+newPassword+" is "+hashedPassword);
                     //
-                    User userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, hashPassword);
+                    User userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, hashedPassword);
                     if(userForNewPass!=null){
 
                         //create body

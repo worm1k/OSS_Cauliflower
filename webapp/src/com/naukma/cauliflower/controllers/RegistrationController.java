@@ -5,7 +5,9 @@ import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
+import com.naukma.cauliflower.mail.Cryptographer;
 import com.naukma.cauliflower.mail.EmailSender;
+import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -21,7 +23,9 @@ import java.io.IOException;
  */
 @WebServlet(name = "RegistrationController")
 public class RegistrationController extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(LoginController.class);
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         String pathFrom  = request.getHeader("Referer");
         //int adminRoleId = 5;
         //int customUserRoleId = 1;
@@ -81,7 +85,11 @@ public class RegistrationController extends HttpServlet {
                     {//help
                         System.out.println(createdUser);
                     }
-                    int createdUserId = DAO.INSTANCE.createUser(createdUser, password);
+                    //hashing password
+                    String hashedPassword= Cryptographer.hmacSha1(password);
+                    logger.info(" reg controller :: hashed password form"+password+" is "+hashedPassword);
+                    //
+                    int createdUserId = DAO.INSTANCE.createUser(createdUser, hashedPassword);
                     if (createdUserId > 0) {
                         createdUser = new User(createdUserId, userRoleId, userRole, email, firstName, lastName, phone,false);
                         if(userInSession==null){

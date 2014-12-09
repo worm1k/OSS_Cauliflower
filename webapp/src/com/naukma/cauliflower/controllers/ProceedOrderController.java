@@ -48,9 +48,9 @@ public class ProceedOrderController extends HttpServlet {
         if(scenario==null || scenario.equals(Scenario.NEW.toString()))
                 scenarioNew(request);
         else if (scenario.equals(Scenario.DISCONNECT.toString()))
-            scenarioDisconnect(request);
+            scenarioDisconnect(request,response);
         else if (scenario.equals(Scenario.MODIFY.toString()))
-                scenarioModify(request);
+                scenarioModify(request,response);
         }
         catch (SQLException e) {
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
@@ -88,8 +88,9 @@ public class ProceedOrderController extends HttpServlet {
 
     }
 
-    private void scenarioModify(HttpServletRequest request) throws SQLException{
+    private void scenarioModify(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
         Integer instanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
+        checkBlocked(instanceId,request,response);
         createModifyOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
@@ -97,13 +98,22 @@ public class ProceedOrderController extends HttpServlet {
         setNewServiceForTask(request);
     }
 
-    private void scenarioDisconnect(HttpServletRequest request) throws SQLException
-    {
+    private void scenarioDisconnect(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
         Integer instanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
+        checkBlocked(instanceId,request,response);
         createDisconnectOrder(instanceId);
         changeOrderStatus();
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT);
+    }
+
+    private void checkBlocked(int serviceInstanceId,HttpServletRequest request,HttpServletResponse response) throws IOException, SQLException {
+
+        boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
+        if(blocked)
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
+            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+
     }
 
     private void createNewOrder() throws SQLException
