@@ -151,7 +151,7 @@ public enum DAO {
      * @param password User password
      * @return -1 if error occured, otherwise id of created user
      */
-    public int createUser(User us, String password) {
+    public int createUser(User us, String password) throws SQLException  {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int result = -1;
@@ -200,13 +200,14 @@ public enum DAO {
         return result;
     }
 
+
     /**
      * Checks if user with specified email exists in database.
      *
      * @param email email to check
      * @return true if exists, false if doesn't
      */
-    public boolean checkForEmailUniq(String email) {
+    public boolean checkForEmailUniq(String email) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -224,8 +225,6 @@ public enum DAO {
                 result = false;
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -240,13 +239,14 @@ public enum DAO {
         return result;
     }
 
+
     /**
      * Checks if user with specified id exists in database.
      *
      * @param id id to check
      * @return true if user exists, false if doesn't
      */
-    public boolean checkForExistingUserById(int id) {
+    public boolean checkForExistingUserById(int id) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -264,9 +264,7 @@ public enum DAO {
                 result = false;
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
@@ -280,13 +278,14 @@ public enum DAO {
         return result;
     }
 
+
     /**
      * Blocks a user by his id.
      *
      * @param idForBlock id of a user who should be blocked
      * @return Null if error occured, otherwise an instance of User who was blocked
      */
-    public User blockUserById(int idForBlock) {
+    public User blockUserById(int idForBlock) throws SQLException {
         Connection connection = getConnection();
         User resultUser = null;
         PreparedStatement preparedStatement = null;
@@ -346,13 +345,15 @@ public enum DAO {
     }
 
 
+
+
     /**
      * Blocks a user by his id.
      *
      * @param email email of a user who should be blocked
      * @return Null if error occured, otherwise an instance of User who was blocked
      */
-    public User blockUserByEmail(String email) {
+    public User blockUserByEmail(String email) throws SQLException {
         Connection connection = getConnection();
         User resultUser = null;
         PreparedStatement preparedStatement = null;
@@ -411,13 +412,14 @@ public enum DAO {
         return resultUser;
     }
 
+
     /**
      * Checks if user with specified email exists in database.
      *
      * @param email email to check
      * @return true if user exists, false if doesn't
      */
-    public boolean checkForExistingUserByEmail(String email) {
+    public boolean checkForExistingUserByEmail(String email) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -442,9 +444,7 @@ public enum DAO {
                 }
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
@@ -458,13 +458,14 @@ public enum DAO {
         return result;
     }
 
+
     /**
      * Get user role name by user role id.
      *
      * @param userRoleId user role id to return name for
      * @return null if there is no user role with this id, otherwise user role name
      */
-    public String getUserRoleNameByUserRoleId(int userRoleId) {
+    public String getUserRoleNameByUserRoleId(int userRoleId) throws SQLException {
         Connection connection = getConnection();
         String result = null;
         PreparedStatement preparedStatement = null;
@@ -477,8 +478,6 @@ public enum DAO {
                 result = resultSet.getString("RES");
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -497,6 +496,7 @@ public enum DAO {
         return result;
     }
 
+
     /**
      * Change the password for user.
      *
@@ -504,7 +504,7 @@ public enum DAO {
      * @param newPassword New password for the user.
      * @return Instance of User if his password was changed succesfully, otherwise null.
      */
-    public User changeUserPasswordById(int userId, String newPassword) {
+    public User changeUserPasswordById(int userId, String newPassword) throws SQLException {
         Connection connection = getConnection();
         User resultUser = null;
         PreparedStatement preparedStatement = null;
