@@ -68,7 +68,7 @@
                     <h4>Phone number <span class="required"></span></h4>
                     <input type="text" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Phone is not valid" name="phone" placeholder="Phone" required>
                 </div>
-                <input type="hidden" name="userRoleId" value="1" >
+                <input type="hidden" name="userRole" value="CUSTOMER" >
                 <button class="btn-signin btn btn-lg btn-primary btn-block" id="auth_reg_submit" type="submit">Sign Up</button>
             </form>
         </div>

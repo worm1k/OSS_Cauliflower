@@ -28,29 +28,27 @@ public class RegistrationController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String pathFrom  = request.getHeader("Referer");
-        //int adminRoleId = 5;
-        //int customUserRoleId = 1;
-        int userRoleId;
-        userRoleId = Integer.parseInt(request.getParameter("userRoleId"));
-        if (userRoleId <= 0) {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.USERROLEID_ERROR_MESSAGE);
+        String userRole;
+        userRole = request.getParameter("userRole");
+        if (userRole.length() <= 0) {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.USERROLE_ERROR_MESSAGE);
             response.sendRedirect(pathFrom);
         }
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
-        if((userInSession==null && userRoleId==CauliflowerInfo.CUSTOM_USER_ROLE_ID) ||
+        if((userInSession==null && userRole.equals(UserRole.CUSTOMER)) ||
                 (userInSession!=null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR)
-                        && userRoleId!=CauliflowerInfo.CUSTOM_USER_ROLE_ID)) {
+                        && !userRole.equals(UserRole.CUSTOMER))) {
             String email;
             String password;
             String firstName;
             String lastName;
             String phone;
-            String userRole;
+            int userRoleId;
 
-            userRole = DAO.INSTANCE.getUserRoleNameByUserRoleId(userRoleId);
-            if (userRole == null) {
-                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.USERROLE_ERROR_MESSAGE);
+            userRoleId = DAO.INSTANCE.getUserRoleIdByUserRoleName(userRole);
+            if (userRoleId <= 0) {
+                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.USERROLEID_ERROR_MESSAGE);
                 response.sendRedirect(pathFrom);
             }
 
