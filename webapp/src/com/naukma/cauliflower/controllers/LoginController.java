@@ -74,7 +74,7 @@ public class LoginController extends HttpServlet {
                         if (userInSessionRoleId == CauliflowerInfo.PROVISIONING_ENG_ROLE_ID)
                             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
                         if (userInSessionRoleId == CauliflowerInfo.INSTALLATION_ENG_ROLE_ID)
-                            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                            response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
                         if (userInSessionRoleId == CauliflowerInfo.CUST_SUP_ENG_ROLE_ID)
                             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
                     }
