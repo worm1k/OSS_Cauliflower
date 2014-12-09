@@ -23,11 +23,14 @@ public class ReportGeneratorServlet extends HttpServlet {
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final String EXT = request.getParameter("extension");
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=report.xls");
+        response.setHeader("Content-Disposition", "attachment; filename=report." + EXT);
         String methodName = (String) request.getParameter("reportMethod");
         String startDate = (String) request.getParameter("startDate");
         String endDate = (String) request.getParameter("endDate");
+
+        ServletOutputStream outputStream = response.getOutputStream();
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         java.sql.Date sqlStartDate = null;
@@ -45,12 +48,11 @@ public class ReportGeneratorServlet extends HttpServlet {
             }
 
         ResultSet resultSet = null;
-
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             if (methodName.equals("Devises"))
                 //resultSet = DAO.INSTANCE.getDevicesForReport();
-                reportGenerator = DAO.INSTANCE.getDevicesForReport();
+                reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
             else if (methodName.equals("Circuits"))
                 //resultSet =
                 reportGenerator = DAO.INSTANCE.getCircuitsForReport();
@@ -84,8 +86,8 @@ public class ReportGeneratorServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        ServletOutputStream outputStream = response.getOutputStream();
-        reportGenerator.createXlsFile().write(outputStream);
+        reportGenerator.writeInStream(outputStream);
+        //reportGenerator.createXlsFile().write(outputStream);
         outputStream.flush();
         outputStream.close();
     }

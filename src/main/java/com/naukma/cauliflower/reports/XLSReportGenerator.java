@@ -8,6 +8,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.ss.util.RegionUtil;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -20,7 +22,7 @@ import java.sql.Types;
  * @author Hladchuk Maxim
  * @version 1.0 .
  */
-public class XLSReportGenerator {
+public class XLSReportGenerator implements ReportGenerator{
 
 
     private static final int MERGE_COMPANY_ROW_HEIGHT = 1250;
@@ -422,6 +424,11 @@ public class XLSReportGenerator {
      */
     public HSSFWorkbook  createXlsFile() {
         return workbook;
+    }
+
+    @Override
+    public void writeInStream(OutputStream out) throws IOException {
+        workbook.write(out);
     }
 
 }
