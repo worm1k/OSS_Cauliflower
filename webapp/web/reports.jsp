@@ -1,3 +1,10 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Slavko_O
+  Date: 10.12.2014
+  Time: 20:48
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ page import="com.naukma.cauliflower.entities.User" %>
 <%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
 <%@ page import="com.naukma.cauliflower.dao.UserRole" %>
@@ -16,10 +23,12 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/style.css" />
+    <link rel="stylesheet" type="text/css"
+          href="../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/style.css"/>
     <link href='http://fonts.googleapis.com/css?family=Lobster&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
-    <link rel='stylesheet' href='../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/bootstrap.min.css' type='text/css' media='all'>
+    <link rel='stylesheet' href='../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/bootstrap.min.css'
+          type='text/css' media='all'>
     <script src="jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
     <script src="jquery/bootstrap.min.js" type="text/javascript"></script>
     <script>
@@ -30,7 +39,7 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 
     <script>
-        $(function(){
+        $(function () {
             $("#startDate").datepicker();
             $("#endDate").datepicker();
         });
@@ -41,71 +50,184 @@
 </head>
 
 
-
 <body>
 <jsp:include page="header.jsp"/>
-<div class="main_wrapper">
+<div class="container">
+    <h1 class="txt-center txt-bold"> CauliFlower OSS</h1>
 
-    <div class="header">
-        <a href="main.html"><div class="header_logo">
-            <div class="header_logo_pic"><img src="../../../../Downloads/OSS_Cauliflower-master/webapp/web/pics/cauliflower.png"></div>
-            <div class="header_logo_name">Cauliflower</div>
-        </div></a>
-        <div class="header_login"><a href=""> Administrator </a></div>
-    </div>
+    <h2 class="txt-center">Reports</h2>
+
     <div class="clear"></div>
+    <div class="col-xs-6">
     <form action="reports" method="post">
-        <div class="report_title">Reports</div>
-        <input type="radio" name="extension" value="xls" checked> XLS
-        <input type="radio" name="extension" value="csv"> CSV
-        <div class="report_block">
-            <div class="report_text">Get report about all installed devises</div>
-            <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Devises"/></div>
-        </div>
-        <div class="clear"></div>
-        <div class="report_block">
-            <div class="report_text">Get report about current circuits</div>
-            <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Circuits"/></div>
-        </div>
-        <div class="clear"></div>
-        <div class="report_block">
-            <div class="report_text">Get report about all available cables</div>
-            <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Cables"/></div>
-        </div>
-        <div class="clear"></div>
-        <div class="report_block">
-            <div class="report_text">Get report about all existing ports</div>
-            <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Ports"/></div>
-        </div>
-        <div class="clear"></div>
-        <div class="report_block">
-            <div class="report_text">Get report about most profitable routers/div>
-                <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Profitable"/></div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">Choose one
+                <div class="radio-inline">
+                    <label>
+                        <input type="radio" name="extension" id="optionsRadios1" value="xls" checked>
+                        XLS
+                    </label>
+                </div>
+                <div class="radio-inline">
+                    <label>
+                        <input type="radio" name="extension" id="optionsRadios2" value="csv">
+                        CSV
+                    </label>
+                </div>
             </div>
-            <div class="clear"></div>
-            <div class="report_block">
-                <div class="report_text">Get report about utilization and capacity</div>
-                <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="utilizationAndCapacity"/></div>
-            </div>
-            <div class="clear"></div>
-            <div class="report_block">
-                <div class="report_text">Get report about profitability</div>
-                <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Profitability"/></div>
-            </div>
-            <p>start date: <input type="text" id="startDate" name="startDate"></p>
-            <p>end date: <input type="text" id="endDate" name="endDate"></p>
-            <div class="clear"></div>
-            <div class="report_block">
-                <div class="report_text">Get report about new orders per period</div>
-                <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="New"/></div>
-            </div>
-            <div class="clear"></div>
-            <div class="report_block">
-                <div class="report_text">Get report about disconnect orders per period</div>
-                <div class="report_button"><input type="submit" class="btn btn-success" name="reportMethod" value="Disconnect"/></div>
-            </div>
+
+
+            <table class="table">
+
+                <tr>
+                    <div class="report_block">
+
+                        <td>
+                            <div class="report_text">1) Report about all installed devices</div>
+                        </td>
+                        <td>
+                            <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
+                                                              value="Devises"/></div>
+                        </td>
+                    </div>
+                    <div class="clear"></div>
+                </tr>
+                <tr>
+                    <div class="report_block">
+                        <td>
+                            <div class="report_text">2) Report about current circuits</div>
+                        </td>
+                        <td>
+                            <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
+                                                              value="Circuits"/></div>
+                        </td>
+                    </div>
+                    <div class="clear"></div>
+                </tr>
+                <tr>
+                    <div class="report_block">
+                        <td>
+                            <div class="report_text">3) Report about all available cables</div>
+                        </td>
+                        <td></t>
+                            <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
+                                                              value="Cables"/>
+                            </div>
+                        </td>
+                    </div>
+                    <div class="clear"></div>
+                </tr>
+                <tr>
+
+                    <div class="report_block">
+                        <td>
+                            <div class="report_text">4) Report about all existing ports</div>
+                        </td>
+                        <td></t>
+                            <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
+                                                              value="Ports"/>
+                            </div>
+                        </td>
+                    </div>
+                    <div class="clear"></div>
+                </tr>
+                <tr>
+                    <div class="report_block">
+                        <td>
+                            <div class="report_text">5) Report about most profitable routers</div>
+                        </td>
+                        <td>
+                            <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
+                                                              value="Profitable"/></div>
+                        </td>
+                    </div>
+                    <div class="clear"></div>
+                </tr>
+                <tr>
+                    <div class="report_block">
+                        <td>
+                            <div class="report_text">6) Report about utilization and capacity</div>
+                        </td>
+                        <td>
+                            <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
+                                                              value="utilizationAndCapacity"/></div>
+                        </td>
+                    </div>
+                    <div class="clear"></div>
+                </tr>
+                <tr>
+                    <div class="report_block">
+                        <td>
+                            <div class="report_text">7) Report about profitability</div>
+                        </td>
+                        <td>
+                            <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
+                                                              value="Profitability"/></div>
+                        </td>
+                    </div>
+
+            </table>
         </div>
     </form>
+        </div>
+
+    <div class="col-xs-6 border-left">
+        <form action="reports" method="post">
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">Choose one
+                    <div class="radio-inline">
+                        <label>
+                            <input type="radio" name="extension" id="optionsRadios3" value="xls" checked>
+                            XLS
+                        </label>
+                    </div>
+                    <div class="radio-inline">
+                        <label>
+                            <input type="radio" name="extension" id="optionsRadios4" value="csv">
+                            CSV
+                        </label>
+                    </div>
+                </div>
+
+
+                <table class="table">
+
+    <tr>
+        <td>Start date: </td><td><input type="text" id="startDate" name="startDate"></td></tr>
+
+            <tr><td>End date: </td><td><input type="text" id="endDate" name="endDate"></td></tr>
+
+        <div class="clear"></div>
+    </tr>
+    </tr>
+    <tr>
+        <div class="report_block">
+            <td>
+                <div class="report_text">1) Report about new orders per period</div>
+            </td>
+            <td>
+                <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
+                                                  value="New"/></div>
+            </td>
+        </div>
+        <div class="clear"></div>
+    </tr>
+    <tr>
+        <div class="report_block">
+            <td>
+                <div class="report_text">2) Report about disconnect orders per period</div>
+            </td>
+            <td>
+                <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
+                                                  value="Disconnect"/></div>
+            </td>
+        </div>
+    </tr>
+                </table>
+            </div>
+        </form></div>
 
 </div>
 </body>
