@@ -37,6 +37,7 @@ angular.module('CSEDashboard', [])
     })
     .controller('CSEDashboardUserController',function($scope){
         $scope.customerUserId = customerUserId;
+        $scope.customerUser = null;
 
         $scope.arrServiceInstance = [];
         $scope.arrProviderLocation = [];
@@ -44,9 +45,26 @@ angular.module('CSEDashboard', [])
 
         $scope.serviceInstance;
         $scope.service;
-        $scope.arrAvailableServices = [];
 
         $scope.hasServiceInstance = false;
+
+        $scope.update = function(){
+            console.log('update');
+            var i = 0;
+            var isFound = false;
+
+            console.log("$scope.serviceInstance.providerLocation.arrService.length", $scope.serviceInstance.providerLocation.arrService.length);
+            //find service instance service
+            while(i < $scope.serviceInstance.providerLocation.arrService.length && !isFound){
+                console.log($scope.serviceInstance.serviceId + ' & ' + $scope.serviceInstance.providerLocation.arrService[i].id);
+                if($scope.serviceInstance.serviceId == $scope.serviceInstance.providerLocation.arrService[i].id){
+                    $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
+                    isFound = true;
+                }
+                i++;
+            }
+            console.log($scope.service);
+        }
 
         console.log($scope.customerUserId);
 
@@ -76,6 +94,8 @@ angular.module('CSEDashboard', [])
             var arrService = serverData.service == null? [] : serverData.service;
             var arrInstance = serverData.instances == null? [] : serverData.instances;
             var arrOrder = serverData.orders == null? [] : serverData.orders;
+
+            $scope.customerUser = serverData.user;
 
             //proceed instances and orders
             for(var i = 0; i < arrInstance.length; i++){

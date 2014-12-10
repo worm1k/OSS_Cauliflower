@@ -46,7 +46,7 @@
                 <dt>Service Location:</dt>
                 <dd>{{serviceInstance.serviceLocation.locationAddress}}</dd>
                 <dt>Provider Location:</dt>
-                <dd>{{service.locationAddress}}</dd>
+                <dd>{{serviceInstance.providerLocation.locationAddress}}</dd>
                 <dt>Service:</dt>
                 <dd>{{service.serviceTypeName}}</dd>
                 <dt>Service speed:</dt>

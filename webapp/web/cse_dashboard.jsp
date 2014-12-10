@@ -45,7 +45,7 @@
                 <td>{{user.blocked}}</td>
                 <td>
                     <form action="customer_info" method="POST">
-                        <input type="hidden" name="userId" value="{{user.userId}}"/>
+                        <input type="hidden" name="userId" ng-value="{{user.userId}}"/>
                         <button type="submit" class="btn btn-xs btn-default">Open</button>
                     </form>
                 </td>
