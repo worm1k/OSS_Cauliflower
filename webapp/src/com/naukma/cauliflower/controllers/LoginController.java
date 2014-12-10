@@ -75,7 +75,7 @@ public class LoginController extends HttpServlet {
                         if (userInSessionRole.equals(UserRole.ADMINISTRATOR.toString()))
                             response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                         if (userInSessionRole.equals(UserRole.PROVISIONING_ENG.toString()))
-                            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                            response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
                         if (userInSessionRole.equals(UserRole.INSTALLATION_ENG.toString()))
                             response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
                         if (userInSessionRole.equals(UserRole.CUST_SUP_ENG.toString()))
