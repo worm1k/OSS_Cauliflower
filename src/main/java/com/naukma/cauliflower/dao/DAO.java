@@ -2543,6 +2543,48 @@ public enum DAO {
         return 0;
     }
 
+
+
+
+    /**
+     * return List<Services> of all Services
+     *
+     * @return List of Services
+     * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.Service
+     */
+    public List<User> getCustomers() throws SQLException {
+        {//
+            System.out.println("getCustomers");
+        }
+        ArrayList<User> result = new ArrayList<User>();
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new User());
+            }
+            {//
+                System.out.println("SUCCESS!!! getServices");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        result.trimToSize();
+        return result;
+
+    }
+
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 

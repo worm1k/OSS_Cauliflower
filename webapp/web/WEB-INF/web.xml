@@ -162,4 +162,15 @@
         <servlet-name>instengdashboard</servlet-name>
         <url-pattern>/instengdashboard</url-pattern>
     </servlet-mapping>
+
+
+
+    <servlet>
+        <servlet-name>GetAllCustomersController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.GetAllCustomersController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetAllCustomersController</servlet-name>
+        <url-pattern>/getllcustomers</url-pattern>
+    </servlet-mapping>
 </web-app>
