@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,8 +22,6 @@ public class ReportGeneratorServlet extends HttpServlet {
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=report.xls");
         String methodName = (String) request.getParameter("reportMethod");
         String startDate = (String) request.getParameter("startDate");
         String endDate = (String) request.getParameter("endDate");
@@ -45,51 +42,51 @@ public class ReportGeneratorServlet extends HttpServlet {
                 e.printStackTrace();
             }
 
-        ResultSet resultSet = null;
-
-        ReportGenerator reportGenerator = null;
-        try {
-            if (methodName.equals("Devises"))
-                //resultSet = DAO.INSTANCE.getDevicesForReport();
-                reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
-            else if (methodName.equals("Circuits"))
-                //resultSet =
-                reportGenerator = DAO.INSTANCE.getCircuitsForReport();
-            else if (methodName.equals("Cables"))
-                //resultSet =
-                reportGenerator = DAO.INSTANCE.getCablesForReport();
-            else if (methodName.equals("Ports"))
-                //resultSet =
-                reportGenerator = DAO.INSTANCE.getPortsForReport();
-            else if (methodName.equals("Profitable"))
-                //resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
-                reportGenerator = DAO.INSTANCE.getMostProfitableRouterForReport();
-            else if (methodName.equals("utilizationAndCapacity"))
-                //resultSet =
-                reportGenerator = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts();
-            else if (methodName.equals("Profitability"))
-                //resultSet =
-                reportGenerator = DAO.INSTANCE.getProfitabilityByMonth();
-            else if (methodName.equals("New") && startDate != null && endDate != null)
-                //resultSet =
-                reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate);
-                //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
-            else if (methodName.equals("Disconnect") && startDate != null && endDate != null)
-                //resultSet =
-                reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
-            //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment; filename="+methodName+"Report.xls");
+            ReportGenerator reportGenerator = null;
+            try {
+                if (methodName.equals("Devises"))
+                    //resultSet = DAO.INSTANCE.getDevicesForReport();
+                    reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
+                else if (methodName.equals("Circuits"))
+                    //resultSet =
+                    reportGenerator = DAO.INSTANCE.getCircuitsForReport();
+                else if (methodName.equals("Cables"))
+                    //resultSet =
+                    reportGenerator = DAO.INSTANCE.getCablesForReport();
+                else if (methodName.equals("Ports"))
+                    //resultSet =
+                    reportGenerator = DAO.INSTANCE.getPortsForReport();
+                else if (methodName.equals("Profitable"))
+                    //resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
+                    reportGenerator = DAO.INSTANCE.getMostProfitableRouterForReport();
+                else if (methodName.equals("utilizationAndCapacity"))
+                    //resultSet =
+                    reportGenerator = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts();
+                else if (methodName.equals("Profitability"))
+                    //resultSet =
+                    reportGenerator = DAO.INSTANCE.getProfitabilityByMonth();
+                else if (methodName.equals("New") && startDate != null && endDate != null)
+                    //resultSet =
+                    reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate);
+                    //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
+                else if (methodName.equals("Disconnect") && startDate != null && endDate != null)
+                    //resultSet =
+                    reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
+                //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
             /*if (resultSet == null)
                 resultSet = DAO.INSTANCE.reportTester();*/
 
-            //reportGenerator = new XLSReportGenerator("aaa", resultSet);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        ServletOutputStream outputStream = response.getOutputStream();
-        //reportGenerator.createXlsFile().write(outputStream);
-        reportGenerator.writeInStream(outputStream);
-        outputStream.flush();
-        outputStream.close();
+                //reportGenerator = new XLSReportGenerator("aaa", resultSet);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            ServletOutputStream outputStream = response.getOutputStream();
+            //reportGenerator.createXlsFile().write(outputStream);
+            reportGenerator.writeInStream(outputStream);
+            outputStream.flush();
+            outputStream.close();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
