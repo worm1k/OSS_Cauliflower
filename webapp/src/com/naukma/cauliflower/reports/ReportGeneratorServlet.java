@@ -78,8 +78,8 @@ public class ReportGeneratorServlet extends HttpServlet {
                 //resultSet =
                 reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
             //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
-            if (resultSet == null)
-                resultSet = DAO.INSTANCE.reportTester();
+            /*if (resultSet == null)
+                resultSet = DAO.INSTANCE.reportTester();*/
 
             //reportGenerator = new XLSReportGenerator("aaa", resultSet);
         } catch (SQLException e) {
