@@ -25,7 +25,7 @@ public class ChangeCustomerPassword extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathFrom  = request.getHeader("Referer");
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(us!= null && us.getUserRole().equals(UserRole.CUSTOMER.toString())){
+        if(us!= null && (us.getUserRole().equals(UserRole.CUSTOMER.toString()) || us.getUserRole().equals(UserRole.CUST_SUP_ENG.toString()))){
             int userIdForNewPass = Integer.parseInt(request.getParameter("userIdForNewPass"));
             String newPassword = request.getParameter("newPassword");
             if (userIdForNewPass > 0) {

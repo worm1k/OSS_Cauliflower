@@ -171,24 +171,21 @@ angular.module('MapDashboard', [])
 		}
 
 		function updateGeneralInfo(){
+            console.log('updateGeneralInfo');
 			var i = 0;
 			var isFound = false;
 
 			$scope.arrAvailableServices = [];
 
-			while(i < $scope.arrService.length && !isFound){
-				if($scope.serviceInstance.id == $scope.arrService[i].serviceId){
-                    $scope.$apply(function(){ $scope.service = $scope.arrService[i]; });
-					isFound = true;
-				}
-				i++;
-			}
-
-			for(var i = 0; i < $scope.arrService.length; i++){
-				if($scope.arrService[i].providerLocationId == $scope.service.providerLocationId){
-                    $scope.$apply(function(){ $scope.arrAvailableServices.push($scope.arrService[i]); });
-				}
-			}
+            //find service instance service
+            while(i < $scope.serviceInstance.providerLocation.arrService.length && !isFound){
+                console.log($scope.serviceInstance.serviceId + ' & ' + $scope.serviceInstance.providerLocation.arrService[i].id);
+                if($scope.serviceInstance.serviceId == $scope.serviceInstance.providerLocation.arrService[i].id){
+                    $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
+                    isFound = true;
+                }
+                i++;
+            }
 
 			mapCenterCamera($scope.gmap, [$scope.serviceInstance.serviceLocation.locationLatitude,$scope.serviceInstance.serviceLocation.locationLongitude], true);
 			mapZoomCamera($scope.gmap, 14);
@@ -369,6 +366,13 @@ angular.module('MapDashboard', [])
 		$scope.arrProviderLocationMapMarker.push(tmpLocationAddressMapMarker);
 		$scope.arrProviderLocation.push(tmpProviderLocation);
 
+            for(var k = 0; k < $scope.arrServiceInstance.length; k++){
+                if($scope.arrServiceInstance[k].serviceId == tmpService.getId()){
+                    $scope.arrServiceInstance[k].providerLocation = $scope.arrProviderLocation[0].toJsonObj();
+                    isAddedProviderLocation = true;
+                }
+            }
+
 		//proceed rest of services
 		for(var i = 1; i < arrService.length; i++){
 			var j = 0;
@@ -471,9 +475,7 @@ angular.module('MapDashboard', [])
 			mapAddMarkers($scope.gmap, $scope.arrProviderLocationMapMarker);
 			mapConnectServiceAndProviderLocations();
             if($scope.arrServiceInstance.length != 0){
-                $scope.hasServiceInstance = true;
                 updateGeneralInfo();
-                console.log($scope.hasServiceInstance);
             }
 		})
 

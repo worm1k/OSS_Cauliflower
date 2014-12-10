@@ -1,3 +1,4 @@
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
 <%--
   Created by IntelliJ IDEA.
   User: Vladmyr
@@ -6,6 +7,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en" ng-app="CSEDashboard">
 <head>
@@ -23,6 +25,17 @@
     <div class="container">
         <h1 class="text-center txt-bold">CauliFlower OSS</h1>
         <h2 class="text-center">Customer User Information</h2>
+
+        <%-- Server message shows here --%>
+        <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <p><b>Server message:</b> ${sessionScope.error}</p>
+            </div>
+            <%
+                request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+            %>
+        </c:if>
 
         <div class="col-xs-6 border-right">
             <h4 class="txt-bold">About Customer User:</h4>
@@ -46,9 +59,10 @@
 
         <div class="col-xs-6">
             <h4 class="txt-bold">Change password:</h4>
-            <form action="" method="">
+            <form action="changepass" method="POST">
                 <h4>New password:</h4>
-                <input type="password" class="form-control" name="" placeholder="secret-password">
+                <input type="hidden" name="userIdForNewPass" value=${customerUser.userId}>
+                <input type="password" class="form-control" name="newPassword" placeholder="secret-password">
                 <button type="submit" class="btn btn-default btn-change-password btn-block">Change password</button>
             </form>
         </div>
