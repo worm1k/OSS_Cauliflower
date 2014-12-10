@@ -34,12 +34,11 @@
     <div id="js-map" class="google-map"></div>
 
     <div class="container">
-        <div class="col-xs-12 jumbotron">
+        <div class="col-xs-12 border-bottom">
             <h3>Service Instance:</h3>
             <select class="form-control" ng-model="serviceInstance"
                     ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
             </select>
-            <h3>General</h3>
             <dl class="dl-horizontal">
                 <dt>Id:</dt>
                 <dd>{{serviceInstance.id}}</dd>
@@ -56,6 +55,37 @@
                 <dt>Status:</dt>
                 <dd>{{serviceInstance.instanceStatus}}</dd>
             </dl>
+        </div>
+        <div class="col-xs-8 border-right margin-bottom">
+            <h3>Modify Service:</h3>
+            <form action="services" method="POST">
+                <ul>
+                    <li ng-repeat="service in serviceInstance.providerLocation.arrService">
+                        <label class="radio font-regular">
+                            <input type="radio" name="serviceId" ng-value="{{service.id}}" checked>
+                            <span>{{service.serviceTypeName}}</span>,
+                            <span>{{service.serviceSpeed}} Mbps</span>,
+                            <span>{{service.price}}$</span>
+                        </label>
+                    </li>
+                </ul>
+
+                <%-- serviceLocation data --%>
+                <input type="hidden" name="instanceId" ng-value="{{serviceInstance.id}}">
+                <input type="hidden" name="scenario" value="MODIFY">
+
+                <button type="submit" class="btn btn-success">Modify</button>
+            </form>
+        </div>
+        <div class="col-xs-4 margin-bottom">
+            <h3>Disconnect:</h3>
+            <form action="services" method="POST">
+                <input type="hidden" name="instanceId" ng-value="{{serviceInstance.id}}">
+                <input type="hidden" name="scenario" value="DISCONNECT">
+                <button type="submit" class="btn btn-danger">Disconnect</button>
+            </form>
+        </div>
+        <div class="col-xs-12 border-top">
             <h3>Service Orders:</h3>
             <div class="table-responsive">
                 <table class="table">

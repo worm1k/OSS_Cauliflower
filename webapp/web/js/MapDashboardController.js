@@ -171,7 +171,8 @@ angular.module('MapDashboard', [])
 		}
 
 		function updateGeneralInfo(){
-            console.log('updateGeneralInfo');
+            console.log($scope.serviceInstance.providerLocation.arrService);
+
 			var i = 0;
 			var isFound = false;
 
@@ -179,7 +180,6 @@ angular.module('MapDashboard', [])
 
             //find service instance service
             while(i < $scope.serviceInstance.providerLocation.arrService.length && !isFound){
-                console.log($scope.serviceInstance.serviceId + ' & ' + $scope.serviceInstance.providerLocation.arrService[i].id);
                 if($scope.serviceInstance.serviceId == $scope.serviceInstance.providerLocation.arrService[i].id){
                     $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
                     isFound = true;
@@ -438,10 +438,15 @@ angular.module('MapDashboard', [])
 //			}
 
             for(var k = 0; k < $scope.arrServiceInstance.length; k++){
-                if($scope.arrServiceInstance[k].serviceId == tmpService.getId()){
-					$scope.arrServiceInstance[k].providerLocation = $scope.arrProviderLocation[index].toJsonObj();
-					isAddedProviderLocation = true;
-				}
+                var l = 0;
+                isAddedProviderLocation = false;
+                while(l < $scope.arrProviderLocation[index].getArrService().length && !isAddedProviderLocation){
+                    if($scope.arrServiceInstance[k].serviceId == $scope.arrProviderLocation[index].getArrService()[l].getId()){
+                        $scope.arrServiceInstance[k].providerLocation = $scope.arrProviderLocation[index].toJsonObj();
+                        isAddedProviderLocation = true;
+                    }
+                    l++;
+                }
             }
 		}
 
