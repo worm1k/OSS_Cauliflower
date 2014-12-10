@@ -2513,10 +2513,15 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
+            {
+                System.out.println("task id: "+ taskId);
+                System.out.println("SI id: "+ serviceInstanceId);
+
+            }
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
                     "SET ID_SERVICE = (SELECT ID_SERVICE " +
-                    "FROM TASK T INNER JOIN TOMODIFY TMOD ON TMOD.ID_TASK = T.ID " +
-                    "WHERE T.ID = ?) " +
+                    "FROM TASK T INNER JOIN TOMODIFY TMOD ON TMOD.ID_TASK = T.ID_TASK " +
+                    "WHERE T.ID_TASK = ?) " +
                     "WHERE ID = ?");
             preparedStatement.setInt(1, taskId);
             preparedStatement.setInt(2, serviceInstanceId);
