@@ -1,3 +1,4 @@
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
 <%--
   Created by IntelliJ IDEA.
   User: Vladmyr
@@ -18,6 +19,26 @@
     <div class="container">
         <h1 class="txt-center txt-bold">CauliFlower OSS</h1>
         <h2 class="txt-center">Customer Support Engineer Dashboard</h2>
+        <%--Server message shows here--%>
+        <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <p><b>Server message:</b> ${sessionScope.error}</p>
+            </div>
+            <%
+                request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+            %>
+        </c:if>
+
+        <c:if test="${sessionScope.ok ne null && not empty sessionScope.ok}">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <p><b>Server message:</b> ${sessionScope.ok}</p>
+            </div>
+            <%
+                request.getSession().removeAttribute(CauliflowerInfo.OK_ATTRIBUTE);
+            %>
+        </c:if>
 
         <table class="table table-striped">
             <thead>
