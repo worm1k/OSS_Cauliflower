@@ -181,7 +181,8 @@ angular.module('MapDashboard', [])
             //find service instance service
             while(i < $scope.serviceInstance.providerLocation.arrService.length && !isFound){
                 if($scope.serviceInstance.serviceId == $scope.serviceInstance.providerLocation.arrService[i].id){
-                    $scope.$apply(function(){ $scope.service = $scope.serviceInstance.providerLocation.arrService[i] });
+//                    $scope.$apply(function(){ $scope.service = $scope.serviceInstance.providerLocation.arrService[i] });
+                    $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
                     isFound = true;
                 }
                 i++;
@@ -479,9 +480,9 @@ angular.module('MapDashboard', [])
                 mapAddMarkers($scope.gmap, $scope.arrServiceInstanceMapMarker);
                 mapAddMarkers($scope.gmap, $scope.arrProviderLocationMapMarker);
                 mapConnectServiceAndProviderLocations();
-                if($scope.arrServiceInstance.length != 0){
-                    updateGeneralInfo();
-                }
+//                if($scope.arrServiceInstance.length != 0){
+//                    updateGeneralInfo();
+//                }
             })
 
         });
