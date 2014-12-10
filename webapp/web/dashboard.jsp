@@ -62,7 +62,7 @@
                 <ul>
                     <li ng-repeat="service in serviceInstance.providerLocation.arrService">
                         <label class="radio font-regular">
-                            <input type="radio" name="serviceId" ng-value="{{service.id}}" checked>
+                            <input type="radio" name="serviceId" value="{{service.id}}" checked>
                             <span>{{service.serviceTypeName}}</span>,
                             <span>{{service.serviceSpeed}} Mbps</span>,
                             <span>{{service.price}}$</span>
@@ -71,7 +71,7 @@
                 </ul>
 
                 <%-- serviceLocation data --%>
-                <input type="hidden" name="instanceId" ng-value="{{serviceInstance.id}}">
+                <input type="hidden" name="instanceId" value="{{serviceInstance.id}}">
                 <input type="hidden" name="scenario" value="MODIFY">
 
                 <button type="submit" class="btn btn-success">Modify</button>
@@ -80,7 +80,7 @@
         <div class="col-xs-4 margin-bottom">
             <h3>Disconnect:</h3>
             <form action="services" method="POST">
-                <input type="hidden" name="instanceId" ng-value="{{serviceInstance.id}}">
+                <input type="hidden" name="instanceId" value="{{serviceInstance.id}}">
                 <input type="hidden" name="scenario" value="DISCONNECT">
                 <button type="submit" class="btn btn-danger">Disconnect</button>
             </form>
