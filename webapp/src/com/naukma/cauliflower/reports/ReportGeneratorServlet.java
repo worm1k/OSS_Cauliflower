@@ -43,7 +43,7 @@ public class ReportGeneratorServlet extends HttpServlet {
             }
 
             response.setContentType("application/vnd.ms-excel");
-            response.setHeader("Content-Disposition", "attachment; filename="+methodName+"Report.xls");
+            response.setHeader("Content-Disposition", "attachment; filename="+methodName+"Report."+EXT);
             ReportGenerator reportGenerator = null;
             try {
                 if (methodName.equals("Devises"))
@@ -51,29 +51,29 @@ public class ReportGeneratorServlet extends HttpServlet {
                     reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
                 else if (methodName.equals("Circuits"))
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getCircuitsForReport();
+                    reportGenerator = DAO.INSTANCE.getCircuitsForReport(EXT);
                 else if (methodName.equals("Cables"))
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getCablesForReport();
+                    reportGenerator = DAO.INSTANCE.getCablesForReport(EXT);
                 else if (methodName.equals("Ports"))
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getPortsForReport();
+                    reportGenerator = DAO.INSTANCE.getPortsForReport(EXT);
                 else if (methodName.equals("Profitable"))
                     //resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
-                    reportGenerator = DAO.INSTANCE.getMostProfitableRouterForReport();
+                    reportGenerator = DAO.INSTANCE.getMostProfitableRouterForReport(EXT);
                 else if (methodName.equals("utilizationAndCapacity"))
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts();
+                    reportGenerator = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts(EXT);
                 else if (methodName.equals("Profitability"))
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getProfitabilityByMonth();
+                    reportGenerator = DAO.INSTANCE.getProfitabilityByMonth(EXT);
                 else if (methodName.equals("New") && startDate != null && endDate != null)
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate);
+                    reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, EXT);
                     //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
                 else if (methodName.equals("Disconnect") && startDate != null && endDate != null)
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
+                    reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, EXT);
                 //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
             /*if (resultSet == null)
                 resultSet = DAO.INSTANCE.reportTester();*/
@@ -83,7 +83,6 @@ public class ReportGeneratorServlet extends HttpServlet {
                 e.printStackTrace();
             }
             ServletOutputStream outputStream = response.getOutputStream();
-            //reportGenerator.createXlsFile().write(outputStream);
             reportGenerator.writeInStream(outputStream);
             outputStream.flush();
             outputStream.close();

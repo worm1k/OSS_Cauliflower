@@ -606,23 +606,29 @@ public enum DAO {
      * @return ResultSet with ports (each row contains router id, port id, port used or not value)
      * @throws SQLException
      */
-    public XLSReportGenerator getPortsForReport() throws SQLException {
+    public ReportGenerator getPortsForReport(final String EXT) throws SQLException {
         {//help
             System.out.println("getPortsForReport");
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT R.Id ROUTER, P.Id PORT, P.Used USED " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "Order By R.Id, P.Id ");
             resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Ports", resultSet);
+            if (EXT.equals("xls")) {
+                reportGenerator = new XLSReportGenerator("Ports", resultSet);
+            } else {
+                reportGenerator = new CSVReportGenerator(resultSet);
+            }
             {//help
                 System.out.println("SUCCESS!!!!getPortsForReport");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -639,23 +645,29 @@ public enum DAO {
      * @return ResultSet with cables (each row contains cable id and instance service id, where this cable is connected to)
      * @throws SQLException
      */
-    public XLSReportGenerator getCablesForReport() throws SQLException {
+    public ReportGenerator getCablesForReport(final String EXT) throws SQLException {
         {//help
             System.out.println("getCablesForReport");
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE " +
                     "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) " +
                     "ORDER BY C.Id");
             resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Cables", resultSet);
+            if (EXT.equals("xls")) {
+                reportGenerator = new XLSReportGenerator("Cables", resultSet);
+            } else {
+                reportGenerator = new CSVReportGenerator(resultSet);
+            }
             {//help
                 System.out.println("SUCCESS!!!!getCablesForReport");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -672,18 +684,24 @@ public enum DAO {
      *
      * @return ResultSet with circuits(each row contains router id, port id, cable id, service instance id)
      */
-    public XLSReportGenerator getCircuitsForReport() {
+    public ReportGenerator getCircuitsForReport(final String EXT) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT r.ID ROUTER, p.Id PORT, c.ID CABLE, si.ID SERVICE_INSTANCE " +
                     "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) INNER JOIN CABLE c ON p.Id = C.Id_Port) " +
                     "INNER JOIN SERVICEINSTANCE si ON C.Id = Si.Id_Cable ");
             resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Circuits", resultSet);
+            if (EXT.equals("xls")) {
+                reportGenerator = new XLSReportGenerator("Circuits", resultSet);
+            } else {
+                reportGenerator = new CSVReportGenerator(resultSet);
+            }
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -2350,14 +2368,14 @@ public enum DAO {
      * @throws java.sql.SQLException
      * @see java.sql.ResultSet
      */
-    public XLSReportGenerator getMostProfitableRouterForReport() throws SQLException {
+    public ReportGenerator getMostProfitableRouterForReport(final String EXT) throws SQLException {
         {//help
             System.out.println("getMostProfitableRouterForReport");
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
                     "FROM SERVICE S INNER JOIN ( " +
@@ -2367,7 +2385,13 @@ public enum DAO {
                     "ON  S.ID = SI.ID_SERVICE " +
                     "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC ");
             resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Most Profitable Router", resultSet);
+            if (EXT.equals("xls")) {
+                reportGenerator = new XLSReportGenerator("Most Profitable Router", resultSet);
+            } else {
+                reportGenerator = new CSVReportGenerator(resultSet);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -2611,18 +2635,24 @@ public enum DAO {
      * @return ResultSet for sql request
      * @throws java.sql.SQLException
      */
-    public XLSReportGenerator getUsedRoutersAndCapacityOfPorts() throws SQLException {
+    public ReportGenerator getUsedRoutersAndCapacityOfPorts(final String EXT) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED, " +
                     "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION\n" +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
                     "GROUP BY r.id ");
             resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
+            if (EXT.equals("xls")) {
+                reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
+            } else {
+                reportGenerator = new CSVReportGenerator(resultSet);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -2644,14 +2674,14 @@ public enum DAO {
      * @throws java.sql.SQLException
      */
 
-    public XLSReportGenerator getProfitabilityByMonth() throws SQLException {
+    public ReportGenerator getProfitabilityByMonth(final String EXT) throws SQLException {
         {//help
             System.out.println("getProfitabilityByMonth");
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
                     "FROM SERVICE S INNER JOIN ( " +
@@ -2661,7 +2691,13 @@ public enum DAO {
                     "ON  S.ID = SI.ID_SERVICE " +
                     "GROUP BY P.ID_ROUTER ");
             resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Profitability by month", resultSet);
+            if (EXT.equals("xls")) {
+                reportGenerator = new XLSReportGenerator("Profitability by month", resultSet);
+            } else {
+                reportGenerator = new CSVReportGenerator(resultSet);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -2688,7 +2724,7 @@ public enum DAO {
      * @see com.naukma.cauliflower.dao.Scenario
      */
 
-    public XLSReportGenerator getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
+    public ReportGenerator getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final String EXT) throws SQLException {
 
         {//help
             System.out.println("getOrdersPerPeriod");
@@ -2696,7 +2732,7 @@ public enum DAO {
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
                     "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
@@ -2707,7 +2743,13 @@ public enum DAO {
             preparedStatement.setDate(2, sqlStartDate);
             preparedStatement.setDate(3, sqlEndDate);
             resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Get " + scenario + " orders", resultSet);
+            if (EXT.equals("xls")) {
+                reportGenerator = new XLSReportGenerator("Get " + scenario + " orders", resultSet);
+            } else {
+                reportGenerator = new CSVReportGenerator(resultSet);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
