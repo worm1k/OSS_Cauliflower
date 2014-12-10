@@ -171,6 +171,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>GetAllCustomersController</servlet-name>
-        <url-pattern>/getllcustomers</url-pattern>
+        <url-pattern>/getallcustomers</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -2562,9 +2562,14 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT *" +
-                    "FROM USERS" +
-                    "WHERE ID_USERROLE = "+CUSTOMER);
+            String query = "SELECT * " +
+                    "FROM USERS " +
+                    "WHERE ID_USERROLE = ?";
+            {//
+                System.out.println(query);
+            }
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, CUSTOMER);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new User(resultSet.getInt("ID_USER"),

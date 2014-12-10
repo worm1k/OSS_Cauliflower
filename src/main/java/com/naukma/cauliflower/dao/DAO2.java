@@ -102,7 +102,7 @@ public enum DAO2 {
     /**
      * ---------------------------------------------------------------------HALYA---------------------------------------------------------------------*
      */
-
+/*
     public int getUserRoleIdFor(UserRoles userRoles) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -150,7 +150,7 @@ public enum DAO2 {
 //
 //        }
 //        return result;
-//    }
+//    }*/
 //
 //    //Galya_Sh
 //    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
@@ -1806,6 +1806,7 @@ public enum DAO2 {
      * @param taskName       name of the task
      * @return id of created task
      */
+    /*
     public int createNewTask(int serviceOrderId, UserRoles role, TaskName taskName) throws SQLException {
         {//help
             System.out.println("CREATE TASK");
@@ -1862,7 +1863,7 @@ public enum DAO2 {
             }
         }
         return taskId;
-    }
+    }*/
 //
 //
 //    /**
