@@ -1,6 +1,7 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 import com.naukma.cauliflower.mail.Cryptographer;
@@ -24,11 +25,11 @@ public class ChangeCustomerPassword extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathFrom  = request.getHeader("Referer");
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(us!= null && us.getUserRole().trim().toLowerCase().equals("customersupportengineer")) {
+        if(us!= null && us.getUserRole().equals(UserRole.CUSTOMER.toString())){
             int userIdForNewPass = Integer.parseInt(request.getParameter("userIdForNewPass"));
             String newPassword = request.getParameter("newPassword");
             if (userIdForNewPass > 0) {
-                if(newPassword.length()>6) {
+                if(newPassword.length()> 6) {
                     //hashing password
                     final String hashedPassword= Cryptographer.hmacSha1(newPassword);
                     logger.info(" reg controller :: hashed password form"+newPassword+" is "+hashedPassword);
@@ -40,7 +41,6 @@ public class ChangeCustomerPassword extends HttpServlet {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                     if(userForNewPass!=null){
-
                         //create body
                         StringBuilder message= new StringBuilder();
                         message.append("<p>Your password has been changed!</p> <p style=\"text-transform:none;\">Your new password: <b>");
