@@ -26,6 +26,7 @@ public class CauliflowerInfo {
     public static final String DASHBOARD_LINK = "dashboard.jsp";
     public static final String ADMIN_DASHBOARD_LINK = "admdashboard.jsp";
     public static final String INSTALL_ENGINEER_DASHBOARD_LINK = "ie_dashboard.jsp";
+    public static final String PROVIS_ENGINEER_DASHBOARD_LINK = "pe_dashboard.jsp";
 
 
     public static final String SYSTEM_ERROR_MESSAGE = "System error, try again later, please";
