@@ -102,8 +102,7 @@ public enum DAO2 {
     /**
      * ---------------------------------------------------------------------HALYA---------------------------------------------------------------------*
      */
-/*
-    public int getUserRoleIdFor(UserRoles userRoles) throws SQLException {
+    public int getUserRoleIdFor(UserRole userRoles) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int result = 0;
@@ -1798,16 +1797,9 @@ public enum DAO2 {
 
     //KaspYar
 
-    /**
-     * Creates task with status FREE for selected engineer for selected service order
-     *
-     * @param serviceOrderId
-     * @param role           role of the engineer
-     * @param taskName       name of the task
-     * @return id of created task
-     */
+
     /*
-    public int createNewTask(int serviceOrderId, UserRoles role, TaskName taskName) throws SQLException {
+    public int createNewTask(int serviceOrderId, UserRole role, TaskName taskName) throws SQLException {
         {//help
             System.out.println("CREATE TASK");
         }
