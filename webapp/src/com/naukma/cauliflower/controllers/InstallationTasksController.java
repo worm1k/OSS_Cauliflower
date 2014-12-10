@@ -47,7 +47,7 @@ public class InstallationTasksController extends HttpServlet {
                 }
                 DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                 DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
-                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
 
             } else
                 response.sendRedirect(CauliflowerInfo.HOME_LINK);
