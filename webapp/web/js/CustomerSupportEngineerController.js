@@ -6,7 +6,7 @@ angular.module('CSEDashboard', [])
 
         console.log('CSE');
 
-        function ajxGetUsers(callback){
+        function ajaxGetUsers(callback){
             $.ajax({
                 type: 'POST',
                 url: 'gettasks',
@@ -26,9 +26,7 @@ angular.module('CSEDashboard', [])
             });
         }
 
-        ajaxGetUsers(function(){
-            $scope.$apply(function(){
-
-            })
+        ajaxGetUsers(function(arrUser){
+            $scope.$apply(function(){ $scope.arrUser = arrUser; });
         })
     });
