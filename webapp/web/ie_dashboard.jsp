@@ -83,7 +83,11 @@
                     <td>{{task.taskName}}</td>
                     <td>{{task.taskStatus}}</td>
                     <td >
-                        <button class="btn btn-xs btn-default">Open</button>
+                        <form action="installationController" method="POST">
+                            <input type="hidden" name="taskId" value="{{task.taskId}}"/>
+                            <input type="hidden" name="serviceOrderId" value="{{task.serviceOrderId}}"/>
+                            <button type="submit" class="btn btn-xs btn-success">Done</button>
+                        </form>
                         <form action="manageTask" method="POST">
                             <input type="hidden" name="taskId" value="{{task.taskId}}"/>
                             <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
