@@ -11,15 +11,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:if test="${empty sessionScope.user}">
-  <%response.sendRedirect("home.jsp");%>
-</c:if>
-
-<c:if test="${sessionScope.user ne null && not empty sessionScope.user}">
-  <%User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-    if(!user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()))
-      response.sendRedirect("home.jsp");%>
-</c:if>
+<%
+  User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+  if(user==null || (user!=null && !user.getUserRole().equals(UserRole.ADMINISTRATOR.toString())))
+    response.sendRedirect("home.jsp");
+%>
 
 
 <!DOCTYPE html>
