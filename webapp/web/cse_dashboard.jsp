@@ -12,7 +12,7 @@
     <title>CauliFlower | Customer Support Engineer Dashboard</title>
     <jsp:include page="head.jsp"/>
 </head>
-<body>
+<body ng-controller="CSEDashboardController">
     <jsp:include page="header.jsp"/>
 
     <div class="container">

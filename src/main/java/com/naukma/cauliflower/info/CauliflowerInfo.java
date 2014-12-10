@@ -5,6 +5,7 @@ package com.naukma.cauliflower.info;
  */
 public class CauliflowerInfo {
     public static final String SERVICE_ATTRIBUTE = "service";
+    public static final String SERVICE_ORDER_ID = "serviceOrderId";
     public static final String USER_ATTRIBUTE = "user";
     public static final String SERVICE_LOCATION_ATTRIBUTE = "serviceLocation";
     public static final String ERROR_ATTRIBUTE = "error";

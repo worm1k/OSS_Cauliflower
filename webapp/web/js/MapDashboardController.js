@@ -14,6 +14,8 @@ angular.module('MapDashboard', [])
 		$scope.arrServiceInstanceMapMarker = [];
 		$scope.arrProviderLocationMapMarker = [];
 
+        $scope.hasServiceInstance = false;
+
 		var markerIcons = {
 			red: new google.maps.MarkerImage("img/icons/marker_red.png"),
 			green: new google.maps.MarkerImage("img/icons/marker_green.png"),
@@ -449,13 +451,15 @@ angular.module('MapDashboard', [])
                 console.log($scope.arrProviderLocation[i].toJsonObj());
             }
 
-		$scope.$apply(function(){ $scope.serviceInstance = $scope.arrServiceInstance[0]; })
+		    $scope.$apply(function(){ $scope.serviceInstance = $scope.arrServiceInstance[0]; })
             if($scope.arrServiceInstance.length != 0){
+                $scope.hasServiceInstance = true;
                 updateGeneralInfo();
             }else{
                 mapZoomCamera($scope.gmap, 3);
             }
 
+            console.log($scope.hasServiceInstance);
 
 		$(document).ready(function(){
 			//init

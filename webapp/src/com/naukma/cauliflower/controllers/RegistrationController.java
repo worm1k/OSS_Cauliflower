@@ -87,50 +87,54 @@ public class RegistrationController extends HttpServlet {
                 response.sendRedirect(pathFrom);
             }
 
-            if (DAO.INSTANCE.checkForEmailUniq(email)) {
-                if (DAO.INSTANCE.checkForPhoneUniq(phone)) {
-                    User createdUser = new User(0,userRoleId, userRole, email, firstName, lastName, phone,false);
-                    {//help
-                        System.out.println(createdUser);
-                    }
-                    //hashing password
-                    String hashedPassword= Cryptographer.hmacSha1(password);
-                    logger.info(" reg controller :: hashed password form"+password+" is "+hashedPassword);
-                    //
-                    int createdUserId = DAO.INSTANCE.createUser(createdUser, hashedPassword);
-                    if (createdUserId > 0) {
-                        createdUser = new User(createdUserId, userRoleId, userRole, email, firstName, lastName, phone,false);
-                        if(userInSession==null){
-                            request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, createdUser);
-                            userInSession=createdUser;
+            try {
+                if (DAO.INSTANCE.checkForEmailUniq(email)) {
+                    if (DAO.INSTANCE.checkForPhoneUniq(phone)) {
+                        User createdUser = new User(0,userRoleId, userRole, email, firstName, lastName, phone,false);
+                        {//help
+                            System.out.println(createdUser);
                         }
-                        String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
-                        EmailSender.sendEmail(createdUser, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
-                        Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
-                        ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
-                        request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-                        if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString()) && service != null && servLoc != null) {
-                            ServletContext context = getServletContext();
-                            RequestDispatcher rd = context.getRequestDispatcher("/proceed");
-                            rd.forward(request, response);
-                        } else {
-                            if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString())) response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                            if (userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
-                                request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_REGISTER_EMPLOYEE_MESSAGE);
-                                response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                        //hashing password
+                        String hashedPassword= Cryptographer.hmacSha1(password);
+                        logger.info(" reg controller :: hashed password form"+password+" is "+hashedPassword);
+                        //
+                        int createdUserId = DAO.INSTANCE.createUser(createdUser, hashedPassword);
+                        if (createdUserId > 0) {
+                            createdUser = new User(createdUserId, userRoleId, userRole, email, firstName, lastName, phone,false);
+                            if(userInSession==null){
+                                request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, createdUser);
+                                userInSession=createdUser;
                             }
+                            String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
+                            EmailSender.sendEmail(createdUser, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
+                            Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
+                            ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
+                            request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+                            if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString()) && service != null && servLoc != null) {
+                                ServletContext context = getServletContext();
+                                RequestDispatcher rd = context.getRequestDispatcher("/proceed");
+                                rd.forward(request, response);
+                            } else {
+                                if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString())) response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                                if (userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
+                                    request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_REGISTER_EMPLOYEE_MESSAGE);
+                                    response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                                }
+                            }
+                        } else {
+                            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+                            response.sendRedirect(pathFrom);
                         }
                     } else {
-                        request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+                        request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PHONE_UNIQ_ERROR_MESSAGE);
                         response.sendRedirect(pathFrom);
                     }
                 } else {
-                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PHONE_UNIQ_ERROR_MESSAGE);
+                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.EMAIL_UNIQ_ERROR_MESSAGE);
                     response.sendRedirect(pathFrom);
                 }
-            } else {
-                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.EMAIL_UNIQ_ERROR_MESSAGE);
-                response.sendRedirect(pathFrom);
+            } catch (SQLException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }else{
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);

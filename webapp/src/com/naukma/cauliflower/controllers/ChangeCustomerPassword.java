@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by Артем on 02.12.2014.
@@ -32,7 +33,12 @@ public class ChangeCustomerPassword extends HttpServlet {
                     final String hashedPassword= Cryptographer.hmacSha1(newPassword);
                     logger.info(" reg controller :: hashed password form"+newPassword+" is "+hashedPassword);
                     //
-                    User userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, hashedPassword);
+                    User userForNewPass = null;
+                    try {
+                        userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, hashedPassword);
+                    } catch (SQLException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
                     if(userForNewPass!=null){
 
                         //create body
