@@ -46,7 +46,7 @@
                 <dt>Service Location:</dt>
                 <dd>{{serviceInstance.serviceLocation.locationAddress}}</dd>
                 <dt>Provider Location:</dt>
-                <dd>{{service.locationAddress}}</dd>
+                <dd>{{serviceInstance.providerLocation.locationAddress}}</dd>
                 <dt>Service:</dt>
                 <dd>{{service.serviceTypeName}}</dd>
                 <dt>Service speed:</dt>
@@ -86,6 +86,9 @@
                 </table>
             </div>
         </div>
+        <%--<div class="col-xs-12 jumbotron" ng-class="{hasServiceInstance: item-visible-false}">--%>
+            <%--<h3 class="text-center txt-bold">There are no Service Instaces</h3>--%>
+        <%--</div>--%>
     </div>
 
     <jsp:include page="footer.jsp"/>

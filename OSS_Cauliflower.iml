@@ -23,6 +23,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi:3.10-FINAL" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.5" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.10-FINAL" level="project" />
@@ -48,6 +49,7 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-api:7.0.12" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util:7.0.12" level="project" />
     <orderEntry type="library" name="Maven: com.oracle:ojdbc:14" level="project" />
+    <orderEntry type="library" name="Maven: com.opencsv:opencsv:3.1" level="project" />
   </component>
 </module>
 

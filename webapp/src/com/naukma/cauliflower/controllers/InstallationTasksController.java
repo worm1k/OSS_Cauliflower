@@ -27,11 +27,9 @@ public class InstallationTasksController extends HttpServlet {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
         }
 
-        Task task = (Task) request.getAttribute(CauliflowerInfo.TASK_PARAM);
-        int taskId = task.getTaskId();
-        int serviceOrderId = task.getServiceOrderId();
-
         try {
+            int taskId = Integer.parseInt(request.getParameter(CauliflowerInfo.TASK_ID_PARAM));
+            int serviceOrderId = Integer.parseInt(request.getParameter(CauliflowerInfo.SERVICE_ORDER_ID));
             //RI.9
             //The system should allow creating Devices, Ports and Cables only by Installation Engineer
             if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
@@ -49,7 +47,7 @@ public class InstallationTasksController extends HttpServlet {
                 }
                 DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                 DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
-                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
 
             } else
                 response.sendRedirect(CauliflowerInfo.HOME_LINK);

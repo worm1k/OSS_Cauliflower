@@ -69,17 +69,16 @@ public class LoginController extends HttpServlet {
                     } else {
                         String userInSessionRole = user.getUserRole();
                         System.out.println(userInSessionRole);
-                        if (userInSessionRole.equals(UserRole.CUSTOMER.toString())) {
+                        if (userInSessionRole.equals(UserRole.CUSTOMER.toString()))
                             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                        }
                         if (userInSessionRole.equals(UserRole.ADMINISTRATOR.toString()))
                             response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                         if (userInSessionRole.equals(UserRole.PROVISIONING_ENG.toString()))
-                            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                            response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
                         if (userInSessionRole.equals(UserRole.INSTALLATION_ENG.toString()))
                             response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
                         if (userInSessionRole.equals(UserRole.CUST_SUP_ENG.toString()))
-                            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                            response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
                     }
                 }
             }

@@ -1,3 +1,6 @@
+<%@ page import="com.naukma.cauliflower.dao.UserRole" %>
+<%@ page import="com.naukma.cauliflower.entities.User" %>
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
 <%--
   Created by IntelliJ IDEA.
   User: Артем
@@ -7,6 +10,12 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<%
+    User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+    if(user==null || (user!=null && !user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString())))
+        response.sendRedirect("home.jsp");
+%>
 
 <!DOCTYPE html>
 <html lang="en" ng-app="IEDashboard">
@@ -83,7 +92,11 @@
                     <td>{{task.taskName}}</td>
                     <td>{{task.taskStatus}}</td>
                     <td >
-                        <button class="btn btn-xs btn-default">Open</button>
+                        <form action="installationController" method="POST">
+                            <input type="hidden" name="taskId" value="{{task.taskId}}"/>
+                            <input type="hidden" name="serviceOrderId" value="{{task.serviceOrderId}}"/>
+                            <button type="submit" class="btn btn-xs btn-success">Done</button>
+                        </form>
                         <form action="manageTask" method="POST">
                             <input type="hidden" name="taskId" value="{{task.taskId}}"/>
                             <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>

@@ -60,7 +60,7 @@ public class ProvisioningTaskController extends HttpServlet {
                 DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
                 DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
 
-                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
             } else
                 response.sendRedirect(CauliflowerInfo.HOME_LINK);
 

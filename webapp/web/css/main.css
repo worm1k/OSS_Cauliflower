@@ -4,6 +4,7 @@ body {
     color: #333;
     padding-top: 50px;
 }
+table, .table { border: 1px solid #ddd }
 .navbar-brand {
     padding: 8px;
 }
@@ -59,7 +60,8 @@ body {
     margin: 0 auto;
 }
 .btn-signin,
-.btn-proceed {
+.btn-proceed,
+.btn-change-password {
     margin-top: 24px;
     margin-bottom: 24px;
     margin-left: auto;
@@ -100,3 +102,6 @@ body {
     content: '*';
     color: #d9534f;
 }
+.border-top { border-top: 1px solid #ddd; }
+.border-bottom { border-bottom: 1px solid #ddd; }
+.border-right { border-right: 1px solid #ddd; }

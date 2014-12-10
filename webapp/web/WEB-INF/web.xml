@@ -72,6 +72,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>CustomerUserInformationController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.CustomerUserInformationController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomerUserInformationController</servlet-name>
+        <url-pattern>/customer_info</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>SiSODashboard</servlet-name>
         <servlet-class>com.naukma.cauliflower.controllers.SISODashboardController</servlet-class>
     </servlet>
@@ -161,5 +170,14 @@
     <servlet-mapping>
         <servlet-name>instengdashboard</servlet-name>
         <url-pattern>/instengdashboard</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetAllCustomersController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.GetAllCustomersController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetAllCustomersController</servlet-name>
+        <url-pattern>/getallcustomers</url-pattern>
     </servlet-mapping>
 </web-app>
