@@ -13,6 +13,13 @@ public class CSVReportGenerator implements ReportGenerator {
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
+    /**
+     * Constructor
+     *
+     * @param resultSet
+     * @throws IOException
+     * @throws SQLException
+     */
     public CSVReportGenerator(ResultSet resultSet) throws IOException, SQLException {
         StringBuilder stringBuilder = new StringBuilder("");
         ResultSetMetaData meta;
@@ -21,6 +28,9 @@ public class CSVReportGenerator implements ReportGenerator {
                 try {
                     meta = resultSet.getMetaData();
 
+                    /**
+                     * write first line with headers
+                     */
                     for (int i = 1; i <=meta.getColumnCount(); ++i) {
                         if (i == meta.getColumnCount()) {
                             stringBuilder.append(meta.getColumnName(i));
@@ -28,9 +38,11 @@ public class CSVReportGenerator implements ReportGenerator {
                             stringBuilder.append(meta.getColumnName(i) + ",");
                         }
                     }
-
                     stringBuilder.append("\r\n");
 
+                    /**
+                     * write data lines
+                     */
                     while (resultSet.next()) {
                         for(int i = 1; i<=meta.getColumnCount(); ++i) {
                             if (i == meta.getColumnCount()) {
@@ -44,17 +56,18 @@ public class CSVReportGenerator implements ReportGenerator {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                System.out.println("SB: " + stringBuilder.toString());
                 baos.write(stringBuilder.toString().getBytes());
             }
 
     }
 
+    /**
+     * @param out OutputStream that will be flushed in Servlet
+     * @throws IOException
+     */
     @Override
     public void writeInStream(OutputStream out) throws IOException {
-        System.out.println("out: " + out.toString());
         baos.writeTo(out);
-        System.out.println("out: " + out.toString());
         baos.close();
     }
 }
