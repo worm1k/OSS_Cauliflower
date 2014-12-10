@@ -35,6 +35,9 @@
       <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
       <p><b>Server message:</b> ${sessionScope.error}</p>
     </div>
+    <%
+      request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+    %>
   </c:if>
 
   <c:if test="${sessionScope.ok ne null && not empty sessionScope.ok}">
@@ -42,6 +45,9 @@
       <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
       <p><b>Server message:</b> ${sessionScope.ok}</p>
     </div>
+    <%
+      request.getSession().removeAttribute(CauliflowerInfo.OK_ATTRIBUTE);
+    %>
   </c:if>
 
   <div class="col-xs-6">

@@ -69,9 +69,8 @@ public class LoginController extends HttpServlet {
                     } else {
                         String userInSessionRole = user.getUserRole();
                         System.out.println(userInSessionRole);
-                        if (userInSessionRole.equals(UserRole.CUSTOMER.toString())) {
+                        if (userInSessionRole.equals(UserRole.CUSTOMER.toString()))
                             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                        }
                         if (userInSessionRole.equals(UserRole.ADMINISTRATOR.toString()))
                             response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                         if (userInSessionRole.equals(UserRole.PROVISIONING_ENG.toString()))
