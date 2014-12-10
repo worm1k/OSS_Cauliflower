@@ -41,6 +41,7 @@ public class CustomerUserInformationController extends HttpServlet {
             request.setAttribute("lstServiceInstance", lstServiceInstance);
             request.setAttribute("lstServiceOrder", lstServiceOrder);
             request.getRequestDispatcher(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK).forward(request, response);
+            //response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK);
         }catch(Exception ex){
             ex.printStackTrace();
         }
