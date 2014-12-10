@@ -131,7 +131,7 @@ public class ProceedOrderController extends HttpServlet {
     }
 
     private void setNewServiceForTask(HttpServletRequest request) throws SQLException{
-        int serviceId = Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
+        int serviceId = Integer.parseInt(request.getParameter(CauliflowerInfo.SERVICE_ID_PARAM));
         DAO.INSTANCE.setServiceForTask(taskId,serviceId);
         request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
 

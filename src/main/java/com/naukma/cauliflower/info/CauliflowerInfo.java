@@ -18,6 +18,7 @@ public class CauliflowerInfo {
     public static final String INSTANCE_ID_PARAM = "instanceId";
     public static final String TASK_ID_PARAM = "taskId";
     public static final String TASK_STATUS_PARAM = "taskStatus";
+    public static final String SERVICE_ID_PARAM = "serviceId";
     public static final String TASKS_PARAM = "tasks";
     public static final String TASK_PARAM = "task";
 
