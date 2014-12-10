@@ -2,7 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.entities.Service;
+import com.naukma.cauliflower.entities.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +24,7 @@ public class GetAllCustomersController  extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        List<Service> services = null;
+        List<User> services = null;
         try {
             services = DAO.INSTANCE.getCustomers();
         } catch (SQLException e) {

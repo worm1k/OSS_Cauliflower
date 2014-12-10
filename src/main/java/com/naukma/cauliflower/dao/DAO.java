@@ -2554,6 +2554,7 @@ public enum DAO {
      * @see com.naukma.cauliflower.entities.Service
      */
     public List<User> getCustomers() throws SQLException {
+        final int CUSTOMER = 1;
         {//
             System.out.println("getCustomers");
         }
@@ -2561,14 +2562,20 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
-                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
-                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
+            preparedStatement = connection.prepareStatement("SELECT *" +
+                    "FROM USERS" +
+                    "WHERE ID_USERROLE = "+CUSTOMER);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result.add(new User());
-            }
+                result.add(new User(resultSet.getInt("ID_USER"),
+                        resultSet.getInt("ID_USERROLE"),
+                        "CUSTOMER",
+                        resultSet.getString("E_MAIL"),
+                        resultSet.getString("F_NAME"),
+                        resultSet.getString("L_NAME"),
+                        resultSet.getString("PHONE"),
+                        ((resultSet.getString("IS_BLOCKED") == "1")? true: false)));
+                }
             {//
                 System.out.println("SUCCESS!!! getServices");
             }
