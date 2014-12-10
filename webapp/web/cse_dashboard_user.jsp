@@ -1,4 +1,7 @@
 <%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
+<%@ page import="com.naukma.cauliflower.dao.UserRole" %>
+<%@ page import="com.naukma.cauliflower.entities.User" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: Vladmyr
@@ -8,6 +11,13 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<%
+    User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+    if(user==null || (user!=null && !user.getUserRole().equals(UserRole.CUST_SUP_ENG.toString())))
+        response.sendRedirect("home.jsp");
+%>
+
 <!DOCTYPE html>
 <html lang="en" ng-app="CSEDashboard">
 <head>
@@ -25,6 +35,26 @@
     <div class="container">
         <h1 class="text-center txt-bold">CauliFlower OSS</h1>
         <h2 class="text-center">Customer User Information</h2>
+        <%--Server message shows here--%>
+        <%--<c:if test="${sessionScope.error ne null && not empty sessionScope.error}">--%>
+            <%--<div class="alert alert-danger alert-dismissible" role="alert">--%>
+                <%--<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>--%>
+                <%--<p><b>Server message:</b> ${sessionScope.error}</p>--%>
+            <%--</div>--%>
+            <%--<%--%>
+                <%--request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);--%>
+            <%--%>--%>
+        <%--</c:if>--%>
+
+        <%--<c:if test="${sessionScope.ok ne null && not empty sessionScope.ok}">--%>
+            <%--<div class="alert alert-success alert-dismissible" role="alert">--%>
+                <%--<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>--%>
+                <%--<p><b>Server message:</b> ${sessionScope.ok}</p>--%>
+            <%--</div>--%>
+            <%--<%--%>
+                <%--request.getSession().removeAttribute(CauliflowerInfo.OK_ATTRIBUTE);--%>
+            <%--%>--%>
+        <%--</c:if>--%>
 
         <%-- Server message shows here --%>
         <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
