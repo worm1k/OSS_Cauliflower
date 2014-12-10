@@ -23,12 +23,12 @@ public class ReportGeneratorServlet extends HttpServlet {
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final String EXT = request.getParameter("extension");
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=report.xls");
+        response.setHeader("Content-Disposition", "attachment; filename=report." + EXT);
         String methodName = (String) request.getParameter("reportMethod");
         String startDate = (String) request.getParameter("startDate");
         String endDate = (String) request.getParameter("endDate");
-        final String EXT = request.getParameter("extension");
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         java.sql.Date sqlStartDate = null;
@@ -86,7 +86,6 @@ public class ReportGeneratorServlet extends HttpServlet {
             e.printStackTrace();
         }
         ServletOutputStream outputStream = response.getOutputStream();
-        //reportGenerator.createXlsFile().write(outputStream);
         reportGenerator.writeInStream(outputStream);
         outputStream.flush();
         outputStream.close();

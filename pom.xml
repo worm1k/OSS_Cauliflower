@@ -69,7 +69,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
@@ -92,11 +91,5 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/ojdbc14.jar</systemPath> <!-- must match file name -->
         </dependency>
-        <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>3.1</version>
-        </dependency>
-
     </dependencies>
 </project>
