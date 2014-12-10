@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Eugene
-  Date: 03.12.2014
-  Time: 8:57
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page import="com.naukma.cauliflower.entities.User" %>
 <%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
 <%@ page import="com.naukma.cauliflower.dao.UserRole" %>
@@ -19,35 +12,48 @@
 %>
 
 <!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-    <title>CauliFlower | Reports </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/style.css" />
+    <link href='http://fonts.googleapis.com/css?family=Lobster&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' href='../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/bootstrap.min.css' type='text/css' media='all'>
+    <script src="jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="jquery/bootstrap.min.js" type="text/javascript"></script>
+    <script>
+    </script>
+
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+
+    <script>
+        $(function(){
+            $("#startDate").datepicker();
+            $("#endDate").datepicker();
+        });
+    </script>
+
     <jsp:include page="head.jsp"/>
+
 </head>
+
+
+
 <body>
 <jsp:include page="header.jsp"/>
+<div class="main_wrapper">
 
-<div class="container">
-    <h1 class="txt-center txt-bold">CauliFlower OSS</h1>
-
-    <h2 class="txt-center">Reports</h2>
-    <%--Server message shows here--%>
-    <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
-    <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span>
-        </button>
-        <p><b>Server message:</b> ${sessionScope.error}</p>
+    <div class="header">
+        <a href="main.html"><div class="header_logo">
+            <div class="header_logo_pic"><img src="../../../../Downloads/OSS_Cauliflower-master/webapp/web/pics/cauliflower.png"></div>
+            <div class="header_logo_name">Cauliflower</div>
+        </div></a>
+        <div class="header_login"><a href=""> Administrator </a></div>
     </div>
-    </c:if>
-
-    <c:if test="${sessionScope.ok ne null && not empty sessionScope.ok}">
-    <div class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span>
-        </button>
-        <p><b>Server message:</b> ${sessionScope.ok}</p>
-    </div>
-    </c:if>
-
+    <div class="clear"></div>
     <form action="reports" method="post">
         <div class="report_title">Reports</div>
         <input type="radio" name="extension" value="xls" checked> XLS
@@ -101,8 +107,6 @@
         </div>
     </form>
 
-
-    <jsp:include page="footer.jsp"/>
-    <script type="text/javascript" src="./js/indexSlavko.js"></script>
+</div>
 </body>
 </html>
