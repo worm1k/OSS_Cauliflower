@@ -12,4 +12,5 @@
 <link rel="shortcut icon" href="img/icons/logo.ico" />
 <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="vendor/jquery.ui/css/jquery-ui.css"/>
 <link rel="stylesheet" href="css/main.css">

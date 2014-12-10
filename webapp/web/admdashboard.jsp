@@ -28,7 +28,8 @@
 <jsp:include page="header.jsp"/>
 
 <div class="container">
-  <h1 class="txt-center txt-bold">CauliFlower OSS</h1>
+  <h1 class="text-center txt-bold">CauliFlower OSS</h1>
+    <h2 class="text-center">Administrator Dashboard</h2>
   <%--Server message shows here--%>
   <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
     <div class="alert alert-danger alert-dismissible" role="alert">

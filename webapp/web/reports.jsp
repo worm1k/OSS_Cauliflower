@@ -19,34 +19,10 @@
 %>
 
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css"
-          href="../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/style.css"/>
-    <link href='http://fonts.googleapis.com/css?family=Lobster&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
-    <link rel='stylesheet' href='../../../../Downloads/OSS_Cauliflower-master/webapp/web/style/bootstrap.min.css'
-          type='text/css' media='all'>
-    <script src="jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
-    <script src="jquery/bootstrap.min.js" type="text/javascript"></script>
-    <script>
-    </script>
-
-    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-
-    <script>
-        $(function () {
-            $("#startDate").datepicker();
-            $("#endDate").datepicker();
-        });
-    </script>
-
     <jsp:include page="head.jsp"/>
-
 </head>
 
 
@@ -230,5 +206,12 @@
         </form></div>
 
 </div>
+<jsp:include page="footer.jsp"/>
+<script type="text/javascript">
+    $(document).ready(function(){
+        if($("#startDate").length > 0) $("#startDate").datepicker();
+        if($("#endDate").length > 0) $("#endDate").datepicker();
+    });
+</script>
 </body>
 </html>
