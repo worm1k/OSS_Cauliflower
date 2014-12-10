@@ -35,15 +35,20 @@
             </thead>
             <tbody>
             <tr ng-repeat="user in arrUser">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{$index + 1}}</td>
+                <td>{{user.userId}}</td>
+                <td>{{user.firstName}}</td>
+                <td>{{user.lastName}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.phone}}</td>
+                <td>{{user.userRole}}</td>
+                <td>{{user.blocked}}</td>
+                <td>
+                    <form action="customer_info" method="POST">
+                        <input type="hidden" name="userId" value="{{user.userId}}"/>
+                        <button type="submit" class="btn btn-xs btn-default">Open</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>

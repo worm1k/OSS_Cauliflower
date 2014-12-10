@@ -2829,6 +2829,58 @@ public enum DAO {
 
     /**---------------------------------------------------------------------END IGOR---------------------------------------------------------------------**/
 
+    /**---------------------------------------------------------------------START vladmyr---------------------------------------------------------------------**/
+    /**
+     * return User of customer user
+     *
+     * @return User
+     * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.Service
+     */
+    public User getCustomerUserById(int id) throws SQLException {
+        final int CUSTOMER = 1;
+        {//
+            System.out.println("getCustomers");
+        }
+        User result = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "SELECT * FROM USERS WHERE ID_USERROLE = ? AND ID_USER = ?";
+            {//
+                System.out.println(query);
+            }
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, CUSTOMER);
+            preparedStatement.setInt(2, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result = new User(
+                        resultSet.getInt("ID_USER"),
+                        resultSet.getInt("ID_USERROLE"),
+                        "CUSTOMER",
+                        resultSet.getString("E_MAIL"),
+                        resultSet.getString("F_NAME"),
+                        resultSet.getString("L_NAME"),
+                        resultSet.getString("PHONE"),
+                        ((resultSet.getString("IS_BLOCKED") == "1")? true: false));
+            }
+            {//
+                System.out.println("SUCCESS!!! getCustomerUserById");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return result;
+
+    }
+    /**---------------------------------------------------------------------END vladmyr---------------------------------------------------------------------**/
+
 }
 
 

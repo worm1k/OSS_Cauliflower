@@ -7,6 +7,7 @@ public class CauliflowerInfo {
     public static final String SERVICE_ATTRIBUTE = "service";
     public static final String SERVICE_ORDER_ID = "serviceOrderId";
     public static final String USER_ATTRIBUTE = "user";
+    public static final String USER_ID_ATTRIBUTE = "userId";
     public static final String SERVICE_LOCATION_ATTRIBUTE = "serviceLocation";
     public static final String ERROR_ATTRIBUTE = "error";
     public static final String ORDERS_ATTRIBUTE = "orders";
@@ -27,6 +28,8 @@ public class CauliflowerInfo {
     public static final String ADMIN_DASHBOARD_LINK = "admdashboard.jsp";
     public static final String INSTALL_ENGINEER_DASHBOARD_LINK = "ie_dashboard.jsp";
     public static final String PROVIS_ENGINEER_DASHBOARD_LINK = "pe_dashboard.jsp";
+    public static final String SUPPORT_ENGINEER_DASHBOARD_LINK = "cse_dashboard.jsp";
+    public static final String SUPPORT_ENGINEER_USER_INFORMATION_LINK = "cse_dashboard_user.jsp";
 
 
     public static final String SYSTEM_ERROR_MESSAGE = "System error, try again later, please";

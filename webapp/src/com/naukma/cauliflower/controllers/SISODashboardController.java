@@ -41,6 +41,7 @@ public class SISODashboardController  extends HttpServlet {
         ArrayList<ServiceInstance> instances = null;
         List<Service> lstService = null;
         User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        User customerUser = null;
         ObjectMapper mapper = new ObjectMapper();
         PrintWriter out = response.getWriter();
         if(user == null){
@@ -53,11 +54,13 @@ public class SISODashboardController  extends HttpServlet {
             if(role.equals(UserRole.CUSTOMER.toString())){
                 orders = DAO.INSTANCE.getOrders(user.getUserId());
                 instances = DAO.INSTANCE.getInstances(user.getUserId());
+                customerUser = user;
             }
             else if(role.equals(UserRole.CUST_SUP_ENG.toString())){
-                orders = DAO.INSTANCE.getAllOrders();
-                instances = DAO.INSTANCE.getAllInstances();
-
+                int customerUserId = Integer.parseInt(request.getParameter(CauliflowerInfo.USER_ID_ATTRIBUTE));
+                orders = DAO.INSTANCE.getOrders(customerUserId);
+                instances = DAO.INSTANCE.getInstances(customerUserId);
+                customerUser = DAO.INSTANCE.getCustomerUserById(customerUserId);
             }
 
             lstService = DAO.INSTANCE.getServices();
@@ -66,6 +69,7 @@ public class SISODashboardController  extends HttpServlet {
             map.put(CauliflowerInfo.INSTANCES_ATTRIBUTE, instances);
             map.put(CauliflowerInfo.ORDERS_ATTRIBUTE, orders);
             map.put(CauliflowerInfo.SERVICE_ATTRIBUTE, lstService);
+            map.put(CauliflowerInfo.USER_ATTRIBUTE, customerUser);
             mapper.writeValue(out, map);
         } catch (SQLException e) {
             e.printStackTrace();

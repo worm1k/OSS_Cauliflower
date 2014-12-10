@@ -34,7 +34,7 @@
     <div id="js-map" class="google-map"></div>
 
     <div class="container">
-        <div class="col-xs-12 jumbotron item-visible-{{hasServiceInstance}}">
+        <div class="col-xs-12 jumbotron">
             <h3>Service Instance:</h3>
             <select class="form-control" ng-model="serviceInstance"
                     ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
@@ -86,9 +86,9 @@
                 </table>
             </div>
         </div>
-        <div class="col-xs-12 jumbotron item-visible-{{!hasServiceInstance}}">
-            <h3 class="text-center txt-bold">There are no Service Instaces</h3>
-        </div>
+        <%--<div class="col-xs-12 jumbotron" ng-class="{hasServiceInstance: item-visible-false}">--%>
+            <%--<h3 class="text-center txt-bold">There are no Service Instaces</h3>--%>
+        <%--</div>--%>
     </div>
 
     <jsp:include page="footer.jsp"/>

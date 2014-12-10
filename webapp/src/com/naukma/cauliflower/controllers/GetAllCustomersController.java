@@ -24,9 +24,9 @@ public class GetAllCustomersController  extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        List<User> services = null;
+        List<User> lstUser = null;
         try {
-            services = DAO.INSTANCE.getCustomers();
+            lstUser = DAO.INSTANCE.getCustomers();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -35,7 +35,7 @@ public class GetAllCustomersController  extends HttpServlet {
         PrintWriter out = response.getWriter();
 //        //return data as json object
 //        //Convert Java object to JSON format
-        mapper.writeValue(out, services);
+        mapper.writeValue(out, lstUser);
 //        Service service = DAO.INSTANCE.getServiceById(1);
 //        mapper.writeValue(out, service);
     }
