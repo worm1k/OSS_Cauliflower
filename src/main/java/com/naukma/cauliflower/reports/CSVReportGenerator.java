@@ -1,56 +1,32 @@
 package com.naukma.cauliflower.reports;
 
+
+import com.opencsv.CSVWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
 
 /**
  * Created by WormiK on 06.12.2014.
  */
-public class CSVReportGenerator {
+public class CSVReportGenerator implements ReportGenerator {
 
-    public CSVReportGenerator() {
+    ByteArrayOutputStream baos;
+    CSVWriter writer;
+
+    public CSVReportGenerator(ResultSet resultSet) throws IOException, SQLException {
+        this.baos = new ByteArrayOutputStream();
+        this.writer = new CSVWriter(new OutputStreamWriter(baos));
+        writer.writeAll(resultSet, true);
     }
 
-    public String buildCSV(ResultSet resultSet) throws SQLException {
-
-        StringBuilder stringBuilder = new StringBuilder("");
-        ResultSetMetaData meta;
-        if(resultSet == null) {
-            return "";
-        }
-
-        /**
-         * creating the header row
-         */
-        try {
-            meta = resultSet.getMetaData();
-
-
-            for(int i = 0; i < meta.getColumnCount(); i++) {
-                if(i == meta.getColumnCount() - 1) {
-                    stringBuilder.append(meta.getColumnName(i));
-                }else {
-                    stringBuilder.append(meta.getColumnName(i) + ",");
-                }
-            }
-
-            while(resultSet.next()) {
-                for(int i = 0; i < meta.getColumnCount(); ++i) {
-                    if(i == meta.getColumnCount() - 1) {
-                        stringBuilder.append(resultSet.getString(i));
-                    }else {
-                        stringBuilder.append(resultSet.getString(i) + ",");
-                    }
-                }
-                stringBuilder.append("\r\n");
-            }
-        }
-        catch(SQLException err) {
-            /******/
-        }
-
-        return stringBuilder.toString();
+    @Override
+    public void writeInStream(OutputStream out) throws IOException {
+        baos.writeTo(out);
+        baos.close();
     }
-
 }

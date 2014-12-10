@@ -2,13 +2,14 @@ package com.naukma.cauliflower.dao;
 
 
 import com.naukma.cauliflower.entities.*;
-import com.naukma.cauliflower.reports.XLSReportGenerator;
+import com.naukma.cauliflower.reports.*;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -568,18 +569,24 @@ public enum DAO {
      *
      * @return ResultSet with routers(each row contains router id, sum of occupied, sum of free ports for this router)
      */
-    public XLSReportGenerator getDevicesForReport() {
+    public ReportGenerator getDevicesForReport(final String EXT) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, SUM(P.Used) OCCUPIED, 60 - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "GROUP BY r.id ");
             resultSet = preparedStatement.executeQuery();
-            reportGenerator = new XLSReportGenerator("Devices", resultSet);
+            if (EXT.equals("xls")) {
+                reportGenerator = new XLSReportGenerator("Devices", resultSet);
+            } else if (EXT.equals("csv")) {
+                reportGenerator = new CSVReportGenerator(resultSet);
+            }
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {

@@ -28,6 +28,7 @@ public class ReportGeneratorServlet extends HttpServlet {
         String methodName = (String) request.getParameter("reportMethod");
         String startDate = (String) request.getParameter("startDate");
         String endDate = (String) request.getParameter("endDate");
+        final String EXT = request.getParameter("extension");
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         java.sql.Date sqlStartDate = null;
@@ -46,11 +47,11 @@ public class ReportGeneratorServlet extends HttpServlet {
 
         ResultSet resultSet = null;
 
-        XLSReportGenerator reportGenerator = null;
+        ReportGenerator reportGenerator = null;
         try {
             if (methodName.equals("Devises"))
                 //resultSet = DAO.INSTANCE.getDevicesForReport();
-                reportGenerator = DAO.INSTANCE.getDevicesForReport();
+                reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
             else if (methodName.equals("Circuits"))
                 //resultSet =
                 reportGenerator = DAO.INSTANCE.getCircuitsForReport();
@@ -85,7 +86,8 @@ public class ReportGeneratorServlet extends HttpServlet {
             e.printStackTrace();
         }
         ServletOutputStream outputStream = response.getOutputStream();
-        reportGenerator.createXlsFile().write(outputStream);
+        //reportGenerator.createXlsFile().write(outputStream);
+        reportGenerator.writeInStream(outputStream);
         outputStream.flush();
         outputStream.close();
     }
