@@ -1,3 +1,6 @@
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
+<%@ page import="com.naukma.cauliflower.entities.User" %>
+<%@ page import="com.naukma.cauliflower.dao.UserRole" %>
 <%--
   Created by IntelliJ IDEA.
   User: Vladmyr
@@ -34,7 +37,16 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="nav-user-icon glyphicon glyphicon-user glyphicon-small"></span>${sessionScope.user.email} <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="dashboard.jsp">Dashboard</a></li>
+                                <%
+                                    User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+                                    if(us==null) out.print("<li><a href=\"auth.jsp\">Dashboard</a></li>");
+                                    if(us!=null && us.getUserRole().equals(UserRole.CUSTOMER.toString())) out.print("<li><a href=\"dashboard.jsp\">Dashboard</a></li>");
+                                    if(us!=null && us.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) out.print("<li><a href=\"admdashboard.jsp\">Dashboard</a></li>");
+                                    if(us!=null && us.getUserRole().equals(UserRole.INSTALLATION_ENG.toString())) out.print("<li><a href=\"ie_dashboard.jsp\">Dashboard</a></li>");
+                                    if(us!=null && us.getUserRole().equals(UserRole.PROVISIONING_ENG.toString())) out.print("<li><a href=\"pe_dashboard.jsp\">Dashboard</a></li>");
+                                    if(us!=null && us.getUserRole().equals(UserRole.CUST_SUP_ENG.toString())) out.print("<li><a href=\"cse_dashboard.jsp\">Dashboard</a></li>");
+                                    if(us!=null && !us.getUserRole().equals(UserRole.CUSTOMER.toString())) out.print("<li><a href=\"reports.jsp\">Get reports</a></li>");
+                                %>
                                 <li class="divider"><li>
                                 <li><a id="js-logout-lnk" href="#">Logout</a>
                                     <form id="js-logout-form" action="logout" method="POST"></form>

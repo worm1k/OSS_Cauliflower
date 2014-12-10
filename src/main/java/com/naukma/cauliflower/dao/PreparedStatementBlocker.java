@@ -1,9 +1,6 @@
 package com.naukma.cauliflower.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Created by Eugene on 07.12.2014.
@@ -77,14 +74,39 @@ public class PreparedStatementBlocker{
 
     public void close() throws SQLException {
         if(needToclose) {
-            conn.close();
-            value.close();
+            if (!conn.isClosed()) conn.close();
+            if (!value.isClosed())  value.close();
         }else{
 
             {//help
                 System.out.println("Unblocked");
             }
             blocked = false;
+            conn.setAutoCommit(true);
         }
+    }
+
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        conn.setAutoCommit(autoCommit);
+    }
+
+    public void commit() throws SQLException {
+        conn.commit();
+    }
+
+    public Connection getConnection() {
+        return conn;
+    }
+
+    public void rollback() throws SQLException {
+        conn.rollback();
+    }
+
+    public void setDate(int i, Date date) throws SQLException {
+        value.setDate(i, date);
+    }
+
+    public void setDouble(int i, double locationLatitude) throws SQLException {
+        value.setDouble(i, locationLatitude);
     }
 }

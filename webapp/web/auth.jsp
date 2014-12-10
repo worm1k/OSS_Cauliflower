@@ -1,3 +1,4 @@
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
 <%--
   Created by IntelliJ IDEA.
   User: Vladmyr
@@ -28,7 +29,11 @@
                 <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                 <p><b>Server message:</b> ${sessionScope.error}</p>
             </div>
+            <%
+                request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+            %>
         </c:if>
+
 
         <div class="col-xs-6">
             <h2 class="txt-center">Login</h2>
