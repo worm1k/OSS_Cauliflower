@@ -96,13 +96,13 @@ public class ProceedOrderController extends HttpServlet {
     }
 
     private void scenarioModify(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
-        Integer instanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
+        serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
         boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
         if(blocked){ //actually it is blocked
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
             //request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
         }else{ //it is not blocked
-            createModifyOrder(instanceId);
+            createModifyOrder(serviceInstanceId);
             changeOrderStatus();
             setInstanceBlocked();
             taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
