@@ -108,8 +108,8 @@
                         <td>{{order.orderScenario}}</td>
                         <td>{{order.orderStatus}}</td>
                         <td>
-                            <!-- <button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-cog"></span></button> -->
-                            <button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash"></span></button>
+                            <%--<button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-cog"></span></button>--%>
+                            <%--<button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash"></span></button>--%>
                         </td>
                     </tr>
                     </tbody>
