@@ -23,38 +23,42 @@ public class InstallationTasksController extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        String taskIdParam = request.getParameter(CauliflowerInfo.TASK_ID_PARAM);
+        String serviceOrderIdParam = request.getParameter(CauliflowerInfo.SERVICE_ORDER_ID);
         if (user == null) {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
+        } else if (taskIdParam == null || serviceOrderIdParam == null) {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+        } else {
+            try {
+                int taskId = Integer.parseInt(taskIdParam);
+                int serviceOrderId = Integer.parseInt(serviceOrderIdParam);
+                //RI.9
+                //The system should allow creating Devices, Ports and Cables only by Installation Engineer
+                if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
+                        //user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
+                        user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
+
+                    Scenario scenario = DAO.INSTANCE.getOrderScenario(serviceOrderId);
+                    if (scenario == Scenario.NEW) {
+
+                        if (!DAO.INSTANCE.freePortExists())
+                            DAO.INSTANCE.createRouter();
+                        DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
+                    } else if (scenario == Scenario.DISCONNECT) {
+                        DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
+                    }
+                    DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+                    DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
+                    response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
+
+                } else
+                    response.sendRedirect(CauliflowerInfo.HOME_LINK);
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-        try {
-            int taskId = Integer.parseInt(request.getParameter(CauliflowerInfo.TASK_ID_PARAM));
-            int serviceOrderId = Integer.parseInt(request.getParameter(CauliflowerInfo.SERVICE_ORDER_ID));
-            //RI.9
-            //The system should allow creating Devices, Ports and Cables only by Installation Engineer
-            if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
-                //user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
-                    user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
-
-                Scenario scenario = DAO.INSTANCE.getOrderScenario(serviceOrderId);
-                if (scenario == Scenario.NEW) {
-
-                    if (!DAO.INSTANCE.freePortExists())
-                        DAO.INSTANCE.createRouter();
-                    DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
-                } else if (scenario == Scenario.DISCONNECT) {
-                    DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
-                }
-                DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
-                response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
-
-            } else
-                response.sendRedirect(CauliflowerInfo.HOME_LINK);
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
