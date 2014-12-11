@@ -2568,6 +2568,11 @@ public enum DAO {
 
     }
 
+
+    public boolean isInstanceDisconnected(int serviceInstanceId) throws SQLException{
+        return false;
+    }
+
     public int getUserRoleIdByUserRoleName(String userRole){
         return 0;
     }
@@ -2926,6 +2931,8 @@ public enum DAO {
         return result;
 
     }
+
+
     /**---------------------------------------------------------------------END vladmyr---------------------------------------------------------------------**/
 
 }
