@@ -58,7 +58,9 @@ public class ProceedOrderController extends HttpServlet {
         }
         //ServletContext context = this.getServletContext();
         //RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
-        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+        //response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+
+        request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
 
 
         //for end2end
