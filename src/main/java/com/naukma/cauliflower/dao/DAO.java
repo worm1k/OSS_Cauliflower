@@ -2570,7 +2570,36 @@ public enum DAO {
 
 
     public boolean isInstanceDisconnected(int serviceInstanceId) throws SQLException{
-        return false;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        boolean result = false;
+        try {
+            String statusInst = InstanceStatus.DISCONNECTED.toString();
+            preparedStatement = connection.prepareStatement("SELECT Sis.Name RES " +
+                    "FROM ServiceInstance Si INNER JOIN Serviceinstancestatus SIS ON Si.Service_Instance_Status = Sis.Id " +
+                    "WHERE Si.Id = ? ");
+            preparedStatement.setInt(1, serviceInstanceId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            String checkResult = null;
+            if (resultSet.next()) {
+                checkResult = resultSet.getString("RES");
+            }
+            if (checkResult.equals(statusInst)) {
+                result = true;
+            } else {
+                result = false;
+            }
+
+        }  finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException e) {
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     public int getUserRoleIdByUserRoleName(String userRole){
