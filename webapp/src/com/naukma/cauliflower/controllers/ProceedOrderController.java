@@ -50,7 +50,7 @@ public class ProceedOrderController extends HttpServlet {
                 response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             }else if (scenario.equals(Scenario.DISCONNECT.toString())){
                 scenarioDisconnect(request,response);
-                request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
+                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             }else if (scenario.equals(Scenario.MODIFY.toString())){
                 scenarioModify(request,response);
                 response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
@@ -106,22 +106,28 @@ public class ProceedOrderController extends HttpServlet {
     }
 
     private void checkBlocked(HttpServletRequest request,HttpServletResponse response) throws IOException, SQLException {
+        serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
         boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
+      //vladmyr
         if(blocked){
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
-            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+        }else{
+            createDisconnectOrder(serviceInstanceId);
+            changeOrderStatus();
+            setInstanceBlocked();
+            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT);
         }
+
     }
+
 
 
     private void checkDisconnected(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
         boolean disconnected = DAO.INSTANCE.isInstanceDisconnected(serviceInstanceId);
-
-        if(!disconnected){
+        if (!disconnected) {
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
         }
-
     }
 
     private void createNewOrder() throws SQLException
