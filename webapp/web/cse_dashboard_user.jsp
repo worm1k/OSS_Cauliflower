@@ -1,6 +1,8 @@
 <%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
 <%@ page import="com.naukma.cauliflower.dao.UserRole" %>
 <%@ page import="com.naukma.cauliflower.entities.User" %>
+<%@ page import="com.naukma.cauliflower.entities.ServiceInstance" %>
+<%@ page import="java.util.List" %>
 
 <%--
   Created by IntelliJ IDEA.
@@ -71,19 +73,40 @@
             <h4 class="txt-bold">About Customer User:</h4>
             <dl class="dl-horizontal">
                 <dt>Id:</dt>
-                <dd>{{customerUser.userId}}</dd>
+                <%
+                    User us = (User)request.getSession().getAttribute("customerUser");
+                    out.print("<dd>" + us.getUserId()+"</dd>");
+                %>
                 <dt>Name:</dt>
-                <dd>{{customerUser.firstName}}</dd>
+                <%
+                    //us = (User)request.getSession().getAttribute("customerUser");
+                    out.print("<dd>" + us.getFirstName()+"</dd>");
+                %>
                 <dt>Surname:</dt>
-                <dd>{{customerUser.lastName}}</dd>
+                <%
+                    //us = (User)request.getSession().getAttribute("customerUser");
+                    out.print("<dd>" + us.getLastName()+"</dd>");
+                %>
                 <dt>Email:</dt>
-                <dd>{{customerUser.email}}</dd>
+                <%
+                    //us = (User)request.getSession().getAttribute("customerUser");
+                    out.print("<dd>" + us.getEmail()+"</dd>");
+                %>
                 <dt>Phone:</dt>
-                <dd>{{customerUser.phone}}</dd>
+                <%
+                    //us = (User)request.getSession().getAttribute("customerUser");
+                    out.print("<dd>" + us.getPhone()+"</dd>");
+                %>
                 <dt>Role:</dt>
-                <dd>{{customerUser.userRole}}</dd>
+                <%
+                    //us = (User)request.getSession().getAttribute("customerUser");
+                    out.print("<dd>" + us.getUserRole()+"</dd>");
+                %>
                 <dt>isBlocked:</dt>
-                <dd>{{customerUser.blocked}}</dd>
+                <%
+                    //us = (User)request.getSession().getAttribute("customerUser");
+                    out.print("<dd>" + us.isBlocked()+"</dd>");
+                %>
             </dl>
         </div>
 
@@ -100,7 +123,13 @@
         <div class="col-xs-12 border-top">
             <h4 class="txt-bold">Service Instance:</h4>
             <select class="form-control" ng-model="serviceInstance"
-                    ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
+                    <%--ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">--%>
+                <%
+                    final List<ServiceInstance> listInstance = (List<ServiceInstance>)request.getSession().getAttribute("lstServiceInstance");
+                    for(int i=0;i<listInstance.size();i++){
+                        out.print("ng-options=\"istInstance.get(i).getServiceLocation()\" ng-change = \"update()\"");
+                    }
+                %>
             </select>
             <h4 class="txt-bold">General:</h4>
             <dl class="dl-horizontal">
