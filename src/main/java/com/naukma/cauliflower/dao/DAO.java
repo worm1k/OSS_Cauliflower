@@ -2857,17 +2857,23 @@ public enum DAO {
             connection.setAutoCommit(false);
             // ---- GET SI ID, CABLE ID, PORT ID BY SO ID
             preparedStatementSelect = connection
-                    .prepareStatement("SELECT SI.ID, C.ID, C.ID_PORT "
+                    .prepareStatement("SELECT SI.ID SI_ID, C.ID C_ID , C.ID_PORT C_ID_PORT "
                             + "FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
                             + "INNER JOIN CABLE C ON SI.ID_CABLE = C.ID "
-                            + "WHERE SO.ID_SERVICEORDER = ?");
+                            + "WHERE SO.ID_SERVICEORDER = ? ");
             preparedStatementSelect.setInt(1, serviceOrderId);
 
             resultSet = preparedStatementSelect.executeQuery();
             while (resultSet.next()) {
-                siID = resultSet.getInt(1);
-                cableID = resultSet.getInt(2);
-                portID = resultSet.getInt(3);
+                siID = resultSet.getInt("SI_ID");
+                cableID = resultSet.getInt("SI_ID");
+                portID = resultSet.getInt("C_ID_PORT");
+            }
+            {//help
+                System.out.println("serviceOrderId"+serviceOrderId);
+                System.out.println("siId: "+siID);
+                System.out.println("cableID: "+cableID);
+                System.out.println("portID: "+portID);
             }
 
             if (siID != checkNumber && cableID != checkNumber
