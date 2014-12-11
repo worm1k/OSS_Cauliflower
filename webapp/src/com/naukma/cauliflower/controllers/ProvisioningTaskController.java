@@ -26,48 +26,53 @@ public class ProvisioningTaskController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        String taskIdParam = request.getParameter(CauliflowerInfo.TASK_ID_PARAM);
 
         if (user == null) {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
-        }
-
-        //Integer taskId = (Integer) request.getAttribute(CauliflowerInfo.TASK_ID_PARAM);
-
-        try {
-            System.out.println("before");
-            Integer taskId = Integer.parseInt(request.getParameter(CauliflowerInfo.TASK_ID_PARAM));
-            {//help
-                System.out.println(taskId);
-                System.out.println(DAO.INSTANCE.getTaskStatus(taskId));
-                System.out.println(user.getUserRoleId());
-                System.out.println(DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG));
-            }
-
-            if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
-                user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG)) {
-
-                ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(taskId);
-                if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {
-                    DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
+        } else if (taskIdParam == null) {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+        } else {
+            try {
+                System.out.println("before");
+                Integer taskId = Integer.parseInt(taskIdParam);
+                {//help
+                    System.out.println(taskId);
+                    System.out.println(DAO.INSTANCE.getTaskStatus(taskId));
+                    System.out.println(user.getUserRoleId());
+                    System.out.println(DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG));
                 }
-                else if (serviceOrder.getOrderScenario().equals(Scenario.MODIFY.toString())) {
-                    DAO.INSTANCE.changeServiceForServiceInstance(taskId, serviceOrder.getServiceInstanceId());
-                }
-                else if (serviceOrder.getOrderScenario().equals(Scenario.DISCONNECT.toString())) {
-                    DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
-                }
-                DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
-                DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
 
+                if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
+                        user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG)) {
+
+                    ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(taskId);
+                    if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {
+                        DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
+                    }
+                    else if (serviceOrder.getOrderScenario().equals(Scenario.MODIFY.toString())) {
+                        DAO.INSTANCE.changeServiceForServiceInstance(taskId, serviceOrder.getServiceInstanceId());
+                    }
+                    else if (serviceOrder.getOrderScenario().equals(Scenario.DISCONNECT.toString())) {
+                        DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
+                    }
+                    DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+                    DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
+                    DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
+
+                    response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
+                } else
+                    response.sendRedirect(CauliflowerInfo.HOME_LINK);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
                 response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
-            } else
-                response.sendRedirect(CauliflowerInfo.HOME_LINK);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
+            }
         }
+
+
+
 
 
     }
