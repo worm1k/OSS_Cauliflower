@@ -2823,9 +2823,9 @@ public enum DAO {
             connection.setAutoCommit(false);
             // ---- GET SI ID, CABLE ID, PORT ID BY SO ID
             preparedStatementSelect = connection
-                    .prepareStatement("SELECT SI.ID, C.ID_CABLE, C.ID_PORT "
+                    .prepareStatement("SELECT SI.ID, C.ID, C.ID_PORT "
                             + "FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
-                            + "INNER JOIN CABLE C ON SI.ID_CABLE=C.ID "
+                            + "INNER JOIN CABLE C ON SI.ID_CABLE = C.ID "
                             + "WHERE SO.ID_SERVICEORDER = ?");
             preparedStatementSelect.setInt(1, serviceOrderId);
 
