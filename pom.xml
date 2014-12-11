@@ -14,6 +14,11 @@
             <id>com.opencsv</id>
             <url>https://oss.sonatype.org/content/repositories/staging/com/opencsv/opencsv/3.1/</url>
         </repository>
+        <repository>
+            <id>easymock-release</id>
+            <name>EasyMock Repository</name>
+            <url>scpexe://shell.sf.net/home/groups/e/ea/easymock/htdocs/maven/repository</url>
+        </repository>
     </repositories>
 
     <dependencies>
