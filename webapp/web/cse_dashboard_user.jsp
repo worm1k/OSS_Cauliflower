@@ -123,13 +123,13 @@
         <div class="col-xs-12 border-top">
             <h4 class="txt-bold">Service Instance:</h4>
             <select class="form-control" ng-model="serviceInstance"
-                    <%--ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">--%>
-                <%
-                    final List<ServiceInstance> listInstance = (List<ServiceInstance>)request.getSession().getAttribute("lstServiceInstance");
-                    for(int i=0;i<listInstance.size();i++){
-                        out.print("ng-options=\"istInstance.get(i).getServiceLocation()\" ng-change = \"update()\"");
-                    }
-                %>
+                    ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
+                <%--<%--%>
+                    <%--final List<ServiceInstance> listInstance = (List<ServiceInstance>)request.getSession().getAttribute("lstServiceInstance");--%>
+                    <%--for(int i=0;i<listInstance.size();i++){--%>
+                        <%--out.print("ng-options=\"istInstance.get(i).getServiceLocation()\" ng-change = \"update()\"");--%>
+                    <%--}--%>
+                <%--%>--%>
             </select>
             <h4 class="txt-bold">General:</h4>
             <dl class="dl-horizontal">
