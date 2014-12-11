@@ -45,12 +45,16 @@ public class ProceedOrderController extends HttpServlet {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
         }
         try {
-        if(scenario==null || scenario.equals(Scenario.NEW.toString()))
+            if(scenario==null || scenario.equals(Scenario.NEW.toString())){
                 scenarioNew(request);
-        else if (scenario.equals(Scenario.DISCONNECT.toString()))
-            scenarioDisconnect(request,response);
-        else if (scenario.equals(Scenario.MODIFY.toString()))
+                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+            }else if (scenario.equals(Scenario.DISCONNECT.toString())){
+                scenarioDisconnect(request,response);
+                request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
+            }else if (scenario.equals(Scenario.MODIFY.toString())){
                 scenarioModify(request,response);
+                request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
+            }
         }
         catch (SQLException e) {
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
@@ -58,9 +62,8 @@ public class ProceedOrderController extends HttpServlet {
         }
         //ServletContext context = this.getServletContext();
         //RequestDispatcher dispatcher = context.getRequestDispatcher("/installationController");
-        //response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
 
-        request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
+
 
 
         //for end2end
@@ -98,6 +101,14 @@ public class ProceedOrderController extends HttpServlet {
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
         setNewServiceForTask(request);
+
+//        if(!isBlocked(instanceId,request,response)){
+//            createModifyOrder(instanceId);
+//            changeOrderStatus();
+//            setInstanceBlocked();
+//            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
+//            setNewServiceForTask(request);
+//        }
     }
 
     private void scenarioDisconnect(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
@@ -112,10 +123,19 @@ public class ProceedOrderController extends HttpServlet {
     private void checkBlocked(int serviceInstanceId,HttpServletRequest request,HttpServletResponse response) throws IOException, SQLException {
 
         boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
-        if(blocked)
+        if(blocked){
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+        }
+    }
 
+    private boolean isBlocked(int serviceInstanceId,HttpServletRequest request,HttpServletResponse response) throws IOException, SQLException{
+        boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
+        if(blocked){
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
+            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+        }
+        return blocked;
     }
 
     private void createNewOrder() throws SQLException

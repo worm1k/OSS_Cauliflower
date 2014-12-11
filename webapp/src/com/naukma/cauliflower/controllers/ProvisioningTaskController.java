@@ -66,6 +66,7 @@ public class ProvisioningTaskController extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
         }
 
 
