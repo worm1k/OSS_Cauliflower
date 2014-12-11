@@ -67,17 +67,20 @@ public enum DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int result = 0;
-        preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-        preparedStatement.setString(1, userRole.toString());
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            result = resultSet.getInt("RES");
-        }
         try {
-            close(connection, preparedStatement);
-        } catch (SQLException e) {
-            logger.info("Smth wrong with closing connection or preparedStatement!");
-            e.printStackTrace();
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+            preparedStatement.setString(1, userRole.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = resultSet.getInt("RES");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException e) {
+                logger.info("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -182,10 +185,11 @@ public enum DAO {
                     connection.rollback();
                 } catch (SQLException e1) {
                     e1.printStackTrace();
-                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                    logger.error("ROLLBACK transaction Failed of creating new user");
                 }
             }
             e.printStackTrace();
+            throw e;
         } finally {
             try {
                 //connection.setAutoCommit(true);
@@ -193,7 +197,7 @@ public enum DAO {
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
@@ -232,7 +236,7 @@ public enum DAO {
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
         }
@@ -271,7 +275,7 @@ public enum DAO {
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
         }
@@ -328,7 +332,8 @@ public enum DAO {
                     logger.error("ROLLBACK transaction Failed of creating new service location");
                 }
             }
-            e.printStackTrace();
+            throw e;
+
         } finally {
             try {
                 //connection.setAutoCommit(true);
@@ -392,11 +397,11 @@ public enum DAO {
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
-                    e1.printStackTrace();
-                    logger.error("ROLLBACK transaction Failed of creating new service location");
+                    //e1.printStackTrace();
+                    logger.error("ROLLBACK transaction Failed");
                 }
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             try {
                 //connection.setAutoCommit(true);
@@ -451,7 +456,7 @@ public enum DAO {
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
         }
@@ -485,7 +490,7 @@ public enum DAO {
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
@@ -544,11 +549,11 @@ public enum DAO {
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
-                    e1.printStackTrace();
+                    //e1.printStackTrace();
                     logger.error("ROLLBACK transaction Failed of creating new service location");
                 }
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             try {
                 //connection.setAutoCommit(true);
@@ -569,7 +574,7 @@ public enum DAO {
      *
      * @return ResultSet with routers(each row contains router id, sum of occupied, sum of free ports for this router)
      */
-    public ReportGenerator getDevicesForReport(final String EXT) {
+    public ReportGenerator getDevicesForReport(final String EXT) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -584,15 +589,14 @@ public enum DAO {
             } else if (EXT.equals("csv")) {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
@@ -684,7 +688,7 @@ public enum DAO {
      *
      * @return ResultSet with circuits(each row contains router id, port id, cable id, service instance id)
      */
-    public ReportGenerator getCircuitsForReport(final String EXT) {
+    public ReportGenerator getCircuitsForReport(final String EXT) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -699,8 +703,6 @@ public enum DAO {
             } else {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -709,7 +711,7 @@ public enum DAO {
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
@@ -723,7 +725,7 @@ public enum DAO {
      * @param phone Phone number to check.
      * @return true if phone number exists, false if doesn't
      */
-    public boolean checkForPhoneUniq(String phone) {
+    public boolean checkForPhoneUniq(String phone) throws SQLException{
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -747,15 +749,13 @@ public enum DAO {
                 }
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
                 //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
         }
