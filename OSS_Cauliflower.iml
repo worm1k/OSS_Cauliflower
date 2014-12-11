@@ -26,6 +26,9 @@
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
     <orderEntry type="library" name="Maven: com.oracle:ojdbc:14" level="project" />
     <orderEntry type="module" module-name="webapp" scope="TEST" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:3.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: cglib:cglib-nodep:3.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.objenesis:objenesis:2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi:3.10-FINAL" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.5" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.10-FINAL" level="project" />

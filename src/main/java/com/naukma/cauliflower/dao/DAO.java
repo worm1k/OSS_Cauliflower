@@ -2826,7 +2826,7 @@ public enum DAO {
                     .prepareStatement("SELECT SI.ID, C.ID_CABLE, C.ID_PORT "
                             + "FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
                             + "INNER JOIN CABLE C ON SI.ID_CABLE=C.ID "
-                            + "WHERE SO.ID = ?");
+                            + "WHERE SO.ID_SERVICEORDER = ?");
             preparedStatementSelect.setInt(1, serviceOrderId);
 
             resultSet = preparedStatementSelect.executeQuery();
@@ -2841,13 +2841,13 @@ public enum DAO {
 
                 // ---- UPDATE PORT USED SET 0
                 preparedStatementUpdate = connection
-                        .prepareStatement("UPDATE PORT USED SET 0 WHERE ID = ?");
+                        .prepareStatement("UPDATE PORT SET USED = 0 WHERE ID = ?");
                 preparedStatementSelect.setInt(1, portID);
                 preparedStatementUpdate.execute();
 
                 // ---- UPDATE SERVICEINSTANCE ID_CABLE SET NULL
                 preparedStatementUpdate = connection
-                        .prepareStatement("UPDATE SERVICEINSTANCE ID_CABLE SET NULL WHERE ID = ?");
+                        .prepareStatement("UPDATE SERVICEINSTANCE SET ID_CABLE = NULL WHERE ID = ?");
                 preparedStatementSelect.setInt(1, siID);
                 preparedStatementUpdate.execute();
 
