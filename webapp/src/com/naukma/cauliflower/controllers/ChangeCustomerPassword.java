@@ -34,7 +34,7 @@ public class ChangeCustomerPassword extends HttpServlet {
             String newPassword = request.getParameter(newPasswordAttribute);
             System.out.println(newPassword);
             if (userIdForNewPass > 0) {
-                if(newPassword.length()> 6) {
+                if(newPassword.length()>= 6) {
                     //hashing password
                     final String hashedPassword= Cryptographer.hmacSha1(newPassword);
                     logger.info(" reg controller :: hashed password form"+newPassword+" is "+hashedPassword);
@@ -56,7 +56,7 @@ public class ChangeCustomerPassword extends HttpServlet {
                         String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
                         EmailSender.sendEmail(userForNewPass, EmailSender.CHANGE_PASSWORD, message.toString(), EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
                         request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_CHANGE_PASSWORD_MESSAGE);
-                        response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
+                        response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK);
                     }else{
                         request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
                         response.sendRedirect(pathFrom);

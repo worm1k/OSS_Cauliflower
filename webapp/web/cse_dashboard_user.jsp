@@ -58,16 +58,6 @@
             %>
         </c:if>
 
-        <%-- Server message shows here --%>
-        <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <p><b>Server message:</b> ${sessionScope.error}</p>
-            </div>
-            <%
-                request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-            %>
-        </c:if>
 
         <div class="col-xs-6 border-right">
             <h4 class="txt-bold">About Customer User:</h4>
@@ -75,37 +65,37 @@
                 <dt>Id:</dt>
                 <%
                     User us = (User)request.getSession().getAttribute("customerUser");
-                    out.print("<dd>" + us.getUserId()+"</dd>");
+                    if(us!=null)out.print("<dd>" + us.getUserId()+"</dd>");
                 %>
                 <dt>Name:</dt>
                 <%
                     //us = (User)request.getSession().getAttribute("customerUser");
-                    out.print("<dd>" + us.getFirstName()+"</dd>");
+                    if(us!=null)out.print("<dd>" + us.getFirstName()+"</dd>");
                 %>
                 <dt>Surname:</dt>
                 <%
                     //us = (User)request.getSession().getAttribute("customerUser");
-                    out.print("<dd>" + us.getLastName()+"</dd>");
+                    if(us!=null)out.print("<dd>" + us.getLastName()+"</dd>");
                 %>
                 <dt>Email:</dt>
                 <%
                     //us = (User)request.getSession().getAttribute("customerUser");
-                    out.print("<dd>" + us.getEmail()+"</dd>");
+                    if(us!=null)out.print("<dd>" + us.getEmail()+"</dd>");
                 %>
                 <dt>Phone:</dt>
                 <%
                     //us = (User)request.getSession().getAttribute("customerUser");
-                    out.print("<dd>" + us.getPhone()+"</dd>");
+                    if(us!=null)out.print("<dd>" + us.getPhone()+"</dd>");
                 %>
                 <dt>Role:</dt>
                 <%
                     //us = (User)request.getSession().getAttribute("customerUser");
-                    out.print("<dd>" + us.getUserRole()+"</dd>");
+                    if(us!=null)out.print("<dd>" + us.getUserRole()+"</dd>");
                 %>
                 <dt>isBlocked:</dt>
                 <%
                     //us = (User)request.getSession().getAttribute("customerUser");
-                    out.print("<dd>" + us.isBlocked()+"</dd>");
+                    if(us!=null)out.print("<dd>" + us.isBlocked()+"</dd>");
                 %>
             </dl>
         </div>
