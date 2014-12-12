@@ -35,7 +35,7 @@
     <jsp:include page="header.jsp"/>
 
     <div class="container">
-        <h1 class="text-center txt-bold">CauliFlower OSS</h1>
+        <h1 class="text-center txt-bold">CauliFlower</h1>
         <h2 class="text-center">Customer User Information</h2>
         <%--Server message shows here--%>
         <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">

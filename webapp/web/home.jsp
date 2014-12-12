@@ -17,7 +17,7 @@
 
     <div class="container">
         <div class="row text-center">
-            <h1 class="txt-center txt-bold">CauliFlower OSS</h1>
+            <h1 class="txt-center txt-bold">CauliFlower</h1>
             <img class="img-responsive center-block img-logo-homepage" src="img/logo_lg.png"/>
         </div>
     </div>

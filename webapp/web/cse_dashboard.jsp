@@ -26,7 +26,7 @@
     <jsp:include page="header.jsp"/>
 
     <div class="container">
-        <h1 class="txt-center txt-bold">CauliFlower OSS</h1>
+        <h1 class="txt-center txt-bold">CauliFlower</h1>
         <h2 class="txt-center">Customer Support Engineer Dashboard</h2>
 
         <table class="table table-striped">

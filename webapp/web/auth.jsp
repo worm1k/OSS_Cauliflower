@@ -22,7 +22,7 @@
     <jsp:include page="header.jsp" />
 
     <div class="container">
-        <h1 class="txt-center txt-bold">CauliFlower OSS</h1>
+        <h1 class="txt-center txt-bold">CauliFlower</h1>
         <%-- Server message shows here --%>
         <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
             <div class="alert alert-danger alert-dismissible" role="alert">
@@ -45,7 +45,7 @@
                 <div class="form-group" id="auth_log_password">
                     <h4>Password <span class="required"></span></h4>
                     <input type="password" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Password must contain at least 6 symbols" name="password" placeholder="secret-password" required>
-                    <a href="#">Forgot your password?</a>
+                    <%--<a href="#">Forgot your password?</a>--%>
                 </div>
                 <button id="auth_log_submit" class="btn-signin btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
             </form>
