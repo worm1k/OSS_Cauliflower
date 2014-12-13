@@ -33,7 +33,7 @@
 
     <div id="js-map" class="google-map"></div>
 
-    <div class="container">
+    <div class="container ng-cloak" ng-class="hasServiceInstance? 'item-visible-true' : 'item-visible-false'">
         <div class="col-xs-12 border-bottom">
             <h3>Service Instance:</h3>
             <select class="form-control" ng-model="serviceInstance"
@@ -98,7 +98,6 @@
                         <th>Id</th>
                         <th>Scenario</th>
                         <th>Status</th>
-                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -107,18 +106,16 @@
                         <td>{{order.id}}</td>
                         <td>{{order.orderScenario}}</td>
                         <td>{{order.orderStatus}}</td>
-                        <td>
-                            <%--<button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-cog"></span></button>--%>
-                            <%--<button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash"></span></button>--%>
-                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <%--<div class="col-xs-12 jumbotron" ng-class="{hasServiceInstance: item-visible-false}">--%>
-            <%--<h3 class="text-center txt-bold">There are no Service Instaces</h3>--%>
-        <%--</div>--%>
+    </div>
+
+    <div class="container ng-cloak" ng-class="hasServiceInstance? 'item-visible-false' : 'item-visible-true'">
+        <h3 class="text-center">There are no orders yet</h3>
+        <p class="text-center">You have not created any one so far. You can start by clicking <a href="order.jsp">here</a>.</p>
     </div>
 
     <jsp:include page="footer.jsp"/>
