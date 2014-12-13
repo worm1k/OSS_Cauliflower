@@ -186,14 +186,23 @@ angular.module('MapDashboard', [])
                 while(i < $scope.serviceInstance.providerLocation.arrService.length && !isFound){
                     if($scope.serviceInstance.serviceId == $scope.serviceInstance.providerLocation.arrService[i].id){
                         if(isInit){
-                            $scope.$apply(function(){ $scope.service = $scope.serviceInstance.providerLocation.arrService[i] });
+                            $scope.$apply(function(){
+                                $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
+                                $scope.arrAvailableServices = pushAll($scope.arrAvailableServices, $scope.serviceInstance.providerLocation.arrService);
+                                $scope.arrAvailableServices.splice(i,1);
+                            });
                         }else{
                             $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
+                            $scope.arrAvailableServices = pushAll($scope.arrAvailableServices, $scope.serviceInstance.providerLocation.arrService);
+                            $scope.arrAvailableServices.splice(i,1);
                         }
                         isFound = true;
                     }
                     i++;
                 }
+
+                console.log('$scope.arrAvailableServices', $scope.arrAvailableServices);
+                console.log('$scope.serviceInstance.providerLocation.arrService', $scope.serviceInstance.providerLocation.arrService);
 
                 mapCenterCamera($scope.gmap, [$scope.serviceInstance.serviceLocation.locationLatitude,$scope.serviceInstance.serviceLocation.locationLongitude], true);
                 mapZoomCamera($scope.gmap, 14);
@@ -275,6 +284,10 @@ angular.module('MapDashboard', [])
 
         function isInit(){ return $scope.isControllerInit && $scope.isMapInit; }
 
+        function pushAll(arr1, arr2){
+            for(var i = 0; i < arr2.length; i++) arr1.push(arr2[i]);
+            return arr1;
+        }
         /*******************END FUNCTIONS*******************/
 
         ajaxGetDashboardData(function(serverData){
