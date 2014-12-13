@@ -1901,10 +1901,13 @@ public enum DAO {
      * @param serviceOrderId
      * @param role           role of the engineer
      * @param taskName       name of the task
+     * @param taskStatus  status of the task
+     * @see com.naukma.cauliflower.dao.TaskStatus
+     * @see com.naukma.cauliflower.dao.TaskName
      * @return id of created task
      * @throws java.sql.SQLException
      */
-    public int createNewTask(int serviceOrderId, UserRole role, TaskName taskName) throws SQLException {
+    public int createNewTask(int serviceOrderId, UserRole role, TaskName taskName,TaskStatus taskStatus) throws SQLException {
         {//help
             System.out.println("CREATE TASK");
         }
@@ -1919,12 +1922,12 @@ public enum DAO {
                     "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
                     "?, ?)");
             {//HELP
-                System.out.println("taskStatus: " + TaskStatus.FREE.toString());
+                System.out.println("taskStatus: " + taskStatus.toString());
                 System.out.println("userRole: " + role.toString());
                 System.out.println("serviceOrderId " + serviceOrderId);
                 System.out.println("TaskName: " + taskName.toString());
             }
-            preparedStatement.setString(1, TaskStatus.FREE.toString());
+            preparedStatement.setString(1,  taskStatus.toString());
             preparedStatement.setString(2, role.toString());
             preparedStatement.setInt(3, serviceOrderId);
             preparedStatement.setString(4, taskName.toString());
@@ -2975,7 +2978,29 @@ public enum DAO {
 
     }
 
+
+
     /**---------------------------------------------------------------------END Alex---------------------------------------------------------------------**/
+
+
+
+    /**---------------------------------------------------------------------START Max---------------------------------------------------------------------**/
+
+    public int getTasksNumByName(TaskName taskName) {
+        return 1;
+    }
+
+
+    public int getFreePortsNum(){
+        return 1;
+    }
+
+    public int getTasksNumByStatus(TaskStatus taskStatus){
+        return 1;
+
+    }
+    /**---------------------------------------------------------------------END Max---------------------------------------------------------------------**/
+
 }
 
 

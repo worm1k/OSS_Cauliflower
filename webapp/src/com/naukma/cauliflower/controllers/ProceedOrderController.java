@@ -71,8 +71,18 @@ public class ProceedOrderController extends HttpServlet {
         createServiceInstance(request);
         connectInstanceWithOrder();
         setInstanceBlocked();
-        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.CONNECT_NEW_PERSON);
+        int availablePorts = DAO.INSTANCE.getFreePortsNum() + DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_NEW_ROUTER) * CauliflowerInfo.PORTS_QUANTITY ;
+        int neededPorts =  DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_CIRCUIT) + DAO.INSTANCE.getTasksNumByStatus(TaskStatus.WAITING);
+                ;
+        //getFreePorts() + DAO.INSTANCE.getTasksByStatusAndRole(TaskStatus.WAITING,UserRole.INSTALLATION_ENG).size();
 
+        if(availablePorts >= neededPorts )
+        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.CONNECT_NEW_PERSON,TaskStatus.FREE);
+        else{
+         DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_NEW_ROUTER,TaskStatus.FREE);
+        taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CONNECT_NEW_PERSON,TaskStatus.WAITING);
+
+        }
     }
 
     private void scenarioModify(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
@@ -89,7 +99,7 @@ public class ProceedOrderController extends HttpServlet {
             createModifyOrder(serviceInstanceId);
             changeOrderStatus();
             setInstanceBlocked();
-            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE);
+            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE,TaskStatus.FREE);
             setNewServiceForTask(request);
         }
 
@@ -113,7 +123,7 @@ public class ProceedOrderController extends HttpServlet {
             createDisconnectOrder(serviceInstanceId);
             changeOrderStatus();
             setInstanceBlocked();
-            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG, TaskName.BREAK_CIRCUIT);
+            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG, TaskName.BREAK_CIRCUIT,TaskStatus.FREE);
         }
     }
 
@@ -127,7 +137,7 @@ public class ProceedOrderController extends HttpServlet {
             createDisconnectOrder(serviceInstanceId);
             changeOrderStatus();
             setInstanceBlocked();
-            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT);
+            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT,TaskStatus.FREE);
         }
 
     }

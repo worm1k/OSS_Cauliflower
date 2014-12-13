@@ -56,5 +56,7 @@ public class CauliflowerInfo {
     public static final String OK_CHANGE_PASSWORD_MESSAGE = "Password has been changed!";
 
 
+    public static final int PORTS_QUANTITY=60;
+
 
 }
