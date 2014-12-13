@@ -34,7 +34,7 @@
     <div id="js-map" class="google-map"></div>
 
     <div class="container ng-cloak" ng-class="hasServiceInstance? 'item-visible-true' : 'item-visible-false'">
-        <div class="col-xs-12 border-bottom">
+        <div class="col-xs-12">
             <h3>Service Instance:</h3>
             <select class="form-control" ng-model="serviceInstance"
                     ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
@@ -56,34 +56,37 @@
                 <dd>{{serviceInstance.instanceStatus}}</dd>
             </dl>
         </div>
-        <div class="col-xs-8 border-right margin-bottom">
-            <h3>Modify Service:</h3>
-            <form action="services" method="POST">
-                <ul>
-                    <li ng-repeat="service in serviceInstance.providerLocation.arrService" class="ng-cloak">
-                        <label class="radio font-regular">
-                            <input type="radio" name="serviceId" value="{{service.id}}" checked>
-                            <span>{{service.serviceTypeName}}</span>,
-                            <span>{{service.serviceSpeed}} Mbps</span>,
-                            <span>{{service.price}}$</span>
-                        </label>
-                    </li>
-                </ul>
+        <div class="row border-top" ng-class="serviceInstance.isBlocked? 'item-visible-false' : 'item-visible-true'">
+            <div class="col-xs-8 border-right margin-bottom">
+                <h3>Modify Service:</h3>
+                <p ng-class="arrAvailableServices.length > 0? 'item-visible-false' : 'item-visible-true'">There are no available services.</p>
+                <form action="services" method="POST" ng-class="arrAvailableServices.length > 0? 'item-visible-true' : 'item-visible-false'">
+                    <ul>
+                        <li ng-repeat="service in arrAvailableServices" class="ng-cloak">
+                            <label class="radio font-regular">
+                                <input type="radio" name="serviceId" value="{{service.id}}" ng-checked="$index == 0? true : false">
+                                <span>{{service.serviceTypeName}}</span>,
+                                <span>{{service.serviceSpeed}} Mbps</span>,
+                                <span>{{service.price}}$</span>
+                            </label>
+                        </li>
+                    </ul>
 
-                <%-- serviceLocation data --%>
-                <input type="hidden" name="instanceId" value="{{serviceInstance.id}}">
-                <input type="hidden" name="scenario" value="MODIFY">
+                    <%-- serviceLocation data --%>
+                    <input type="hidden" name="instanceId" value="{{serviceInstance.id}}">
+                    <input type="hidden" name="scenario" value="MODIFY">
 
-                <button type="submit" class="btn btn-success">Modify</button>
-            </form>
-        </div>
-        <div class="col-xs-4 margin-bottom">
-            <h3>Disconnect:</h3>
-            <form action="services" method="POST">
-                <input type="hidden" name="instanceId" value="{{serviceInstance.id}}">
-                <input type="hidden" name="scenario" value="DISCONNECT">
-                <button type="submit" class="btn btn-danger">Disconnect</button>
-            </form>
+                    <button type="submit" class="btn btn-success">Modify</button>
+                </form>
+            </div>
+            <div class="col-xs-4 margin-bottom">
+                <h3>Disconnect:</h3>
+                <form action="services" method="POST">
+                    <input type="hidden" name="instanceId" value="{{serviceInstance.id}}">
+                    <input type="hidden" name="scenario" value="DISCONNECT">
+                    <button type="submit" class="btn btn-danger">Disconnect</button>
+                </form>
+            </div>
         </div>
         <div class="col-xs-12 border-top">
             <h3>Service Orders:</h3>
