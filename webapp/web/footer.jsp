@@ -17,7 +17,6 @@
 </footer>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCP497dnVu2vETnDTcY9ouPNOyCMhccFcs&libraries=places&language=en"></script>
-<script type="text/javascript" src="./vendor/angularjs/angular.min.js"></script>
 <script type="text/javascript" src="./vendor/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="vendor/jquery.ui/js/datepicker.js"></script>
 <script type="text/javascript" src="./vendor/jquery.inputmask/dist/jquery.inputmask.bundle.min.js"></script>
@@ -26,6 +25,7 @@
 <script type="text/javascript" src="./vendor/geocomplete/jquery.geocomplete.min.js"></script>
 <script type="text/javascript" src="./vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="./vendor/bootstrap/dist/js/alert.js"></script>
+<script type="text/javascript" src="./vendor/angularjs/angular.min.js"></script>
 
 <%--it works incorrect--%>
 <%--<script src="http://code.jquery.com/jquery-1.10.2.js"></script>--%>

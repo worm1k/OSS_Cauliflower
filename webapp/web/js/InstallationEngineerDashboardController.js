@@ -3,10 +3,9 @@
 angular.module('IEDashboard', [])
     .controller('IEDashboardController', function($scope){
 
-        $scope.arrTaskFree = [];
-        $scope.arrTaskSubscribed = [];
-        $scope.arrTaskCompleted = [];
-        $scope.test = 'test';
+        $scope.arrTaskFree = null;
+        $scope.arrTaskSubscribed = null;
+        $scope.arrTaskCompleted = null;
 
         function setTasksByStatus(arrTask){
             for(var i = 0; i < arrTask.length; i++){
@@ -41,6 +40,23 @@ angular.module('IEDashboard', [])
         }
 
         ajaxGetTasks(function(jqXHR){
+            $scope.arrTaskFree = [];
+            $scope.arrTaskSubscribed = [];
+            $scope.arrTaskCompleted = [];
+
             setTasksByStatus(jqXHR);
         });
+    })
+    .directive('showHide', function () {
+        return {
+            link: function (scope, element, attributes, controller) {
+                scope.$watch(attributes.showHide, function (v) {
+                    if (v) {
+                        element.show();
+                    } else {
+                        element.hide();
+                    }
+                });
+            }
+        };
     });

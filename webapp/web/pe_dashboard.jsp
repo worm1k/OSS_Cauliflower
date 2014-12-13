@@ -60,13 +60,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="task in arrTaskFree">
+            <tr ng-repeat="task in arrTaskFree" class="ng-cloak">
                 <td>{{$index + 1}}</td>
                 <td>{{task.taskId}}</td>
                 <td>{{task.taskName}}</td>
                 <td>{{task.taskStatus}}</td>
                 <td>
-                    <form action="manageTask" method="POST">
+                    <form class="form-inline inline" action="manageTask" method="POST">
                         <input type="hidden" name="taskId" value="{{task.taskId}}"/>
                         <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
                         <button class="btn btn-xs btn-info">Subscribe</button>
@@ -89,18 +89,18 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="task in arrTaskSubscribed">
+            <tr ng-repeat="task in arrTaskSubscribed" class="ng-cloak">
                 <td>{{$index + 1}}</td>
                 <td>{{task.taskId}}</td>
                 <td>{{task.taskName}}</td>
                 <td>{{task.taskStatus}}</td>
                 <td>
-                    <form action="provisioningController" method="POST">
+                    <form class="form-inline inline" action="provisioningController" method="POST">
                         <input type="hidden" name="taskId" value="{{task.taskId}}"/>
                         <%--<input type="hidden" name="serviceOrderId" value="{{task.serviceOrderId}}"/>--%>
                         <button type="submit" class="btn btn-xs btn-success">Done</button>
                     </form>
-                    <form action="manageTask" method="POST">
+                    <form class="form-inline inline" action="manageTask" method="POST">
                         <input type="hidden" name="taskId" value="{{task.taskId}}"/>
                         <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
                         <button type="submit" class="btn btn-xs btn-danger">Unsubscribe</button>

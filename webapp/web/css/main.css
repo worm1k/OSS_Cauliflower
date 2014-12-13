@@ -4,6 +4,8 @@ body {
     color: #333;
     padding-top: 50px;
 }
+.ng-cloak { display: none; }
+.inline { display: inline-block; }
 table, .table { border: 1px solid #ddd }
 .navbar-brand {
     padding: 8px;
