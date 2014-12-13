@@ -56,6 +56,7 @@ public class InstallationTasksController extends HttpServlet {
                         }
                     } else if (task.getTaskName().equals(TaskName.BREAK_CIRCUIT)) {
                         DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
+                        DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE,TaskStatus.FREE);
                     }
 
                     DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);

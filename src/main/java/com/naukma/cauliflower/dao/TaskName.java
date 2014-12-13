@@ -5,9 +5,9 @@ package com.naukma.cauliflower.dao;
  */
 public enum TaskName {
     CREATE_CIRCUIT,
-    UNASSIGN_PORT,
     BREAK_CIRCUIT,
     MODIFY_SERVICE,
     CONNECT_INSTANCE,
-    CREATE_NEW_ROUTER
+    CREATE_NEW_ROUTER,
+    DISCONNECT_INSTANCE
 }

@@ -2,6 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.*;
 import com.naukma.cauliflower.entities.ServiceOrder;
+import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 
@@ -37,6 +38,7 @@ public class ProvisioningTaskController extends HttpServlet {
             try {
                 System.out.println("before");
                 Integer taskId = Integer.parseInt(taskIdParam);
+                Task task = DAO.INSTANCE.getTaskById(taskId);
                 {//help
                     System.out.println(taskId);
                     System.out.println(DAO.INSTANCE.getTaskStatus(taskId));
@@ -48,13 +50,13 @@ public class ProvisioningTaskController extends HttpServlet {
                         user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG)) {
 
                     ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(taskId);
-                    if (serviceOrder.getOrderScenario().equals(Scenario.NEW.toString())) {
+                    if (task.getTaskName().equals(TaskName.CONNECT_INSTANCE)) {
                         DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
                     }
-                    else if (serviceOrder.getOrderScenario().equals(Scenario.MODIFY.toString())) {
+                    else if (task.getTaskName().equals(TaskName.MODIFY_SERVICE)) {
                         DAO.INSTANCE.changeServiceForServiceInstance(taskId, serviceOrder.getServiceInstanceId());
                     }
-                    else if (serviceOrder.getOrderScenario().equals(Scenario.DISCONNECT.toString())) {
+                    else if (task.getTaskName().equals(TaskName.DISCONNECT_INSTANCE)) {
                         DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
                     }
                     DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
