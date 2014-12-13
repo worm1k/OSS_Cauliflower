@@ -11,19 +11,6 @@
         </webroots>
       </configuration>
     </facet>
-    <facet type="JRebel" name="JRebel">
-      <configuration>
-        <option name="autosync" value="false" />
-        <option name="deleteUnindexed" value="true" />
-        <option name="manualXML" value="false" />
-        <option name="masterModuleName" />
-        <option name="remotingEnabled" value="false" />
-        <option name="scanAllFiles" value="false" />
-        <option name="secure" value="true" />
-        <option name="url" />
-        <option name="xmlDir" />
-      </configuration>
-    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -53,4 +40,3 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-servlet-api:7.0.12" level="project" />
   </component>
 </module>
-
