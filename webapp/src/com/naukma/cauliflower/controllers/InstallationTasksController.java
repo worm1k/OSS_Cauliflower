@@ -35,24 +35,28 @@ public class InstallationTasksController extends HttpServlet {
         } else {
             try {
                 int taskId = Integer.parseInt(taskIdParam);
-                Task task = DAO.INSTANCE.getTaskById(taskId);
                 int serviceOrderId = Integer.parseInt(serviceOrderIdParam);
-                //RI.9
-                //The system should allow creating Devices, Ports and Cables only by Installation Engineer
+                Task task = DAO.INSTANCE.getTaskById(taskId);
+
+
                 if (task.getTaskStatus().equals(TaskStatus.PROCESSING.toString()) &&
-                        //user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
-                        user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
-                    if (task.getTaskName() == TaskName.CREATE_NEW_ROUTER) {
+                    user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
+
+                    if (task.getTaskName().equals(TaskName.CREATE_NEW_ROUTER)) {
                         DAO.INSTANCE.createRouter();
-                        DAO.INSTANCE.activateWaitingTasks(PORTS_PER_ROUTER);
-                    } else if (task.getTaskName() == TaskName.CONNECT_NEW_PERSON) {
-                        DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
-                    } else if (task.getTaskName() == TaskName.BREAK_CIRCUIT) {
-                        DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
-                        DAO.INSTANCE.activateWaitingTasks(PORTS_FREED_PER_DISCONNECT);
+                    } else if (task.getTaskName().equals(TaskName.CREATE_CIRCUIT)) {
+                        if (DAO.INSTANCE.freePortExists()) {
+                            DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
+                            DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE,TaskStatus.FREE);
+                        } else {
+                            if (DAO.INSTANCE.countNotCompletedTasksByTaskName(TaskName.CREATE_NEW_ROUTER) == 0) {
+                                DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.INSTALLATION_ENG, TaskName.CREATE_NEW_ROUTER, TaskStatus.FREE);
+                            }
+                            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.NO_PORTS_ERROR_MESSAGE);
+                        }
                     }
+
                     DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                    DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE,TaskStatus.FREE);
                     response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
 
                 } else
