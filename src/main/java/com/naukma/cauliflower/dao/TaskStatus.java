@@ -6,6 +6,7 @@ package com.naukma.cauliflower.dao;
 public enum TaskStatus {
     FREE,
     PROCESSING,
-    COMPLETED
+    COMPLETED,
+    WAITING
 
 }

@@ -15,6 +15,8 @@ import java.sql.SQLException;
 
 @WebServlet(name = "InstallationTasksController")
 public class InstallationTasksController extends HttpServlet {
+    private static final int PORTS_PER_ROUTER = 60;
+    private static final int PORTS_FREED_PER_DISCONNECT = 1;
 
     /*
     RI.9
@@ -33,21 +35,21 @@ public class InstallationTasksController extends HttpServlet {
         } else {
             try {
                 int taskId = Integer.parseInt(taskIdParam);
+                Task task = DAO.INSTANCE.getTaskById(taskId);
                 int serviceOrderId = Integer.parseInt(serviceOrderIdParam);
                 //RI.9
                 //The system should allow creating Devices, Ports and Cables only by Installation Engineer
-                if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
+                if (task.getTaskStatus().equals(TaskStatus.PROCESSING.toString()) &&
                         //user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor_InstallationEngineer()) {
                         user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
-
-                    Scenario scenario = DAO.INSTANCE.getOrderScenario(serviceOrderId);
-                    if (scenario == Scenario.NEW) {
-
-                        if (!DAO.INSTANCE.freePortExists())
-                            DAO.INSTANCE.createRouter();
+                    if (task.getTaskName() == TaskName.CREATE_NEW_ROUTER) {
+                        DAO.INSTANCE.createRouter();
+                        DAO.INSTANCE.activateWaitingTasks(PORTS_PER_ROUTER);
+                    } else if (task.getTaskName() == TaskName.CONNECT_NEW_PERSON) {
                         DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
-                    } else if (scenario == Scenario.DISCONNECT) {
+                    } else if (task.getTaskName() == TaskName.BREAK_CIRCUIT) {
                         DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
+                        DAO.INSTANCE.activateWaitingTasks(PORTS_FREED_PER_DISCONNECT);
                     }
                     DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                     DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
