@@ -2986,17 +2986,58 @@ public enum DAO {
 
     /**---------------------------------------------------------------------START Max---------------------------------------------------------------------**/
 
-    public int getTasksNumByName(TaskName taskName) {
-        return 1;
+    public int getTasksNumByName(TaskName taskName)throws SQLException{
+        Connection connection = getConnection();
+         PreparedStatement preparedStatement = null;
+       int num =1;
+        try {
+
+        }
+        finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return  num;
     }
 
-
     public int getFreePortsNum(){
-        return 1;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int num =1;
+        try {
+
+        }
+        finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return  num;
     }
 
     public int getTasksNumByStatus(TaskStatus taskStatus){
-        return 1;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int num =1;
+        try {
+
+        }
+        finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return  num;
 
     }
     /**---------------------------------------------------------------------END Max---------------------------------------------------------------------**/

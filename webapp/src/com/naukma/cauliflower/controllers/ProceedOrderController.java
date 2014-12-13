@@ -76,11 +76,11 @@ public class ProceedOrderController extends HttpServlet {
                 ;
         //getFreePorts() + DAO.INSTANCE.getTasksByStatusAndRole(TaskStatus.WAITING,UserRole.INSTALLATION_ENG).size();
 
-        if(availablePorts >= neededPorts )
-        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.CONNECT_NEW_PERSON,TaskStatus.FREE);
+        if(availablePorts > neededPorts )
+        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.FREE);
         else{
          DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_NEW_ROUTER,TaskStatus.FREE);
-        taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CONNECT_NEW_PERSON,TaskStatus.WAITING);
+        taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.WAITING);
 
         }
     }
