@@ -52,7 +52,7 @@ public class InstallationTasksController extends HttpServlet {
                         DAO.INSTANCE.activateWaitingTasks(PORTS_FREED_PER_DISCONNECT);
                     }
                     DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                    DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
+                    DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE,TaskStatus.FREE);
                     response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
 
                 } else
