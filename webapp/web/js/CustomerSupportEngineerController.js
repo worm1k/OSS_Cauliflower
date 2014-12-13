@@ -79,6 +79,25 @@ angular.module('CSEDashboard', [])
             }
         }
 
+        function passwordCheck(that){
+            var isValid = false;
+            if($(that).find('input').val().length > 5){
+                $(that).removeClass("has-error");
+                isValid = true;
+            }else{
+                $(that).addClass("has-error");
+            }
+            return isValid;
+        }
+
+        function popover(that, ms){
+            $(that).find('input').popover('show');
+            $(that).find('input').focus();
+            setTimeout(function(){
+                $(that).find('input').popover('hide');
+            },ms);
+        }
+
         function ajaxGetDashboardData(userId, callback){
             $.ajax({
                 type: 'GET',
@@ -230,5 +249,18 @@ angular.module('CSEDashboard', [])
 
             $scope.$apply(function(){ $scope.serviceInstance = $scope.arrServiceInstance[0]; });
             updateGeneralInfo(true);
+
+            $(document).ready(function(){
+                $('#js-act-change-pass').click(function(e){
+                    e.preventDefault();
+                    console.log($('#js-input-password').length);
+
+                    if(!passwordCheck('#js-change-pass')){
+                        popover('#js-change-pass', 2000);
+                    }else{
+                        $('#js-form-change-pass').submit();
+                    }
+                });
+            })
         });
     });
