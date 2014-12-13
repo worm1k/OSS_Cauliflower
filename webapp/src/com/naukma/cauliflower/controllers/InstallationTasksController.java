@@ -54,6 +54,8 @@ public class InstallationTasksController extends HttpServlet {
                             }
                             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.NO_PORTS_ERROR_MESSAGE);
                         }
+                    } else if (task.getTaskName().equals(TaskName.BREAK_CIRCUIT)) {
+                        DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
                     }
 
                     DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
