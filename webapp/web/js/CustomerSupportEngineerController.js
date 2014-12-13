@@ -46,27 +46,38 @@ angular.module('CSEDashboard', [])
         $scope.serviceInstance;
         $scope.service;
 
-        $scope.hasServiceInstance = false;
+        $scope.isControllerInit = false;
 
         $scope.update = function(){
-            console.log('update');
-            var i = 0;
-            var isFound = false;
-
-            console.log("$scope.serviceInstance.providerLocation.arrService.length", $scope.serviceInstance.providerLocation.arrService.length);
-            //find service instance service
-            while(i < $scope.serviceInstance.providerLocation.arrService.length && !isFound){
-                console.log($scope.serviceInstance.serviceId + ' & ' + $scope.serviceInstance.providerLocation.arrService[i].id);
-                if($scope.serviceInstance.serviceId == $scope.serviceInstance.providerLocation.arrService[i].id){
-                    $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
-                    isFound = true;
-                }
-                i++;
-            }
-            console.log($scope.service);
+            updateGeneralInfo(false);
         }
 
-        console.log($scope.customerUserId);
+        function updateGeneralInfo(isInit){
+            if($scope.arrServiceInstance.length > 0){
+                console.log('serviceInstance', $scope.serviceInstance);
+                console.log('providerLocation arrServices', $scope.serviceInstance.providerLocation.arrService);
+
+                var i = 0;
+                var isFound = false;
+
+                //find service instance service
+                while(i < $scope.serviceInstance.providerLocation.arrService.length && !isFound){
+                    if($scope.serviceInstance.serviceId == $scope.serviceInstance.providerLocation.arrService[i].id){
+                        if(isInit){
+                            $scope.$apply(function(){
+                                $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
+                            });
+                        }else{
+                            $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
+                        }
+                        isFound = true;
+                    }
+                    i++;
+                }
+            }else{
+                console.log('empty');
+            }
+        }
 
         function ajaxGetDashboardData(userId, callback){
             $.ajax({
@@ -194,20 +205,15 @@ angular.module('CSEDashboard', [])
                     $scope.arrProviderLocation[index].addService(tmpService);
                 }
 
-                // set provider location for service instance
-//			while(k < $scope.arrServiceInstance.length && !isAddedProviderLocation){
-//                console.log('i: ' + i + ',k: ' + k);
-//				if($scope.arrServiceInstance[k].serviceId == tmpService.getId()){
-//					$scope.arrServiceInstance[k].providerLocation = $scope.arrProviderLocation[index].toJsonObj();
-//					isAddedProviderLocation = true;
-//				}
-//				k++;
-//			}
-
                 for(var k = 0; k < $scope.arrServiceInstance.length; k++){
-                    if($scope.arrServiceInstance[k].serviceId == tmpService.getId()){
-                        $scope.arrServiceInstance[k].providerLocation = $scope.arrProviderLocation[index].toJsonObj();
-                        isAddedProviderLocation = true;
+                    var l = 0;
+                    isAddedProviderLocation = false;
+                    while(l < $scope.arrProviderLocation[index].getArrService().length && !isAddedProviderLocation){
+                        if($scope.arrServiceInstance[k].serviceId == $scope.arrProviderLocation[index].getArrService()[l].getId()){
+                            $scope.arrServiceInstance[k].providerLocation = $scope.arrProviderLocation[index].toJsonObj();
+                            isAddedProviderLocation = true;
+                        }
+                        l++;
                     }
                 }
             }
@@ -222,6 +228,7 @@ angular.module('CSEDashboard', [])
                 console.log($scope.arrProviderLocation[i].toJsonObj());
             }
 
-            $scope.$apply(function(){ $scope.serviceInstance = $scope.arrServiceInstance[0]; })
+            $scope.$apply(function(){ $scope.serviceInstance = $scope.arrServiceInstance[0]; });
+            updateGeneralInfo(true);
         });
     });
