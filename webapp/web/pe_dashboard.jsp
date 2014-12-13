@@ -69,7 +69,7 @@
                     <form class="form-inline inline" action="manageTask" method="POST">
                         <input type="hidden" name="taskId" value="{{task.taskId}}"/>
                         <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
-                        <button class="btn btn-xs btn-info">Subscribe</button>
+                        <button class="btn btn-xs btn-info">Assign to me</button>
                     </form>
                 </td>
             </tr>
@@ -103,7 +103,7 @@
                     <form class="form-inline inline" action="manageTask" method="POST">
                         <input type="hidden" name="taskId" value="{{task.taskId}}"/>
                         <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
-                        <button type="submit" class="btn btn-xs btn-danger">Unsubscribe</button>
+                        <button type="submit" class="btn btn-xs btn-danger">Unassign from me</button>
                     </form>
                 </td>
             </tr>

@@ -4,7 +4,7 @@ body {
     color: #333;
     padding-top: 50px;
 }
-.ng-cloak { display: none; }
+.ng-cloak { display: none !important; }
 .inline { display: inline-block; }
 table, .table { border: 1px solid #ddd }
 .navbar-brand {

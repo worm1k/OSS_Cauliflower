@@ -39,7 +39,7 @@
             <select class="form-control" ng-model="serviceInstance"
                     ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
             </select>
-            <dl class="dl-horizontal">
+            <dl class="dl-horizontal ng-cloak">
                 <dt>Id:</dt>
                 <dd>{{serviceInstance.id}}</dd>
                 <dt>Service Location:</dt>
@@ -60,7 +60,7 @@
             <h3>Modify Service:</h3>
             <form action="services" method="POST">
                 <ul>
-                    <li ng-repeat="service in serviceInstance.providerLocation.arrService">
+                    <li ng-repeat="service in serviceInstance.providerLocation.arrService" class="ng-cloak">
                         <label class="radio font-regular">
                             <input type="radio" name="serviceId" value="{{service.id}}" checked>
                             <span>{{service.serviceTypeName}}</span>,
@@ -102,7 +102,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="order in serviceInstance.arrServiceOrder">
+                    <tr ng-repeat="order in serviceInstance.arrServiceOrder" class="ng-cloak">
                         <td>{{$index + 1}}</td>
                         <td>{{order.id}}</td>
                         <td>{{order.orderScenario}}</td>

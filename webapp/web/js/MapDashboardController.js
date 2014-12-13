@@ -15,6 +15,8 @@ angular.module('MapDashboard', [])
 		$scope.arrProviderLocationMapMarker = [];
 
         $scope.hasServiceInstance = false;
+        $scope.isControllerInit = false;
+        $scope.isMapInit = false;
 
 		var markerIcons = {
 			red: new google.maps.MarkerImage("img/icons/marker_red.png"),
@@ -24,7 +26,7 @@ angular.module('MapDashboard', [])
 		}
 
 		$scope.update = function(){
-			updateGeneralInfo();
+            updateGeneralInfo(false);
 		}
 
 		function mapGetLatLngByAddress(gmap, address, callback){
@@ -170,42 +172,43 @@ angular.module('MapDashboard', [])
 			});
 		}
 
-		function updateGeneralInfo(){
-            console.log($scope.serviceInstance.providerLocation.arrService);
+        function updateGeneralInfo(isInit){
+            if($scope.arrServiceInstance.length > 0){
+                console.log('serviceInstance', $scope.serviceInstance);
+                console.log('providerLocation arrServices', $scope.serviceInstance.providerLocation.arrService);
 
-			var i = 0;
-			var isFound = false;
+                var i = 0;
+                var isFound = false;
 
-			$scope.arrAvailableServices = [];
+                $scope.arrAvailableServices = [];
 
-            //find service instance service
-            while(i < $scope.serviceInstance.providerLocation.arrService.length && !isFound){
-                if($scope.serviceInstance.serviceId == $scope.serviceInstance.providerLocation.arrService[i].id){
-//                    $scope.$apply(function(){ $scope.service = $scope.serviceInstance.providerLocation.arrService[i] });
-                    $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
-                    isFound = true;
+                //find service instance service
+                while(i < $scope.serviceInstance.providerLocation.arrService.length && !isFound){
+                    if($scope.serviceInstance.serviceId == $scope.serviceInstance.providerLocation.arrService[i].id){
+                        if(isInit){
+                            $scope.$apply(function(){ $scope.service = $scope.serviceInstance.providerLocation.arrService[i] });
+                        }else{
+                            $scope.service = $scope.serviceInstance.providerLocation.arrService[i];
+                        }
+                        isFound = true;
+                    }
+                    i++;
                 }
-                i++;
+
+                mapCenterCamera($scope.gmap, [$scope.serviceInstance.serviceLocation.locationLatitude,$scope.serviceInstance.serviceLocation.locationLongitude], true);
+                mapZoomCamera($scope.gmap, 14);
+
+                mapGetMarkers($scope.gmap, 'serviceLocation', function(markers){
+                    for(var i = 0; i < markers.length; i++){
+                        //set bounce animation
+                        if($scope.serviceInstance.id == markers[i].data.getId()){
+                            markers[i].object.setAnimation(google.maps.Animation.BOUNCE);
+                        }else{
+                            markers[i].object.setAnimation(null);
+                        }
+                    }
+                });
             }
-
-			mapCenterCamera($scope.gmap, [$scope.serviceInstance.serviceLocation.locationLatitude,$scope.serviceInstance.serviceLocation.locationLongitude], true);
-			mapZoomCamera($scope.gmap, 14);
-
-			mapGetMarkers($scope.gmap, 'serviceLocation', function(markers){
-				for(var i = 0; i < markers.length; i++){
-					//set bounce animation
-					if($scope.serviceInstance.id == markers[i].data.getId()){
-						markers[i].object.setAnimation(google.maps.Animation.BOUNCE);
-					}else{
-						markers[i].object.setAnimation(null);
-					}
-				}
-			});
-
-			// for(var i = 0; i < 
-			// 	if($scope.service.providerLocationId){
-
-			// 	}
 		}
 
 		function mapConnectServiceAndProviderLocations(){
@@ -255,7 +258,7 @@ angular.module('MapDashboard', [])
                 url: 'dashboard',
                 dataType: 'json',
                 success: function(jqXHR){
-                    console.log('ajaxGetDashboardData', jqXHR);
+//                    console.log('ajaxGetDashboardData', jqXHR);
                     if(jqXHR != null){
                         if (callback && typeof(callback) === "function") {
                             callback(jqXHR);
@@ -268,6 +271,8 @@ angular.module('MapDashboard', [])
             })
         }
 
+        function isInit(){ return $scope.isControllerInit && $scope.isMapInit; }
+
         /*******************END FUNCTIONS*******************/
 
         ajaxGetDashboardData(function(serverData){
@@ -275,7 +280,7 @@ angular.module('MapDashboard', [])
             var arrInstance = serverData.instances == null? [] : serverData.instances;
             var arrOrder = serverData.orders == null? [] : serverData.orders;
 
-            console.log('arrService', arrService);
+//            console.log('arrService', arrService);
 
             //proceed instances and orders
             for(var i = 0; i < arrInstance.length; i++){
@@ -453,25 +458,28 @@ angular.module('MapDashboard', [])
                 }
             }
 
-            console.log('******* $scope.arrServiceInstance *******');
-            for(var i = 0; i < $scope.arrServiceInstance.length; i++){
-                console.log($scope.arrServiceInstance[i]);
-            }
+//            console.log('******* $scope.arrServiceInstance *******');
+//            for(var i = 0; i < $scope.arrServiceInstance.length; i++){
+//                console.log($scope.arrServiceInstance[i]);
+//            }
+//
+//            console.log('******* $scope.arrProviderLocation *******');
+//            for(var i = 0; i < $scope.arrProviderLocation.length; i++){
+//                console.log($scope.arrProviderLocation[i].toJsonObj());
+//            }
 
-            console.log('******* $scope.arrProviderLocation *******');
-            for(var i = 0; i < $scope.arrProviderLocation.length; i++){
-                console.log($scope.arrProviderLocation[i].toJsonObj());
-            }
-
+            $scope.isControllerInit = true;
 		    $scope.$apply(function(){ $scope.serviceInstance = $scope.arrServiceInstance[0]; })
+
             if($scope.arrServiceInstance.length != 0){
                 $scope.hasServiceInstance = true;
-                updateGeneralInfo();
+//                if(isInit()){ updateGeneralInfo(); }
+                if(isInit()){ updateGeneralInfo(false); }
             }else{
                 mapZoomCamera($scope.gmap, 3);
             }
 
-            console.log($scope.hasServiceInstance);
+//            console.log($scope.hasServiceInstance);
 
             $(document).ready(function(){
                 //init
@@ -482,10 +490,10 @@ angular.module('MapDashboard', [])
                 mapAddMarkers($scope.gmap, $scope.arrServiceInstanceMapMarker);
                 mapAddMarkers($scope.gmap, $scope.arrProviderLocationMapMarker);
                 mapConnectServiceAndProviderLocations();
-//                if($scope.arrServiceInstance.length != 0){
-//                    updateGeneralInfo();
-//                }
-            })
 
+                $scope.isMapInit = true;
+//                if(isInit()){ updateGeneralInfo(); }
+                if(isInit()){ updateGeneralInfo(true); }
+            })
         });
 	});

@@ -44,7 +44,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="user in arrUser">
+            <tr ng-repeat="user in arrUser" class="ng-cloak">
                 <td>{{$index + 1}}</td>
                 <td>{{user.userId}}</td>
                 <td>{{user.firstName}}</td>

@@ -15,7 +15,7 @@
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">
-                <img class="img-header-logo" alt="Brand" src="img/logo_xs.png">
+                <img class="img-header-logo pull-left" alt="Brand" src="img/logo_xs.png">
             </a>
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
