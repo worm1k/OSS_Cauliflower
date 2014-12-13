@@ -71,18 +71,19 @@ public class ProceedOrderController extends HttpServlet {
         createServiceInstance(request);
         connectInstanceWithOrder();
         setInstanceBlocked();
-        int availablePorts = DAO.INSTANCE.getFreePortsNum() + DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_NEW_ROUTER) * CauliflowerInfo.PORTS_QUANTITY ;
-        int neededPorts =  DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_CIRCUIT) + DAO.INSTANCE.getTasksNumByStatus(TaskStatus.WAITING);
-                ;
-        //getFreePorts() + DAO.INSTANCE.getTasksByStatusAndRole(TaskStatus.WAITING,UserRole.INSTALLATION_ENG).size();
-
-        if(availablePorts > neededPorts )
-        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.FREE);
-        else{
-         DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_NEW_ROUTER,TaskStatus.FREE);
-        taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.WAITING);
-
-        }
+        taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.FREE);
+//        int availablePorts = DAO.INSTANCE.getFreePortsNum() + DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_NEW_ROUTER) * CauliflowerInfo.PORTS_QUANTITY ;
+//        int neededPorts =  DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_CIRCUIT) + DAO.INSTANCE.getTasksNumByStatus(TaskStatus.WAITING);
+//                ;
+//        //getFreePorts() + DAO.INSTANCE.getTasksByStatusAndRole(TaskStatus.WAITING,UserRole.INSTALLATION_ENG).size();
+//
+//        if(availablePorts > neededPorts )
+//        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.FREE);
+//        else{
+//         DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_NEW_ROUTER,TaskStatus.FREE);
+//        taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.WAITING);
+//
+//        }
     }
 
     private void scenarioModify(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
