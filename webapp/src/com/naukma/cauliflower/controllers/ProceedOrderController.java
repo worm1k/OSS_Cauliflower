@@ -37,11 +37,9 @@ public class ProceedOrderController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-       // System.out.println("IN PROCEED ORDER");
         user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         String scenario = request.getParameter(CauliflowerInfo.SCENARIO_PARAM);
-       // scenario = "NEW";
-        if(user == null) {
+         if(user == null || user.isBlocked()) {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
         }
         try {
@@ -58,7 +56,6 @@ public class ProceedOrderController extends HttpServlet {
         }
         catch (SQLException e) {
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
-         //   response.sendRedirect(pathFrom);
         }
 
         return;
@@ -90,7 +87,7 @@ public class ProceedOrderController extends HttpServlet {
         serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
         boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
         boolean disconnected = DAO.INSTANCE.isInstanceDisconnected(serviceInstanceId);
-        if(blocked){ //actually it is blocked
+        if(blocked){
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
             //request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
         }else if(disconnected){
@@ -110,15 +107,11 @@ public class ProceedOrderController extends HttpServlet {
         serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
         boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
         boolean disconnected = DAO.INSTANCE.isInstanceDisconnected(serviceInstanceId);
-
-       // checkBlocked(request, response);
-       // checkDisconnected(request,response);
         if(blocked){
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
 
         }else if(disconnected){
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
-         //   response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
         }
         else {
             createDisconnectOrder(serviceInstanceId);
@@ -128,30 +121,22 @@ public class ProceedOrderController extends HttpServlet {
         }
     }
 
-    private void checkBlocked(HttpServletRequest request,HttpServletResponse response) throws IOException, SQLException {
-        serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
-        boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
-      //vladmyr
-        if(blocked){
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
-        }else{
-            createDisconnectOrder(serviceInstanceId);
-            changeOrderStatus();
-            setInstanceBlocked();
-            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT,TaskStatus.FREE);
-        }
+//    private void checkBlocked(HttpServletRequest request,HttpServletResponse response) throws IOException, SQLException {
+//        serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
+//        boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
+//      //vladmyr
+//        if(blocked){
+//            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
+//        }else{
+//            createDisconnectOrder(serviceInstanceId);
+//            changeOrderStatus();
+//            setInstanceBlocked();
+//            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT,TaskStatus.FREE);
+//        }
 
-    }
+    
 
 
-
-    private void checkDisconnected(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
-        boolean disconnected = DAO.INSTANCE.isInstanceDisconnected(serviceInstanceId);
-        if (!disconnected) {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
-            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-        }
-    }
 
     private void createNewOrder() throws SQLException
     {
