@@ -2974,8 +2974,27 @@ public enum DAO {
     /**---------------------------------------------------------------------END vladmyr---------------------------------------------------------------------**/
 
     /**---------------------------------------------------------------------START Alex---------------------------------------------------------------------**/
-    public int countNotCompletedTasksByTaskName(TaskName name) {
-        return 0;
+    public int countNotCompletedTasksByTaskName(TaskName taskName) throws SQLException{
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int taskCount = 0;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT COUNT(ID_TASK) RES FROM TASK WHERE NAME = ? AND ID_TASKSTATUS IN " +
+                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME != 'COMPLETED')");
+            preparedStatement.setString(1,  taskName.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next())
+                taskCount = resultSet.getInt("RES");
+        }
+        finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return taskCount;
     }
 
 
