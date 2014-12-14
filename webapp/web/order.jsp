@@ -10,10 +10,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%
-    User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-    if(user!=null && !user.getUserRole().equals(UserRole.CUSTOMER.toString()))
-        response.sendRedirect("home.jsp");%>
+
 
 <!DOCTYPE html>
 <html lang="en" ng-app="NgApp">
