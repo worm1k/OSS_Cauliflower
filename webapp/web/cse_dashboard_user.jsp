@@ -23,7 +23,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="CSEDashboard">
 <head>
-    <title>CauliFlower | Customer User inforormation</title>
+    <title>CauliFlower | Customer User information</title>
     <jsp:include page="head.jsp"/>
 
     <script>

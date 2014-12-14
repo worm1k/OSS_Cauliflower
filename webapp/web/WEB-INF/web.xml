@@ -180,4 +180,14 @@
         <servlet-name>GetAllCustomersController</servlet-name>
         <url-pattern>/getallcustomers</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>TaskInformationController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.TaskInformationController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TaskInformationController</servlet-name>
+        <url-pattern>/taskinfo</url-pattern>
+    </servlet-mapping>
+
 </web-app>

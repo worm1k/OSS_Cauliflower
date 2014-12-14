@@ -34,13 +34,8 @@ public class CustomerUserInformationController extends HttpServlet {
             customerUserId = Integer.parseInt(request.getParameter(CauliflowerInfo.USER_ID_ATTRIBUTE));
 
             final User customerUser = DAO.INSTANCE.getCustomerUserById(customerUserId);
-            final List<ServiceInstance> lstServiceInstance = DAO.INSTANCE.getInstances(customerUserId);
-            final List<ServiceOrder> lstServiceOrder = DAO.INSTANCE.getOrders(customerUserId);
 
-            request.getSession().setAttribute("customerUser", customerUser);
-            request.getSession().setAttribute("lstServiceInstance", lstServiceInstance);
-            request.getSession().setAttribute("lstServiceOrder", lstServiceOrder);
-            //request.getRequestDispatcher(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK).forward(request, response);
+            request.getSession().setAttribute(CauliflowerInfo.CUSTOMER_USER_ATTRIBUTE, customerUser);
             response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK);
         }catch(Exception ex){
             ex.printStackTrace();

@@ -2970,6 +2970,110 @@ public enum DAO {
 
     }
 
+    /**
+     * return ServiceInstance of service instances
+     *
+     * @return ServiceInstance
+     * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.ServiceInstance
+     */
+    public ServiceInstance getInstanceById(int serviceInstanceId) throws SQLException {
+        {//help
+            System.out.println("GET INSTANCE BY ID");
+        }
+        ServiceInstance result = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
+                    "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
+                    "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
+                    "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                    "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
+                    "INNER JOIN SERVICEINSTANCESTATUS SIS " +
+                    "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID " +
+                    "WHERE SI.ID = ?");
+            preparedStatement.setInt(1, serviceInstanceId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result = new ServiceInstance(
+                        resultSet.getInt("ID"),
+                        resultSet.getInt("ID_USER"),
+                        resultSet.getInt("ID_SERVICE_LOCATION"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getInt("ID_SERVICE"),
+                        resultSet.getInt("SERVICE_INSTANCE_STATUS"),
+                        resultSet.getString("NAME"),
+                        resultSet.getInt("ID_CABLE"),
+                        (resultSet.getInt("HAS_ACTIVE_TASK") == 1));
+            }
+            {//help
+                System.out.println("SUCCESS !!! GET INSTANCES");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return result;
+
+    }
+
+    /**
+     * Returns ServiceOrder for selected task
+     *
+     * @param serviceOrderId Id of the service order
+     * @return found ServiceOrder
+     * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.entities.ServiceOrder
+     */
+
+    public ServiceOrder getServiceOrderById(int serviceOrderId) throws SQLException {
+        {//help
+            System.out.println("getServiceOrderById");
+        }
+        ServiceOrder result = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
+                    "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                    "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
+                    "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
+                    ") INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
+                    "WHERE SO.ID_SERVICEORDER = ?");
+            preparedStatement.setInt(1, serviceOrderId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                Date date = resultSet.getDate("OUR_DATE");
+                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
+                result = new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"),
+                        resultSet.getInt("ID_ORDERSTATUS"),
+                        resultSet.getString("OST_NAME"),
+                        resultSet.getInt("ID_SRVICEINSTANCE"),
+                        resultSet.getInt("ID_ORDERSCENARIO"),
+                        resultSet.getString("OSC_NAME"),
+                        gregorianCalendar, resultSet.getInt("ID_USER"));
+            }
+            {//help
+                System.out.println("SUCCESS ! getServiceOrder");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return result;
+    }
 
     /**---------------------------------------------------------------------END vladmyr---------------------------------------------------------------------**/
 

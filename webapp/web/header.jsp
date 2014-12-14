@@ -47,9 +47,9 @@
                                     if(us!=null && us.getUserRole().equals(UserRole.CUST_SUP_ENG.toString())) out.print("<li><a href=\"cse_dashboard.jsp\">Dashboard</a></li>");
                                     if(us!=null && !us.getUserRole().equals(UserRole.CUSTOMER.toString())) out.print("<li><a href=\"reports.jsp\">Get reports</a></li>");
                                 %>
-                                <li class="divider"><li>
+                                <li class="divider"></li>
                                 <li><a id="js-logout-lnk" href="#">Logout</a>
-                                    <form id="js-logout-form" action="logout" method="POST"></form>
+                                    <form id="js-logout-form" class="item-visible-false" action="logout" method="POST"></form>
                                 </li>
                             </ul>
                         </li>

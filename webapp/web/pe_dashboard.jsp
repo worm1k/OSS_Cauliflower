@@ -66,9 +66,13 @@
                 <td>{{task.taskName}}</td>
                 <td>{{task.taskStatus}}</td>
                 <td>
+                    <form class="form-inline inline" action="taskinfo" method="POST">
+                        <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
+                        <button type="submit" class="btn btn-xs btn-default">Open</button>
+                    </form>
                     <form class="form-inline inline" action="manageTask" method="POST">
-                        <input type="hidden" name="taskId" value="{{task.taskId}}"/>
-                        <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
+                        <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
+                        <input type="hidden" name="taskStatus" ng-value="{{task.taskStatus}}"/>
                         <button class="btn btn-xs btn-info">Assign to me</button>
                     </form>
                 </td>
@@ -95,14 +99,17 @@
                 <td>{{task.taskName}}</td>
                 <td>{{task.taskStatus}}</td>
                 <td>
-                    <form class="form-inline inline" action="provisioningController" method="POST">
-                        <input type="hidden" name="taskId" value="{{task.taskId}}"/>
-                        <%--<input type="hidden" name="serviceOrderId" value="{{task.serviceOrderId}}"/>--%>
-                        <button type="submit" class="btn btn-xs btn-success">Done</button>
+                    <form class="form-inline inline" action="taskinfo" method="POST">
+                        <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
+                        <button type="submit" class="btn btn-xs btn-default">Open</button>
                     </form>
+                    <%--<form class="form-inline inline" action="provisioningController" method="POST">--%>
+                        <%--<input type="hidden" name="taskId" value="{{task.taskId}}"/>--%>
+                        <%--<button type="submit" class="btn btn-xs btn-success">Done</button>--%>
+                    <%--</form>--%>
                     <form class="form-inline inline" action="manageTask" method="POST">
-                        <input type="hidden" name="taskId" value="{{task.taskId}}"/>
-                        <input type="hidden" name="taskStatus" value="{{task.taskStatus}}"/>
+                        <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
+                        <input type="hidden" name="taskStatus" ng-value="{{task.taskStatus}}"/>
                         <button type="submit" class="btn btn-xs btn-danger">Unassign from me</button>
                     </form>
                 </td>

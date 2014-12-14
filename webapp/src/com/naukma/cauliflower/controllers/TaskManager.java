@@ -2,6 +2,8 @@ package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.TaskStatus;
+import com.naukma.cauliflower.dao.UserRole;
+import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
@@ -23,18 +25,30 @@ public class TaskManager extends HttpServlet {
     */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathFrom  = request.getHeader("Referer");
-        int taskId =  Integer.parseInt(request.getParameter(CauliflowerInfo.TASK_ID_PARAM));
-        String status = request.getParameter(CauliflowerInfo.TASK_STATUS_PARAM);
-        try {
-            if(status.equals(TaskStatus.PROCESSING.toString()))
-                DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.FREE);
-            else if(status.equals(TaskStatus.FREE.toString()))
-                DAO.INSTANCE.changeTaskStatus(taskId,TaskStatus.PROCESSING);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        final User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+
+        if(user == null){
+            response.sendRedirect(CauliflowerInfo.HOME_LINK);
+        }else if(!user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString()) && !user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString())){
+            response.sendRedirect(CauliflowerInfo.HOME_LINK);
+        }else{
+            int taskId =  Integer.parseInt(request.getParameter(CauliflowerInfo.TASK_ID_PARAM));
+            String status = request.getParameter(CauliflowerInfo.TASK_STATUS_PARAM);
+            try {
+                if(status.equals(TaskStatus.PROCESSING.toString()))
+                    DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.FREE);
+                else if(status.equals(TaskStatus.FREE.toString()))
+                    DAO.INSTANCE.changeTaskStatus(taskId,TaskStatus.PROCESSING);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            if(user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString())){
+                response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
+            }else{
+                response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
+            }
         }
-        response.sendRedirect(pathFrom);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

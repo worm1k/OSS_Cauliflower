@@ -63,6 +63,7 @@ table, .table { border: 1px solid #ddd }
 }
 .btn-signin,
 .btn-proceed,
+.btn-task-done,
 .btn-change-password {
     margin-top: 24px;
     margin-bottom: 24px;
