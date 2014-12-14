@@ -190,4 +190,13 @@
         <url-pattern>/taskinfo</url-pattern>
     </servlet-mapping>
 
+    <filter>
+        <filter-name>Filter</filter-name>
+        <filter-class>com.naukma.cauliflower.filters.CustomerSupportEngineerFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>Filter</filter-name>
+        <url-pattern>/cse_dashboard.jsp</url-pattern>
+        <url-pattern>/cse_dashboard_user.jsp</url-pattern>
+    </filter-mapping>
 </web-app>
