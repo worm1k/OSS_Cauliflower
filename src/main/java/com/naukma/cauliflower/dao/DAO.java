@@ -2884,21 +2884,21 @@ public enum DAO {
 
                 // ---- UPDATE PORT USED SET 0
                 preparedStatementUpdate = connection
-                        .prepareStatement("UPDATE PORT SET USED = 0 WHERE ID = ?");
-                preparedStatementSelect.setInt(1, portID);
-                preparedStatementUpdate.execute();
+                        .prepareStatement("UPDATE PORT SET USED = 0 WHERE ID = ? ");
+                preparedStatementUpdate.setInt(1, portID);
+                preparedStatementUpdate.executeUpdate();
 
                 // ---- UPDATE SERVICEINSTANCE ID_CABLE SET NULL
                 preparedStatementUpdate = connection
-                        .prepareStatement("UPDATE SERVICEINSTANCE SET ID_CABLE = NULL WHERE ID = ?");
-                preparedStatementSelect.setInt(1, siID);
-                preparedStatementUpdate.execute();
+                        .prepareStatement("UPDATE SERVICEINSTANCE SET ID_CABLE = NULL WHERE ID = ? ");
+                preparedStatementUpdate.setInt(1, siID);
+                preparedStatementUpdate.executeUpdate();
 
                 // ---- DELETE FROM CABLE WHERE ID = cableID
                 preparedStatementUpdate = connection
-                        .prepareStatement("DELETE FROM CABLE WHERE ID = ?");
-                preparedStatementSelect.setInt(1, cableID);
-                preparedStatementUpdate.execute();
+                        .prepareStatement("DELETE FROM CABLE WHERE ID = ? ");
+                preparedStatementUpdate.setInt(1, cableID);
+                preparedStatementUpdate.executeUpdate();
             }
 
             connection.commit();
