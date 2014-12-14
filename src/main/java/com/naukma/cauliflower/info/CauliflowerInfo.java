@@ -5,6 +5,7 @@ package com.naukma.cauliflower.info;
  */
 public class CauliflowerInfo {
     public static final String SERVICE_ATTRIBUTE = "service";
+    public static final String MODIFY_TO_SERVICE_ATTRIBUTE = "newService";
     public static final String SERVICE_INSTANCE_ATTRIBUTE = "serviceInstance";
     public static final String SERVICE_ORDER_ATTRIBUTE = "serviceOrder";
     public static final String SERVICE_ORDER_ID = "serviceOrderId";

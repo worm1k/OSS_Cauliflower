@@ -39,12 +39,14 @@ public class TaskInformationController extends HttpServlet {
                 final ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrderById(task.getServiceOrderId());
                 final ServiceInstance serviceInstance = DAO.INSTANCE.getInstanceById(serviceOrder.getServiceInstanceId());
                 final Service service = DAO.INSTANCE.getServiceById(serviceInstance.getServiceId());
+                final Service newService = DAO.INSTANCE.getServiceModifyToByTaskId(taskId);
                 final User customerUser = DAO.INSTANCE.getCustomerUserById(serviceInstance.getUserId());
 
                 request.getSession().setAttribute(CauliflowerInfo.TASK_PARAM, task);
                 request.getSession().setAttribute(CauliflowerInfo.SERVICE_ORDER_ATTRIBUTE, serviceOrder);
                 request.getSession().setAttribute(CauliflowerInfo.SERVICE_INSTANCE_ATTRIBUTE, serviceInstance);
                 request.getSession().setAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE, service);
+                request.getSession().setAttribute(CauliflowerInfo.MODIFY_TO_SERVICE_ATTRIBUTE, newService);
                 request.getSession().setAttribute(CauliflowerInfo.CUSTOMER_USER_ATTRIBUTE, customerUser);
 
                 if(user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString())){
@@ -52,10 +54,11 @@ public class TaskInformationController extends HttpServlet {
                 }else{
                     request.getSession().setAttribute(CauliflowerInfo.ACTION_ATTRIBUTE, CauliflowerInfo.PROVIS_ENGINEER_CONTROLLER_LINK);
                 }
-
-                response.sendRedirect(CauliflowerInfo.ENGINEER_DASHBOARD_TASK_LINK);
             }catch(Exception e){
                 e.printStackTrace();
+                //add some error messge
+            }finally{
+                response.sendRedirect(CauliflowerInfo.ENGINEER_DASHBOARD_TASK_LINK);
             }
         }
     }

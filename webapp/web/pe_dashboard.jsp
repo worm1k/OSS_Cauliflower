@@ -72,7 +72,7 @@
                     </form>
                     <form class="form-inline inline" action="manageTask" method="POST">
                         <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
-                        <input type="hidden" name="taskStatus" ng-value="{{task.taskStatus}}"/>
+                        <input type="hidden" name="taskStatus" ng-value="'{{task.taskStatus}}'"/>
                         <button class="btn btn-xs btn-info">Assign to me</button>
                     </form>
                 </td>
@@ -109,7 +109,7 @@
                     <%--</form>--%>
                     <form class="form-inline inline" action="manageTask" method="POST">
                         <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
-                        <input type="hidden" name="taskStatus" ng-value="{{task.taskStatus}}"/>
+                        <input type="hidden" name="taskStatus" ng-value="'{{task.taskStatus}}'"/>
                         <button type="submit" class="btn btn-xs btn-danger">Unassign from me</button>
                     </form>
                 </td>

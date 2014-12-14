@@ -3075,6 +3075,52 @@ public enum DAO {
         return result;
     }
 
+    /**
+     * gets service to modify instance for scenario MODIFY
+     *
+     * @param taskId    selected task
+     * @throws java.sql.SQLException
+     */
+    public Service getServiceModifyToByTaskId(int taskId) throws SQLException {
+        {//help
+            System.out.println("getServiceModifyToByTaskId");
+        }
+        Service result = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID " +
+                    "WHERE S.ID = (SELECT ID_SERVICE FROM TOMODIFY WHERE ID_TASK = ?) ");
+            preparedStatement.setInt(1, taskId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = new Service(resultSet.getInt("ID_SERVICE_TYPE"),
+                        resultSet.getString("ADRESS"),
+                        resultSet.getDouble("LONGITUDE"),
+                        resultSet.getDouble("LATITUDE"),
+                        resultSet.getString("NAME"),
+                        resultSet.getString("SPEED"),
+                        resultSet.getInt("ID_PROVIDER_LOCATION"),
+                        resultSet.getInt("ID"),
+                        resultSet.getDouble("PRICE"));
+            }
+            {//help
+                System.out.println("SUCCESS ! getServiceModifyToByTaskId");
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return result;
+    }
+
     /**---------------------------------------------------------------------END vladmyr---------------------------------------------------------------------**/
 
     /**---------------------------------------------------------------------START Alex---------------------------------------------------------------------**/

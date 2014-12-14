@@ -121,6 +121,21 @@
                     <dd>${service.price}$</dd>
                 </dl>
             </div>
+            <c:if test="${newService ne null && not empty newService}">
+                <div class="col-xs-12">
+                    <h4 class="txt-bold">Modify to Service:</h4>
+                    <dl class="dl-horizontal">
+                        <dt>Id:</dt>
+                        <dd>${newService.serviceId}</dd>
+                        <dt>Service:</dt>
+                        <dd>${newService.serviceTypeName}</dd>
+                        <dt>Service speed:</dt>
+                        <dd>${newService.serviceSpeed} Mbps</dd>
+                        <dt>Service price:</dt>
+                        <dd>${newService.price}$</dd>
+                    </dl>
+                </div>
+            </c:if>
         </div>
         <div class="col-xs-12">
             <c:choose>
