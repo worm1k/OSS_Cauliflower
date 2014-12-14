@@ -2,6 +2,7 @@ package com.naukma.cauliflower.reports;
 
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.Scenario;
+import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 
@@ -32,6 +33,7 @@ public class ReportGeneratorServlet extends HttpServlet {
         final String EXT = request.getParameter("extension");
         boolean hasRights = false;
         User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        String pathFrom  = request.getHeader("Referer");
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         java.sql.Date sqlStartDate = null;
@@ -52,39 +54,39 @@ public class ReportGeneratorServlet extends HttpServlet {
             try {
                 if (methodName.equals("Devices")) {
                     //resultSet = DAO.INSTANCE.getDevicesForReport();
-                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("INSTALLATION_ENG");
+                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
                     reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
                 } else if (methodName.equals("Circuits")) {
-                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("PROVISIONING_ENG");
+                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getCircuitsForReport(EXT);
                 } else if (methodName.equals("Cables")) {
-                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("INSTALLATION_ENG");
+                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getCablesForReport(EXT);
                 } else if (methodName.equals("Ports")) {
-                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("INSTALLATION_ENG");
+                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getPortsForReport(EXT);
                 } else if (methodName.equals("Profitable")) {
-                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("PROVISIONING_ENG");
+                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     //resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
                     reportGenerator = DAO.INSTANCE.getMostProfitableRouterForReport(EXT);
                 } else if (methodName.equals("utilizationAndCapacity")){
-                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("PROVISIONING_ENG");
+                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts(EXT);
                 }else if (methodName.equals("Profitability")) {
-                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("PROVISIONING_ENG");
+                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getProfitabilityByMonth(EXT);
                 }else if (methodName.equals("New") && startDate != null && endDate != null) {
-                    hasRights = user.getUserRole().equals("ADMINISTRATOR");
+                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, EXT);
                     //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
                 }else if (methodName.equals("Disconnect") && startDate != null && endDate != null) {
-                    hasRights = user.getUserRole().equals("ADMINISTRATOR");
+                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, EXT);
                 }
@@ -103,7 +105,11 @@ public class ReportGeneratorServlet extends HttpServlet {
                 reportGenerator.writeInStream(outputStream);
                 outputStream.flush();
                 outputStream.close();
-            }else response.getWriter().println("Sorry, you have no rights for downloading this report");
+            }else{
+                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
+                //response.getWriter().println("Sorry, you have no rights for downloading this report");
+                response.sendRedirect(pathFrom);
+            }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

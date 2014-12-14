@@ -16,6 +16,8 @@
     User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
     if (user == null || (user != null && user.getUserRole().equals(UserRole.CUSTOMER.toString())))
         response.sendRedirect("home.jsp");
+    String error = (String) request.getSession().getAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+    request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
 %>
 
 <!DOCTYPE html>
@@ -31,7 +33,7 @@
 <div class="container">
     <h1 class="txt-center txt-bold"> CauliFlower</h1>
 
-    <h2 class="txt-center">Reports</h2>
+    <h2 class="txt-center">Reports <%=error%></h2>
 
     <div class="clear"></div>
     <div class="col-xs-6">
