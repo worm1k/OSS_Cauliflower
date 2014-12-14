@@ -46,7 +46,7 @@ public class ReportGeneratorServlet extends HttpServlet {
             response.setHeader("Content-Disposition", "attachment; filename="+methodName+"Report."+EXT);
             ReportGenerator reportGenerator = null;
             try {
-                if (methodName.equals("Devises"))
+                if (methodName.equals("Devices"))
                     //resultSet = DAO.INSTANCE.getDevicesForReport();
                     reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
                 else if (methodName.equals("Circuits"))

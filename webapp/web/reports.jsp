@@ -64,7 +64,7 @@
                         </td>
                         <td>
                             <div class="report_button"><input type="submit" class="btn btn-primary" name="reportMethod"
-                                                              value="Devises"/></div>
+                                                              value="Devices"/></div>
                         </td>
                     </div>
                     <div class="clear"></div>
