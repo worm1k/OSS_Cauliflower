@@ -2869,7 +2869,7 @@ public enum DAO {
             resultSet = preparedStatementSelect.executeQuery();
             while (resultSet.next()) {
                 siID = resultSet.getInt("SI_ID");
-                cableID = resultSet.getInt("SI_ID");
+                cableID = resultSet.getInt("C_ID");
                 portID = resultSet.getInt("C_ID_PORT");
             }
             {//help
