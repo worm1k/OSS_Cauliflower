@@ -2,6 +2,8 @@ package com.naukma.cauliflower.reports;
 
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.Scenario;
+import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -21,11 +23,15 @@ import java.text.SimpleDateFormat;
 public class ReportGeneratorServlet extends HttpServlet {
 
 
+
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String methodName = (String) request.getParameter("reportMethod");
         String startDate = (String) request.getParameter("startDate");
         String endDate = (String) request.getParameter("endDate");
         final String EXT = request.getParameter("extension");
+        boolean hasRights = false;
+        User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         java.sql.Date sqlStartDate = null;
@@ -42,38 +48,46 @@ public class ReportGeneratorServlet extends HttpServlet {
                 e.printStackTrace();
             }
 
-            response.setContentType("application/vnd.ms-excel");
-            response.setHeader("Content-Disposition", "attachment; filename="+methodName+"Report."+EXT);
             ReportGenerator reportGenerator = null;
             try {
-                if (methodName.equals("Devices"))
+                if (methodName.equals("Devices")) {
                     //resultSet = DAO.INSTANCE.getDevicesForReport();
+                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("INSTALLATION_ENG");
                     reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
-                else if (methodName.equals("Circuits"))
+                } else if (methodName.equals("Circuits")) {
+                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("PROVISIONING_ENG");
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getCircuitsForReport(EXT);
-                else if (methodName.equals("Cables"))
+                } else if (methodName.equals("Cables")) {
+                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("INSTALLATION_ENG");
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getCablesForReport(EXT);
-                else if (methodName.equals("Ports"))
+                } else if (methodName.equals("Ports")) {
+                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("INSTALLATION_ENG");
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getPortsForReport(EXT);
-                else if (methodName.equals("Profitable"))
+                } else if (methodName.equals("Profitable")) {
+                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("PROVISIONING_ENG");
                     //resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
                     reportGenerator = DAO.INSTANCE.getMostProfitableRouterForReport(EXT);
-                else if (methodName.equals("utilizationAndCapacity"))
+                } else if (methodName.equals("utilizationAndCapacity")){
+                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("PROVISIONING_ENG");
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts(EXT);
-                else if (methodName.equals("Profitability"))
+                }else if (methodName.equals("Profitability")) {
+                    hasRights = user.getUserRole().equals("ADMINISTRATOR") || user.getUserRole().equals("PROVISIONING_ENG");
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getProfitabilityByMonth(EXT);
-                else if (methodName.equals("New") && startDate != null && endDate != null)
+                }else if (methodName.equals("New") && startDate != null && endDate != null) {
+                    hasRights = user.getUserRole().equals("ADMINISTRATOR");
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, EXT);
                     //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
-                else if (methodName.equals("Disconnect") && startDate != null && endDate != null)
+                }else if (methodName.equals("Disconnect") && startDate != null && endDate != null) {
+                    hasRights = user.getUserRole().equals("ADMINISTRATOR");
                     //resultSet =
                     reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, EXT);
+                }
                 //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
             /*if (resultSet == null)
                 resultSet = DAO.INSTANCE.reportTester();*/
@@ -82,10 +96,14 @@ public class ReportGeneratorServlet extends HttpServlet {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            ServletOutputStream outputStream = response.getOutputStream();
-            reportGenerator.writeInStream(outputStream);
-            outputStream.flush();
-            outputStream.close();
+            if(hasRights) {
+                response.setContentType("application/vnd.ms-excel");
+                response.setHeader("Content-Disposition", "attachment; filename=" + methodName + "Report." + EXT);
+                ServletOutputStream outputStream = response.getOutputStream();
+                reportGenerator.writeInStream(outputStream);
+                outputStream.flush();
+                outputStream.close();
+            }else response.getWriter().println("Sorry, you have no rights for downloading this report");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
