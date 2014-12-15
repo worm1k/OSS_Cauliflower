@@ -2670,6 +2670,69 @@ public class DAO {
      * ---------------------------------------------------------------------IGOR---------------------------------------------------------------------*
      */
 	 
+	 /**
+	 * Create List<CIA> object to create report table for CIA Reports
+	 * 
+	 * @return List<CIA>
+	 * @throws java.sql.SQLException
+	 */
+	public List<CIA> getCIAReportForTable() throws SQLException{
+		 Connection connection = getConnection();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<CIA> result = new ArrayList<CIA>();
+		
+		// -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
+		final String selectQuery = " SELECT P.ID_ROUTER R_ID, P.ID P_ID, SI.ID SI_ID, "
+				+ " U.ID_USER U_ID, U.E_MAIL U_EMAIL, U.F_NAME U_F_NAME, U.L_NAME U_L_NAME FROM  "
+				+ " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
+				+ " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
+				+ " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
+				+ " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
+				+ " WHERE SIST.NAME = 'ACTIVE' ";
+		final String rIdQ =    "R_ID";
+		final String pIdQ =    "P_ID";
+		final String siIdQ =   "SI_ID";
+		final String uIdQ =    "U_ID";
+		final String uEmailQ = "U_EMAIL";
+		final String uFNameQ = "U_F_NAME";
+		final String uLNameQ = "U_L_NAME";
+		try {
+			preparedStatement = connection.prepareStatement(selectQuery);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				final CIA cia = new CIA(
+						resultSet.getInt(rIdQ),
+						resultSet.getInt(pIdQ),
+						resultSet.getInt(siIdQ),
+						resultSet.getInt(uIdQ),
+						resultSet.getString(uEmailQ),
+						resultSet.getString(uFNameQ),
+						resultSet.getString(uLNameQ)
+						);
+				result.add(cia);
+			}
+
+		}
+		 catch (IOException e) {
+		 e.printStackTrace();
+		 }
+		finally {
+			 try {
+			 close(connection, preparedStatement);
+			 } catch (SQLException exc) {
+			 logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
+			 exc.printStackTrace();
+			 }
+		}
+		{// help
+			System.out.println("SUCCESS!!!! getCIAReport()");
+		}
+		return result;
+	}
+
+	 
+	 
 	/**
 	 * Create ReportGenerator object to generate report for CIA Reports
 	 * @param EXT extension of file to generate report
