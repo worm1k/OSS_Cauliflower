@@ -3130,8 +3130,9 @@ public class DAO {
         int taskCount = 0;
         try {
             preparedStatement = connection.prepareStatement("SELECT COUNT(ID_TASK) RES FROM TASK WHERE NAME = ? AND ID_TASKSTATUS IN " +
-                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME != 'COMPLETED')");
+                    "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME != ? )");
             preparedStatement.setString(1,  taskName.toString());
+            preparedStatement.setString(2, TaskStatus.COMPLETED.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next())
                 taskCount = resultSet.getInt("RES");
@@ -3216,7 +3217,7 @@ public class DAO {
         final String columLabel="E_MAIL";
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        final String query = "SELECT * FROM USERS WHERE E_MAIL like ?";
+        final String query = "SELECT * FROM USERS WHERE E_MAIL like ? ";
         ArrayList<String>resEmails=new ArrayList<String>();
         try {
             preparedStatement=connection.prepareStatement(query);
