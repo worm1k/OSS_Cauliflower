@@ -18,8 +18,8 @@ import java.util.Date;
 /**
  * Created by Slavko_O on 28.11.2014.
  */
-public enum DAO {
-    INSTANCE;
+public class DAO {
+    public static final DAO INSTANCE = new DAO();
     private static final Logger logger = Logger.getLogger(String.class);
     private DataSource dataSource;
     private static final String BD_JNDI = "jdbc/oraclesource"; // no magic numbers

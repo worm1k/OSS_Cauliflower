@@ -10,13 +10,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.color.ICC_Profile;
 import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(name = "InstallationTasksController")
 public class InstallationTasksController extends HttpServlet {
-    private static final int PORTS_PER_ROUTER = 60;
-    private static final int PORTS_FREED_PER_DISCONNECT = 1;
+    DAO dao = DAO.INSTANCE;
 
     /*
     RI.9
@@ -36,30 +36,28 @@ public class InstallationTasksController extends HttpServlet {
             try {
                 int taskId = Integer.parseInt(taskIdParam);
                 int serviceOrderId = Integer.parseInt(serviceOrderIdParam);
-                Task task = DAO.INSTANCE.getTaskById(taskId);
-
-
+                Task task = dao.getTaskById(taskId);
                 if (task.getTaskStatus().equals(TaskStatus.PROCESSING.toString()) &&
-                    user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
+                    user.getUserRoleId() == dao.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
 
                     if (task.getTaskName().equals(TaskName.CREATE_NEW_ROUTER)) {
-                        DAO.INSTANCE.createRouter();
+                        dao.createRouter();
                     } else if (task.getTaskName().equals(TaskName.CREATE_CIRCUIT)) {
-                        if (DAO.INSTANCE.freePortExists()) {
-                            DAO.INSTANCE.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
-                            DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE,TaskStatus.FREE);
+                        if (dao.freePortExists()) {
+                            dao.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
+                            dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE, TaskStatus.FREE);
                         } else {
-                            if (DAO.INSTANCE.countNotCompletedTasksByTaskName(TaskName.CREATE_NEW_ROUTER) == 0) {
-                                DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.INSTALLATION_ENG, TaskName.CREATE_NEW_ROUTER, TaskStatus.FREE);
+                            if (dao.countNotCompletedTasksByTaskName(TaskName.CREATE_NEW_ROUTER) == 0) {
+                                dao.createNewTask(serviceOrderId, UserRole.INSTALLATION_ENG, TaskName.CREATE_NEW_ROUTER, TaskStatus.FREE);
                             }
                             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.NO_PORTS_ERROR_MESSAGE);
                         }
                     } else if (task.getTaskName().equals(TaskName.BREAK_CIRCUIT)) {
-                        DAO.INSTANCE.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
-                        DAO.INSTANCE.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE,TaskStatus.FREE);
+                        dao.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
+                        dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE,TaskStatus.FREE);
                     }
 
-                    DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+                    dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                     response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
 
                 } else
