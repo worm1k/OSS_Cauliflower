@@ -3318,9 +3318,10 @@ public class DAO {
     /**---------------------------------------------------------------------START ihor---------------------------------------------------------------------**/
     
 	/**
-     * gets emails that include of the 
+     * gets emails that include of the string that is the parameter queryString
 	 *
-     * @param queryString string that is included to email
+     * @param queryString string that is possibly included to email
+	 * @return ArrayList<String> consists of emais that is consisted of the parameter queryString
      * @throws java.sql.SQLException
      */
 	public ArrayList<String> getEmailsLike(String queryString)throws SQLException {
