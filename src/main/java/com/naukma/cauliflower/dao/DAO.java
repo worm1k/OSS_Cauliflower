@@ -2681,6 +2681,7 @@ public class DAO {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		List<CIA> result = new ArrayList<CIA>();
+        final String sistActQ = InstanceStatus.ACTIVE.toString();
 		
 		// -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
 		final String selectQuery = " SELECT P.ID_ROUTER R_ID, P.ID P_ID, SI.ID SI_ID, "
@@ -2689,7 +2690,7 @@ public class DAO {
 				+ " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
 				+ " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
 				+ " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
-				+ " WHERE SIST.NAME = 'ACTIVE' ";
+				+ " WHERE SIST.NAME = ? ";
 		final String rIdQ =    "R_ID";
 		final String pIdQ =    "P_ID";
 		final String siIdQ =   "SI_ID";
@@ -2699,6 +2700,7 @@ public class DAO {
 		final String uLNameQ = "U_L_NAME";
 		try {
 			preparedStatement = connection.prepareStatement(selectQuery);
+            preparedStatement.setString(1, sistActQ);
 			resultSet = preparedStatement.executeQuery();
 			while(resultSet.next()){
 				final CIA cia = new CIA(
