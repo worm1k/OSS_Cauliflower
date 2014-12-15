@@ -2714,7 +2714,7 @@ public class DAO {
 			}
 
 		}
-		 catch (IOException e) {
+		 catch (SQLException e) {
 		 e.printStackTrace();
 		 }
 		finally {
