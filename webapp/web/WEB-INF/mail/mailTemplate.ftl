@@ -7,7 +7,7 @@
 
 
     <table style="padding: 20px 0 0 10px;vertical-align: top" width="580" border="0" cellspacing="0" cellpadding="0" align="center"><tr><td style="padding: 0 0 30px 0;left: 10px;vertical-align: top">
-        <div style="position: absolute;display: inline-block;margin: 0;padding: 0"><img src="http://194.44.143.139:10000/webappmy_war/mono.png" style="outline: none;text-decoration: none;width: auto;max-width: 100%;clear: both;display: block;float: none"/></div><div align="center" style="font-family: Tahoma, Arial, sans-serif;font-size: 36px;line-height: 45px;margin: 0;padding: 0"> CAULIFLOWER</div>
+        <div style="position: absolute;display: inline-block;margin: 0;padding: 0"><img src="http://194.44.143.139:10000/webappmy_war/img/mono.png" style="outline: none;text-decoration: none;width: auto;max-width: 100%;clear: both;display: block;float: none"/></div><div align="center" style="font-family: Tahoma, Arial, sans-serif;font-size: 36px;line-height: 45px;margin: 0;padding: 0"> CAULIFLOWER</div>
     </td>
     </tr></table></td>
 </tr><tr><td style="vertical-align: top"><hr style="height:5px;background:#27A1E5;border:none;"/></td></tr><!-- =============== END HEADER =============== --><!-- =============== START BODY =============== --><div style="margin: 0;padding: 0">
