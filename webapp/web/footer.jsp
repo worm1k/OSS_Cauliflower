@@ -34,6 +34,7 @@
 
 <!-- custom scripts -->
 <script type="text/javascript" src="./js/MapDashboardController.js"></script>
+<script type="text/javascript" src="./js/ReportsController.js"></script>
 <script type="text/javascript" src="./js/InstallationEngineerDashboardController.js"></script>
 <script type="text/javascript" src="./js/CustomerSupportEngineerController.js"></script>
 <script type="text/javascript" src="./js/ServiceInstance.js"></script>

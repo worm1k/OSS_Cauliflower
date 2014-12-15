@@ -111,3 +111,10 @@ table, .table { border: 1px solid #ddd }
 .margin-bottom { margin-bottom: 20px; }
 
 .margin-zero { margin: 0; }
+.input-pickdate {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    padding: 0px 4px;
+}
+.input-pickdate:hover { cursor: pointer; }
