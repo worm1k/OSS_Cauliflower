@@ -2669,7 +2669,50 @@ public class DAO {
     /**
      * ---------------------------------------------------------------------IGOR---------------------------------------------------------------------*
      */
-
+	/**
+	 * Create ReportGenerator object to generate report for CIA Reports
+	 * 
+	 * @param EXT
+	 *            extension of file to generate report
+	 * @return ReportGenerator for
+	 * @throws java.sql.SQLException
+	 */
+	public ReportGenerator getCIAReport(final String EXT) throws SQLException {
+		Connection connection = getConnection();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		ReportGenerator reportGenerator = null;
+		try {
+			preparedStatement = connection
+					.prepareStatement(""
+							+ " SELECT P.ID_ROUTER R_ID, P.ID P_ID, SI.ID SI_ID, U.ID_USER U_ID FROM  "
+							+ " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
+							+ " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
+							+ " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
+							+ " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
+							+ " WHERE SIST.NAME = 'ACTIVE' ");
+			resultSet = preparedStatement.executeQuery();
+			if (EXT.equals("xls")) {
+				reportGenerator = new XLSReportGenerator(" CIA Report ",
+						resultSet);
+			} else {
+				reportGenerator = new CSVReportGenerator(resultSet);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				close(connection, preparedStatement);
+			} catch (SQLException exc) {
+				logger.warn("Can't close connection or preparedStatement!");
+				exc.printStackTrace();
+			}
+		}
+		{// help
+			System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
+		}
+		return reportGenerator;
+	}
 
     /**
      * Prepare ResultSet  to generate report on used routers and port capacity
