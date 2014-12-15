@@ -41,3 +41,4 @@
 <script type="text/javascript" src="./js/ServiceOrder.js"></script>
 <script type="text/javascript" src="./js/index.js"></script>
 <script type="text/javascript" src="./js/EugeneIndex.js"></script>
+<script type="text/javascript" src="./js/indexIhor.js"></script>
