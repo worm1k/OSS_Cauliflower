@@ -121,5 +121,10 @@
             <version>1.6.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.3</version>
+        </dependency>
     </dependencies>
 </project>
