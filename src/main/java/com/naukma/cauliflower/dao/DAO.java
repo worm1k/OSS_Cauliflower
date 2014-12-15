@@ -2714,9 +2714,6 @@ public class DAO {
 			}
 
 		}
-		 catch (IOException e) {
-		 e.printStackTrace();
-		 }
 		finally {
 			 try {
 			 close(connection, preparedStatement);
@@ -3319,7 +3316,14 @@ public class DAO {
     /**---------------------------------------------------------------------END Max---------------------------------------------------------------------**/
 
     /**---------------------------------------------------------------------START ihor---------------------------------------------------------------------**/
-    public ArrayList<String> getEmailsLike(String queryString)throws SQLException {
+    
+	/**
+     * gets emails that include of the 
+	 *
+     * @param queryString string that is included to email
+     * @throws java.sql.SQLException
+     */
+	public ArrayList<String> getEmailsLike(String queryString)throws SQLException {
         final String columLabel="E_MAIL";
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
