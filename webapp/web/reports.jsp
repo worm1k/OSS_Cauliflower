@@ -72,387 +72,215 @@
         <%--<form action="reports" method="post">--%>
                 <table class="table table-striped">
                     <tbody>
-                    <%
-                        User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-                        if(us!=null && (us.getUserRole().equals(UserRole.ADMINISTRATOR) || us.getUserRole().equals(UserRole.INSTALLATION_ENG)))
-                            out.print("<tr>\n" +
-                                    "                        <div class=\"report_block\">\n" +
-                                    "                            <td>\n" +
-                                    "                                <div class=\"report_text\">Report about all installed devices</div>\n" +
-                                    "                            </td>\n" +
-                                    "                            <td>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Devices\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-default\">View</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"reports\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Devices\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"extension\" value=\"xls\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-primary\">Download</button>\n" +
-                                    "                                </form>\n" +
-                                    "\n" +
-                                    "                            </td>\n" +
-                                    "                        </div>\n" +
-                                    "                        <div class=\"clear\"></div>\n" +
-                                    "                    </tr>\n" +
-                                    "                    <tr>\n" +
-                                    "                        <div class=\"report_block\">\n" +
-                                    "                            <td>\n" +
-                                    "                                <div class=\"report_text\"> Report about current circuits</div>\n" +
-                                    "                            </td>\n" +
-                                    "                            <td>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Circuits\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-default\">View</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"reports\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Circuits\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"extension\" value=\"xls\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-primary\">Download</button>\n" +
-                                    "                                </form>\n" +
-                                    "\n" +
-                                    "                            </td>\n" +
-                                    "                        </div>\n" +
-                                    "                        <div class=\"clear\"></div>\n" +
-                                    "                    </tr>\n" +
-                                    "                    <tr>\n" +
-                                    "                        <div class=\"report_block\">\n" +
-                                    "                            <td>\n" +
-                                    "                                <div class=\"report_text\"> Report about all available cables</div>\n" +
-                                    "                            </td>\n" +
-                                    "                            <td>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Cables\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-default\">View</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"reports\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Cables\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"extension\" value=\"xls\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-primary\">Download</button>\n" +
-                                    "                                </form>\n" +
-                                    "\n" +
-                                    "                            </td>\n" +
-                                    "                        </div>\n" +
-                                    "                        <div class=\"clear\"></div>\n" +
-                                    "                    </tr>\n" +
-                                    "                    <tr>\n" +
-                                    "                        <div class=\"report_block\">\n" +
-                                    "                            <td>\n" +
-                                    "                                <div class=\"report_text\"> Report about all existing ports</div>\n" +
-                                    "                            </td>\n" +
-                                    "                            <td>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Ports\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-default\">View</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"reports\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Ports\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"extension\" value=\"xls\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-primary\">Download</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                \n" +
-                                    "                            </td>\n" +
-                                    "                        </div>\n" +
-                                    "                        <div class=\"clear\"></div>\n" +
-                                    "                    </tr>");
-                        if(us!=null && (us.getUserRole().equals(UserRole.ADMINISTRATOR) || us.getUserRole().equals(UserRole.PROVISIONING_ENG)))
-                            out.print("<tr>\n" +
-                                    "                        <div class=\"report_block\">\n" +
-                                    "                            <td>\n" +
-                                    "                                <div class=\"report_text\"> Report about most profitable routers</div>\n" +
-                                    "                            </td>\n" +
-                                    "                            <td>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Profitable\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-default\">View</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"reports\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Profitable\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"extension\" value=\"xls\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-primary\">Download</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                \n" +
-                                    "                            </td>\n" +
-                                    "                        </div>\n" +
-                                    "                        <div class=\"clear\"></div>\n" +
-                                    "                    </tr>\n" +
-                                    "                    <tr>\n" +
-                                    "                        <div class=\"report_block\">\n" +
-                                    "                            <td>\n" +
-                                    "                                <div class=\"report_text\"> Report about utilization and capacity</div>\n" +
-                                    "                            </td>\n" +
-                                    "                            <td>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"utilizationAndCapacity\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-default\">View</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"reports\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"utilizationAndCapacity\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"extension\" value=\"xls\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-primary\">Download</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                \n" +
-                                    "                            </td>\n" +
-                                    "                        </div>\n" +
-                                    "                        <div class=\"clear\"></div>\n" +
-                                    "                    </tr>\n" +
-                                    "                    <tr>\n" +
-                                    "                        <div class=\"report_block\">\n" +
-                                    "                            <td>\n" +
-                                    "                                <div class=\"report_text\"> Report about profitability</div>\n" +
-                                    "                            </td>\n" +
-                                    "                            <td>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Profitability\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-default\">View</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                <form class=\"form-inline inline\" action=\"reports\" method=\"post\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"reportMethod\" value=\"Profitability\">\n" +
-                                    "                                    <input type=\"hidden\" name=\"extension\" value=\"xls\">\n" +
-                                    "                                    <button type=\"submit\" class=\"btn btn-xs btn-primary\">Download</button>\n" +
-                                    "                                </form>\n" +
-                                    "                                \n" +
-                                    "                            </td>\n" +
-                                    "                        </div>\n" +
-                                    "                    </tbody>\n" +
-                                    "                </table>\n" +
-                                    "        </div>\n" +
-                                    "\n" +
-                                    "        <div class=\"col-xs-6 border-left\">\n" +
-                                    "                    <table class=\"table table-striped\">\n" +
-                                    "                        <tbody>\n" +
-                                    "                            <tr><td>Start date: </td><td><input type=\"text\" class=\"input-pickdate\" id=\"startDate\" name=\"startDate\" readonly></td></tr>\n" +
-                                    "                            <tr><td>End date: </td><td><input type=\"text\" class=\"input-pickdate\" id=\"endDate\" name=\"endDate\" readonly></td></tr>\n" +
-                                    "                        <tr>\n" +
-                                    "                            <div class=\"report_block\">\n" +
-                                    "                                <td>\n" +
-                                    "                                    <div class=\"report_text\"> Report about new orders per period</div>\n" +
-                                    "                                </td>\n" +
-                                    "                                <td>\n" +
-                                    "                                    <form class=\"form-inline inline\" action=\"\" method=\"post\">\n" +
-                                    "                                        <input type=\"hidden\" name=\"reportMethod\" value=\"New\">\n" +
-                                    "                                        <button type=\"submit\" class=\"btn btn-xs btn-default\">View</button>\n" +
-                                    "                                    </form>\n" +
-                                    "                                    <form class=\"form-inline inline\" action=\"reports\" method=\"post\">\n" +
-                                    "                                        <input type=\"hidden\" name=\"reportMethod\" value=\"New\">\n" +
-                                    "                                        <input type=\"hidden\" name=\"extension\" value=\"xls\">\n" +
-                                    "                                        <button type=\"submit\" id=\"js-get-report-0\" class=\"btn btn-xs btn-primary\">Download</button>\n" +
-                                    "                                    </form>\n" +
-                                    "                                    \n" +
-                                    "                                </td>\n" +
-                                    "                            </div>\n" +
-                                    "                            <div class=\"clear\"></div>\n" +
-                                    "                        </tr>\n" +
-                                    "                        <tr>\n" +
-                                    "                            <div class=\"report_block\">\n" +
-                                    "                                <td>\n" +
-                                    "                                    <div class=\"report_text\"> Report about disconnect orders per period</div>\n" +
-                                    "                                </td>\n" +
-                                    "                                <td>\n" +
-                                    "                                    <form class=\"form-inline inline\" action=\"\" method=\"post\">\n" +
-                                    "                                        <input type=\"hidden\" name=\"reportMethod\" value=\"Disconnect\">\n" +
-                                    "                                        <button type=\"submit\" class=\"btn btn-xs btn-default\">View</button>\n" +
-                                    "                                    </form>\n" +
-                                    "                                    <form class=\"form-inline inline\" action=\"reports\" method=\"post\">\n" +
-                                    "                                        <input type=\"hidden\" name=\"reportMethod\" value=\"Disconnect\">\n" +
-                                    "                                        <input type=\"hidden\" name=\"extension\" value=\"xls\">\n" +
-                                    "                                        <button type=\"submit\" id=\"js-get-report-1\" class=\"btn btn-xs btn-primary\">Download</button>\n" +
-                                    "                                    </form>\n" +
-                                    "                                    \n" +
-                                    "                                </td>\n" +
-                                    "                            </div>\n" +
-                                    "                        </tr>\n" +
-                                    "        </div>");
-                    %>
-                    <%--<tr>--%>
-                        <%--<div class="report_block">--%>
-                            <%--<td>--%>
-                                <%--<div class="report_text">Report about all installed devices</div>--%>
-                            <%--</td>--%>
-                            <%--<td>--%>
-                                <%--<form class="form-inline inline" action="" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Devices">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-default">View</button>--%>
-                                <%--</form>--%>
-                                <%--<form class="form-inline inline" action="reports" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Devices">--%>
-                                    <%--<input type="hidden" name="extension" value="xls">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-primary">Download</button>--%>
-                                <%--</form>--%>
+                    <tr>
+                        <div class="report_block">
+                            <td>
+                                <div class="report_text">1) Report about all installed devices</div>
+                            </td>
+                            <td>
+                                <form class="form-inline inline" action="" method="post">
+                                    <input type="hidden" name="reportMethod" value="Devices">
+                                    <button type="submit" class="btn btn-xs btn-default">View</button>
+                                </form>
+                                <form class="form-inline inline" action="reports" method="post">
+                                    <input type="hidden" name="reportMethod" value="Devices">
+                                    <input type="hidden" name="extension" value="xls">
+                                    <button type="submit" class="btn btn-xs btn-primary">Download</button>
+                                </form>
+                                <%--<div class="report_button"><input type="submit" class="btn btn-xs btn-primary" name="reportMethod" value="Devices"/></div>--%>
+                            </td>
+                        </div>
+                        <div class="clear"></div>
+                    </tr>
+                    <tr>
+                        <div class="report_block">
+                            <td>
+                                <div class="report_text">2) Report about current circuits</div>
+                            </td>
+                            <td>
+                                <form class="form-inline inline" action="" method="post">
+                                    <input type="hidden" name="reportMethod" value="Circuits">
+                                    <button type="submit" class="btn btn-xs btn-default">View</button>
+                                </form>
+                                <form class="form-inline inline" action="reports" method="post">
+                                    <input type="hidden" name="reportMethod" value="Circuits">
+                                    <input type="hidden" name="extension" value="xls">
+                                    <button type="submit" class="btn btn-xs btn-primary">Download</button>
+                                </form>
+                                <%--<div class="report_button"><input type="submit" class="btn btn-xs btn-primary" name="reportMethod" value="Circuits"/></div>--%>
+                            </td>
+                        </div>
+                        <div class="clear"></div>
+                    </tr>
+                    <tr>
+                        <div class="report_block">
+                            <td>
+                                <div class="report_text">3) Report about all available cables</div>
+                            </td>
+                            <td>
+                                <form class="form-inline inline" action="" method="post">
+                                    <input type="hidden" name="reportMethod" value="Cables">
+                                    <button type="submit" class="btn btn-xs btn-default">View</button>
+                                </form>
+                                <form class="form-inline inline" action="reports" method="post">
+                                    <input type="hidden" name="reportMethod" value="Cables">
+                                    <input type="hidden" name="extension" value="xls">
+                                    <button type="submit" class="btn btn-xs btn-primary">Download</button>
+                                </form>
+                                <%--<div class="report_button"><input type="submit" class="btn btn-xs btn-primary" name="reportMethod" value="Cables"/></div>--%>
+                            </td>
+                        </div>
+                        <div class="clear"></div>
+                    </tr>
+                    <tr>
+                        <div class="report_block">
+                            <td>
+                                <div class="report_text">4) Report about all existing ports</div>
+                            </td>
+                            <td>
+                                <form class="form-inline inline" action="" method="post">
+                                    <input type="hidden" name="reportMethod" value="Ports">
+                                    <button type="submit" class="btn btn-xs btn-default">View</button>
+                                </form>
+                                <form class="form-inline inline" action="reports" method="post">
+                                    <input type="hidden" name="reportMethod" value="Ports">
+                                    <input type="hidden" name="extension" value="xls">
+                                    <button type="submit" class="btn btn-xs btn-primary">Download</button>
+                                </form>
+                                <%--<div class="report_button"><input type="submit" class="btn btn-xs btn-primary" name="reportMethod" value="Ports"/></div>--%>
+                            </td>
+                        </div>
+                        <div class="clear"></div>
+                    </tr>
+                    <tr>
+                        <div class="report_block">
+                            <td>
+                                <div class="report_text">5) Report about most profitable routers</div>
+                            </td>
+                            <td>
+                                <form class="form-inline inline" action="" method="post">
+                                    <input type="hidden" name="reportMethod" value="Profitable">
+                                    <button type="submit" class="btn btn-xs btn-default">View</button>
+                                </form>
+                                <form class="form-inline inline" action="reports" method="post">
+                                    <input type="hidden" name="reportMethod" value="Profitable">
+                                    <input type="hidden" name="extension" value="xls">
+                                    <button type="submit" class="btn btn-xs btn-primary">Download</button>
+                                </form>
+                                <%--<div class="report_button"><input type="submit" class="btn btn-xs btn-primary" name="reportMethod" value="Profitable"/></div>--%>
+                            </td>
+                        </div>
+                        <div class="clear"></div>
+                    </tr>
+                    <tr>
+                        <div class="report_block">
+                            <td>
+                                <div class="report_text">6) Report about utilization and capacity</div>
+                            </td>
+                            <td>
+                                <form class="form-inline inline" action="" method="post">
+                                    <input type="hidden" name="reportMethod" value="utilizationAndCapacity">
+                                    <button type="submit" class="btn btn-xs btn-default">View</button>
+                                </form>
+                                <form class="form-inline inline" action="reports" method="post">
+                                    <input type="hidden" name="reportMethod" value="utilizationAndCapacity">
+                                    <input type="hidden" name="extension" value="xls">
+                                    <button type="submit" class="btn btn-xs btn-primary">Download</button>
+                                </form>
+                                <%--<div class="report_button"><input type="submit" class="btn btn-xs btn-primary" name="reportMethod" value="utilizationAndCapacity"/></div>--%>
+                            </td>
+                        </div>
+                        <div class="clear"></div>
+                    </tr>
+                    <tr>
+                        <div class="report_block">
+                            <td>
+                                <div class="report_text">7) Report about profitability</div>
+                            </td>
+                            <td>
+                                <form class="form-inline inline" action="" method="post">
+                                    <input type="hidden" name="reportMethod" value="Profitability">
+                                    <button type="submit" class="btn btn-xs btn-default">View</button>
+                                </form>
+                                <form class="form-inline inline" action="reports" method="post">
+                                    <input type="hidden" name="reportMethod" value="Profitability">
+                                    <input type="hidden" name="extension" value="xls">
+                                    <button type="submit" class="btn btn-xs btn-primary">Download</button>
+                                </form>
+                                <%--<div class="report_button"><input type="submit" class="btn btn-xs btn-primary" name="reportMethod" value="Profitability"/></div>--%>
+                            </td>
+                        </div>
+                    </tbody>
+                </table>
+        <%--</form>--%>
+        </div>
 
-                            <%--</td>--%>
-                        <%--</div>--%>
-                        <%--<div class="clear"></div>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<div class="report_block">--%>
-                            <%--<td>--%>
-                                <%--<div class="report_text"> Report about current circuits</div>--%>
-                            <%--</td>--%>
-                            <%--<td>--%>
-                                <%--<form class="form-inline inline" action="" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Circuits">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-default">View</button>--%>
-                                <%--</form>--%>
-                                <%--<form class="form-inline inline" action="reports" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Circuits">--%>
-                                    <%--<input type="hidden" name="extension" value="xls">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-primary">Download</button>--%>
-                                <%--</form>--%>
+        <div class="col-xs-6 border-left">
+            <%--<form action="reports" method="post">--%>
 
-                            <%--</td>--%>
+                <%--<div class="panel panel-primary">--%>
+                    <%--<div class="panel-heading">Choose one--%>
+                        <%--<div class="radio-inline">--%>
+                            <%--<label>--%>
+                                <%--<input type="radio" name="extension" id="optionsRadios3" value="xls" checked>--%>
+                                <%--XLS--%>
+                            <%--</label>--%>
                         <%--</div>--%>
-                        <%--<div class="clear"></div>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<div class="report_block">--%>
-                            <%--<td>--%>
-                                <%--<div class="report_text"> Report about all available cables</div>--%>
-                            <%--</td>--%>
-                            <%--<td>--%>
-                                <%--<form class="form-inline inline" action="" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Cables">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-default">View</button>--%>
-                                <%--</form>--%>
-                                <%--<form class="form-inline inline" action="reports" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Cables">--%>
-                                    <%--<input type="hidden" name="extension" value="xls">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-primary">Download</button>--%>
-                                <%--</form>--%>
-
-                            <%--</td>--%>
+                        <%--<div class="radio-inline">--%>
+                            <%--<label>--%>
+                                <%--<input type="radio" name="extension" id="optionsRadios4" value="csv">--%>
+                                <%--CSV--%>
+                            <%--</label>--%>
                         <%--</div>--%>
-                        <%--<div class="clear"></div>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<div class="report_block">--%>
-                            <%--<td>--%>
-                                <%--<div class="report_text"> Report about all existing ports</div>--%>
-                            <%--</td>--%>
-                            <%--<td>--%>
-                                <%--<form class="form-inline inline" action="" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Ports">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-default">View</button>--%>
-                                <%--</form>--%>
-                                <%--<form class="form-inline inline" action="reports" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Ports">--%>
-                                    <%--<input type="hidden" name="extension" value="xls">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-primary">Download</button>--%>
-                                <%--</form>--%>
-                                <%----%>
-                            <%--</td>--%>
-                        <%--</div>--%>
-                        <%--<div class="clear"></div>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<div class="report_block">--%>
-                            <%--<td>--%>
-                                <%--<div class="report_text"> Report about most profitable routers</div>--%>
-                            <%--</td>--%>
-                            <%--<td>--%>
-                                <%--<form class="form-inline inline" action="" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Profitable">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-default">View</button>--%>
-                                <%--</form>--%>
-                                <%--<form class="form-inline inline" action="reports" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Profitable">--%>
-                                    <%--<input type="hidden" name="extension" value="xls">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-primary">Download</button>--%>
-                                <%--</form>--%>
-                                <%----%>
-                            <%--</td>--%>
-                        <%--</div>--%>
-                        <%--<div class="clear"></div>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<div class="report_block">--%>
-                            <%--<td>--%>
-                                <%--<div class="report_text"> Report about utilization and capacity</div>--%>
-                            <%--</td>--%>
-                            <%--<td>--%>
-                                <%--<form class="form-inline inline" action="" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="utilizationAndCapacity">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-default">View</button>--%>
-                                <%--</form>--%>
-                                <%--<form class="form-inline inline" action="reports" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="utilizationAndCapacity">--%>
-                                    <%--<input type="hidden" name="extension" value="xls">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-primary">Download</button>--%>
-                                <%--</form>--%>
-                                <%----%>
-                            <%--</td>--%>
-                        <%--</div>--%>
-                        <%--<div class="clear"></div>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<div class="report_block">--%>
-                            <%--<td>--%>
-                                <%--<div class="report_text"> Report about profitability</div>--%>
-                            <%--</td>--%>
-                            <%--<td>--%>
-                                <%--<form class="form-inline inline" action="" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Profitability">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-default">View</button>--%>
-                                <%--</form>--%>
-                                <%--<form class="form-inline inline" action="reports" method="post">--%>
-                                    <%--<input type="hidden" name="reportMethod" value="Profitability">--%>
-                                    <%--<input type="hidden" name="extension" value="xls">--%>
-                                    <%--<button type="submit" class="btn btn-xs btn-primary">Download</button>--%>
-                                <%--</form>--%>
-                                <%----%>
-                            <%--</td>--%>
-                        <%--</div>--%>
-                    <%--</tbody>--%>
-                <%--</table>--%>
-        <%--</div>--%>
-
-        <%--<div class="col-xs-6 border-left">--%>
-                    <%--<table class="table table-striped">--%>
-                        <%--<tbody>--%>
-                            <%--<tr><td>Start date: </td><td><input type="text" class="input-pickdate" id="startDate" name="startDate" readonly></td></tr>--%>
-                            <%--<tr><td>End date: </td><td><input type="text" class="input-pickdate" id="endDate" name="endDate" readonly></td></tr>--%>
-                        <%--<tr>--%>
-                            <%--<div class="report_block">--%>
-                                <%--<td>--%>
-                                    <%--<div class="report_text"> Report about new orders per period</div>--%>
-                                <%--</td>--%>
-                                <%--<td>--%>
-                                    <%--<form class="form-inline inline" action="" method="post">--%>
-                                        <%--<input type="hidden" name="reportMethod" value="New">--%>
-                                        <%--<button type="submit" class="btn btn-xs btn-default">View</button>--%>
-                                    <%--</form>--%>
-                                    <%--<form class="form-inline inline" action="reports" method="post">--%>
-                                        <%--<input type="hidden" name="reportMethod" value="New">--%>
-                                        <%--<input type="hidden" name="extension" value="xls">--%>
-                                        <%--<button type="submit" id="js-get-report-0" class="btn btn-xs btn-primary">Download</button>--%>
-                                    <%--</form>--%>
-                                    <%----%>
-                                <%--</td>--%>
-                            <%--</div>--%>
-                            <%--<div class="clear"></div>--%>
-                        <%--</tr>--%>
-                        <%--<tr>--%>
-                            <%--<div class="report_block">--%>
-                                <%--<td>--%>
-                                    <%--<div class="report_text"> Report about disconnect orders per period</div>--%>
-                                <%--</td>--%>
-                                <%--<td>--%>
-                                    <%--<form class="form-inline inline" action="" method="post">--%>
-                                        <%--<input type="hidden" name="reportMethod" value="Disconnect">--%>
-                                        <%--<button type="submit" class="btn btn-xs btn-default">View</button>--%>
-                                    <%--</form>--%>
-                                    <%--<form class="form-inline inline" action="reports" method="post">--%>
-                                        <%--<input type="hidden" name="reportMethod" value="Disconnect">--%>
-                                        <%--<input type="hidden" name="extension" value="xls">--%>
-                                        <%--<button type="submit" id="js-get-report-1" class="btn btn-xs btn-primary">Download</button>--%>
-                                    <%--</form>--%>
-                                    <%----%>
-                                <%--</td>--%>
-                            <%--</div>--%>
-                        <%--</tr>--%>
+                    <%--</div>--%>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr><td>Start date: </td><td><input type="text" class="input-pickdate" id="startDate" name="startDate" readonly></td></tr>
+                            <tr><td>End date: </td><td><input type="text" class="input-pickdate" id="endDate" name="endDate" readonly></td></tr>
+                        <tr>
+                            <div class="report_block">
+                                <td>
+                                    <div class="report_text">1) Report about new orders per period</div>
+                                </td>
+                                <td>
+                                    <form class="form-inline inline" action="" method="post">
+                                        <input type="hidden" name="reportMethod" value="New">
+                                        <button type="submit" class="btn btn-xs btn-default">View</button>
+                                    </form>
+                                    <form class="form-inline inline" action="reports" method="post">
+                                        <input type="hidden" name="reportMethod" value="New">
+                                        <input type="hidden" name="extension" value="xls">
+                                        <button type="submit" id="js-get-report-0" class="btn btn-xs btn-primary">Download</button>
+                                    </form>
+                                    <%--<div class="report_button"><input type="submit" class="btn btn-xs btn-primary" name="reportMethod" value="New"/></div>--%>
+                                </td>
+                            </div>
+                            <div class="clear"></div>
+                        </tr>
+                        <tr>
+                            <div class="report_block">
+                                <td>
+                                    <div class="report_text">2) Report about disconnect orders per period</div>
+                                </td>
+                                <td>
+                                    <form class="form-inline inline" action="" method="post">
+                                        <input type="hidden" name="reportMethod" value="Disconnect">
+                                        <button type="submit" class="btn btn-xs btn-default">View</button>
+                                    </form>
+                                    <form class="form-inline inline" action="reports" method="post">
+                                        <input type="hidden" name="reportMethod" value="Disconnect">
+                                        <input type="hidden" name="extension" value="xls">
+                                        <button type="submit" id="js-get-report-1" class="btn btn-xs btn-primary">Download</button>
+                                    </form>
+                                    <%--<div class="report_button"><input type="submit" class="btn btn-xs btn-primary" name="reportMethod" value="Disconnect"/></div>--%>
+                                </td>
+                            </div>
+                        </tr>
                         </tbody>
                     </table>
-        <%--</div>--%>
+                <%--</div>--%>
+            <%--</form>--%>
+        </div>
         </div>
 
     </div>

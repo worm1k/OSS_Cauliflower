@@ -29,12 +29,7 @@
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a class="txt-uppercase" href="home.jsp">Home</a></li>
-                <%
-                    User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-                    if(us==null ||(us!=null && us.getUserRole().equals(UserRole.CUSTOMER.toString())))
-                        out.print( "<li><a class=\"txt-uppercase\" href=\"order.jsp\">Order</a></li>");
-                %>
-
+                <li><a class="txt-uppercase" href="order.jsp">Order</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <c:choose>
@@ -43,7 +38,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="nav-user-icon glyphicon glyphicon-user glyphicon-small"></span>${sessionScope.user.email} <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <%
-                                    //User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+                                    User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
                                     if(us==null) out.print("<li><a href=\"auth.jsp\">Dashboard</a></li>");
                                     if(us!=null && us.getUserRole().equals(UserRole.CUSTOMER.toString())) out.print("<li><a href=\"dashboard.jsp\">Dashboard</a></li>");
                                     if(us!=null && us.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) out.print("<li><a href=\"admdashboard.jsp\">Dashboard</a></li>");
