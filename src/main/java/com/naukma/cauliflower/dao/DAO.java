@@ -3211,6 +3211,31 @@ public class DAO {
     }
     /**---------------------------------------------------------------------END Max---------------------------------------------------------------------**/
 
+    /**---------------------------------------------------------------------START ihor---------------------------------------------------------------------**/
+    public ArrayList<String> getEmailsLike(String queryString)throws SQLException {
+        final String columLabel="E_MAIL";
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        final String query = "SELECT * FROM USERS WHERE E_MAIL like ?";
+        ArrayList<String>resEmails=new ArrayList<String>();
+        try {
+            preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setString(1,queryString);
+            ResultSet resultSet =preparedStatement.executeQuery();
+            while(resultSet.next()){
+                resEmails.add(resultSet.getString(columLabel));
+            }
+        }finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return resEmails;
+    }
+/**---------------------------------------------------------------------END ihor---------------------------------------------------------------------**/
 }
 
 
