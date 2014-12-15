@@ -154,6 +154,7 @@
                     </form>
                 </c:otherwise>
             </c:choose>
+            <a href="${dashboard}" class="btn-block text-center">Back to Dashboard</a>
         </div>
     </div>
 

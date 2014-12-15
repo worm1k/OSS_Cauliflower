@@ -52,7 +52,7 @@
                 <dd>{{serviceInstance.instanceStatus}}</dd>
             </dl>
         </div>
-        <div class="row border-top" ng-class="serviceInstance.isBlocked? 'item-visible-false' : 'item-visible-true'">
+        <div class="row border-top" ng-class="serviceInstance.isBlocked || serviceInstance.instanceStatus == 'DISCONNECTED'? 'item-visible-false' : 'item-visible-true'">
             <div class="col-xs-8 border-right margin-bottom">
                 <h3>Modify Service:</h3>
                 <p ng-class="arrAvailableServices.length > 0? 'item-visible-false' : 'item-visible-true'">There are no available services.</p>

@@ -51,8 +51,10 @@ public class TaskInformationController extends HttpServlet {
 
                 if(user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString())){
                     request.getSession().setAttribute(CauliflowerInfo.ACTION_ATTRIBUTE, CauliflowerInfo.INSTALL_ENGINEER_CONTROLLER_LINK);
+                    request.getSession().setAttribute(CauliflowerInfo.DASHBOARD_PARAM, CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
                 }else{
                     request.getSession().setAttribute(CauliflowerInfo.ACTION_ATTRIBUTE, CauliflowerInfo.PROVIS_ENGINEER_CONTROLLER_LINK);
+                    request.getSession().setAttribute(CauliflowerInfo.DASHBOARD_PARAM, CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
                 }
             }catch(Exception e){
                 e.printStackTrace();

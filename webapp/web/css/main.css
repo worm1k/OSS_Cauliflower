@@ -109,3 +109,5 @@ table, .table { border: 1px solid #ddd }
 .border-bottom { border-bottom: 1px solid #ddd; }
 .border-right { border-right: 1px solid #ddd; }
 .margin-bottom { margin-bottom: 20px; }
+
+.margin-zero { margin: 0; }
