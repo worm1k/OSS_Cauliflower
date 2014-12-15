@@ -2744,15 +2744,21 @@ public class DAO {
 		ResultSet resultSet = null;
 		ReportGenerator reportGenerator = null;
 		final String xlsExt = "xls";
-		final String selectQuery = " SELECT P.ID_ROUTER R_ID, P.ID P_ID, SI.ID SI_ID, U.ID_USER U_ID FROM  "
-				+ " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
-				+ " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
-				+ " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
-				+ " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
-				+ " WHERE SIST.NAME = 'ACTIVE' ";
+
+        // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
+        final String selectQuery = " SELECT P.ID_ROUTER R_ID, P.ID P_ID, SI.ID SI_ID, "
+                + " U.ID_USER U_ID, U.E_MAIL U_EMAIL, U.F_NAME U_F_NAME, U.L_NAME U_L_NAME FROM  "
+                + " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
+                + " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
+                + " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
+                + " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
+                + " WHERE SIST.NAME = ? ";
+
+        final String sistActQ = InstanceStatus.ACTIVE.toString();
 		try {
 			preparedStatement = connection
 					.prepareStatement(selectQuery);
+            preparedStatement.setString(1, sistActQ);
 			resultSet = preparedStatement.executeQuery();
 			if (EXT.equals(xlsExt)) {
 				reportGenerator = new XLSReportGenerator(" CIA Report ",
