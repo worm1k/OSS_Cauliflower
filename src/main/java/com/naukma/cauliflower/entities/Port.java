@@ -1,5 +1,7 @@
 package com.naukma.cauliflower.entities;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Igor
@@ -7,7 +9,7 @@ package com.naukma.cauliflower.entities;
  * Time: 0:59
  * To change this template use File | Settings | File Templates.
  */
-public class Port {
+public class Port implements Serializable{
 
     public Port(int id, int routerId, boolean used) {
         this.id = id;
