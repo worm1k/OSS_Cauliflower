@@ -88,7 +88,7 @@
     <form class="form-signin" action="blockacc" method="post" id="auth_block_form" autocomplete="off">
       <div class="form-group" id="auth_block_email">
         <h4>Email <span class="required"></span></h4>
-        <input type="text" class="form-control" placeholder="you@example.com" data-trigger="manual" data-placement="bottom" data-content="Email address is not valid" name="email" required>
+        <input type="text" id="js-email-to-block" class="form-control" placeholder="you@example.com" data-trigger="manual" data-placement="bottom" data-content="Email address is not valid" name="email" required>
       </div>
       <button class="btn-signin btn btn-lg btn-primary btn-block" id="auth_block_submit" type="submit">Block</button>
     </form>

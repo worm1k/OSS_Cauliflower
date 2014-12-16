@@ -2,47 +2,38 @@
  * Created by ihor on 15.12.2014.
  */
 
-function getEmailsLike() {
-    $(document).ready(function () {
-            $("#emails").on('keyup', function () {
-                    var emailLength = $(this).val().length;
-                    var autocomplete = $("#autocomplete");
-                    if (emailLength >= 2) {
-                        var query = $(this).val();
-                        console.log(query);
-                        $.ajax({
-                            type: 'POST',
-                            url: 'autocomplete',
-                            dataType: 'json',
-                            data: {
-                                query: query
-                            },
-                            success: function (msg) {
-                                if (msg != null) {
-                                    var html = "";
-                                    for (var i = 0; i < msg.length; i++) {
-                                        html += '<li>' + msg[i] + '</li><br>';
-                                      //todo
-                                    }
-                                    autocomplete.html(html);
-                                    autocomplete.show();
-                                }
-                                else {
-                                    console.log('response null');
-                                }
-                            },
-                            error: function () {
-                                //your error code
-                            }
-                        });
-                    } else {
-                        autocomplete.hide();
-                        autocomplete.html("");
-                    }
-                }
-            );
+$(document).ready(function(){
+    $('#js-email-to-block').on('keyup', function(){
+        var that = this;
 
+        if($(that).val().length > 1){
+            var query = $(this).val();
+            $.ajax({
+                type: 'POST',
+                url: 'autocomplete',
+                dataType: 'json',
+                data: {
+                    query: query
+                },
+                success: function (email) {
+                    if (email != null && typeof email != 'undefined') {
+                        if(email.length > 0){
+                            $(that).autocomplete({
+                                minLengthType: 2,
+                                autoFocus: true,
+                                source: email,
+                                close: function(){
+                                    emailCheck('#auth_block_email');
+                                }
+                            });
+                        }
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error("ERROR getting emails", this, jqXHR, textStatus, errorThrown);
+                }
+            });
         }
-    );
-}
+    });
+});
 

@@ -22,7 +22,7 @@ public class ReportsFilter extends BaseFilter {
     @Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
         User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if (user == null || (user != null && user.getUserRole().equals(UserRole.CUSTOMER.toString()))) {
+        if (user == null || (user != null && (user.getUserRole().equals(UserRole.CUSTOMER.toString()) ))) {
             try {
                 logger.info("ReportsFilter ::  user has not permission to see /reports.jsp page");
                 response.sendRedirect(CauliflowerInfo.HOME_LINK);

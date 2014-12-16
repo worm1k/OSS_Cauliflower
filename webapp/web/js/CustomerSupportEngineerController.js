@@ -9,8 +9,6 @@ angular.module('CSEDashboard', [])
             console.log(id);
         }
 
-        console.log('CSE');
-
         function ajaxGetUsers(callback){
             $.ajax({
                 type: 'GET',

@@ -65,17 +65,22 @@ angular.module('NgApp', [])
         $scope.gmap = $("#js-map").gmap3();
 
         $scope.mapSetActiveMarkerLocationByAddress = function(){
-            console.log($scope.gmap);
             console.log('ng-click fn');
 
             console.log($scope.serviceLocationAddress);
 
             mapGetLatLngByAddress($scope.gmap,$scope.serviceLocationAddress, function(result){
+                console.log(result);
                 if(result){
                     console.log(result && result[0]);
                     console.log(result[0].formatted_address);
-                    // $scope.$apply(function(){ $scope.serviceLocationAddress = result[0].formatted_address; });
-                    // mapSetMarkerLocation($scope.gmap, 'activeMarker', new google.maps.LatLng(result[0].geometry.location.lat(),result[0].geometry.location.lng()), false, 0);
+
+                    $scope.$apply(function(){ $scope.serviceLocationAddress = result[0].formatted_address; });
+
+                    mapClickEvent($scope.gmap, {latLng: new google.maps.LatLng(result[0].geometry.location.lat(), result[0].geometry.location.lng())}, null);
+                    mapZoomCamera($scope.gmap, 14);
+                }else{
+                    popover('#js-address-search', 2000);
                 }
             });
         }
@@ -306,19 +311,18 @@ angular.module('NgApp', [])
         function mapClickEvent(map, event, context){
             var closest;
 
-            mapCloseInfobox(this);
+            mapCloseInfobox(map);
 
             // this is not good style
-            mapGetMarkers(this, 'activeMarker', function(marker){
-                console.log(marker);
+            mapGetMarkers(map, 'activeMarker', function(marker){
                 if(marker.length > 0){
-                    mapSetMarkerLocation(this, 'activeMarker', event.latLng, false, 0);
-                    mapGetAddressByLatLng(this, event.latLng, function(addr){
+                    mapSetMarkerLocation(map, 'activeMarker', event.latLng, false, 0);
+                    mapGetAddressByLatLng(map, event.latLng, function(addr){
                         if(addr && addr[0]){
                             $scope.$apply(function(){ $scope.serviceLocationAddress = addr[0].formatted_address; });
                         }
                     });
-                    mapGetMarkers(this, 'providerLocation', function(markers){
+                    mapGetMarkers(map, 'providerLocation', function(markers){
                         closest = findClosest(marker[0], markers);
                         mapDrawPolyline($scope.gmap, [
                             [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
@@ -326,7 +330,7 @@ angular.module('NgApp', [])
                         ], 'blue', true);
 
                         mapSetServiceOptions(closest.marker);
-                        mapOpenInfobox(this, marker[0].object);
+                        mapOpenInfobox(map, marker[0].object);
                     });
                 }else{
                     activeMarker.getValues().latLng[0] = event.latLng.lat();
@@ -334,14 +338,16 @@ angular.module('NgApp', [])
 
                     mapAddMarker($scope.gmap, activeMarker);
 
-                    mapGetMarkers(this, 'providerLocation', function(markers){
-                        closest = findClosest(marker[0], markers);
-                        mapDrawPolyline($scope.gmap, [
-                            [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-                            [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
-                        ], 'blue', true);
-                        mapSetServiceOptions(closest.marker);
-                        mapOpenInfobox(this, marker[0].object);
+                    mapGetMarkers(map, 'activeMarker', function(marker){
+                        mapGetMarkers(map, 'providerLocation', function(markers){
+                            closest = findClosest(marker[0], markers);
+                            mapDrawPolyline($scope.gmap, [
+                                [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
+                                [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+                            ], 'blue', true);
+                            mapSetServiceOptions(closest.marker);
+                            mapOpenInfobox(map, marker[0].object);
+                        });
                     });
                 }
             });
@@ -373,7 +379,7 @@ angular.module('NgApp', [])
         var markerIcons = {
             red: new google.maps.MarkerImage("img/icons/marker_red.png"),
             green: new google.maps.MarkerImage("img/icons/marker_green.png"),
-            blue: new google.maps.MarkerImage("img/icons/marker_blue.png"),
+            blue: new /*google.maps.MarkerImage("img/icons/marker_blue.png")*/google.maps.MarkerImage("img/icons/girl_icon_sm.png"),
             grey: new google.maps.MarkerImage("img/icons/marker_grey.png")
         }
 
@@ -469,7 +475,8 @@ angular.module('NgApp', [])
                     tag: 'providerLocation',
                     name: 'providerLocation',
                     options: {
-                        icon: markerIcons.blue
+                        icon: markerIcons.blue,
+                        animation: google.maps.Animation.BOUNCE
                     }
                 });
                 tmpProviderLocationMapMarker.setData(arrProviderLocation[i]);
@@ -554,6 +561,7 @@ angular.module('NgApp', [])
                                 // this is not good style
                                 mapGetMarkers(this, 'activeMarker', function(marker){
                                     console.log(marker);
+                                    console.log(marker.length > 0);
                                     if(marker.length > 0){
                                         mapSetMarkerLocation(this, 'activeMarker', event.latLng, false, 0);
                                         mapGetAddressByLatLng(this, event.latLng, function(addr){
@@ -577,14 +585,16 @@ angular.module('NgApp', [])
 
                                         mapAddMarker($scope.gmap, activeMarker);
 
-                                        mapGetMarkers(this, 'providerLocation', function(markers){
-                                            closest = findClosest(marker[0], markers);
-                                            mapDrawPolyline($scope.gmap, [
-                                                [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-                                                [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
-                                            ], 'blue', true);
-                                            mapSetServiceOptions(closest.marker);
-                                            mapOpenInfobox(this, marker[0].object);
+                                        mapGetMarkers(this, 'activeMarker', function(marker){
+                                            mapGetMarkers(this, 'providerLocation', function(markers){
+                                                closest = findClosest(marker[0], markers);
+                                                mapDrawPolyline($scope.gmap, [
+                                                    [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
+                                                    [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+                                                ], 'blue', true);
+                                                mapSetServiceOptions(closest.marker);
+                                                mapOpenInfobox(this, marker[0].object);
+                                            });
                                         });
                                     }
                                 });
