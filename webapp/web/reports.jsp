@@ -225,7 +225,7 @@
                         <tr>
                             <div class="report_block">
                                 <td>
-                                    <div class="report_text"> Report about new orders per period</div>
+                                    <div class="report_text">Report about new orders per period</div>
                                 </td>
                                 <td>
                                     <form class="form-inline inline" action="" method="post">
@@ -265,7 +265,7 @@
                         </tbody>
                     </table>
         </div>
-
+        </div>
     </div>
     <jsp:include page="footer.jsp"/>
 </body>
