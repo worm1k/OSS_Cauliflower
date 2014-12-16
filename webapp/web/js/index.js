@@ -310,7 +310,6 @@ angular.module('NgApp', [])
 
             // this is not good style
             mapGetMarkers(this, 'activeMarker', function(marker){
-                console.log(marker);
                 if(marker.length > 0){
                     mapSetMarkerLocation(this, 'activeMarker', event.latLng, false, 0);
                     mapGetAddressByLatLng(this, event.latLng, function(addr){
@@ -334,14 +333,16 @@ angular.module('NgApp', [])
 
                     mapAddMarker($scope.gmap, activeMarker);
 
-                    mapGetMarkers(this, 'providerLocation', function(markers){
-                        closest = findClosest(marker[0], markers);
-                        mapDrawPolyline($scope.gmap, [
-                            [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-                            [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
-                        ], 'blue', true);
-                        mapSetServiceOptions(closest.marker);
-                        mapOpenInfobox(this, marker[0].object);
+                    mapGetMarkers(this, 'activeMarker', function(marker){
+                        mapGetMarkers(this, 'providerLocation', function(markers){
+                            closest = findClosest(marker[0], markers);
+                            mapDrawPolyline($scope.gmap, [
+                                [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
+                                [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+                            ], 'blue', true);
+                            mapSetServiceOptions(closest.marker);
+                            mapOpenInfobox(this, marker[0].object);
+                        });
                     });
                 }
             });
@@ -554,6 +555,7 @@ angular.module('NgApp', [])
                                 // this is not good style
                                 mapGetMarkers(this, 'activeMarker', function(marker){
                                     console.log(marker);
+                                    console.log(marker.length > 0);
                                     if(marker.length > 0){
                                         mapSetMarkerLocation(this, 'activeMarker', event.latLng, false, 0);
                                         mapGetAddressByLatLng(this, event.latLng, function(addr){
@@ -577,14 +579,16 @@ angular.module('NgApp', [])
 
                                         mapAddMarker($scope.gmap, activeMarker);
 
-                                        mapGetMarkers(this, 'providerLocation', function(markers){
-                                            closest = findClosest(marker[0], markers);
-                                            mapDrawPolyline($scope.gmap, [
-                                                [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-                                                [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
-                                            ], 'blue', true);
-                                            mapSetServiceOptions(closest.marker);
-                                            mapOpenInfobox(this, marker[0].object);
+                                        mapGetMarkers(this, 'activeMarker', function(marker){
+                                            mapGetMarkers(this, 'providerLocation', function(markers){
+                                                closest = findClosest(marker[0], markers);
+                                                mapDrawPolyline($scope.gmap, [
+                                                    [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
+                                                    [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+                                                ], 'blue', true);
+                                                mapSetServiceOptions(closest.marker);
+                                                mapOpenInfobox(this, marker[0].object);
+                                            });
                                         });
                                     }
                                 });
