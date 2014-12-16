@@ -2669,7 +2669,8 @@ public class DAO {
     /**
      * ---------------------------------------------------------------------IGOR---------------------------------------------------------------------*
      */
-	 
+
+
 	 /**
 	 * Create List<CIA> object to create report table for CIA Reports
 	 * 
@@ -2685,7 +2686,8 @@ public class DAO {
 		
 		// -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
 		final String selectQuery = " SELECT P.ID_ROUTER R_ID, P.ID P_ID, SI.ID SI_ID, "
-				+ " U.ID_USER U_ID, U.E_MAIL U_EMAIL, U.F_NAME U_F_NAME, U.L_NAME U_L_NAME FROM  "
+				+ " U.ID_USER U_ID, U.E_MAIL U_EMAIL, U.F_NAME U_F_NAME, U.L_NAME U_L_NAME"
+                + " FROM "
 				+ " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
 				+ " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
 				+ " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
@@ -2747,7 +2749,8 @@ public class DAO {
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
         final String selectQuery = " SELECT P.ID_ROUTER R_ID, P.ID P_ID, SI.ID SI_ID, "
-                + " U.ID_USER U_ID, U.E_MAIL U_EMAIL, U.F_NAME U_F_NAME, U.L_NAME U_L_NAME FROM  "
+                + " U.ID_USER U_ID, U.E_MAIL U_EMAIL, U.F_NAME U_F_NAME, U.L_NAME U_L_NAME "
+                + " FROM  "
                 + " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
                 + " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
                 + " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
