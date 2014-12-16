@@ -3036,8 +3036,43 @@ public class DAO {
     }
 
 
-    public List<Object> getCircuitsForReport(int page) {
-        return null;
+    public List<Circuit> getCircuitsForReport(int page, int pageLength)  throws SQLException  {
+        Connection connection = getConnection();
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        List<Circuit> circuits = new ArrayList<Circuit>();
+        final int startP = (page-1)*pageLength+1;
+        final int endP   = page*pageLength;
+        int counter = 0;
+        try {
+            preparedStatement = connection.
+                    prepareStatement( " " +
+                            " SELECT C.ID CABLE_ID, P.ID PORT_ID, P.ID_ROUTER ROUTER_ID FROM CABLE C INNER JOIN PORT P ON P.ID = C.ID_PORT" +
+                            " WHERE P.USED = 1" +
+                            " ORDER BY P.ID_ROUTER ASC");
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                counter++;
+                if(counter>=startP && counter<=endP){
+                    final Circuit c = new Circuit(resultSet.getInt("CABLE_ID"),
+                            resultSet.getInt("PORT_ID"),
+                            resultSet.getInt("ROUTER_ID"));
+                    circuits.add(c);
+                }
+            }
+
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement! in DAO.getPortsForReport(int page, int pageLength)");
+                exc.printStackTrace();
+            }
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getPortsForReport");
+        }
+        return circuits;
     }
 
     public List<Object> getCablesForReport(int page) {
@@ -3077,7 +3112,7 @@ public class DAO {
         {//help
             System.out.println("SUCCESS!!!!getPortsForReport");
         }
-        return null;
+        return ports;
     }
 
     public List<Object> getMostProfitableRouterForReport(int page) {
