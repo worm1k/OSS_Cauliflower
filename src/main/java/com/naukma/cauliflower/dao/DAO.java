@@ -2645,10 +2645,10 @@ public class DAO {
                         resultSet.getString("F_NAME"),
                         resultSet.getString("L_NAME"),
                         resultSet.getString("PHONE"),
-                        ((resultSet.getString("IS_BLOCKED") == "1")? true: false)));
+                        ((resultSet.getString("IS_BLOCKED")).equals("1")? true: false)));
                 }
             {//
-                System.out.println("SUCCESS!!! getServices");
+                System.out.println("SUCCESS!!! getCustomers");
             }
         } finally {
             try {
