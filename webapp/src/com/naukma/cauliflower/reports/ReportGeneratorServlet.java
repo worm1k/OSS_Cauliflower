@@ -113,6 +113,13 @@ public class ReportGeneratorServlet extends HttpServlet {
                     //resultSet =
                     if(hasRights)
                         reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, EXT);
+                }else if (methodName.equals("Tree")) {
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) ||
+                                    user.getUserRole().equals(UserRole.CUST_SUP_ENG.toString());
+                    //resultSet =
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getCIAReport(EXT);
                 }
                 //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
             /*if (resultSet == null)

@@ -153,6 +153,28 @@
                         <div class="clear"></div>
                     </tr>
                     </c:if>
+                    <c:if test="${sessionScope.user != null && (sessionScope.user.userRole == \"ADMINISTRATOR\"
+                                || sessionScope.user.userRole == \"PROVISIONING_ENG\" || sessionScope.user.userRole == \"CUST_SUP_ENG\")}">
+                        <tr>
+                            <div class="report_block">
+                                <td>
+                                    <div class="report_text"> Impact Propagation Tree</div>
+                                </td>
+                                <td>
+                                    <form class="form-inline inline" action="" method="post">
+                                        <input type="hidden" name="reportMethod" value="Tree">
+                                        <button type="submit" class="btn btn-xs btn-default">View</button>
+                                    </form>
+                                    <form class="form-inline inline" action="reports" method="post">
+                                        <input type="hidden" name="reportMethod" value="Tree">
+                                        <input type="hidden" name="extension" value="xls">
+                                        <button type="submit" class="btn btn-xs btn-primary">Download</button>
+                                    </form>
+
+                                </td>
+                            </div>
+                        </tr>
+                    </c:if>
                     <c:if test="${sessionScope.user != null && (sessionScope.user.userRole == \"ADMINISTRATOR\" || sessionScope.user.userRole == \"PROVISIONING_ENG\")}">
                     <tr>
                         <div class="report_block">
@@ -212,7 +234,8 @@
 
                             </td>
                         </div>
-                        </tr>
+                    </tr>
+
                     </tbody>
                 </table>
         </div>
@@ -261,6 +284,7 @@
                                 </td>
                             </div>
                         </tr>
+
                         </c:if>
                         </tbody>
                     </table>

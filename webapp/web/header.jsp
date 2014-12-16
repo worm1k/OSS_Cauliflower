@@ -55,7 +55,7 @@
                                         out.print("<li><a href=\"pe_dashboard.jsp\">Dashboard</a></li>");
                                     if(us!=null && us.getUserRole().equals(UserRole.CUST_SUP_ENG.toString()))
                                         out.print("<li><a href=\"cse_dashboard.jsp\">Dashboard</a></li>");
-                                    if(us!=null && !us.getUserRole().equals(UserRole.CUSTOMER.toString()) && !us.getUserRole().equals(UserRole.CUST_SUP_ENG.toString()))
+                                    if(us!=null && !us.getUserRole().equals(UserRole.CUSTOMER.toString()))
                                         out.print("<li><a href=\"reports.jsp\">Get reports</a></li>");
                                 %>
                                 <li class="divider"></li>
