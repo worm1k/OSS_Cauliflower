@@ -3070,12 +3070,12 @@ public class DAO {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
+                logger.warn("Can't close connection or preparedStatement! in DAO.getPortsForReport(int page, int pageLength)");
                 exc.printStackTrace();
             }
         }
         {//help
-            System.out.println("SUCCESS!!!!getOrdersPerPeriod");
+            System.out.println("SUCCESS!!!!getPortsForReport");
         }
         return null;
     }
