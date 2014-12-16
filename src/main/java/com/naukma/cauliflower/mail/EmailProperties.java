@@ -5,7 +5,7 @@ package com.naukma.cauliflower.mail;
  */
 public enum EmailProperties {
 
-    SERVER("smtp.gmail.com", 587);
+    GMIAL("smtp.gmail.com", 587);
 
 
     private String host;
