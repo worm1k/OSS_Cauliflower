@@ -3028,6 +3028,40 @@ public class DAO {
 	}
 
 
+    public List<Object> getDevicesForReport(int page) {
+        return null;
+    }
+
+
+    public List<Object> getCircuitsForReport(int page) {
+        return null;
+    }
+
+    public List<Object> getCablesForReport(int page) {
+        return null;
+    }
+
+    public List<Object> getPortsForReport(int page) {
+        return null;
+    }
+
+    public List<Object> getMostProfitableRouterForReport(int page) {
+        return null;
+    }
+
+    public List<Object> getUsedRoutersAndCapacityOfPorts(int page) {
+        return null;
+    }
+
+    public List<Object> getProfitabilityByMonth(int page) {
+        return null;
+    }
+    public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page) throws SQLException {
+
+        return null;
+    }
+
+
     /**---------------------------------------------------------------------END IGOR---------------------------------------------------------------------**/
 
     /**---------------------------------------------------------------------START vladmyr---------------------------------------------------------------------**/
@@ -3321,7 +3355,7 @@ public class DAO {
         return  num;
 
     }
-    /**---------------------------------------------------------------------END Max---------------------------------------------------------------------**/
+        /**---------------------------------------------------------------------END Max---------------------------------------------------------------------**/
 
     /**---------------------------------------------------------------------START ihor---------------------------------------------------------------------**/
     

@@ -54,41 +54,65 @@ public class ReportGeneratorServlet extends HttpServlet {
             try {
                 if (methodName.equals("Devices")) {
                     //resultSet = DAO.INSTANCE.getDevicesForReport();
-                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
-                    reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
+
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getDevicesForReport(EXT);
                 } else if (methodName.equals("Circuits")) {
-                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getCircuitsForReport(EXT);
+
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getCircuitsForReport(EXT);
                 } else if (methodName.equals("Cables")) {
-                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getCablesForReport(EXT);
+
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getCablesForReport(EXT);
                 } else if (methodName.equals("Ports")) {
-                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getPortsForReport(EXT);
+
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getPortsForReport(EXT);
                 } else if (methodName.equals("Profitable")) {
-                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     //resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
-                    reportGenerator = DAO.INSTANCE.getMostProfitableRouterForReport(EXT);
+
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getMostProfitableRouterForReport(EXT);
                 } else if (methodName.equals("utilizationAndCapacity")){
-                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts(EXT);
+
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts(EXT);
                 }else if (methodName.equals("Profitability")) {
-                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getProfitabilityByMonth(EXT);
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getProfitabilityByMonth(EXT);
                 }else if (methodName.equals("New") && startDate != null && endDate != null) {
-                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, EXT);
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, EXT);
                     //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
                 }else if (methodName.equals("Disconnect") && startDate != null && endDate != null) {
-                    hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
+                    hasRights =
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
                     //resultSet =
-                    reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, EXT);
+                    if(hasRights)
+                        reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, EXT);
                 }
                 //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
             /*if (resultSet == null)

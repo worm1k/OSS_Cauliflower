@@ -181,6 +181,16 @@
         <url-pattern>/getallcustomers</url-pattern>
     </servlet-mapping>
 
+
+    <servlet>
+        <servlet-name>ReportsPagingController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.ReportsPagingController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReportsPagingController</servlet-name>
+        <url-pattern>/reportspaging</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>TaskInformationController</servlet-name>
         <servlet-class>com.naukma.cauliflower.controllers.TaskInformationController</servlet-class>
