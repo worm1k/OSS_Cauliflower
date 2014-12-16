@@ -21,7 +21,7 @@ angular.module('MapDashboard', [])
 		var markerIcons = {
 			red: new google.maps.MarkerImage("img/icons/marker_red.png"),
 			green: new google.maps.MarkerImage("img/icons/marker_green.png"),
-			blue: new google.maps.MarkerImage("img/icons/marker_blue.png"),//google.maps.MarkerImage("img/icons/girl_icon_sm.png"),
+			blue: new /*google.maps.MarkerImage("img/icons/marker_blue.png"),*/google.maps.MarkerImage("img/icons/girl_icon_sm.png"),
 			grey: new google.maps.MarkerImage("img/icons/marker_grey.png")
 		}
 
@@ -377,8 +377,8 @@ angular.module('MapDashboard', [])
                 tag: 'providerLocation',
                 name: 'providerLocation',
                 options: {
-                    icon: markerIcons.blue
-                    //animation: google.maps.Animation.BOUNCE
+                    icon: markerIcons.blue,
+                    animation: google.maps.Animation.BOUNCE
                 }
             });
             tmpLocationAddressMapMarker.setData(tmpProviderLocation);
@@ -435,8 +435,8 @@ angular.module('MapDashboard', [])
                         tag: 'providerLocation',
                         name: 'providerLocation',
                         options: {
-                            icon: markerIcons.blue
-                            //animation: google.maps.Animation.BOUNCE
+                            icon: markerIcons.blue,
+                            animation: google.maps.Animation.BOUNCE
                         }
                     });
                     tmpLocationAddressMapMarker.setData(tmpProviderLocation);

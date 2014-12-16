@@ -379,7 +379,7 @@ angular.module('NgApp', [])
         var markerIcons = {
             red: new google.maps.MarkerImage("img/icons/marker_red.png"),
             green: new google.maps.MarkerImage("img/icons/marker_green.png"),
-            blue: new google.maps.MarkerImage("img/icons/marker_blue.png"),
+            blue: new /*google.maps.MarkerImage("img/icons/marker_blue.png")*/google.maps.MarkerImage("img/icons/girl_icon_sm.png"),
             grey: new google.maps.MarkerImage("img/icons/marker_grey.png")
         }
 
@@ -475,7 +475,8 @@ angular.module('NgApp', [])
                     tag: 'providerLocation',
                     name: 'providerLocation',
                     options: {
-                        icon: markerIcons.blue
+                        icon: markerIcons.blue,
+                        animation: google.maps.Animation.BOUNCE
                     }
                 });
                 tmpProviderLocationMapMarker.setData(arrProviderLocation[i]);
