@@ -2685,8 +2685,8 @@ public class DAO {
         final String sistActQ = InstanceStatus.ACTIVE.toString();
 		
 		// -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-		final String selectQuery = " SELECT P.ID_ROUTER R_ID, P.ID P_ID, SI.ID SI_ID, "
-				+ " U.ID_USER U_ID, U.E_MAIL U_EMAIL, U.F_NAME U_F_NAME, U.L_NAME U_L_NAME"
+		final String selectQuery = " SELECT P.ID_ROUTER ROUTER_ID, P.ID PORT_ID, SI.ID SI_ID, "
+				+ " U.ID_USER USER_ID, U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME"
                 + " FROM "
 				+ " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
 				+ " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
@@ -2748,8 +2748,8 @@ public class DAO {
 		final String xlsExt = "xls";
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-        final String selectQuery = " SELECT P.ID_ROUTER R_ID, P.ID P_ID, SI.ID SI_ID, "
-                + " U.ID_USER U_ID, U.E_MAIL U_EMAIL, U.F_NAME U_F_NAME, U.L_NAME U_L_NAME "
+        final String selectQuery = " SELECT P.ID_ROUTER ROUTER_ID, P.ID PORT_ID, SI.ID SI_ID, "
+                + " U.ID_USER USER_ID, U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME"
                 + " FROM  "
                 + " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
                 + " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
@@ -3060,7 +3060,6 @@ public class DAO {
         return null;
     }
     public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page) throws SQLException {
-
         return null;
     }
 
