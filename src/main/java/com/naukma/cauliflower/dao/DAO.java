@@ -3044,7 +3044,39 @@ public class DAO {
         return null;
     }
 
-    public List<Object> getPortsForReport(int page) {
+    public List<Port> getPortsForReport(int page, int pageLength)  throws SQLException {
+
+        Connection connection = getConnection();
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        List<Port> ports = new ArrayList<Port>();
+        final int startP = (page-1)*pageLength+1;
+        final int endP   = page*pageLength;
+        int counter = 0;
+        try {
+            preparedStatement = connection.prepareStatement( "SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED FROM PORT P ORDER BY P.ID_ROUTER ASC");
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                counter++;
+                if(counter>=startP && counter<=endP){
+                final Port p = new Port(resultSet.getInt("PORT_ID"),
+                        resultSet.getInt("ID_ROUTER"),
+                        resultSet.getInt("USED")==1);
+                    ports.add(p);
+                }
+            }
+
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getOrdersPerPeriod");
+        }
         return null;
     }
 
@@ -3059,7 +3091,33 @@ public class DAO {
     public List<Object> getProfitabilityByMonth(int page) {
         return null;
     }
-    public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page) throws SQLException {
+    public List<ServiceOrder> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
+        Connection connection = getConnection();
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        ReportGenerator reportGenerator = null;
+        List<ServiceOrder> servOrds = new ArrayList<ServiceOrder>();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT SO.ID SO_ID, OS.NAME SCENARIO  " +
+                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                    "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ");
+
+            preparedStatement.setString(1, scenario.toString());
+            preparedStatement.setDate(2, sqlStartDate);
+            preparedStatement.setDate(3, sqlEndDate);
+            resultSet = preparedStatement.executeQuery();
+
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getOrdersPerPeriod");
+        }
         return null;
     }
 
