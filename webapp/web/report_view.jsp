@@ -34,10 +34,6 @@
         const endDate = null;
             </c:otherwise>
         </c:choose>
-
-        console.log(reportMethod);
-        console.log(startDate);
-        console.log(endDate);
     </script>
 </head>
 <body ng-controller="ReportViewController">
@@ -46,16 +42,18 @@
         <h1 class="text-center txt-bold">Cauliflower</h1>
         <h2 class="text-center">View "${param.reportMethod}" report</h2>
 
-        <table class="table table-striped" class="ng-cloak">
+        <ul id="pagination"></ul>
+
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th ng-repeat="(key, val) in json[0]">{{key}}</th>
+                    <th ng-repeat="(key, val) in json[0]" class="ng-cloak">{{key}}</th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="item in json">
-                    <td>{{$index + 1}}</td>
+                <tr ng-repeat="item in json" class="ng-cloak">
+                    <td>{{(page - 1) * linesOnPage + $index + 1}}</td>
                     <td ng-repeat="(key, val) in item">{{val}}</td>
                 </tr>
             </tbody>

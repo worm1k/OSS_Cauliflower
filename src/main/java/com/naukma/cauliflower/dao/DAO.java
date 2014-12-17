@@ -3568,12 +3568,14 @@ public class DAO {
         final int endP   = page*pageLength;
         try {
             preparedStatement = connection.
-                    prepareStatement( " " +
+                    prepareStatement(
                             " SELECT * FROM (SELECT C.ID CABLE_ID, P.ID PORT_ID, P.ID_ROUTER ROUTER_ID, ROWNUM RNUM "+
                             " FROM CABLE C INNER JOIN PORT P ON P.ID = C.ID_PORT "+
                             " WHERE P.USED = 1 AND ROWNUM <= ? "+
                             " ORDER BY P.ID_ROUTER) WHERE RNUM >= ? "
                     );
+
+//            prepareStatement();
             preparedStatement
                     .setInt(1, endP);
             preparedStatement

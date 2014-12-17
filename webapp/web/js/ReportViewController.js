@@ -6,12 +6,27 @@
 
 angular.module('ReportView', [])
     .controller('ReportViewController', function($scope){
+        $scope.linesOnPage = 1;
+        $scope.itemsLength = 0;
         $scope.page = 1;
+        $scope.totalPages = 1;
+        $scope.arrPage = [];
         $scope.json = [];
+        $scope.isLoading = true;
+
+        $scope.calcTotalPages = function(){
+            $scope.totalPages = $scope.itemsLength / $scope.linesOnPage;
+            if($scope.itemsLength % $scope.linesOnPage != 0){
+                $scope.totalPages++;
+            }
+
+            $scope.arrPage = [];
+            for(var i = 0; i < $scope.totalPages; i++) $scope.arrPage.push(i+1);
+        }
 
         $scope.ajaxGetReportPagination = function(data, callback){
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: 'amountoflines',
                 data: data,
                 success: function(jqXHR){
@@ -44,16 +59,71 @@ angular.module('ReportView', [])
             });
         }
 
-        $scope.update = function(){
+        $scope.update = function(page){
+            $scope.$apply(function(){ $scope.page = page; });
 
+            var data = {reportMethod: reportMethod, page: $scope.page};
+
+            if(startDate != null && endDate != null){
+                data.startDate = startDate;
+                data.endDate = endDate;
+            }
+
+            $scope.ajaxGetReport(data, function(json){
+                $scope.$apply(function(){ $scope.json = json.list; });
+            })
         }
 
-        $scope.ajaxGetReportPagination({reportMethod: reportMethod}, function(length){
-            console.log('LENGTH:', length);
-            $scope.ajaxGetReport({reportMethod: reportMethod, page: $scope.page}, function(json){
-                $scope.$apply(function(){
-                    $scope.json = json;
-                });
-            })
-        });
+        $scope.init = function(){
+            var data = {reportMethod: reportMethod, page: $scope.page};
+
+            if(startDate != null && endDate != null){
+                data.startDate = startDate;
+                data.endDate = endDate;
+            }
+
+            $scope.ajaxGetReportPagination(data, function(length){
+                $scope.ajaxGetReport(data, function(json){
+                    $scope.$apply(function(){
+                        $scope.json = json.list;
+                        $scope.linesOnPage = json.linesOnPage;
+                        $scope.itemsLength = length;
+                        $scope.calcTotalPages();
+                    });
+
+                    console.log('$scope.linesOnPage', $scope.linesOnPage);
+                    console.log('$scope.itemsLength', $scope.itemsLength);
+                    console.log('$scope.totalPages', $scope.totalPages);
+
+                    $('#pagination').bootstrapPaginator({
+                        bootstrapMajorVersion: 3,
+                        currentPage: $scope.page,
+                        totalPages: $scope.totalPages,
+                        numberOfPages: 5,
+                        itemTexts: function (type, page, current) {
+                            switch (type) {
+                                case "first":
+                                    return "First";
+                                case "prev":
+                                    return "Previous";
+                                case "next":
+                                    return "Next";
+                                case "last":
+                                    return "Last";
+                                case "page":
+                                    return page;
+                            }
+                        },
+                        itemContainerClass: function (type, page, current) {
+                            return (page === current) ? "active" : "pointer-cursor";
+                        },
+                        onPageChanged: function(e, oldPage, newPage){
+                            $scope.update(newPage);
+                        }
+                    });
+                })
+            });
+        }
+
+        $scope.init();
     });

@@ -36,6 +36,7 @@
 <script type="text/javascript" src="./vendor/geocomplete/jquery.geocomplete.min.js"></script>
 <script type="text/javascript" src="./vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="./vendor/bootstrap/dist/js/alert.js"></script>
+<script type="text/javascript" src="./vendor/bootstrap-paginator/bootstrap-paginator.min.js"></script>
 <script type="text/javascript" src="./vendor/angularjs/angular.min.js"></script>
 
 <%--it works incorrect--%>
