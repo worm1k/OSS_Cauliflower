@@ -16,7 +16,7 @@ import java.sql.SQLException;
 
 @WebServlet(name = "ProvisioningTaskController")
 public class ProvisioningTaskController extends HttpServlet {
-
+    DAO dao = DAO.INSTANCE;
     /*
     SOW.7
     SOW.8
@@ -38,30 +38,30 @@ public class ProvisioningTaskController extends HttpServlet {
             try {
                 System.out.println("before");
                 Integer taskId = Integer.parseInt(taskIdParam);
-                Task task = DAO.INSTANCE.getTaskById(taskId);
+                Task task = dao.getTaskById(taskId);
                 {//help
                     System.out.println(taskId);
-                    System.out.println(DAO.INSTANCE.getTaskStatus(taskId));
+                    System.out.println(dao.getTaskStatus(taskId));
                     System.out.println(user.getUserRoleId());
-                    System.out.println(DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG));
+                    System.out.println(dao.getUserRoleIdFor(UserRole.PROVISIONING_ENG));
                 }
 
-                if (DAO.INSTANCE.getTaskStatus(taskId) == TaskStatus.PROCESSING &&
-                        user.getUserRoleId() == DAO.INSTANCE.getUserRoleIdFor(UserRole.PROVISIONING_ENG)) {
+                if (task.getTaskStatus().equals(TaskStatus.PROCESSING.toString())  &&
+                        user.getUserRoleId() == dao.getUserRoleIdFor(UserRole.PROVISIONING_ENG)) {
 
-                    ServiceOrder serviceOrder = DAO.INSTANCE.getServiceOrder(taskId);
+                    ServiceOrder serviceOrder = dao.getServiceOrder(taskId);
                     if (task.getTaskName().equals(TaskName.CONNECT_INSTANCE)) {
-                        DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
+                        dao.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
                     }
                     else if (task.getTaskName().equals(TaskName.MODIFY_SERVICE)) {
-                        DAO.INSTANCE.changeServiceForServiceInstance(taskId, serviceOrder.getServiceInstanceId());
+                        dao.changeServiceForServiceInstance(taskId, serviceOrder.getServiceInstanceId());
                     }
                     else if (task.getTaskName().equals(TaskName.DISCONNECT_INSTANCE)) {
-                        DAO.INSTANCE.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
+                        dao.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
                     }
-                    DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                    DAO.INSTANCE.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
-                    DAO.INSTANCE.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
+                    dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+                    dao.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
+                    dao.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
 
                     response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
                 } else
