@@ -3270,13 +3270,13 @@ public class DAO {
      * @param page number of page
      * @throws java.sql.SQLException
      */
-    public List<Device> getDevicesForReport(int page, int pageLength) throws SQLException{
+    public List<Object> getDevicesForReport(int page, int pageLength) throws SQLException{
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         final int maxPortsCapOnDevice = 60;
-        List<Device> devices = new ArrayList<Device>();
+        List<Object> devices = new ArrayList<Object>();
         final int startP = (page-1)*pageLength+1;
         final int endP   = page*pageLength;
         int counter = 0;
@@ -3313,11 +3313,11 @@ public class DAO {
      * @param page number of page
      * @throws java.sql.SQLException
      */
-    public List<Circuit> getCircuitsForReport(int page, int pageLength)  throws SQLException  {
+    public List<Object> getCircuitsForReport(int page, int pageLength)  throws SQLException  {
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
-        List<Circuit> circuits = new ArrayList<Circuit>();
+        List<Object> circuits = new ArrayList<Object>();
         final int startP = (page-1)*pageLength+1;
         final int endP   = page*pageLength;
         try {
@@ -3405,11 +3405,11 @@ public class DAO {
     }
 
 
-    public List<ServiceOrder> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
+    public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
-        List<ServiceOrder> servOrds = new ArrayList<ServiceOrder>();
+        List<Object> servOrds = new ArrayList<Object>();
         final int startP = (page-1)*pageLength+1;
         final int endP   = page*pageLength;
         try {
