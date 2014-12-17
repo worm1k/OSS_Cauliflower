@@ -84,7 +84,7 @@
                                 </form>
                                 <form class="form-inline inline" action="reports" method="post">
                                     <input type="hidden" name="reportMethod" value="Devices">
-                                    <input type="hidden" name="extension" value="xls">
+                                    <input type="hidden" name="extension" value="{{reportFormat}}">
                                     <button type="submit" class="btn btn-xs btn-primary">Download</button>
                                 </form>
 
@@ -104,7 +104,7 @@
                                 </form>
                                 <form class="form-inline inline" action="reports" method="post">
                                     <input type="hidden" name="reportMethod" value="Circuits">
-                                    <input type="hidden" name="extension" value="xls">
+                                    <input type="hidden" name="extension" value="{{reportFormat}}">
                                     <button type="submit" class="btn btn-xs btn-primary">Download</button>
                                 </form>
 
@@ -124,7 +124,7 @@
                                 </form>
                                 <form class="form-inline inline" action="reports" method="post">
                                     <input type="hidden" name="reportMethod" value="Cables">
-                                    <input type="hidden" name="extension" value="xls">
+                                    <input type="hidden" name="extension" value="{{reportFormat}}">
                                     <button type="submit" class="btn btn-xs btn-primary">Download</button>
                                 </form>
 
@@ -144,7 +144,7 @@
                                 </form>
                                 <form class="form-inline inline" action="reports" method="post">
                                     <input type="hidden" name="reportMethod" value="Ports">
-                                    <input type="hidden" name="extension" value="xls">
+                                    <input type="hidden" name="extension" value="{{reportFormat}}">
                                     <button type="submit" class="btn btn-xs btn-primary">Download</button>
                                 </form>
 
@@ -167,7 +167,7 @@
                                     </form>
                                     <form class="form-inline inline" action="reports" method="post">
                                         <input type="hidden" name="reportMethod" value="Tree">
-                                        <input type="hidden" name="extension" value="xls">
+                                        <input type="hidden" name="extension" value="{{reportFormat}}">
                                         <button type="submit" class="btn btn-xs btn-primary">Download</button>
                                     </form>
 
@@ -188,7 +188,7 @@
                                 </form>
                                 <form class="form-inline inline" action="reports" method="post">
                                     <input type="hidden" name="reportMethod" value="Profitable">
-                                    <input type="hidden" name="extension" value="xls">
+                                    <input type="hidden" name="extension" value="{{reportFormat}}">
                                     <button type="submit" class="btn btn-xs btn-primary">Download</button>
                                 </form>
 
@@ -208,7 +208,7 @@
                                 </form>
                                 <form class="form-inline inline" action="reports" method="post">
                                     <input type="hidden" name="reportMethod" value="utilizationAndCapacity">
-                                    <input type="hidden" name="extension" value="xls">
+                                    <input type="hidden" name="extension" value="{{reportFormat}}">
                                     <button type="submit" class="btn btn-xs btn-primary">Download</button>
                                 </form>
 
@@ -228,7 +228,7 @@
                                 </form>
                                 <form class="form-inline inline" action="reports" method="post">
                                     <input type="hidden" name="reportMethod" value="Profitability">
-                                    <input type="hidden" name="extension" value="xls">
+                                    <input type="hidden" name="extension" value="{{reportFormat}}">
                                     <button type="submit" class="btn btn-xs btn-primary">Download</button>
                                 </form>
 
@@ -257,7 +257,7 @@
                                     </form>
                                     <form class="form-inline inline" action="reports" method="post">
                                         <input type="hidden" name="reportMethod" value="New">
-                                        <input type="hidden" name="extension" value="xls">
+                                        <input type="hidden" name="extension" value="{{reportFormat}}">
                                         <button type="submit" id="js-get-report-0" class="btn btn-xs btn-primary">Download</button>
                                     </form>
 
@@ -277,7 +277,7 @@
                                     </form>
                                     <form class="form-inline inline" action="reports" method="post">
                                         <input type="hidden" name="reportMethod" value="Disconnect">
-                                        <input type="hidden" name="extension" value="xls">
+                                        <input type="hidden" name="extension" value="{{reportFormat}}">
                                         <button type="submit" id="js-get-report-1" class="btn btn-xs btn-primary">Download</button>
                                     </form>
 
