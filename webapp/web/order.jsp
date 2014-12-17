@@ -25,7 +25,7 @@
 <div class="container">
     <h1 class="txt-center txt-bold">CauliFlower</h1>
     <h2 class="txt-center">Service order</h2>
-    <div class="row search-container">
+    <div class="row search-container item-visible-false">
         <div id="js-address-search" class="input-group search">
             <input type="text" id="js-address" class="form-control" placeholder="Search by address" ng-model="serviceLocationAddress" data-trigger="manual" data-placement="bottom" data-content="No result :(">
 					<span class="input-group-btn">

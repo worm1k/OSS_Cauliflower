@@ -19,9 +19,8 @@ import java.text.SimpleDateFormat;
 /**
  * Created by Eugene on 17.12.2014.
  */
-@WebServlet(name = "AmountOfLinesInReportComtroller")
-public class AmountOfLinesInReportComtroller   extends HttpServlet {
-
+@WebServlet(name = "AmountOfLinesInReportController")
+public class AmountOfLinesInReportController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

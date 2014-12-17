@@ -265,14 +265,16 @@
                                 <td>
                                     <form class="form-inline inline" action="report_view.jsp" method="post">
                                         <input type="hidden" name="reportMethod" value="New">
-                                        <button type="submit" class="btn btn-xs btn-default">View</button>
+                                        <input type="hidden" name="startDate" value="{{startTime}}"/>
+                                        <input type="hidden" name="endDate" value="{{endTime}}"/>
+                                        <button type="submit" id="js-get-report-0" class="btn btn-xs btn-default">View</button>
                                     </form>
                                     <form class="form-inline inline" action="reports" method="post">
                                         <input type="hidden" name="reportMethod" value="New">
                                         <input type="hidden" name="extension" value="{{reportFormat}}">
                                         <input type="hidden" name="startDate" value="{{startTime}}"/>
                                         <input type="hidden" name="endDate" value="{{endTime}}"/>
-                                        <button type="submit" id="js-get-report-0" class="btn btn-xs btn-primary">Download</button>
+                                        <button type="submit" id="js-get-report-1" class="btn btn-xs btn-primary">Download</button>
                                     </form>
 
                                 </td>
@@ -287,14 +289,16 @@
                                 <td>
                                     <form class="form-inline inline" action="report_view.jsp" method="post">
                                         <input type="hidden" name="reportMethod" value="Disconnect">
-                                        <button type="submit" class="btn btn-xs btn-default">View</button>
+                                        <input type="hidden" name="startDate" value="{{startTime}}"/>
+                                        <input type="hidden" name="endDate" value="{{endTime}}"/>
+                                        <button type="submit" id="js-get-report-2" class="btn btn-xs btn-default">View</button>
                                     </form>
                                     <form class="form-inline inline" action="reports" method="post">
                                         <input type="hidden" name="reportMethod" value="Disconnect">
                                         <input type="hidden" name="extension" value="{{reportFormat}}">
                                         <input type="hidden" name="startDate" value="{{startTime}}"/>
                                         <input type="hidden" name="endDate" value="{{endTime}}"/>
-                                        <button type="submit" id="js-get-report-1" class="btn btn-xs btn-primary">Download</button>
+                                        <button type="submit" id="js-get-report-3" class="btn btn-xs btn-primary">Download</button>
                                     </form>
 
                                 </td>

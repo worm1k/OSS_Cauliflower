@@ -6,18 +6,15 @@
 
 angular.module('ReportView', [])
     .controller('ReportViewController', function($scope){
+        $scope.page = 1;
         $scope.json = [];
         console.log('ReportViewCOntroller');
 
-        $scope.ajaxGetReport = function(method, page, callback){
-            console.log('ajaxGetReport');
+        $scope.ajaxGetReportPagination = function(data, callback){
             $.ajax({
                 type: 'GET',
-                url: 'reportspaging',
-                data: {
-                    page: page,
-                    reportMethod: method
-                },
+                url: 'amountoflines',
+                data: data,
                 success: function(jqXHR){
                     console.log(jqXHR);
                     if(jqXHR && jqXHR[0]){
@@ -29,21 +26,38 @@ angular.module('ReportView', [])
                 error: function(jqXHR, textStatus, errorThrown){
                     console.error("ERROR getting emails", this, jqXHR, textStatus, errorThrown);
                 }
-            })
+            });
         }
 
-        $scope.ajaxGetReport(reportMethod, 1, function(data){
-            $scope.$apply(function(){ $scope.json = data; });
+        $scope.ajaxGetReport = function(data, callback){
+            console.log('ajaxGetReport');
+            $.ajax({
+                type: 'GET',
+                url: 'reportspaging',
+                data: data,
+                success: function(jqXHR){
+                    console.log(jqXHR);
+                    if(jqXHR && jqXHR[0]){
+                        if (callback && typeof(callback) === "function") {
+                            callback(jqXHR);
+                        }
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    console.error("ERROR getting emails", this, jqXHR, textStatus, errorThrown);
+                }
+            });
+        }
+
+        $scope.update = function(){
+
+        }
+
+        $scope.ajaxGetReport({reportMethod: reportMethod, page: $scope.page}, function(json){
+            $scope.ajaxGetReportPagination({reportMethod: reportMethod}, function(pagination){
+                $scope.$apply(function(){
+                    $scope.json = json;
+                });
+            })
         });
     });
-
-//$(document).ready(function() {
-//    var reportMethod = ($('#reportMethod')).val();
-//    var pageNumber = 0;
-//
-//
-//    $.get( "reportspaging?reportMethod="+reportMethod+"&page="+pageNumber, function( data ) {
-//        //data - JSON object to print
-//    });
-//});
-

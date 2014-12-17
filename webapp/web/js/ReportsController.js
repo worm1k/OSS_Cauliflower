@@ -53,7 +53,7 @@ angular.module('Reports', [])
             if($(arrSelectors[0]).length > 0) $('#startDate').find('input').datepicker();
             if($(arrSelectors[1]).length > 0) $('#endDate').find('input').datepicker();
 
-            $('#js-get-report-0, #js-get-report-1').click(function(e){
+            $('#js-get-report-0, #js-get-report-1, #js-get-report-2, #js-get-report-3').click(function(e){
                 e.preventDefault();
 
                 if($scope.checkDates(arrSelectors)){
