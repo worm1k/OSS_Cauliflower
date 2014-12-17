@@ -2888,6 +2888,88 @@ public class DAO {
         }
         return result;
     }
+
+
+
+    /**
+     * gets amount of lines in report for devices
+     *
+     * @return int lines amoutn
+     * @throws java.sql.SQLException
+     */
+    public int getDevicesReportLinesAmount()throws SQLException  {
+        return 0;
+    }
+
+    /**
+     * gets amount of lines in report for Circuits
+     *
+     * @return int lines amoutn
+     * @throws java.sql.SQLException
+     */
+    public int getCircuitsReportLinesAmount()throws SQLException  {
+        return 0;
+    }
+
+    /**
+     * gets amount of lines in report for Cables
+     *
+     * @return int lines amoutn
+     * @throws java.sql.SQLException
+     */
+    public int getCablesReportLinesAmount()throws SQLException  {
+        return 0;
+    }
+
+    /**
+     * gets amount of lines in report for Ports
+     *
+     * @return int lines amoutn
+     * @throws java.sql.SQLException
+     */
+    public int getPortsReportLinesAmount()throws SQLException  {
+        return 0;
+    }
+
+    /**
+     * gets amount of lines in report for Most Profitable Router
+     *
+     * @return int lines amoutn
+     * @throws java.sql.SQLException
+     */
+    public int getMostProfitableRouterReportLinesAmount()throws SQLException  {
+        return 0;
+    }
+
+    /**
+     * gets amount of lines in report for Used Routers And Capacity Of Ports
+     *
+     * @return int lines amoutn
+     * @throws java.sql.SQLException
+     */
+    public int getUsedRoutersAndCapacityOfPortsLinesAmount()throws SQLException  {
+        return 0;
+    }
+
+    /**
+     * gets amount of lines in report for Profitability By Month
+     *
+     * @return int lines amoutn
+     * @throws java.sql.SQLException
+     */
+    public int getProfitabilityByMonthLinesAmount()throws SQLException  {
+        return 0;
+    }
+
+    /**
+     * gets amount of lines in report for Orders Per Period
+     *
+     * @return int lines amoutn
+     * @throws java.sql.SQLException
+     */
+    public int getOrdersPerPeriodLinesAmount(Scenario aNew, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate)throws SQLException  {
+        return 0;
+    }
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 
@@ -3801,85 +3883,6 @@ public class DAO {
         return resEmails;
     }
 
-    /**
-     * gets amount of lines in report for devices
-     *
-     * @return int lines amoutn
-     * @throws java.sql.SQLException
-     */
-    public int getDevicesReportLinesAmount()throws SQLException  {
-        return 0;
-    }
-
-    /**
-     * gets amount of lines in report for Circuits
-     *
-     * @return int lines amoutn
-     * @throws java.sql.SQLException
-     */
-    public int getCircuitsReportLinesAmount()throws SQLException  {
-        return 0;
-    }
-
-    /**
-     * gets amount of lines in report for Cables
-     *
-     * @return int lines amoutn
-     * @throws java.sql.SQLException
-     */
-    public int getCablesReportLinesAmount()throws SQLException  {
-        return 0;
-    }
-
-    /**
-     * gets amount of lines in report for Ports
-     *
-     * @return int lines amoutn
-     * @throws java.sql.SQLException
-     */
-    public int getPortsReportLinesAmount()throws SQLException  {
-        return 0;
-    }
-
-    /**
-     * gets amount of lines in report for Most Profitable Router
-     *
-     * @return int lines amoutn
-     * @throws java.sql.SQLException
-     */
-    public int getMostProfitableRouterReportLinesAmount()throws SQLException  {
-        return 0;
-    }
-
-    /**
-     * gets amount of lines in report for Used Routers And Capacity Of Ports
-     *
-     * @return int lines amoutn
-     * @throws java.sql.SQLException
-     */
-    public int getUsedRoutersAndCapacityOfPortsLinesAmount()throws SQLException  {
-        return 0;
-    }
-
-    /**
-     * gets amount of lines in report for Profitability By Month
-     *
-     * @return int lines amoutn
-     * @throws java.sql.SQLException
-     */
-    public int getProfitabilityByMonthLinesAmount()throws SQLException  {
-        return 0;
-    }
-
-    /**
-     * gets amount of lines in report for Orders Per Period
-     *
-     * @return int lines amoutn
-     * @throws java.sql.SQLException
-     */
-    public int getOrdersPerPeriodLinesAmount(Scenario aNew, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate)throws SQLException  {
-        return 0;
-    }
 /**---------------------------------------------------------------------END ihor---------------------------------------------------------------------**/
 }
 
