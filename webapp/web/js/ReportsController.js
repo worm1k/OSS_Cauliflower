@@ -10,9 +10,7 @@ angular.module('Reports', [])
             console.log($scope.reportFormat);
         }
 
-
-
-        function checkDates(arrThat){
+        $scope.checkDates = function(arrThat){
             var isValid = true;
             var start = $(arrThat[0]).datepicker('getDate');
             var end = $(arrThat[1]).datepicker('getDate');
@@ -35,6 +33,7 @@ angular.module('Reports', [])
                 isValid = false;
             }
             console.log(start, end);
+            console.log(startMilis, endMilis);
             return isValid;
         }
 
@@ -44,7 +43,7 @@ angular.module('Reports', [])
 
             $('#js-get-report-0, #js-get-report-1').click(function(e){
                 e.preventDefault();
-                checkDates(['#startDate', '#endDate']);
+                $scope.checkDates(['#startDate', '#endDate']);
             });
         });
     });
