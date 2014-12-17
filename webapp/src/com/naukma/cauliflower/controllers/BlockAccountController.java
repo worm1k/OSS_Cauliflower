@@ -33,7 +33,7 @@ public class BlockAccountController extends HttpServlet {
                         request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
                         request.getSession().removeAttribute(CauliflowerInfo.OK_ATTRIBUTE);
                         String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
-                        EmailSender.sendEmail(blockedUser, EmailSender.SUBJECT_BANNED,EmailSender.BAN_ACCOUNT, EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
+                        EmailSender.notifyUserAboutBlockedAccount(blockedUser, fullPath);
                         request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_ACCOUNT_BLOCK_MESSAGE);
                         if(blockedUser.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
                             ServletContext context = getServletContext();

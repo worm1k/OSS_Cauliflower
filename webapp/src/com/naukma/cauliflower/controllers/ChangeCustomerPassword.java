@@ -54,7 +54,7 @@ public class ChangeCustomerPassword extends HttpServlet {
 
 
                         String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
-                        EmailSender.sendEmail(userForNewPass, EmailSender.CHANGE_PASSWORD, message.toString(), EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
+                        EmailSender.sendChangedPasswordToUser(userForNewPass,newPassword,fullPath);
                         request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_CHANGE_PASSWORD_MESSAGE);
                         response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK);
                     }else{

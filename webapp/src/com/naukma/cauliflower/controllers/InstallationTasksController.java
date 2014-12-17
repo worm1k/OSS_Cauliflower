@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.color.ICC_Profile;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet(name = "InstallationTasksController")
 public class InstallationTasksController extends HttpServlet {
@@ -49,15 +50,18 @@ public class InstallationTasksController extends HttpServlet {
                             dao.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
                             dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                             dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE, TaskStatus.FREE);
-                            EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
-                                                         UserRole.PROVISIONING_ENG,
-                                                         TaskName.CONNECT_INSTANCE);
+                            //email notification
+                            List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.PROVISIONING_ENG);
+                            EmailSender.sendEmailToGroup(usersByUserRole,TaskName.CONNECT_INSTANCE.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
+                            //end notification
+
                         } else {
                             if (dao.countNotCompletedTasksByTaskName(TaskName.CREATE_NEW_ROUTER) == 0) {
                                 dao.createNewTask(serviceOrderId, UserRole.INSTALLATION_ENG, TaskName.CREATE_NEW_ROUTER, TaskStatus.FREE);
-                                EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
-                                        UserRole.INSTALLATION_ENG,
-                                        TaskName.CREATE_NEW_ROUTER);
+                                //email notification
+                                List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.INSTALLATION_ENG);
+                                EmailSender.sendEmailToGroup(usersByUserRole,TaskName.CREATE_NEW_ROUTER.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
+                                //end notification
                             }
                             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.NO_PORTS_ERROR_MESSAGE);
                         }
@@ -65,9 +69,10 @@ public class InstallationTasksController extends HttpServlet {
                         dao.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
                         dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                         dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE,TaskStatus.FREE);
-                        EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
-                                UserRole.PROVISIONING_ENG,
-                                TaskName.DISCONNECT_INSTANCE);
+                        //email notification
+                        List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.PROVISIONING_ENG);
+                        EmailSender.sendEmailToGroup(usersByUserRole,TaskName.DISCONNECT_INSTANCE.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
+                        //end notification
                     }
 
                     response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);

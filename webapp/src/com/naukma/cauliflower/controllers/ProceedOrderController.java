@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by Max on 29.11.2014.
@@ -70,9 +71,10 @@ public class ProceedOrderController extends HttpServlet {
         connectInstanceWithOrder();
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.FREE);
-        EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
-                UserRole.INSTALLATION_ENG,
-                TaskName.CREATE_CIRCUIT);
+        //email notification
+        List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.INSTALLATION_ENG);
+        EmailSender.sendEmailToGroup(usersByUserRole,TaskName.CREATE_CIRCUIT.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
+        //end notification
 //        int availablePorts = DAO.INSTANCE.getFreePortsNum() + DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_NEW_ROUTER) * CauliflowerInfo.PORTS_QUANTITY ;
 //        int neededPorts =  DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_CIRCUIT) + DAO.INSTANCE.getTasksNumByStatus(TaskStatus.WAITING);
 //                ;
@@ -102,9 +104,10 @@ public class ProceedOrderController extends HttpServlet {
             changeOrderStatus();
             setInstanceBlocked();
             taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE,TaskStatus.FREE);
-            EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
-                    UserRole.PROVISIONING_ENG,
-                    TaskName.MODIFY_SERVICE);
+            //email notification
+            List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.PROVISIONING_ENG);
+            EmailSender.sendEmailToGroup(usersByUserRole,TaskName.MODIFY_SERVICE.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
+            //end notification
             setNewServiceForTask(request);
         }
 
@@ -125,9 +128,11 @@ public class ProceedOrderController extends HttpServlet {
             changeOrderStatus();
             setInstanceBlocked();
             taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG, TaskName.BREAK_CIRCUIT,TaskStatus.FREE);
-            EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
-                    UserRole.INSTALLATION_ENG,
-                    TaskName.BREAK_CIRCUIT);
+            //email notification
+            List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.INSTALLATION_ENG);
+            EmailSender.sendEmailToGroup(usersByUserRole,TaskName.BREAK_CIRCUIT.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
+            //end notification
+
         }
     }
 
