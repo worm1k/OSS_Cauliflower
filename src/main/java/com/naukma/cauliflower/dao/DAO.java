@@ -2693,16 +2693,17 @@ public class DAO {
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
-            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
-                    "FROM SERVICE S INNER JOIN ( " +
-                    "  SERVICEINSTANCE SI INNER JOIN ( " +
-                    "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
-                    "  ON SI.ID_CABLE = C.ID) " +
+            preparedStatement = connection.prepareStatement("SELECT * " +
+                    "FROM ( SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
+                    "FROM SERVICE S INNER JOIN (  SERVICEINSTANCE SI INNER JOIN ( " +
+                    "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID) " +
+                    "ON SI.ID_CABLE = C.ID) " +
                     "ON  S.ID = SI.ID_SERVICE " +
-                    "WHERE ROWNUM BETWEEN ? AND ? "+
-                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC ");
+                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC) " +
+                    "WHERE RN BETWEEN ? AND ?");
             preparedStatement.setInt(1,(page-1)*pageLength+1);
             preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 result.add(new MostProfRouter(resultSet.getInt("ID_ROUTER"), resultSet.getDouble("PROFIT")));
@@ -2758,11 +2759,12 @@ public class DAO {
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
-            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED, " +
-                    "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION " +
+            preparedStatement = connection.prepareStatement("SELECT * FROM (  " +
+                    "SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED,  " +
+                    "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION, ROW_NUMBER() OVER (ORDER BY r.id ASC) RN " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER)  " +
-                    "WHERE ROWNUM BETWEEN ? AND ? "+
-                    "GROUP BY r.id ");
+                    "GROUP BY r.id ) " +
+                    "WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1,(page-1)*pageLength+1);
             preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
             resultSet = preparedStatement.executeQuery();
@@ -2811,14 +2813,14 @@ public class DAO {
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
-            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
-                    "FROM SERVICE S INNER JOIN ( " +
-                    "  SERVICEINSTANCE SI INNER JOIN ( " +
-                    "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
-                    "  ON SI.ID_CABLE = C.ID) " +
-                    "ON  S.ID = SI.ID_SERVICE " +
-                    "WHERE ROWNUM BETWEEN ? AND ? "+
-                    "GROUP BY P.ID_ROUTER ORDER BY P.ID_ROUTER ASC");
+            preparedStatement = connection.prepareStatement("SELECT * FROM (  " +
+                    "SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                    "FROM SERVICE S INNER JOIN (  " +
+                    "SERVICEINSTANCE SI INNER JOIN (  " +
+                    "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                    "ON SI.ID_CABLE = C.ID) " +
+                    "ON  S.ID = SI.ID_SERVICE GROUP BY P.ID_ROUTER ORDER BY P.ID_ROUTER ASC) " +
+                    "WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1,(page-1)*pageLength+1);
             preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
             resultSet = preparedStatement.executeQuery();
@@ -2865,10 +2867,11 @@ public class DAO {
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
-            preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE " +
-                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) " +
-                    "WHERE ROWNUM BETWEEN ? AND ? "+
-                    "ORDER BY C.ID ");
+            preparedStatement = connection.prepareStatement("SELECT * FROM (  " +
+                    "SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE, ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN " +
+                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable)  " +
+                    "ORDER BY C.ID ASC)  " +
+                    "WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1,(page-1)*pageLength+1);
             preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
             resultSet = preparedStatement.executeQuery();
