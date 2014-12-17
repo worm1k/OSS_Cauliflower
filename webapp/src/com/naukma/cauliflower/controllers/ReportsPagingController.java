@@ -30,7 +30,7 @@ public class ReportsPagingController  extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
-
+        final int LINES_ON_PAGE = 20;
         int page = 0;
         try{
             page = Integer.valueOf((String) request.getParameter("page"));
@@ -67,13 +67,13 @@ public class ReportsPagingController  extends HttpServlet {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
                 if(hasRights)
-                    list = DAO.INSTANCE.getDevicesForReport(page);
+                    list = DAO.INSTANCE.getDevicesForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("Circuits")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                 //resultSet =
                 if(hasRights)
-                    list = DAO.INSTANCE.getCircuitsForReport(page);
+                    list = DAO.INSTANCE.getCircuitsForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("Cables")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
@@ -85,7 +85,7 @@ public class ReportsPagingController  extends HttpServlet {
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
                 //resultSet =
                 if(hasRights)
-                    list = DAO.INSTANCE.getPortsForReport(page);
+                    list = DAO.INSTANCE.getPortsForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("Profitable")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
@@ -109,14 +109,14 @@ public class ReportsPagingController  extends HttpServlet {
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
                 //resultSet =
                 if(hasRights)
-                    list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, page);
+                    list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, page, LINES_ON_PAGE);
                 //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
             }else if (methodName.equals("Disconnect") && startDate != null && endDate != null) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
                 //resultSet =
                 if(hasRights)
-                    list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, page);
+                    list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, page, LINES_ON_PAGE);
             }
             //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
             /*if (resultSet == null)
@@ -127,6 +127,7 @@ public class ReportsPagingController  extends HttpServlet {
             e.printStackTrace();
         }
         if(hasRights) {
+            System.out.println(list);
             ObjectMapper mapper = new ObjectMapper();
             response.setContentType("application/json;charset=UTF-8");
             PrintWriter out = response.getWriter();

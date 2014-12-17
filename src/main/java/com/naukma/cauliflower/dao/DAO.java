@@ -3031,16 +3031,38 @@ public class DAO {
 	}
 
 
-    public List<Object> getDevicesForReport(int page) {
-        return null;
+    public List<Object> getDevicesForReport(int page, int pageLength)  throws SQLException  {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Object> result = new ArrayList<Object>();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, SUM(P.Used) OCCUPIED, 60 - SUM(p.Used) FREE " +
+                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                    "GROUP BY r.id ");
+            resultSet = preparedStatement.executeQuery();
+           while (resultSet.next()){
+               result.add(new Device(resultSet.getInt("ROUTER"), resultSet.getInt("OCCUPIED"), resultSet.getInt("FREE")));
+           }
+
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException e) {
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return result;
     }
 
 
-    public List<Circuit> getCircuitsForReport(int page, int pageLength)  throws SQLException  {
+    public List<Object> getCircuitsForReport(int page, int pageLength)  throws SQLException  {
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
-        List<Circuit> circuits = new ArrayList<Circuit>();
+        List<Object> circuits = new ArrayList<Object>();
         final int startP = (page-1)*pageLength+1;
         final int endP   = page*pageLength;
         int counter = 0;
@@ -3079,17 +3101,18 @@ public class DAO {
         return null;
     }
 
-    public List<Port> getPortsForReport(int page, int pageLength)  throws SQLException {
+    public List<Object> getPortsForReport(int page, int pageLength)  throws SQLException {
 
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
-        List<Port> ports = new ArrayList<Port>();
+        List<Object> ports = new ArrayList<Object>();
         final int startP = (page-1)*pageLength+1;
         final int endP   = page*pageLength;
         int counter = 0;
         try {
-            preparedStatement = connection.prepareStatement( "SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED FROM PORT P ORDER BY P.ID_ROUTER ASC");
+            preparedStatement = connection.prepareStatement
+                    ( "SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED FROM PORT P ORDER BY P.ID_ROUTER ASC");
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 counter++;
@@ -3126,12 +3149,12 @@ public class DAO {
     public List<Object> getProfitabilityByMonth(int page) {
         return null;
     }
-    public List<ServiceOrder> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
+    public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         ReportGenerator reportGenerator = null;
-        List<ServiceOrder> servOrds = new ArrayList<ServiceOrder>();
+        List<Object> servOrds = new ArrayList<Object>();
         try {
             preparedStatement = connection.prepareStatement("SELECT SO.ID SO_ID, OS.NAME SCENARIO  " +
                     "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
@@ -3153,7 +3176,7 @@ public class DAO {
         {//help
             System.out.println("SUCCESS!!!!getOrdersPerPeriod");
         }
-        return null;
+        return servOrds;
     }
 
 
