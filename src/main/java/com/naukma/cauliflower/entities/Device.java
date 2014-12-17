@@ -3,36 +3,43 @@ package com.naukma.cauliflower.entities;
 /**
  * Created by Eugene on 17.12.2014.
  */
-public class Device {
+import java.io.Serializable;
 
-    private final int id;
-    private final int occupied;
-    private final int free;
+public class Device implements Serializable {
 
-    public Device(int id, int occupied, int free) {
-        this.id= id;
-        this.occupied= occupied;
-        this.free= free;
-    }
+	private int id;
+	private int occupiedPortCap;
+	private int freePortCap;
 
-    @Override
-    public String toString() {
-        return "Device{" +
-                "id=" + id +
-                ", occupied=" + occupied +
-                ", free=" + free +
-                '}';
-    }
-    public int getFree() {
-        return free;
-    }
+	public Device(int id, int occupiedPortCap, int freePortCap) {
+		super();
+		this.id = id;
+		this.occupiedPortCap = occupiedPortCap;
+		this.freePortCap = freePortCap;
+	}
 
-    public int getOccupied() {
-        return occupied;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getOccupiedPortCap() {
+		return occupiedPortCap;
+	}
+
+	public void setOccupiedPortCap(int occupiedPortCap) {
+		this.occupiedPortCap = occupiedPortCap;
+	}
+
+	public int getFreePortCap() {
+		return freePortCap;
+	}
+
+	public void setFreePortCap(int freePortCap) {
+		this.freePortCap = freePortCap;
+	}
 
 }
