@@ -1,3 +1,6 @@
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
+<%@ page import="com.naukma.cauliflower.entities.User" %>
+<%@ page import="com.naukma.cauliflower.dao.UserRole" %>
 <%--
   Created by IntelliJ IDEA.
   User: Vladmyr
@@ -10,8 +13,11 @@
     <div class="container">
         <ul class="list-inline">
             <li><a href="home.jsp">Home</a></li>
-            <li><a href="order.jsp">Order</a></li>
-            <%--<li><a href="#">navlink3</a></li>--%>
+            <%
+                User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+                if(us==null || us.getUserRole().equals(UserRole.CUSTOMER.toString()))
+                    out.print("<li><a href=\"order.jsp\">Order</a></li>");
+            %>
         </ul>
     </div>
 </footer>

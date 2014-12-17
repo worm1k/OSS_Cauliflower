@@ -62,13 +62,14 @@ public class LoginController extends HttpServlet {
                     request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, user);
                     logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
                     request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-                    if (service != null && servLoc != null) {
+                    if (service != null && servLoc != null && user.getUserRole().equals(UserRole.CUSTOMER.toString())) {
                         ServletContext context = getServletContext();
                         RequestDispatcher rd = context.getRequestDispatcher("/proceed");
                         rd.forward(request, response);
                     } else {
+                        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
+                        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
                         String userInSessionRole = user.getUserRole();
-                        System.out.println(userInSessionRole);
                         if (userInSessionRole.equals(UserRole.CUSTOMER.toString()))
                             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
                         if (userInSessionRole.equals(UserRole.ADMINISTRATOR.toString()))

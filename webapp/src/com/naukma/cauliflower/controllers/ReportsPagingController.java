@@ -60,7 +60,7 @@ public class ReportsPagingController  extends HttpServlet {
 
 
         List<Object> list = null;
-        try {
+        /*try {
             if (methodName.equals("Devices")) {
                 //resultSet = DAO.INSTANCE.getDevicesForReport();
                 hasRights =
@@ -122,9 +122,9 @@ public class ReportsPagingController  extends HttpServlet {
                 resultSet = DAO.INSTANCE.reportTester();*/
 
             //reportGenerator = new XLSReportGenerator("aaa", resultSet);
-        } catch (SQLException e) {
+        /*} catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
         if(hasRights) {
             System.out.println(list);
             ObjectMapper mapper = new ObjectMapper();

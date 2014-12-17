@@ -80,7 +80,7 @@
         <h4>Phone number <span class="required"></span></h4>
         <input type="text" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Phone is not valid" name="phone" placeholder="Phone" required>
       </div>
-      <button id="auth_reg_submit" class="btn-signin btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+      <button id="auth_reg_submit" class="btn-signin btn btn-lg btn-primary btn-block" type="submit">Register</button>
     </form>
   </div>
   <div class="col-xs-6 border-left">

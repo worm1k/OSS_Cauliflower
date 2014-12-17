@@ -64,7 +64,7 @@ public class CauliflowerInfo {
     public static final String INCORRECT_USER_FOR_NEW_PASS_ERROR_MESSAGE = "Incorrect user for change his password";
     public static final String NO_PORTS_ERROR_MESSAGE = "Please, create a new router";
 
-    public static final String OK_REGISTER_EMPLOYEE_MESSAGE = "Employee has been registred!";
+    public static final String OK_REGISTER_EMPLOYEE_MESSAGE = "Employee has been registered!";
     public static final String OK_ACCOUNT_BLOCK_MESSAGE = "Account has been blocked!";
     public static final String OK_CHANGE_PASSWORD_MESSAGE = "Password has been changed!";
 
