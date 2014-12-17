@@ -8,6 +8,8 @@
 
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html ng-app="ReportView">
 <head>
@@ -15,7 +17,27 @@
     <jsp:include page="head.jsp"/>
     <script>
         const reportMethod = '${param.reportMethod}';
+
+        <c:choose>
+            <c:when test="${param.startDate ne null && not empty param.startDate}">
+        const startDate = '${param.startDate}';
+            </c:when>
+            <c:otherwise>
+        const startDate = null;
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${param.endDate ne null && not empty param.endDate}">
+        const endDate = '${param.endDate}';
+            </c:when>
+            <c:otherwise>
+        const endDate = null;
+            </c:otherwise>
+        </c:choose>
+
         console.log(reportMethod);
+        console.log(startDate);
+        console.log(endDate);
     </script>
 </head>
 <body ng-controller="ReportViewController">

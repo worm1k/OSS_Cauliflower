@@ -1,5 +1,6 @@
 package com.naukma.cauliflower.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.Scenario;
 import com.naukma.cauliflower.dao.UserRole;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,7 +71,10 @@ public class AmountOfLinesInReportController extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        response.getWriter().println(result);
+        ObjectMapper mapper = new ObjectMapper();
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        mapper.writeValue(out, result);
     }
 
 

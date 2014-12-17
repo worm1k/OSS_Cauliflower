@@ -8,7 +8,6 @@ angular.module('ReportView', [])
     .controller('ReportViewController', function($scope){
         $scope.page = 1;
         $scope.json = [];
-        console.log('ReportViewCOntroller');
 
         $scope.ajaxGetReportPagination = function(data, callback){
             $.ajax({
@@ -17,10 +16,8 @@ angular.module('ReportView', [])
                 data: data,
                 success: function(jqXHR){
                     console.log(jqXHR);
-                    if(jqXHR && jqXHR[0]){
-                        if (callback && typeof(callback) === "function") {
-                            callback(jqXHR);
-                        }
+                    if (callback && typeof(callback) === "function") {
+                        callback(jqXHR);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown){
@@ -37,10 +34,8 @@ angular.module('ReportView', [])
                 data: data,
                 success: function(jqXHR){
                     console.log(jqXHR);
-                    if(jqXHR && jqXHR[0]){
-                        if (callback && typeof(callback) === "function") {
-                            callback(jqXHR);
-                        }
+                    if (callback && typeof(callback) === "function") {
+                        callback(jqXHR);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown){
@@ -53,8 +48,9 @@ angular.module('ReportView', [])
 
         }
 
-        $scope.ajaxGetReport({reportMethod: reportMethod, page: $scope.page}, function(json){
-            $scope.ajaxGetReportPagination({reportMethod: reportMethod}, function(pagination){
+        $scope.ajaxGetReportPagination({reportMethod: reportMethod}, function(length){
+            console.log('LENGTH:', length);
+            $scope.ajaxGetReport({reportMethod: reportMethod, page: $scope.page}, function(json){
                 $scope.$apply(function(){
                     $scope.json = json;
                 });
