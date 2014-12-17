@@ -78,7 +78,7 @@
                                 <div class="report_text">Report about all installed devices</div>
                             </td>
                             <td>
-                                <form class="form-inline inline" action="" method="post">
+                                <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                     <input type="hidden" name="reportMethod" value="Devices">
                                     <button type="submit" class="btn btn-xs btn-default">View</button>
                                 </form>
@@ -98,7 +98,7 @@
                                 <div class="report_text"> Report about current circuits</div>
                             </td>
                             <td>
-                                <form class="form-inline inline" action="" method="post">
+                                <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                     <input type="hidden" name="reportMethod" value="Circuits">
                                     <button type="submit" class="btn btn-xs btn-default">View</button>
                                 </form>
@@ -118,7 +118,7 @@
                                 <div class="report_text"> Report about all available cables</div>
                             </td>
                             <td>
-                                <form class="form-inline inline" action="" method="post">
+                                <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                     <input type="hidden" name="reportMethod" value="Cables">
                                     <button type="submit" class="btn btn-xs btn-default">View</button>
                                 </form>
@@ -138,7 +138,7 @@
                                 <div class="report_text"> Report about all existing ports</div>
                             </td>
                             <td>
-                                <form class="form-inline inline" action="" method="post">
+                                <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                     <input type="hidden" name="reportMethod" value="Ports">
                                     <button type="submit" class="btn btn-xs btn-default">View</button>
                                 </form>
@@ -161,7 +161,7 @@
                                     <div class="report_text"> Impact Propagation Tree</div>
                                 </td>
                                 <td>
-                                    <form class="form-inline inline" action="" method="post">
+                                    <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                         <input type="hidden" name="reportMethod" value="Tree">
                                         <button type="submit" class="btn btn-xs btn-default">View</button>
                                     </form>
@@ -182,7 +182,7 @@
                                 <div class="report_text"> Report about most profitable routers</div>
                             </td>
                             <td>
-                                <form class="form-inline inline" action="" method="post">
+                                <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                     <input type="hidden" name="reportMethod" value="Profitable">
                                     <button type="submit" class="btn btn-xs btn-default">View</button>
                                 </form>
@@ -202,7 +202,7 @@
                                 <div class="report_text"> Report about utilization and capacity</div>
                             </td>
                             <td>
-                                <form class="form-inline inline" action="" method="post">
+                                <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                     <input type="hidden" name="reportMethod" value="utilizationAndCapacity">
                                     <button type="submit" class="btn btn-xs btn-default">View</button>
                                 </form>
@@ -222,7 +222,7 @@
                                 <div class="report_text"> Report about profitability</div>
                             </td>
                             <td>
-                                <form class="form-inline inline" action="" method="post">
+                                <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                     <input type="hidden" name="reportMethod" value="Profitability">
                                     <button type="submit" class="btn btn-xs btn-default">View</button>
                                 </form>
@@ -251,7 +251,7 @@
                                     <div class="report_text">Report about new orders per period</div>
                                 </td>
                                 <td>
-                                    <form class="form-inline inline" action="" method="post">
+                                    <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                         <input type="hidden" name="reportMethod" value="New">
                                         <button type="submit" class="btn btn-xs btn-default">View</button>
                                     </form>
@@ -271,7 +271,7 @@
                                     <div class="report_text"> Report about disconnect orders per period</div>
                                 </td>
                                 <td>
-                                    <form class="form-inline inline" action="" method="post">
+                                    <form class="form-inline inline" action="reportPaging.jsp" method="post">
                                         <input type="hidden" name="reportMethod" value="Disconnect">
                                         <button type="submit" class="btn btn-xs btn-default">View</button>
                                     </form>

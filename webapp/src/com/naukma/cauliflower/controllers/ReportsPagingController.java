@@ -30,7 +30,13 @@ public class ReportsPagingController  extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
-        int page = Integer.valueOf((String) request.getParameter("page"));
+
+        int page = 0;
+        try{
+            page = Integer.valueOf((String) request.getParameter("page"));
+        }catch (NumberFormatException e){
+            page = 0;
+        }
         String methodName = (String) request.getParameter("reportMethod");
         String startDate = (String) request.getParameter("startDate");
         String endDate = (String) request.getParameter("endDate");
@@ -134,7 +140,6 @@ public class ReportsPagingController  extends HttpServlet {
             //response.getWriter().println("Sorry, you have no rights for downloading this report");
             response.sendRedirect(pathFrom);
         }
-
     }
 
 
