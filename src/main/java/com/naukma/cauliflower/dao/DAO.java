@@ -3369,19 +3369,23 @@ public class DAO {
         List<Port> ports = new ArrayList<Port>();
         final int startP = (page-1)*pageLength+1;
         final int endP   = page*pageLength;
-        int counter = 0;
         try {
             preparedStatement = connection.prepareStatement
-                    ( "SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED FROM PORT P ORDER BY P.ID_ROUTER ASC");
+                            ("SELECT * FROM " +
+                            " (SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED, ROWNUM RNUM " +
+                            " FROM PORT P  WHERE ROWNUM <= ? ORDER BY P.ID_ROUTER ASC)" +
+                            " WHERE RNUM >= ?");
+            preparedStatement
+                    .setInt(1,endP);
+            preparedStatement
+                    .setInt(2,startP);
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                counter++;
-                if(counter>=startP && counter<=endP){
                 final Port p = new Port(resultSet.getInt("PORT_ID"),
-                        resultSet.getInt("ID_ROUTER"),
-                        resultSet.getInt("USED")==1);
-                    ports.add(p);
-                }
+                resultSet.getInt("ID_ROUTER"),
+                resultSet.getInt("USED")==1);
+                ports.add(p);
+
             }
 
         } finally {
