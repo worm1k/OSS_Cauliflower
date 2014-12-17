@@ -42,9 +42,11 @@ public class InstallationTasksController extends HttpServlet {
 
                     if (task.getTaskName().equals(TaskName.CREATE_NEW_ROUTER)) {
                         dao.createRouter();
+                        dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                     } else if (task.getTaskName().equals(TaskName.CREATE_CIRCUIT)) {
                         if (dao.freePortExists()) {
                             dao.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
+                            dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                             dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE, TaskStatus.FREE);
                         } else {
                             if (dao.countNotCompletedTasksByTaskName(TaskName.CREATE_NEW_ROUTER) == 0) {
@@ -54,10 +56,10 @@ public class InstallationTasksController extends HttpServlet {
                         }
                     } else if (task.getTaskName().equals(TaskName.BREAK_CIRCUIT)) {
                         dao.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
+                        dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                         dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE,TaskStatus.FREE);
                     }
 
-                    dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                     response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
 
                 } else
