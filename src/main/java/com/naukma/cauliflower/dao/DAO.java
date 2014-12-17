@@ -2661,6 +2661,180 @@ public class DAO {
         return result;
 
     }
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
+    public List<Object> getMostProfitableRouterForReport(int page, int pageLength)  throws SQLException {
+        {//help
+            System.out.println("getMostProfitableRouterForReport");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        class MostProfRouter{
+            private int idRouter;
+            private double  profit;
+            MostProfRouter(int id, double profit){
+                this.idRouter = id;
+                this.profit = profit;
+            }
+
+            public int getIdRouter() {
+                return idRouter;
+            }
+
+            public double getProfit() {
+                return profit;
+            }
+        }
+        ArrayList<Object> result = new ArrayList<Object>();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
+                    "FROM SERVICE S INNER JOIN ( " +
+                    "  SERVICEINSTANCE SI INNER JOIN ( " +
+                    "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                    "  ON SI.ID_CABLE = C.ID) " +
+                    "ON  S.ID = SI.ID_SERVICE " +
+                    "WHERE ROWNUM BETWEEN ? AND ? "+
+                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC ");
+            preparedStatement.setInt(1,(page-1)*pageLength+1);
+            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                result.add(new MostProfRouter(resultSet.getInt("ID_ROUTER"), resultSet.getDouble("PROFIT")));
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
+        }
+        return result;
+    }
+
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
+    public List<Object> getUsedRoutersAndCapacityOfPorts(int page, int pageLength)  throws SQLException {
+
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        class UsedRoutersAndCapacityOfPorts{
+            private int idRouter;
+            private int  free;
+            private int occupied;
+
+            public UsedRoutersAndCapacityOfPorts(int idRouter, int free, int occupied) {
+                this.idRouter = idRouter;
+                this.free = free;
+                this.occupied = occupied;
+            }
+
+            public int getIdRouter() {
+                return idRouter;
+            }
+
+            public int getFree() {
+                return free;
+            }
+
+            public int getOccupied() {
+                return occupied;
+            }
+        }
+        ArrayList<Object> result = new ArrayList<Object>();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED, " +
+                    "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION " +
+                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER)  " +
+                    "WHERE ROWNUM BETWEEN ? AND ? "+
+                    "GROUP BY r.id ");
+            preparedStatement.setInt(1,(page-1)*pageLength+1);
+            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getInt("ROUTER"),
+                        resultSet.getInt("FREE"), resultSet.getInt("OCCUPIED")));
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
+    public List<Object> getProfitabilityByMonth(int page, int pageLength)  throws SQLException {
+
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        class ProfitabilityByMonth{
+            private int idRouter;
+            private double  profit;
+            ProfitabilityByMonth(int id, double profit){
+                this.idRouter = id;
+                this.profit = profit;
+            }
+
+            public int getIdRouter() {
+                return idRouter;
+            }
+
+            public double getProfit() {
+                return profit;
+            }
+        }
+        ArrayList<Object> result = new ArrayList<Object>();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
+                    "FROM SERVICE S INNER JOIN ( " +
+                    "  SERVICEINSTANCE SI INNER JOIN ( " +
+                    "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                    "  ON SI.ID_CABLE = C.ID) " +
+                    "ON  S.ID = SI.ID_SERVICE " +
+                    "WHERE ROWNUM BETWEEN ? AND ? "+
+                    "GROUP BY P.ID_ROUTER ORDER BY P.ID_ROUTER ASC");
+            preparedStatement.setInt(1,(page-1)*pageLength+1);
+            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                result.add(new ProfitabilityByMonth(resultSet.getInt("ID_ROUTER"), resultSet.getDouble("PROFIT")));
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return result;
+    }
 
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
@@ -3184,87 +3358,7 @@ public class DAO {
         return ports;
     }
 
-    /**
-     * Get certain sum of lines for report
-     *
-     * @param pageLength amount of lines per page
-     * @param page number of page
-     * @throws java.sql.SQLException
-     */
-    public List<Object> getMostProfitableRouterForReport(int page, int pageLength)  throws SQLException {
-        {//help
-            System.out.println("getMostProfitableRouterForReport");
-        }
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        class MostProfRouter{
-            private int idRouter;
-            private double  profit;
-            MostProfRouter(int id, double profit){
-                this.idRouter = id;
-                this.profit = profit;
-            }
 
-            public int getIdRouter() {
-                return idRouter;
-            }
-
-            public double getProfit() {
-                return profit;
-            }
-        }
-        ArrayList<Object> result = new ArrayList<Object>();
-        try {
-            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
-                    "FROM SERVICE S INNER JOIN ( " +
-                    "  SERVICEINSTANCE SI INNER JOIN ( " +
-                    "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
-                    "  ON SI.ID_CABLE = C.ID) " +
-                    "ON  S.ID = SI.ID_SERVICE " +
-                    "WHERE ROWNUM BETWEEN ? AND ? "+
-                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC ");
-            preparedStatement.setInt(1,(page-1)*pageLength+1);
-            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
-            resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                result.add(new MostProfRouter(resultSet.getInt("ID_ROUTER"), resultSet.getDouble("PROFIT")));
-            }
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        {//help
-            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
-        }
-        return result;
-    }
-
-    /**
-     * Get certain sum of lines for report
-     *
-     * @param pageLength amount of lines per page
-     * @param page number of page
-     * @throws java.sql.SQLException
-     */
-    public List<Object> getUsedRoutersAndCapacityOfPorts(int page, int pageLength)  throws SQLException {
-        return null;
-    }
-
-    /**
-     * Get certain sum of lines for report
-     *
-     * @param pageLength amount of lines per page
-     * @param page number of page
-     * @throws java.sql.SQLException
-     */
-    public List<Object> getProfitabilityByMonth(int page, int pageLength)  throws SQLException {
-        return null;
-    }
     public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
         Connection connection = getConnection();
         ResultSet resultSet = null;
