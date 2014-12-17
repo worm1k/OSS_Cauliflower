@@ -3192,7 +3192,56 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getMostProfitableRouterForReport(int page, int pageLength)  throws SQLException {
-        return null;
+        {//help
+            System.out.println("getMostProfitableRouterForReport");
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        class MostProfRouter{
+            private int idRouter;
+            private double  profit;
+            MostProfRouter(int id, double profit){
+                this.idRouter = id;
+                this.profit = profit;
+            }
+
+            public int getIdRouter() {
+                return idRouter;
+            }
+
+            public double getProfit() {
+                return profit;
+            }
+        }
+        ArrayList<Object> result = new ArrayList<Object>();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
+                    "FROM SERVICE S INNER JOIN ( " +
+                    "  SERVICEINSTANCE SI INNER JOIN ( " +
+                    "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                    "  ON SI.ID_CABLE = C.ID) " +
+                    "ON  S.ID = SI.ID_SERVICE " +
+                    "WHERE ROWNUM BETWEEN ? AND ? "+
+                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC ");
+            preparedStatement.setInt(1,(page-1)*pageLength+1);
+            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                result.add(new MostProfRouter(resultSet.getInt("ID_ROUTER"), resultSet.getDouble("PROFIT")));
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        {//help
+            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
+        }
+        return result;
     }
 
     /**
