@@ -191,6 +191,16 @@
         <url-pattern>/reportspaging</url-pattern>
     </servlet-mapping>
 
+
+    <servlet>
+        <servlet-name>AmountOfLinesInReportComtroller</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.AmountOfLinesInReportComtroller</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AmountOfLinesInReportComtroller</servlet-name>
+        <url-pattern>/amountoflines</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>TaskInformationController</servlet-name>
         <servlet-class>com.naukma.cauliflower.controllers.TaskInformationController</servlet-class>
