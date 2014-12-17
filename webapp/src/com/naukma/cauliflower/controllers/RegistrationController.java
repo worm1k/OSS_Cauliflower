@@ -105,8 +105,14 @@ public class RegistrationController extends HttpServlet {
                                 request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, createdUser);
                                 userInSession=createdUser;
                             }
+                            //sending email
                             String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
-                            EmailSender.sendEmail(createdUser, EmailSender.SUBJECT_REGISTRATION, password, EmailSender.getTemplate("/regTemplate.ftl", fullPath));
+                            if(userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())){
+                                  EmailSender.sendRegistrationEmailToEngineer(createdUser,password,fullPath);
+                            }else{
+                                  EmailSender.sendRegistrationEmailToCustomer(createdUser,password,fullPath);
+                            }
+                            // end
                             Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
                             ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
                             request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
