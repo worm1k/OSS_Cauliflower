@@ -51,7 +51,8 @@ public class ProceedOrderController extends HttpServlet {
 
             if(scenario==null || scenario.equals(Scenario.NEW.toString())){
                 scenarioNew(request);
-                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
+                //response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             }else if (scenario.equals(Scenario.DISCONNECT.toString())){
                 scenarioDisconnect(request,response);
                 response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
