@@ -1,5 +1,8 @@
 package com.naukma.cauliflower.mail;
 
+import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.TaskName;
+import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.User;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -11,6 +14,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.sql.SQLException;
 import java.util.*;
 
 public class EmailSender {
@@ -156,7 +160,11 @@ public class EmailSender {
 		return template;
 	}
 
-	public static void sendNotification(String fullPath, String message, List<User> users) {
-		sendEmailToGroup(users, EmailSender.SUBJECT_NEW_TASK, message, EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
+	public static void sendNotification(String fullPath, UserRole role, TaskName taskName) throws SQLException {
+		StringBuilder message= new StringBuilder();
+		message.append("<p>New task has been created!</p> <p style=\"text-transform:none;\">TaskName: <b>");
+		message.append(taskName.toString());
+		message.append("</b></p>");
+		sendEmailToGroup(DAO.INSTANCE.getUsersByUserRole(role), EmailSender.SUBJECT_NEW_TASK, message.toString(), EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
 	}
 }

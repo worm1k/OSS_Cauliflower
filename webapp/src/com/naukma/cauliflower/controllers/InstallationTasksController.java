@@ -4,6 +4,7 @@ import com.naukma.cauliflower.dao.*;
 import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
+import com.naukma.cauliflower.mail.EmailSender;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,9 +49,15 @@ public class InstallationTasksController extends HttpServlet {
                             dao.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
                             dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                             dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE, TaskStatus.FREE);
+                            EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
+                                                         UserRole.PROVISIONING_ENG,
+                                                         TaskName.CONNECT_INSTANCE);
                         } else {
                             if (dao.countNotCompletedTasksByTaskName(TaskName.CREATE_NEW_ROUTER) == 0) {
                                 dao.createNewTask(serviceOrderId, UserRole.INSTALLATION_ENG, TaskName.CREATE_NEW_ROUTER, TaskStatus.FREE);
+                                EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
+                                        UserRole.INSTALLATION_ENG,
+                                        TaskName.CREATE_NEW_ROUTER);
                             }
                             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.NO_PORTS_ERROR_MESSAGE);
                         }
@@ -58,6 +65,9 @@ public class InstallationTasksController extends HttpServlet {
                         dao.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
                         dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
                         dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE,TaskStatus.FREE);
+                        EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
+                                UserRole.PROVISIONING_ENG,
+                                TaskName.DISCONNECT_INSTANCE);
                     }
 
                     response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);

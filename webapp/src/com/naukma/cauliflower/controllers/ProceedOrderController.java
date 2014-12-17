@@ -5,6 +5,7 @@ import com.naukma.cauliflower.entities.Service;
 import com.naukma.cauliflower.entities.ServiceLocation;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
+import com.naukma.cauliflower.mail.EmailSender;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -69,6 +70,9 @@ public class ProceedOrderController extends HttpServlet {
         connectInstanceWithOrder();
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.FREE);
+        EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
+                UserRole.INSTALLATION_ENG,
+                TaskName.CREATE_CIRCUIT);
 //        int availablePorts = DAO.INSTANCE.getFreePortsNum() + DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_NEW_ROUTER) * CauliflowerInfo.PORTS_QUANTITY ;
 //        int neededPorts =  DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_CIRCUIT) + DAO.INSTANCE.getTasksNumByStatus(TaskStatus.WAITING);
 //                ;
@@ -98,6 +102,9 @@ public class ProceedOrderController extends HttpServlet {
             changeOrderStatus();
             setInstanceBlocked();
             taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE,TaskStatus.FREE);
+            EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
+                    UserRole.PROVISIONING_ENG,
+                    TaskName.MODIFY_SERVICE);
             setNewServiceForTask(request);
         }
 
@@ -118,6 +125,9 @@ public class ProceedOrderController extends HttpServlet {
             changeOrderStatus();
             setInstanceBlocked();
             taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG, TaskName.BREAK_CIRCUIT,TaskStatus.FREE);
+            EmailSender.sendNotification(getServletContext().getRealPath("/WEB-INF/mail/"),
+                    UserRole.INSTALLATION_ENG,
+                    TaskName.BREAK_CIRCUIT);
         }
     }
 
