@@ -1,8 +1,5 @@
 package com.naukma.cauliflower.mail;
 
-import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.dao.TaskName;
-import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.User;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -14,7 +11,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.sql.SQLException;
 import java.util.*;
 
 public class EmailSender {
@@ -27,8 +23,9 @@ public class EmailSender {
 	public final static String SUBJECT_REGISTRATION="Registration in Cauliflower ";
 	public final static String SUBJECT_BANNED="Your account has been blocked";
 	public final static String SUBJECT_NEW_TASK="New Task";
-	public final static String CHANGE_PASSWORD="Password has been changed";
-
+	public final static String CHANGE_PASSWORD="Password has been successfully changed";
+	public final static String CUSTOMER_REGISTRATION_TEMPLATE="/regTemplate.ftl";
+	public final static String GENERIC_TEMPLATE="/mailTemplate.ftl";
 	private static Session session;
 	
 	static {
@@ -44,44 +41,94 @@ public class EmailSender {
 		// If set to a whitespace separated list of hosts, those hosts are trusted.
 		// Otherwise, trust depends on the certificate the server presents.
 
-		session = Session.getInstance(props, new javax.mail.Authenticator() {
+		session = Session.getInstance(props, new Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(USER_NAME, PASSWORD);
 			}
 		});
 
 	}
-	//
+
+
+
 	/**
 	 *
 	 * @param users  - group of users
-	 * @param subject - subject of email
-	 * @param body     - body of email
-	 * @param template - appropriate template
+	 * @param task     - task name
+	 * @param fullPath - path to templates
 	 */
-	public static void sendEmailToGroup(List<User> users, String subject,String body, Template template){
-			ArrayList<String> emails= new ArrayList<String>(users.size());
+	public static void sendEmailToGroup(List<User> users,String task, String fullPath){
 
+				ArrayList<String> emails= new ArrayList<String>(users.size());
 				for(User user:users){
 					emails.add(user.getEmail());
 				}
 
-		   send(emails,ENGINEERS,subject,body,template);
+				StringBuilder body= new StringBuilder();
+				body.append("<p>New task has been created!</p> <p style=\"text-transform:none;\">TaskName: <b>");
+				body.append(task);
+				body.append("</b></p>");
+
+		   send(emails,ENGINEERS,SUBJECT_NEW_TASK,body.toString(),getTemplate(GENERIC_TEMPLATE, fullPath));
 	}
+
+	/**    send email which will notify changing user's password
+	 *
+	 * @param user   - recipient
+	 * @param newPassword  -new password
+	 * @param fullPath  -   path to templates
+	 */
+	public static void sendChangedPasswordToUser(final User user,String newPassword,String fullPath) {
+		StringBuilder to = new StringBuilder();
+		to.append(user.getFirstName()).append(" ").append(user.getLastName());
+		StringBuilder body = new StringBuilder();
+
+		body.append("<p>Your password has been successfully changed!</p> <p style=\"text-transform:none;\">New password is: ");
+		body.append("<a style=\"padding: 10px;font-size: 10px;text-decoration: none;background: #1C80C9;color: #E5F5FF;border-radius: 6px;-moz-border-radius: 6px;-webkit-border-radius: 6px\">");
+		body.append(newPassword);
+		body.append("</a></p></p>");
+
+		send(new ArrayList<String>(){{add(user.getEmail());}},to.toString(),CHANGE_PASSWORD,body.toString(),getTemplate(GENERIC_TEMPLATE, fullPath));
+	}
+	/**     send email which will notify  engineer's password
+	 *
+	 * @param user - recipient
+	 * @param password - in this case password of user
+	 * @param fullPath  -path to templates
+	 */
+	public static void sendRegistrationEmailToEngineer(final User user,String password,String fullPath){
+		sendEmail(user,password,getTemplate(GENERIC_TEMPLATE, fullPath));
+	}
+
+	public static void notifyUserAboutBlockedAccount(final User user,String fullPath){
+		StringBuilder to = new StringBuilder();
+		to.append(user.getFirstName()).append(" ").append(user.getLastName());
+		send(new ArrayList<String>(){{add(user.getEmail());}},to.toString(),SUBJECT_BANNED,BAN_ACCOUNT,getTemplate(GENERIC_TEMPLATE, fullPath));
+	}
+
+
+
+	/**   send email which will notify  user's password
+	 *
+	 * @param user - recipient
+	 * @param password  -  in this case password of user
+	 * @param fullPath -path to templates
+	 */
+	public static void sendRegistrationEmailToCustomer(final User user,String password,String fullPath){
+		sendEmail(user,password,getTemplate(CUSTOMER_REGISTRATION_TEMPLATE, fullPath));
+	}
+
 
 	/**
 	 *
 	 * @param user  -recipient
-	 * @param subject - subject of email
 	 * @param body   - body of email
 	 * @param template  - appropriate template
 	 */
-	public static void sendEmail(final User user, String subject,String body, Template template){
-
+	private static void sendEmail(final User user,String body, Template template){
 		StringBuilder to = new StringBuilder();
 		to.append(user.getFirstName()).append(" ").append(user.getLastName());
-
-		send(new ArrayList<String>(){{add(user.getEmail());}},to.toString(),subject,body,template);
+		send(new ArrayList<String>(){{add(user.getEmail());}},to.toString(),SUBJECT_REGISTRATION,body,template);
 	}
 
 	/**
@@ -139,7 +186,7 @@ public class EmailSender {
 	 * @param tempateDir - to get template path you should invoke context.getRealPath("/WEB-INF/mail/") ;
 	 * @return
 	 */
-	public static Template getTemplate(String templateName,String tempateDir){
+	private static Template getTemplate(String templateName,String tempateDir){
 		Configuration cfg = new Configuration();
 		try {
 			cfg.setDirectoryForTemplateLoading(new java.io.File(
@@ -160,11 +207,5 @@ public class EmailSender {
 		return template;
 	}
 
-	public static void sendNotification(String fullPath, UserRole role, TaskName taskName) throws SQLException {
-		StringBuilder message= new StringBuilder();
-		message.append("<p>New task has been created!</p> <p style=\"text-transform:none;\">TaskName: <b>");
-		message.append(taskName.toString());
-		message.append("</b></p>");
-		sendEmailToGroup(DAO.INSTANCE.getUsersByUserRole(role), EmailSender.SUBJECT_NEW_TASK, message.toString(), EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
-	}
+
 }
