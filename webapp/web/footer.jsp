@@ -42,6 +42,7 @@
 <script type="text/javascript" src="./js/ReportsController.js"></script>
 <script type="text/javascript" src="./js/InstallationEngineerDashboardController.js"></script>
 <script type="text/javascript" src="./js/CustomerSupportEngineerController.js"></script>
+<script type="text/javascript" src="./js/ReportViewController.js"></script>
 <script type="text/javascript" src="./js/ServiceInstance.js"></script>
 <script type="text/javascript" src="./js/ServiceOrder.js"></script>
 <script type="text/javascript" src="./js/index.js"></script>

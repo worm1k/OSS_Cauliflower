@@ -3361,12 +3361,12 @@ public class DAO {
      * @param page number of page
      * @throws java.sql.SQLException
      */
-    public List<Port> getPortsForReport(int page, int pageLength)  throws SQLException {
+    public List<Object> getPortsForReport(int page, int pageLength)  throws SQLException {
 
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
-        List<Port> ports = new ArrayList<Port>();
+        List<Object> ports = new ArrayList<Object>();
         final int startP = (page-1)*pageLength+1;
         final int endP   = page*pageLength;
         try {

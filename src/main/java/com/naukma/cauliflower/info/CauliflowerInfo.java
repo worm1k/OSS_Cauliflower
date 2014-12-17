@@ -4,6 +4,7 @@ package com.naukma.cauliflower.info;
  * Created by Max on 04.12.2014.
  */
 public class CauliflowerInfo {
+    public static final String REPORT_METHOD_ATTRIBUTE = "reportMethod";
     public static final String SERVICE_ATTRIBUTE = "service";
     public static final String MODIFY_TO_SERVICE_ATTRIBUTE = "newService";
     public static final String SERVICE_INSTANCE_ATTRIBUTE = "serviceInstance";
@@ -38,6 +39,8 @@ public class CauliflowerInfo {
     public static final String ENGINEER_DASHBOARD_TASK_LINK = "e_dashboard_task.jsp";
     public static final String SUPPORT_ENGINEER_DASHBOARD_LINK = "cse_dashboard.jsp";
     public static final String SUPPORT_ENGINEER_USER_INFORMATION_LINK = "cse_dashboard_user.jsp";
+    public static final String REPORT_VIEW_LINK = "report_view.jsp";
+
     public static final String INSTALL_ENGINEER_CONTROLLER_LINK = "installationController";
     public static final String PROVIS_ENGINEER_CONTROLLER_LINK = "provisioningController";
 
