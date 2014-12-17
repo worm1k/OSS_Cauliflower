@@ -3327,7 +3327,7 @@ public class DAO {
                             " ORDER BY P.ID_ROUTER) WHERE RNUM >= ? "
                     );
             preparedStatement
-                    .setInt(1,endP);
+                    .setInt(1, endP);
             preparedStatement
                     .setInt(2,startP);
             resultSet = preparedStatement.executeQuery();
@@ -3403,21 +3403,57 @@ public class DAO {
     }
 
 
-    public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
+    public List<ServiceOrder> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
-        ReportGenerator reportGenerator = null;
-        List<Object> servOrds = new ArrayList<Object>();
+        List<ServiceOrder> servOrds = new ArrayList<ServiceOrder>();
+        final int startP = (page-1)*pageLength+1;
+        final int endP   = page*pageLength;
         try {
-            preparedStatement = connection.prepareStatement("SELECT SO.ID SO_ID, OS.NAME SCENARIO  " +
-                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
-                    "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ");
+            preparedStatement = connection.prepareStatement("" +
+                    " SELECT * FROM" +
+                    " (SELECT  " +
+                    " SO.ID_SERVICEORDER SO_ID, " +
+                    " OST.ID_ORDERSTATUS OST_ID, " +
+                    " OST.NAME STATUS_NAME, " +
+                    " SI.ID SI_ID, " +
+                    " OSC.ID_ORDERSCENARIO OSC_ID, " +
+                    " OSC.NAME OSC_NAME, " +
+                    " SO.OUR_DATE SO_DATE, " +
+                    " U.ID_USER U_ID," +
+                    " ROWNUM RNUM " +
+                    " FROM  " +
+                    " ((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
+                    " INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
+                    " INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
+                    " INNER JOIN USERS U ON U.ID_USER = SI.ID_USER " +
+                    " WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? AND ROWNUM <= ? )" +
+                    " WHERE RNUM >= ? ");
 
             preparedStatement.setString(1, scenario.toString());
             preparedStatement.setDate(2, sqlStartDate);
             preparedStatement.setDate(3, sqlEndDate);
+            preparedStatement.setInt(4, endP);
+            preparedStatement.setInt(5, startP);
             resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                GregorianCalendar grCalendar = new GregorianCalendar();
+                grCalendar.set(resultSet.getDate("SO_DATE").getYear(),
+                        resultSet.getDate("SO_DATE").getMonth(),
+                        resultSet.getDate("SO_DATE").getDay());
+                final ServiceOrder so = new ServiceOrder(
+                        resultSet.getInt("SO_ID"),
+                        resultSet.getInt("OST_ID"),
+                        resultSet.getString("STATUS_NAME"),
+                        resultSet.getInt("SI_ID"),
+                        resultSet.getInt("OSC_ID"),
+                        resultSet.getString("OSC_NAME"),
+                        grCalendar,
+                        resultSet.getInt("U_ID")
+                ) ;
+                servOrds.add(so);
+            }
 
         } finally {
             try {
