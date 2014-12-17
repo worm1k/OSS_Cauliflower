@@ -29,7 +29,7 @@ public class ReportsPagingController  extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        final int LINES_ON_PAGE = 20;
+        final int LINES_ON_PAGE = 3;
         int page = 0;
         try{
             page = Integer.valueOf((String) request.getParameter("page"));
@@ -46,6 +46,9 @@ public class ReportsPagingController  extends HttpServlet {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         java.sql.Date sqlStartDate = null;
         java.sql.Date sqlEndDate = null;
+
+        request.getSession().setAttribute(CauliflowerInfo.LINES_ON_PAGE_ATTRIBUTE, LINES_ON_PAGE);
+
         if (startDate != null && endDate != null)
             try {
 

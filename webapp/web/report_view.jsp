@@ -20,11 +20,26 @@
 </head>
 <body ng-controller="ReportViewController">
     <jsp:include page="header.jsp"/>
-    <div class="controller">
+    <div class="container">
         <h1 class="text-center txt-bold">Cauliflower</h1>
         <h2 class="text-center">View "${param.reportMethod}" report</h2>
+
+        <table class="table table-striped" class="ng-cloak">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th ng-repeat="(key, val) in json[0]">{{key}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in json">
+                    <td>{{$index + 1}}</td>
+                    <td ng-repeat="(key, val) in item">{{val}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div id = "place_for_info_ReportPaging"></div>
+
     <jsp:include page="footer.jsp"/>
 </body>
 </html>

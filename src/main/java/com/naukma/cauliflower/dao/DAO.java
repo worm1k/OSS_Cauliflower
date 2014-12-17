@@ -3360,21 +3360,26 @@ public class DAO {
 
         final int maxPortsCapOnDevice = 60;
         List<Object> devices = new ArrayList<Object>();
-        final int startP = (page-1)*pageLength+1;
-        final int endP   = page*pageLength;
-        int counter = 0;
+        final int startP = (page - 1) * pageLength + 1;
+        final int endP = page*pageLength;
         try {
-            preparedStatement = connection.prepareStatement("SELECT R.ID ROUTER_ID, SUM(P.USED) OCCUPIED  " +
+            preparedStatement = connection.prepareStatement(
+                    "SELECT R2.ID ROUTER_ID, R2.USED OCCUPIED " +
+                    "FROM (SELECT R.ID, SUM(P.USED) USED, ROW_NUMBER() OVER (ORDER BY R.ID) RN " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "GROUP BY R.ID ");
+                    "GROUP BY R.ID) R2 " +
+                    "WHERE RN BETWEEN ? AND ? ");
+
+            preparedStatement.setInt(1, startP);
+            preparedStatement.setInt(2, endP);
             resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-                final Device d = new Device(resultSet.getInt("ROUTER_ID"),
-                resultSet.getInt("OCCUPIED"),
-                (maxPortsCapOnDevice - resultSet.getInt("OCCUPIED")));
-                devices.add(d);
-
+                devices.add(
+                        new Device(
+                            resultSet.getInt("ROUTER_ID"),
+                            resultSet.getInt("OCCUPIED"),
+                            (maxPortsCapOnDevice - resultSet.getInt("OCCUPIED"))));
             }
         } finally {
             try {
@@ -3383,7 +3388,6 @@ public class DAO {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
-
         }
         return devices;
     }
