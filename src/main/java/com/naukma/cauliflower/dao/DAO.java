@@ -3268,13 +3268,13 @@ public class DAO {
      * @param page number of page
      * @throws java.sql.SQLException
      */
-    public List<Object> getDevicesForReport(int page, int pageLength) throws SQLException{
+    public List<Device> getDevicesForReport(int page, int pageLength) throws SQLException{
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        ReportGenerator reportGenerator = null;
+
         final int maxPortsCapOnDevice = 60;
-        List<Object> devices = new ArrayList<Object>();
+        List<Device> devices = new ArrayList<Device>();
         final int startP = (page-1)*pageLength+1;
         final int endP   = page*pageLength;
         int counter = 0;
@@ -3285,13 +3285,11 @@ public class DAO {
             resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-                counter++;
-                if(counter>=startP && counter<=endP){
-                    final Device d = new Device(resultSet.getInt("ROUTER_ID"),
-                            resultSet.getInt("OCCUPIED"),
-                            (maxPortsCapOnDevice - resultSet.getInt("OCCUPIED")));
-                    devices.add(d);
-                }
+                final Device d = new Device(resultSet.getInt("ROUTER_ID"),
+                resultSet.getInt("OCCUPIED"),
+                (maxPortsCapOnDevice - resultSet.getInt("OCCUPIED")));
+                devices.add(d);
+
             }
         } finally {
             try {
@@ -3313,29 +3311,32 @@ public class DAO {
      * @param page number of page
      * @throws java.sql.SQLException
      */
-    public List<Object> getCircuitsForReport(int page, int pageLength)  throws SQLException  {
+    public List<Circuit> getCircuitsForReport(int page, int pageLength)  throws SQLException  {
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
-        List<Object> circuits = new ArrayList<Object>();
+        List<Circuit> circuits = new ArrayList<Circuit>();
         final int startP = (page-1)*pageLength+1;
         final int endP   = page*pageLength;
-        int counter = 0;
         try {
             preparedStatement = connection.
                     prepareStatement( " " +
-                            " SELECT C.ID CABLE_ID, P.ID PORT_ID, P.ID_ROUTER ROUTER_ID FROM CABLE C INNER JOIN PORT P ON P.ID = C.ID_PORT" +
-                            " WHERE P.USED = 1" +
-                            " ORDER BY P.ID_ROUTER ASC");
+                            " SELECT * FROM (SELECT C.ID CABLE_ID, P.ID PORT_ID, P.ID_ROUTER ROUTER_ID, ROWNUM RNUM "+
+                            " FROM CABLE C INNER JOIN PORT P ON P.ID = C.ID_PORT "+
+                            " WHERE P.USED = 1 AND ROWNUM <= ? "+
+                            " ORDER BY P.ID_ROUTER) WHERE RNUM >= ? "
+                    );
+            preparedStatement
+                    .setInt(1,endP);
+            preparedStatement
+                    .setInt(2,startP);
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                    counter++;
-                    if(counter>=startP && counter<=endP){
-                        final Circuit c = new Circuit(resultSet.getInt("CABLE_ID"),
-                                resultSet.getInt("PORT_ID"),
-                                resultSet.getInt("ROUTER_ID"));
-                        circuits.add(c);
-                    }
+
+                final Circuit c = new Circuit(resultSet.getInt("CABLE_ID"),
+                    resultSet.getInt("PORT_ID"),
+                    resultSet.getInt("ROUTER_ID"));
+                    circuits.add(c);
             }
 
         } finally {
@@ -3347,7 +3348,7 @@ public class DAO {
             }
         }
         {//help
-            System.out.println("SUCCESS!!!!getPortsForReport");
+            System.out.println("SUCCESS!!!!getCircuitsForReport");
         }
         return circuits;
     }
