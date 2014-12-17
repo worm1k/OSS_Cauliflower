@@ -79,7 +79,7 @@ public class ReportsPagingController  extends HttpServlet {
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
                 //resultSet =
                 if(hasRights)
-                    list = DAO.INSTANCE.getCablesForReport(page);
+                    list = DAO.INSTANCE.getCablesForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("Ports")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
@@ -91,19 +91,19 @@ public class ReportsPagingController  extends HttpServlet {
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                 //resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
                 if(hasRights)
-                    list = DAO.INSTANCE.getMostProfitableRouterForReport(page);
+                    list = DAO.INSTANCE.getMostProfitableRouterForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("utilizationAndCapacity")){
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                 //resultSet =
                 if(hasRights)
-                    list = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts(page);
+                    list = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts(page, LINES_ON_PAGE);
             }else if (methodName.equals("Profitability")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                 //resultSet =
                 if(hasRights)
-                    list = DAO.INSTANCE.getProfitabilityByMonth(page);
+                    list = DAO.INSTANCE.getProfitabilityByMonth(page, LINES_ON_PAGE);
             }else if (methodName.equals("New") && startDate != null && endDate != null) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());

@@ -13,12 +13,10 @@
 </head>
 <%
   String reportMethod = request.getParameter("reportMethod");
-  String pageNumber = request.getParameter("page");
 %>
 <body>
 <jsp:include page="header.jsp"/>
 <input type="hidden" id="reportMethod" value= "<%=reportMethod%>" >
-<input type="hidden" id="page" value= "<%=pageNumber%>" >
 <div id = "place_for_info_ReportPaging"></div>
 <jsp:include page="footer.jsp"/>
 <script type="text/javascript" src="./js/scriptsForReportPaging.js"></script>

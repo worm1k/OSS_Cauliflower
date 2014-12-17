@@ -5,11 +5,10 @@
 
 $(document).ready(function() {
     var reportMethod = ($('#reportMethod')).val();
-    var pageNumber = ($('#page')).val();
-    alert(reportMethod +" " + pageNumber);
+    var pageNumber = 0;
+
+
     $.get( "reportspaging?reportMethod="+reportMethod+"&page="+pageNumber, function( data ) {
         //data - JSON object to print
-        alert( data.val() );
-        $('place_for_info_ReportPaging').appendChild(data.val());
     });
 });

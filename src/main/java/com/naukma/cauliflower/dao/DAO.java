@@ -3030,7 +3030,13 @@ public class DAO {
         }
 	}
 
-
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
     public List<Object> getDevicesForReport(int page, int pageLength)  throws SQLException  {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -3058,6 +3064,13 @@ public class DAO {
     }
 
 
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
     public List<Object> getCircuitsForReport(int page, int pageLength)  throws SQLException  {
         Connection connection = getConnection();
         ResultSet resultSet = null;
@@ -3097,10 +3110,24 @@ public class DAO {
         return circuits;
     }
 
-    public List<Object> getCablesForReport(int page) {
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
+    public List<Object> getCablesForReport(int page, int pageLength)  throws SQLException {
         return null;
     }
 
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
     public List<Object> getPortsForReport(int page, int pageLength)  throws SQLException {
 
         Connection connection = getConnection();
@@ -3138,15 +3165,36 @@ public class DAO {
         return ports;
     }
 
-    public List<Object> getMostProfitableRouterForReport(int page) {
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
+    public List<Object> getMostProfitableRouterForReport(int page, int pageLength)  throws SQLException {
         return null;
     }
 
-    public List<Object> getUsedRoutersAndCapacityOfPorts(int page) {
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
+    public List<Object> getUsedRoutersAndCapacityOfPorts(int page, int pageLength)  throws SQLException {
         return null;
     }
 
-    public List<Object> getProfitabilityByMonth(int page) {
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
+    public List<Object> getProfitabilityByMonth(int page, int pageLength)  throws SQLException {
         return null;
     }
     public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
