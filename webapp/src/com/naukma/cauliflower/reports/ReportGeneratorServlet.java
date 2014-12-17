@@ -116,7 +116,8 @@ public class ReportGeneratorServlet extends HttpServlet {
                 }else if (methodName.equals("Tree")) {
                     hasRights =
                             user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) ||
-                                    user.getUserRole().equals(UserRole.CUST_SUP_ENG.toString());
+                                    user.getUserRole().equals(UserRole.CUST_SUP_ENG.toString()) ||
+                                            user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     //resultSet =
                     if(hasRights)
                         reportGenerator = DAO.INSTANCE.getCIAReport(EXT);

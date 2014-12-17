@@ -120,6 +120,7 @@ public class ReportsPagingController  extends HttpServlet {
                 if(hasRights)
                     list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, page, LINES_ON_PAGE);
             }
+
             //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
             /*if (resultSet == null)
                 resultSet = DAO.INSTANCE.reportTester();*/
