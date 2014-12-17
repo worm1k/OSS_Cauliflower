@@ -2969,7 +2969,8 @@ public class DAO {
         int siID = checkNumber;
         int cableID = checkNumber;
         int portID = checkNumber;
-        final String selectQuery = "SELECT SI.ID SI_ID, C.ID C_ID , C.ID_PORT C_ID_PORT "
+        final String selectQuery =
+                  "SELECT SI.ID SI_ID, C.ID C_ID , C.ID_PORT C_ID_PORT "
                 + " FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
                 + " INNER JOIN CABLE C ON SI.ID_CABLE = C.ID "
                 + " WHERE SO.ID_SERVICEORDER = ? ";
@@ -3039,8 +3040,41 @@ public class DAO {
 	}
 
 
-    public List<Object> getDevicesForReport(int page) {
-        return null;
+    public List<Device> getDevicesForReport(int page, int pageLength) throws SQLException{
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ReportGenerator reportGenerator = null;
+        final int maxPortsCapOnDevice = 60;
+        List<Device> devices = new ArrayList<Device>();
+        final int startP = (page-1)*pageLength+1;
+        final int endP   = page*pageLength;
+        int counter = 0;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT R.ID ROUTER_ID, SUM(P.USED) OCCUPIED  " +
+                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                    "GROUP BY R.ID ");
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                counter++;
+                if(counter>=startP && counter<=endP){
+                    final Device d = new Device(resultSet.getInt("ROUTER_ID"),
+                            resultSet.getInt("OCCUPIED"),
+                            (maxPortsCapOnDevice - resultSet.getInt("OCCUPIED")));
+                    devices.add(d);
+                }
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException e) {
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+
+        }
+        return devices;
     }
 
 
@@ -3060,13 +3094,13 @@ public class DAO {
                             " ORDER BY P.ID_ROUTER ASC");
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                counter++;
-                if(counter>=startP && counter<=endP){
-                    final Circuit c = new Circuit(resultSet.getInt("CABLE_ID"),
-                            resultSet.getInt("PORT_ID"),
-                            resultSet.getInt("ROUTER_ID"));
-                    circuits.add(c);
-                }
+                    counter++;
+                    if(counter>=startP && counter<=endP){
+                        final Circuit c = new Circuit(resultSet.getInt("CABLE_ID"),
+                                resultSet.getInt("PORT_ID"),
+                                resultSet.getInt("ROUTER_ID"));
+                        circuits.add(c);
+                    }
             }
 
         } finally {
