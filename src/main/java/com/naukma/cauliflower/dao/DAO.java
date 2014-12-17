@@ -2628,7 +2628,7 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         try {
             String query = "SELECT * " +
-                    "FROM USERS US " +
+                    "FROM USERS " +
                     "WHERE ID_USERROLE = (SELECT Id_UserRole FROM USERROLE WHERE NAME = ?)";
             {//
                 System.out.println(query);
