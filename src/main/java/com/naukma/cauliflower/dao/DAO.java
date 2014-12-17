@@ -2619,23 +2619,22 @@ public class DAO {
      * @throws java.sql.SQLException
      * @see com.naukma.cauliflower.entities.Service
      */
-    public List<User> getCustomers() throws SQLException {
-        final int CUSTOMER = 1;
+    public List<User> getUsersByUserRole(UserRole role) throws SQLException {
         {//
-            System.out.println("getCustomers");
+            System.out.println("getUsersByUserRole");
         }
         ArrayList<User> result = new ArrayList<User>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
             String query = "SELECT * " +
-                    "FROM USERS " +
-                    "WHERE ID_USERROLE = ?";
+                    "FROM USERS US " +
+                    "WHERE ID_USERROLE = (SELECT Id_UserRole FROM USERROLE WHERE NAME = ?)";
             {//
                 System.out.println(query);
             }
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, CUSTOMER);
+            preparedStatement.setString(1, role.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new User(resultSet.getInt("ID_USER"),
@@ -2648,7 +2647,7 @@ public class DAO {
                         ((resultSet.getString("IS_BLOCKED")).equals("1")? true: false)));
                 }
             {//
-                System.out.println("SUCCESS!!! getCustomers");
+                System.out.println("SUCCESS!!! getUsersByUserRole");
             }
         } finally {
             try {
@@ -3261,7 +3260,7 @@ public class DAO {
     public User getCustomerUserById(int id) throws SQLException {
         final int CUSTOMER = 1;
         {//
-            System.out.println("getCustomers");
+            System.out.println("getCustomerUserById");
         }
         User result = null;
         Connection connection = getConnection();

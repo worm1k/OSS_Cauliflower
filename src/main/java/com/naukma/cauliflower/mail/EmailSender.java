@@ -156,4 +156,7 @@ public class EmailSender {
 		return template;
 	}
 
+	public static void sendNotification(String fullPath, String message, List<User> users) {
+		sendEmailToGroup(users, EmailSender.SUBJECT_NEW_TASK, message, EmailSender.getTemplate("/mailTemplate.ftl", fullPath));
+	}
 }

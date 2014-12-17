@@ -2662,7 +2662,7 @@ public enum DAO2 {
     public List<User> getCustomers() throws SQLException {
         final int CUSTOMER = 1;
         {//
-            System.out.println("getCustomers");
+            System.out.println("getUsersByUserRole");
         }
         ArrayList<User> result = new ArrayList<User>();
         //Connection connection = getConnection();
@@ -2674,7 +2674,7 @@ public enum DAO2 {
             {//
                 System.out.println(query);
             }
-            preparedStatement = getPreparedStatementFromHashMap("getCustomers", query);
+            preparedStatement = getPreparedStatementFromHashMap("getUsersByUserRole", query);
             preparedStatement.setInt(1, CUSTOMER);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {

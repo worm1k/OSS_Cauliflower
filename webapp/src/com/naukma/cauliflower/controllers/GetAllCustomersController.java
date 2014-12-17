@@ -2,6 +2,7 @@ package com.naukma.cauliflower.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
+import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.User;
 
 import javax.servlet.ServletException;
@@ -26,7 +27,7 @@ public class GetAllCustomersController  extends HttpServlet {
 
         List<User> lstUser = null;
         try {
-            lstUser = DAO.INSTANCE.getCustomers();
+            lstUser = DAO.INSTANCE.getUsersByUserRole(UserRole.CUSTOMER);
         } catch (SQLException e) {
             e.printStackTrace();
         }
