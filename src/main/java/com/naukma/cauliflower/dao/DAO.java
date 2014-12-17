@@ -2969,22 +2969,30 @@ public class DAO {
         int siID = checkNumber;
         int cableID = checkNumber;
         int portID = checkNumber;
+        final String selectQuery = "SELECT SI.ID SI_ID, C.ID C_ID , C.ID_PORT C_ID_PORT "
+                + " FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
+                + " INNER JOIN CABLE C ON SI.ID_CABLE = C.ID "
+                + " WHERE SO.ID_SERVICEORDER = ? ";
+        final String siIdQ =         "SI_ID";
+        final String cIdQ =          "C_ID";
+        final String pIdQ =          "C_ID_PORT";
+        final String updatePortQ =   " UPDATE PORT SET USED = 0 WHERE ID = ? ";
+        final String updateSIQ =     " UPDATE SERVICEINSTANCE SET ID_CABLE = NULL WHERE ID = ? ";
+        final String deleteCableQ =  " DELETE FROM CABLE WHERE ID = ? ";
+
 
         try {
             connection.setAutoCommit(false);
             // ---- GET SI ID, CABLE ID, PORT ID BY SO ID
             preparedStatementSelect = connection
-                    .prepareStatement("SELECT SI.ID SI_ID, C.ID C_ID , C.ID_PORT C_ID_PORT "
-                            + "FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
-                            + "INNER JOIN CABLE C ON SI.ID_CABLE = C.ID "
-                            + "WHERE SO.ID_SERVICEORDER = ? ");
+                    .prepareStatement(selectQuery);
             preparedStatementSelect.setInt(1, serviceOrderId);
 
             resultSet = preparedStatementSelect.executeQuery();
             while (resultSet.next()) {
-                siID = resultSet.getInt("SI_ID");
-                cableID = resultSet.getInt("C_ID");
-                portID = resultSet.getInt("C_ID_PORT");
+                siID = resultSet.getInt(siIdQ);
+                cableID = resultSet.getInt(cIdQ);
+                portID = resultSet.getInt(pIdQ);
             }
             {//help
                 System.out.println("serviceOrderId"+serviceOrderId);
@@ -2998,19 +3006,19 @@ public class DAO {
 
                 // ---- UPDATE PORT USED SET 0
                 preparedStatementUpdate = connection
-                        .prepareStatement("UPDATE PORT SET USED = 0 WHERE ID = ? ");
+                        .prepareStatement(updatePortQ);
                 preparedStatementUpdate.setInt(1, portID);
                 preparedStatementUpdate.executeUpdate();
 
                 // ---- UPDATE SERVICEINSTANCE ID_CABLE SET NULL
                 preparedStatementUpdate = connection
-                        .prepareStatement("UPDATE SERVICEINSTANCE SET ID_CABLE = NULL WHERE ID = ? ");
+                        .prepareStatement(updateSIQ);
                 preparedStatementUpdate.setInt(1, siID);
                 preparedStatementUpdate.executeUpdate();
 
                 // ---- DELETE FROM CABLE WHERE ID = cableID
                 preparedStatementUpdate = connection
-                        .prepareStatement("DELETE FROM CABLE WHERE ID = ? ");
+                        .prepareStatement(deleteCableQ);
                 preparedStatementUpdate.setInt(1, cableID);
                 preparedStatementUpdate.executeUpdate();
             }
@@ -3023,7 +3031,7 @@ public class DAO {
                 close(connection, preparedStatementSelect);
                 close(connection, preparedStatementUpdate);
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement!");
+                logger.info("Smth wrong with closing connection or preparedStatement! in DAO.removeCableFromServiceInstanceAndFreePort ");
                 e.printStackTrace();
             }
 
@@ -3065,7 +3073,7 @@ public class DAO {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement! in DAO.getPortsForReport(int page, int pageLength)");
+                logger.warn("Can't close connection or preparedStatement! in DAO.getCircuitsForReport(int page, int pageLength)");
                 exc.printStackTrace();
             }
         }
