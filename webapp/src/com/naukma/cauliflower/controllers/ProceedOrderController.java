@@ -44,7 +44,11 @@ public class ProceedOrderController extends HttpServlet {
          if(user == null || user.isBlocked()) {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
         }
+        if(!user.getUserRole().equals(UserRole.CUSTOMER)){
+            response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+        }
         try {
+
             if(scenario==null || scenario.equals(Scenario.NEW.toString())){
                 scenarioNew(request);
                 response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
@@ -71,22 +75,8 @@ public class ProceedOrderController extends HttpServlet {
         connectInstanceWithOrder();
         setInstanceBlocked();
         taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.FREE);
-        //email notification
         List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.INSTALLATION_ENG);
         EmailSender.sendEmailToGroup(usersByUserRole,TaskName.CREATE_CIRCUIT.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
-        //end notification
-//        int availablePorts = DAO.INSTANCE.getFreePortsNum() + DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_NEW_ROUTER) * CauliflowerInfo.PORTS_QUANTITY ;
-//        int neededPorts =  DAO.INSTANCE.getTasksNumByName(TaskName.CREATE_CIRCUIT) + DAO.INSTANCE.getTasksNumByStatus(TaskStatus.WAITING);
-//                ;
-//        //getFreePorts() + DAO.INSTANCE.getTasksByStatusAndRole(TaskStatus.WAITING,UserRole.INSTALLATION_ENG).size();
-//
-//        if(availablePorts > neededPorts )
-//        taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.FREE);
-//        else{
-//         DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_NEW_ROUTER,TaskStatus.FREE);
-//        taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.WAITING);
-//
-//        }
     }
 
     private void scenarioModify(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
