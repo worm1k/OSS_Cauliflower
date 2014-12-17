@@ -243,8 +243,20 @@
         <div class="col-xs-6 border-left">
                     <table class="table table-striped">
                         <tbody>
-                            <tr><td>Start date: </td><td><input type="text" class="input-pickdate" id="startDate" name="startDate" readonly></td></tr>
-                            <tr><td>End date: </td><td><input type="text" class="input-pickdate" id="endDate" name="endDate" readonly></td></tr>
+                            <tr><td>Start date: </td>
+                                <td>
+                                    <div id="startDate" class="form-group" style="margin-bottom: 0;">
+                                        <input type="text" class="input-pickdate" name="startDate" ng-model="startTime" data-trigger="manual" data-placement="bottom" data-content="Start date must be specified. Also it must be less than or equat to 'End date'." readonly>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr><td>End date: </td>
+                                <td>
+                                    <div id="endDate" class="form-group" style="margin-bottom: 0;">
+                                        <input type="text" class="input-pickdate" name="endDate" ng-model="endTime" data-trigger="manual" data-placement="bottom" data-content="End date must be specified. Also it must be greater than or equal to 'Start date'." readonly>
+                                    </div>
+                                </td>
+                            </tr>
                         <tr>
                             <div class="report_block">
                                 <td>
@@ -258,6 +270,8 @@
                                     <form class="form-inline inline" action="reports" method="post">
                                         <input type="hidden" name="reportMethod" value="New">
                                         <input type="hidden" name="extension" value="{{reportFormat}}">
+                                        <input type="hidden" name="startDate" value="{{startTime}}"/>
+                                        <input type="hidden" name="endDate" value="{{endTime}}"/>
                                         <button type="submit" id="js-get-report-0" class="btn btn-xs btn-primary">Download</button>
                                     </form>
 
@@ -268,7 +282,7 @@
                         <tr>
                             <div class="report_block">
                                 <td>
-                                    <div class="report_text"> Report about disconnect orders per period</div>
+                                    <div class="report_text">Report about disconnect orders per period</div>
                                 </td>
                                 <td>
                                     <form class="form-inline inline" action="report_view.jsp" method="post">
@@ -278,6 +292,8 @@
                                     <form class="form-inline inline" action="reports" method="post">
                                         <input type="hidden" name="reportMethod" value="Disconnect">
                                         <input type="hidden" name="extension" value="{{reportFormat}}">
+                                        <input type="hidden" name="startDate" value="{{startTime}}"/>
+                                        <input type="hidden" name="endDate" value="{{endTime}}"/>
                                         <button type="submit" id="js-get-report-1" class="btn btn-xs btn-primary">Download</button>
                                     </form>
 
