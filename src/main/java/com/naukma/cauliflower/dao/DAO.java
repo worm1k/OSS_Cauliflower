@@ -2819,7 +2819,7 @@ public class DAO {
                     "SERVICEINSTANCE SI INNER JOIN (  " +
                     "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
                     "ON SI.ID_CABLE = C.ID) " +
-                    "ON  S.ID = SI.ID_SERVICE GROUP BY P.ID_ROUTER ORDER BY P.ID_ROUTER ASC) " +
+                    "ON  S.ID = SI.ID_SERVICE GROUP BY P.ID_ROUTER ) " +
                     "WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1,(page-1)*pageLength+1);
             preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
@@ -2869,8 +2869,7 @@ public class DAO {
         try {
             preparedStatement = connection.prepareStatement("SELECT * FROM (  " +
                     "SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE, ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN " +
-                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable)  " +
-                    "ORDER BY C.ID ASC)  " +
+                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable)) " +
                     "WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1,(page-1)*pageLength+1);
             preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
