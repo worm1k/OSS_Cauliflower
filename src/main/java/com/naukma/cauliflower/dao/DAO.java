@@ -2835,7 +2835,56 @@ public class DAO {
         }
         return result;
     }
+    /**
+     * Get certain sum of lines for report
+     *
+     * @param pageLength amount of lines per page
+     * @param page number of page
+     * @throws java.sql.SQLException
+     */
+    public List<Object> getCablesForReport(int page, int pageLength)  throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        class CablesForReport{
+            private int idCable;
+            private int  idServiceInstance;
 
+            public CablesForReport(int idCable, int idServiceInstance) {
+                this.idCable = idCable;
+                this.idServiceInstance = idServiceInstance;
+            }
+
+            public int getIdCable() {
+                return idCable;
+            }
+
+            public int getIdServiceInstance() {
+                return idServiceInstance;
+            }
+        }
+        ArrayList<Object> result = new ArrayList<Object>();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE " +
+                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) " +
+                    "WHERE ROWNUM BETWEEN ? AND ? "+
+                    "ORDER BY C.ID ");
+            preparedStatement.setInt(1,(page-1)*pageLength+1);
+            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                result.add(new CablesForReport(resultSet.getInt("CABLE"), resultSet.getInt("SERVICE_INSTANCE")));
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return result;
+    }
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 
@@ -3303,16 +3352,6 @@ public class DAO {
         return circuits;
     }
 
-    /**
-     * Get certain sum of lines for report
-     *
-     * @param pageLength amount of lines per page
-     * @param page number of page
-     * @throws java.sql.SQLException
-     */
-    public List<Object> getCablesForReport(int page, int pageLength)  throws SQLException {
-        return null;
-    }
 
     /**
      * Get certain sum of lines for report
