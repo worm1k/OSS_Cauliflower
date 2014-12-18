@@ -586,11 +586,19 @@ angular.module('NgApp', [])
                                         mapAddMarker($scope.gmap, activeMarker);
 
                                         mapGetMarkers(this, 'activeMarker', function(marker){
+                                            mapGetAddressByLatLng(this, marker[0].object.position, function(addr){
+                                                if(addr && addr[0]){
+                                                    $scope.$apply(function(){ $scope.serviceLocationAddress = addr[0].formatted_address; });
+                                                }else{
+                                                    $scope.$apply(function(){ $scope.serviceLocationAddress = ''; });
+                                                }
+                                            });
+
                                             mapGetMarkers(this, 'providerLocation', function(markers){
                                                 closest = findClosest(marker[0], markers);
                                                 mapDrawPolyline($scope.gmap, [
                                                     [ marker[0].object.position.lat(), marker[0].object.position.lng() ],
-                                                    [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ],
+                                                    [ closest.marker.object.position.lat(), closest.marker.object.position.lng() ]
                                                 ], 'blue', true);
                                                 mapSetServiceOptions(closest.marker);
                                                 mapOpenInfobox(this, marker[0].object);
