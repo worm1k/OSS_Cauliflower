@@ -1725,8 +1725,9 @@ public class DAO {
         try {
             preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
                     "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
-                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID");
+                    "FROM (PROVIDERLOCATION PL INNER JOIN LOCATION L ON PL.ID_LOCATION = L.ID)  " +
+                    "INNER JOIN (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) ON " +
+                    "S.ID_PROVIDER_LOCATION = PL.ID ");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new Service(
