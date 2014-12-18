@@ -1672,10 +1672,16 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
+//            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+//                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+//                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+//                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID WHERE S.ID = ?");
+
             preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
                     "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
-                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID WHERE S.ID = ?");
+                    "FROM (PROVIDERLOCATION PL INNER JOIN LOCATION L ON PL.ID_LOCATION = L.ID)  " +
+                    "INNER JOIN (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) ON " +
+                    "S.ID_PROVIDER_LOCATION = PL.ID WHERE S.ID = ?");
             preparedStatement.setInt(1, serviceId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
