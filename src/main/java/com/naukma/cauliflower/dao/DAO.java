@@ -3622,19 +3622,20 @@ public class DAO {
         final int endP   = page*pageLength;
         try {
             preparedStatement = connection.prepareStatement
-                            ("SELECT * FROM " +
-                            " (SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED, ROWNUM RNUM " +
-                            " FROM PORT P  WHERE ROWNUM <= ? ORDER BY P.ID_ROUTER ASC)" +
-                            " WHERE RNUM >= ?");
+                            ("SELECT * FROM( " +
+                                    "SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED,ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                                    "FROM PORT P ) " +
+                                    "WHERE RN BETWEEN ? AND ?");
             preparedStatement
-                    .setInt(1,endP);
+                    .setInt(1,startP);
             preparedStatement
-                    .setInt(2,startP);
+                    .setInt(2,endP);
+
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 final Port p = new Port(resultSet.getInt("PORT_ID"),
                 resultSet.getInt("ID_ROUTER"),
-                resultSet.getInt("USED")==1);
+                resultSet.getInt("IS_USED")==1);
                 ports.add(p);
 
             }
