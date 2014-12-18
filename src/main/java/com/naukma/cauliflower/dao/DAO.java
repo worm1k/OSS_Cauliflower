@@ -3152,7 +3152,7 @@ public class DAO {
         final String sistActQ = InstanceStatus.ACTIVE.toString();
 		
 		// -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-		final String selectQuery = " SELECT P.ID_ROUTER ROUTER_ID, P.ID PORT_ID, SI.ID SI_ID, "
+		final String selectQuery = " SELECT P.ID_ROUTER ROUTER_ID, P.ID PORT_ID, SI.ID SERVICE_INSTANCE_ID, "
 				+ " U.ID_USER USER_ID, U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME"
                 + " FROM "
 				+ " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
@@ -3160,13 +3160,13 @@ public class DAO {
 				+ " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
 				+ " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
 				+ " WHERE SIST.NAME = ? ";
-		final String rIdQ =    "R_ID";
-		final String pIdQ =    "P_ID";
-		final String siIdQ =   "SI_ID";
-		final String uIdQ =    "U_ID";
-		final String uEmailQ = "U_EMAIL";
-		final String uFNameQ = "U_F_NAME";
-		final String uLNameQ = "U_L_NAME";
+		final String rIdQ =    "ROUTER_ID";
+		final String pIdQ =    "PORT_ID";
+		final String siIdQ =   "SERVICE_INSTANCE_ID";
+		final String uIdQ =    "USER_ID";
+		final String uEmailQ = "USER_EMAIL";
+		final String uFNameQ = "USER_FIRST_NAME";
+		final String uLNameQ = "USER_LAST_NAME";
 		try {
 			preparedStatement = connection.prepareStatement(selectQuery);
             preparedStatement.setString(1, sistActQ);
