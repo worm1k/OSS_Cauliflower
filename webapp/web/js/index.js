@@ -315,6 +315,8 @@ angular.module('NgApp', [])
                     mapGetAddressByLatLng(this, event.latLng, function(addr){
                         if(addr && addr[0]){
                             $scope.$apply(function(){ $scope.serviceLocationAddress = addr[0].formatted_address; });
+                        }else{
+                            $scope.$apply(function(){ $scope.serviceLocationAddress = ''; });
                         }
                     });
                     mapGetMarkers(this, 'providerLocation', function(markers){
@@ -520,6 +522,8 @@ angular.module('NgApp', [])
                                 mapGetAddressByLatLng(this, latLng, function(addr){
                                     if(addr && addr[0]){
                                         $scope.$apply(function(){ $scope.serviceLocationAddress = addr[0].formatted_address; });
+                                    }else{
+                                        $scope.$apply(function(){ $scope.serviceLocationAddress = ''; });
                                     }
                                 });
 
@@ -561,6 +565,8 @@ angular.module('NgApp', [])
                                         mapGetAddressByLatLng(this, event.latLng, function(addr){
                                             if(addr && addr[0]){
                                                 $scope.$apply(function(){ $scope.serviceLocationAddress = addr[0].formatted_address; });
+                                            }else{
+                                                $scope.$apply(function(){ $scope.serviceLocationAddress = ''; });
                                             }
                                         });
                                         mapGetMarkers(this, 'providerLocation', function(markers){
