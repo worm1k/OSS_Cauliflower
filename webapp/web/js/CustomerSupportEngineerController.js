@@ -11,7 +11,7 @@ angular.module('CSEDashboard', [])
 
         function ajaxGetUsers(callback){
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: 'getallcustomers',
                 dataType: 'json',
                 success: function(jqXHR){

@@ -23,7 +23,7 @@ public class GetAllCustomersController  extends HttpServlet {
 
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         List<User> lstUser = null;
         try {
@@ -34,16 +34,12 @@ public class GetAllCustomersController  extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
-//        //return data as json object
-//        //Convert Java object to JSON format
         mapper.writeValue(out, lstUser);
-//        Service service = DAO.INSTANCE.getServiceById(1);
-//        mapper.writeValue(out, service);
     }
 
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
     }
 }
