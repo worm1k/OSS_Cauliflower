@@ -16,7 +16,7 @@
                 <tr>
                     <td style="padding: 0 0 30px 0;left: 10px;vertical-align: top">
                         <div style="position: absolute;display: inline-block;margin: 0;padding: 0"><img
-                                src="http://194.44.143.139:10000/webapp_war/img/mono.png"
+                                src="http://s16.postimg.org/d1gguzgld/logo.png"
                                 style="outline: none;text-decoration: none;width: auto;max-width: 100%;clear: both;display: block;float: none"/>
                         </div>
                         <div align="center"
