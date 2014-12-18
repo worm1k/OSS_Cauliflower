@@ -31,7 +31,7 @@ public class AmountOfLinesInReportController extends HttpServlet {
         String startDate = (String) request.getParameter("startDate");
         String endDate = (String) request.getParameter("endDate");
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         java.sql.Date sqlStartDate = null;
         java.sql.Date sqlEndDate = null;
         if (startDate != null && endDate != null)

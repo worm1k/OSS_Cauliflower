@@ -15,7 +15,7 @@ angular.module('ReportView', [])
         $scope.isLoading = true;
 
         $scope.calcTotalPages = function(){
-            $scope.totalPages = $scope.itemsLength / $scope.linesOnPage;
+            $scope.totalPages = Math.floor($scope.itemsLength / $scope.linesOnPage);
             if($scope.itemsLength % $scope.linesOnPage != 0){
                 $scope.totalPages++;
             }
@@ -83,6 +83,7 @@ angular.module('ReportView', [])
             }
 
             $scope.ajaxGetReportPagination(data, function(length){
+                console.log("length", length);
                 $scope.ajaxGetReport(data, function(json){
                     $scope.$apply(function(){
                         $scope.json = json.list;
@@ -90,6 +91,8 @@ angular.module('ReportView', [])
                         $scope.itemsLength = length;
                         $scope.calcTotalPages();
                     });
+
+                    console.log("json", json);
 
                     console.log('$scope.linesOnPage', $scope.linesOnPage);
                     console.log('$scope.itemsLength', $scope.itemsLength);
