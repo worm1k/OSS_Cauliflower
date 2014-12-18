@@ -98,11 +98,11 @@ public class ProceedOrderController extends HttpServlet {
             changeOrderStatus();
             setInstanceBlocked();
             taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE,TaskStatus.FREE);
+            setNewServiceForTask(request);
             //email notification
             List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.PROVISIONING_ENG);
             EmailSender.sendEmailToGroup(usersByUserRole,TaskName.MODIFY_SERVICE.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
             //end notification
-            setNewServiceForTask(request);
         }
 
     }

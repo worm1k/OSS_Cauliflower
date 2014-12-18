@@ -28,12 +28,10 @@ public class ChangeCustomerPassword extends HttpServlet {
         String newPasswordAttribute ="newPassword";
 
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        System.out.println(us);
         if(us!= null && us.getUserRole().equals(UserRole.CUST_SUP_ENG.toString())){
             int userIdForNewPass = Integer.parseInt(request.getParameter(userIdForNewPassAttribute));
             String newPassword = request.getParameter(newPasswordAttribute);
-            System.out.println(newPassword);
-            if (userIdForNewPass > 0) {
+             if (userIdForNewPass > 0) {
                 if(newPassword.length()>= 6) {
                     //hashing password
                     final String hashedPassword= Cryptographer.hmacSha1(newPassword);
