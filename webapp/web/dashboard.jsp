@@ -56,7 +56,7 @@
             <div class="col-xs-8 border-right margin-bottom">
                 <h3>Modify Service:</h3>
                 <p ng-class="arrAvailableServices.length > 0? 'item-visible-false' : 'item-visible-true'">There are no available services.</p>
-                <form action="services" method="POST" ng-class="arrAvailableServices.length > 0? 'item-visible-true' : 'item-visible-false'">
+                <form action="proceed" method="POST" ng-class="arrAvailableServices.length > 0? 'item-visible-true' : 'item-visible-false'">
                     <ul>
                         <li ng-repeat="service in arrAvailableServices" class="ng-cloak">
                             <label class="radio font-regular">
@@ -77,7 +77,7 @@
             </div>
             <div class="col-xs-4 margin-bottom">
                 <h3>Disconnect:</h3>
-                <form action="services" method="POST">
+                <form action="proceed" method="POST">
                     <input type="hidden" name="instanceId" value="{{serviceInstance.id}}">
                     <input type="hidden" name="scenario" value="DISCONNECT">
                     <button type="submit" class="btn btn-danger">Disconnect</button>
