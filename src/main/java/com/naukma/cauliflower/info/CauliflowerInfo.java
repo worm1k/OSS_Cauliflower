@@ -71,4 +71,7 @@ public class CauliflowerInfo {
 
 
     public static final int PORTS_QUANTITY=60;
+
+    public static final String EMAIL_TEMPLATE_PATH ="/WEB-INF/mail/";
+
 }

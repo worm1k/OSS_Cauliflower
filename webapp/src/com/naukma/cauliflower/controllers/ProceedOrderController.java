@@ -16,176 +16,187 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Created by Max on 29.11.2014.
- */
+
 @WebServlet(name = "ProceedOrderController")
-public class ProceedOrderController extends HttpServlet {
-    private User user;
-    private int orderId = -1;
-    private int serviceInstanceId = -1;
-    private int taskId = -1;
+public class ProceedOrderController extends HttpServlet
+{
+    private User user = null;
 
-    /*
-    ACK.1  ACK.2(OPTIONAL)
-    ACK.3
-    ACK.4
-    ACK.10
-    ACK.12
-    SOW1
-    SOW2
-    SOW3
-     */
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException
     {
         user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         String scenario = request.getParameter(CauliflowerInfo.SCENARIO_PARAM);
-         if(user == null || user.isBlocked()) {
+        if(user == null || user.isBlocked())
+        {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
         }
-        if(!user.getUserRole().equals(UserRole.CUSTOMER)){
+        if(!user.getUserRole().equals(UserRole.CUSTOMER))
+        {
             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
         }
-        try {
-
-            if(scenario==null || scenario.equals(Scenario.NEW.toString())){
+        try
+        {
+            if(scenario==null || scenario.equals(Scenario.NEW.toString()))
+            {
                 scenarioNew(request);
                 request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
-                //response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-            }else if (scenario.equals(Scenario.DISCONNECT.toString())){
-                scenarioDisconnect(request,response);
+            }
+            else if (scenario.equals(Scenario.DISCONNECT.toString()))
+            {
+                scenarioDisconnect(request);
                 request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
-
-                //   response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-            }else if (scenario.equals(Scenario.MODIFY.toString())){
-                scenarioModify(request,response);
+            }
+            else if (scenario.equals(Scenario.MODIFY.toString()))
+            {
+                scenarioModify(request);
                 request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
-//                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             }
         }
-        catch (SQLException e) {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+        catch (SQLException e)
+        {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                    CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
         }
 
         return;
 
     }
 
-    private void scenarioNew(HttpServletRequest request) throws SQLException {
-        createNewOrder();
-        changeOrderStatus();
-        createServiceInstance(request);
-        connectInstanceWithOrder();
-        setInstanceBlocked();
-        taskId = DAO.INSTANCE.createNewTask(orderId,UserRole.INSTALLATION_ENG,TaskName.CREATE_CIRCUIT,TaskStatus.FREE);
-        List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.INSTALLATION_ENG);
-        EmailSender.sendEmailToGroup(usersByUserRole,TaskName.CREATE_CIRCUIT.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
+    private void scenarioNew(HttpServletRequest request) throws SQLException
+    {
+        Integer serviceInstance = null;
+        int orderId = createServiceOrder(Scenario.NEW, serviceInstance);
+        changeOrderStatus(orderId,OrderStatus.PROCESSING);
+        int serviceInstanceId = createServiceInstance(request);
+        connectInstanceWithOrder(orderId,serviceInstanceId);
+        toggleInstanceBlocked(serviceInstanceId);
+        DAO.INSTANCE.createNewTask(orderId,UserRole.
+                INSTALLATION_ENG,
+                TaskName.CREATE_CIRCUIT,
+                TaskStatus.FREE);
+        sendEmailNotificationForUserGroup(UserRole.INSTALLATION_ENG, TaskName.CREATE_CIRCUIT);
     }
 
-    private void scenarioModify(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
-        serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
+    private void scenarioModify(HttpServletRequest request) throws SQLException, IOException
+    {
+        int serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
         boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
         boolean disconnected = DAO.INSTANCE.isInstanceDisconnected(serviceInstanceId);
-        if(blocked){
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
-            //request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
-        }else if(disconnected){
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
+        if(blocked)
+        {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                    CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
+
         }
-        else{ //it is not blocked
-            createModifyOrder(serviceInstanceId);
-            changeOrderStatus();
-            setInstanceBlocked();
-            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE,TaskStatus.FREE);
-            setNewServiceForTask(request);
-            //email notification
-            List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.PROVISIONING_ENG);
-            EmailSender.sendEmailToGroup(usersByUserRole,TaskName.MODIFY_SERVICE.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
-            //end notification
+        else if(disconnected)
+        {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                    CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
+        }
+        else
+        {
+            int orderId = createServiceOrder(Scenario.MODIFY, serviceInstanceId);
+            changeOrderStatus(orderId,OrderStatus.PROCESSING);
+            toggleInstanceBlocked(serviceInstanceId);
+            int taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE,TaskStatus.FREE);
+            int serviceId = Integer.parseInt(request.getParameter(CauliflowerInfo.SERVICE_ID_PARAM));
+            setNewServiceForTask(taskId,serviceId);
+            sendEmailNotificationForUserGroup(UserRole.PROVISIONING_ENG, TaskName.MODIFY_SERVICE);
+
         }
 
     }
 
-    private void scenarioDisconnect(HttpServletRequest request,HttpServletResponse response) throws SQLException, IOException {
-        serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
+
+
+    private void scenarioDisconnect(HttpServletRequest request) throws SQLException, IOException
+    {
+        int serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
         boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
         boolean disconnected = DAO.INSTANCE.isInstanceDisconnected(serviceInstanceId);
-        if(blocked){
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
-
-        }else if(disconnected){
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
-        }
-        else {
-            createDisconnectOrder(serviceInstanceId);
-            changeOrderStatus();
-            setInstanceBlocked();
-            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG, TaskName.BREAK_CIRCUIT,TaskStatus.FREE);
-            //email notification
-            List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(UserRole.INSTALLATION_ENG);
-            EmailSender.sendEmailToGroup(usersByUserRole,TaskName.BREAK_CIRCUIT.toString(),getServletContext().getRealPath("/WEB-INF/mail/"));
-            //end notification
+        if(blocked)
+        {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                    CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
 
         }
+        else if(disconnected)
+        {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                    CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
+        }
+        else
+        {
+            int orderId = createServiceOrder(Scenario.DISCONNECT,serviceInstanceId);
+            changeOrderStatus(orderId,OrderStatus.PROCESSING);
+            toggleInstanceBlocked(serviceInstanceId);
+            DAO.INSTANCE.createNewTask(orderId,
+                    UserRole.INSTALLATION_ENG,
+                    TaskName.BREAK_CIRCUIT,
+                    TaskStatus.FREE);
+            sendEmailNotificationForUserGroup(UserRole.INSTALLATION_ENG,
+                    TaskName.BREAK_CIRCUIT);
+
+        }
     }
 
-
-    
-
-
-
-    private void createNewOrder() throws SQLException
+    private int createServiceOrder(Scenario scenario,Integer serviceInstanceId)
+            throws SQLException
     {
-        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.NEW,null);
+        return  DAO.INSTANCE.createServiceOrder(user.getUserId(),scenario,serviceInstanceId);
+
     }
 
-    private void createDisconnectOrder(Integer instanceId) throws SQLException
+    private void setNewServiceForTask(int taskId, int serviceId) throws SQLException
     {
-        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.DISCONNECT, instanceId);
-    }
-
-    private void createModifyOrder(Integer instanceId)throws SQLException{
-        orderId = DAO.INSTANCE.createServiceOrder(user.getUserId(),Scenario.MODIFY, instanceId);
-    }
-
-    private void setNewServiceForTask(HttpServletRequest request) throws SQLException{
-        int serviceId = Integer.parseInt(request.getParameter(CauliflowerInfo.SERVICE_ID_PARAM));
         DAO.INSTANCE.setServiceForTask(taskId,serviceId);
-        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
 
 
     }
 
-    private void changeOrderStatus() throws SQLException
+    private void changeOrderStatus(int orderId,OrderStatus orderStatus) throws SQLException
     {
-        DAO.INSTANCE.changeOrderStatus(orderId,OrderStatus.PROCESSING);
+        DAO.INSTANCE.changeOrderStatus(orderId,orderStatus);
     }
 
-    private void createServiceInstance(HttpServletRequest request) throws SQLException {
+    private int createServiceInstance(HttpServletRequest request) throws SQLException {
         ServiceLocation serviceLocation = (ServiceLocation)request.getSession().getAttribute(
                 CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
-        Service service = (Service)request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
-        serviceLocation.setServiceLocationId(DAO.INSTANCE.createServiceLocation(serviceLocation));
-        serviceInstanceId = DAO.INSTANCE.createServiceInstance(user.getUserId(),serviceLocation,service.getServiceId());
+        Service service = (Service)request.getSession().getAttribute(
+                CauliflowerInfo.SERVICE_ATTRIBUTE);
+        int  serviceLocationId = DAO.INSTANCE.createServiceLocation(serviceLocation);
+        serviceLocation.setServiceLocationId(serviceLocationId);
+        int serviceInstanceId = DAO.INSTANCE.createServiceInstance(
+                user.getUserId(),
+                serviceLocation,service.getServiceId());
         request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
         request.getSession().removeAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
-
+        return serviceInstanceId;
     }
 
 
-    private void connectInstanceWithOrder() throws SQLException
+    private void connectInstanceWithOrder(int serviceInstanceId,int orderId) throws SQLException
     {
         DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
     }
 
-    private void setInstanceBlocked() throws SQLException
+    private void toggleInstanceBlocked(int serviceInstanceId) throws SQLException
     {
-            DAO.INSTANCE.setInstanceBlocked(serviceInstanceId,1);
+        int trueAnswer = 1;
+        DAO.INSTANCE.setInstanceBlocked(serviceInstanceId,trueAnswer);
+    }
+
+    private void sendEmailNotificationForUserGroup(UserRole userRole, TaskName taskName) throws SQLException{
+        List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(userRole);
+        EmailSender.sendEmailToGroup(usersByUserRole,taskName.toString(),
+                getServletContext().getRealPath(CauliflowerInfo.EMAIL_TEMPLATE_PATH));
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+
     }
 
 
