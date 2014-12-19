@@ -130,18 +130,6 @@ public class ProceedOrderController extends HttpServlet {
         }
     }
 
-//    private void checkBlocked(HttpServletRequest request,HttpServletResponse response) throws IOException, SQLException {
-//        serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
-//        boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
-//      //vladmyr
-//        if(blocked){
-//            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
-//        }else{
-//            createDisconnectOrder(serviceInstanceId);
-//            changeOrderStatus();
-//            setInstanceBlocked();
-//            taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.INSTALLATION_ENG,TaskName.BREAK_CIRCUIT,TaskStatus.FREE);
-//        }
 
     
 
