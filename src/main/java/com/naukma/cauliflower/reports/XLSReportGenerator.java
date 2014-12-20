@@ -37,11 +37,18 @@ public class XLSReportGenerator implements ReportGenerator{
 
     private static final double REPORT_NAME_FONT_SIZE = 20;
 
-    private static final int INITIAL_CELL_WIDTH = 3000;
-
     private static final int INITIAL_LETTER_WIDTH = 250;
 
     private static final int FILTER_WIDTH_OFFSET = 1250;
+
+    private static final int MIN_SIDE_SEPARATOR_WIDTH = 1500;
+
+    private static final double FONT_SCALE = 1.6;
+
+    private static final int UNITS_PER_CHARACTER = 256;
+
+    /** Width of region between provider name and report name regions*/
+    private static final int NAMES_SEPARATOR_WIDTH = 150;
 
     /**
      * Value = {@value}, row position to start filling data with .
@@ -76,6 +83,7 @@ public class XLSReportGenerator implements ReportGenerator{
     private ResultSetMetaData metaData;
     private HSSFWorkbook workbook;
     private HSSFSheet sheet;
+    private int columnsAmount;
 
     /**
      * Constructor.
@@ -90,6 +98,7 @@ public class XLSReportGenerator implements ReportGenerator{
         this.reportName = reportName;
         workbook = new HSSFWorkbook();
         sheet = workbook.createSheet("Report");
+        columnsAmount = metaData.getColumnCount() + TABLE_LEFT_OFFSET + TABLE_RIGHT_OFFSET;
         generateDocument();
     }
 
@@ -97,76 +106,10 @@ public class XLSReportGenerator implements ReportGenerator{
      * Generates look up of a document and fills it with data.
      */
     private void generateDocument() throws SQLException {
-        //Calculates initial width for every column
-        int totalColumnCount = metaData.getColumnCount() + TABLE_LEFT_OFFSET + TABLE_RIGHT_OFFSET;
-        double totalWidth = ((Math.max(COMPANY_NAME_FONT_SIZE, REPORT_NAME_FONT_SIZE) / 1.6) / (totalColumnCount)) * PROVIDER_NAME.length() * 256;
-        double width = totalWidth / (totalColumnCount);
-        for (int i = 0; i < totalColumnCount; i++) {
-            sheet.setColumnWidth(i, (int) width);
-        }
-
         //Fills data and returns how many rows were inserted
         int rowsInserted = fillData();
 
-        sheet.addMergedRegion(new CellRangeAddress(
-                0,                                                      //first row (0-based)
-                0,                        //last row  (0-based)
-                0,                                                      //first column (0-based)
-                totalColumnCount - 1                                    //last column  (0-based)
-        ));
-        sheet.addMergedRegion(new CellRangeAddress(
-                1,                            //first row (0-based)
-                1,                            //last row  (0-based)
-                0,                                                      //first column (0-based)
-                totalColumnCount - 1                                    //last column  (0-based)
-        ));
-
-        CellRangeAddress reportNameRegion = new CellRangeAddress(
-                2,                          //first row (0-based)
-                2, //last row  (0-based)
-                0,                                                        //first column (0-based)
-                totalColumnCount - 1                                      //last column  (0-based)
-        );
-
-        CellRangeAddress leftSeparator = new CellRangeAddress(
-                DATA_Y_OFFSET,
-                DATA_Y_OFFSET + rowsInserted,
-                0,
-                0
-        );
-
-        CellRangeAddress rightSeparator = new CellRangeAddress(
-                DATA_Y_OFFSET,
-                DATA_Y_OFFSET + rowsInserted,
-                totalColumnCount - 1,
-                totalColumnCount - 1
-        );
-
-        CellRangeAddress bottomSeparator = new CellRangeAddress(
-                DATA_Y_OFFSET + rowsInserted,
-                DATA_Y_OFFSET + rowsInserted,
-                TABLE_LEFT_OFFSET,
-                totalColumnCount - TABLE_RIGHT_OFFSET - 1
-        );
-
-        setLeftRightBorders(reportNameRegion, CellStyle.BORDER_THIN, HSSFColor.WHITE.index);
-        setPureBackGround(rightSeparator, HSSFColor.WHITE.index);
-        setPureBackGround(leftSeparator, HSSFColor.WHITE.index);
-        setPureBackGround(bottomSeparator, HSSFColor.WHITE.index);
-
-        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, bottomSeparator, sheet, workbook);
-        RegionUtil.setBottomBorderColor(HSSFColor.AQUA.index, bottomSeparator, sheet, workbook);
-
-        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, leftSeparator, sheet, workbook);
-        RegionUtil.setBottomBorderColor(HSSFColor.AQUA.index, leftSeparator, sheet, workbook);
-
-        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, rightSeparator, sheet, workbook);
-        RegionUtil.setBottomBorderColor(HSSFColor.AQUA.index, rightSeparator, sheet, workbook);
-
-        sheet.addMergedRegion(reportNameRegion);
-        sheet.addMergedRegion(leftSeparator);
-        sheet.addMergedRegion(rightSeparator);
-        sheet.addMergedRegion(bottomSeparator);
+        createMergedRegions(rowsInserted);
 
         //Font for company name
         Font companyNameCellFont = workbook.createFont();
@@ -192,8 +135,8 @@ public class XLSReportGenerator implements ReportGenerator{
             tempCellStyle.setFillForegroundColor(HSSFColor.AQUA.index);
             tempCellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
             Row tempRow = CellUtil.getRow(1, sheet);
-            tempRow.setHeight((short) 150);
-            for (int j = 0; j < totalColumnCount; j++)
+            tempRow.setHeight((short) NAMES_SEPARATOR_WIDTH);
+            for (int j = 0; j < columnsAmount; j++)
                 CellUtil.getCell(tempRow, j).setCellStyle(tempCellStyle);
         }
 
@@ -235,20 +178,92 @@ public class XLSReportGenerator implements ReportGenerator{
         //Fill table with these styles
         setDataStyle(dataStyle, columnNameCellStyle, rowsInserted);
 
-        //Check if fillData() method changed values so that company name doesn't fit it's cell width.
-        int sum = 0;
-        for (int i = 0; i < totalColumnCount; i++)
-            sum += sheet.getColumnWidth(i);
-        if (sum < totalWidth) {
-            double difference = totalWidth - sum;
-            sheet.setColumnWidth(0, (int) (width + difference / 2));
-            sheet.setColumnWidth(totalColumnCount - 1, (int) (width + difference / 2));
+        //Calculates the final width of columns
+        double minimumTableWidth = ((Math.max(COMPANY_NAME_FONT_SIZE, REPORT_NAME_FONT_SIZE) / FONT_SCALE) / (columnsAmount))
+                                    * PROVIDER_NAME.length() * UNITS_PER_CHARACTER;
+
+        double currentTableWidth = 0;
+        for (int i = 0; i < columnsAmount; i++)
+            currentTableWidth += sheet.getColumnWidth(i);
+        if (currentTableWidth < minimumTableWidth) {
+            double difference = minimumTableWidth - currentTableWidth;
+            sheet.setColumnWidth(0, (int) (sheet.getColumnWidth(0) + difference / 2));
+            sheet.setColumnWidth(columnsAmount - 1, (int) (sheet.getColumnWidth(columnsAmount - 1) + difference / 2));
         } else {
-            double difference = sum - totalWidth;
-            sheet.setColumnWidth(0, Math.max(2000, (int) (width - difference)));
-            sheet.setColumnWidth(totalColumnCount - 1, Math.max(2000, (int) (width - difference)));
+            double difference = currentTableWidth - minimumTableWidth;
+            sheet.setColumnWidth(0, Math.max(MIN_SIDE_SEPARATOR_WIDTH, (int) (sheet.getColumnWidth(0) - difference / 2)));
+            sheet.setColumnWidth(columnsAmount - 1,
+                                 Math.max(MIN_SIDE_SEPARATOR_WIDTH,
+                                 (int) (sheet.getColumnWidth(columnsAmount - 1) - difference / 2)));
         }
 
+    }
+
+    /**
+     * Creates provider name and report name regions, separator between them, left, right and bottom separators. Also
+     * modifies their styles.
+     * @param rowsInserted amount of inserted rows with data
+     */
+    private void createMergedRegions(int rowsInserted) {
+        sheet.addMergedRegion(new CellRangeAddress(
+                0,                                                      //first row (0-based)
+                0,                                                      //last row  (0-based)
+                0,                                                      //first column (0-based)
+                columnsAmount - 1                                       //last column  (0-based)
+        ));
+        sheet.addMergedRegion(new CellRangeAddress(
+                1,                            //first row (0-based)
+                1,                            //last row  (0-based)
+                0,                                                      //first column (0-based)
+                columnsAmount - 1                                    //last column  (0-based)
+        ));
+
+        CellRangeAddress reportNameRegion = new CellRangeAddress(
+                2,                          //first row (0-based)
+                2, //last row  (0-based)
+                0,                                                        //first column (0-based)
+                columnsAmount - 1                                      //last column  (0-based)
+        );
+
+        CellRangeAddress leftSeparator = new CellRangeAddress(
+                DATA_Y_OFFSET,
+                DATA_Y_OFFSET + rowsInserted,
+                0,
+                0
+        );
+
+        CellRangeAddress rightSeparator = new CellRangeAddress(
+                DATA_Y_OFFSET,
+                DATA_Y_OFFSET + rowsInserted,
+                columnsAmount - 1,
+                columnsAmount - 1
+        );
+
+        CellRangeAddress bottomSeparator = new CellRangeAddress(
+                DATA_Y_OFFSET + rowsInserted,
+                DATA_Y_OFFSET + rowsInserted,
+                TABLE_LEFT_OFFSET,
+                columnsAmount - TABLE_RIGHT_OFFSET - 1
+        );
+
+        setLeftRightBorders(reportNameRegion, CellStyle.BORDER_THIN, HSSFColor.WHITE.index);
+        setPureBackGround(rightSeparator, HSSFColor.WHITE.index);
+        setPureBackGround(leftSeparator, HSSFColor.WHITE.index);
+        setPureBackGround(bottomSeparator, HSSFColor.WHITE.index);
+
+        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, bottomSeparator, sheet, workbook);
+        RegionUtil.setBottomBorderColor(HSSFColor.AQUA.index, bottomSeparator, sheet, workbook);
+
+        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, leftSeparator, sheet, workbook);
+        RegionUtil.setBottomBorderColor(HSSFColor.AQUA.index, leftSeparator, sheet, workbook);
+
+        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, rightSeparator, sheet, workbook);
+        RegionUtil.setBottomBorderColor(HSSFColor.AQUA.index, rightSeparator, sheet, workbook);
+
+        sheet.addMergedRegion(reportNameRegion);
+        sheet.addMergedRegion(leftSeparator);
+        sheet.addMergedRegion(rightSeparator);
+        sheet.addMergedRegion(bottomSeparator);
     }
 
 
@@ -267,7 +282,7 @@ public class XLSReportGenerator implements ReportGenerator{
     }
 
     /**
-     * Fills backfround with one color
+     * Fills background with color
      *
      * @param region region of cells to be filled with color
      * @param color  color to fill with
@@ -295,32 +310,12 @@ public class XLSReportGenerator implements ReportGenerator{
             Cell cell = CellUtil.getCell(row, columnsCount + i);
             cell.setCellStyle(columnNameCellStyle);
         }
-        for (int i = 0; i < rowsInserted - 1; i++) {//minus one because we don't take into consederation column names row
+        for (int i = 0; i < rowsInserted - 1; i++) {//minus one because we don't take into consideration column names row
             Row row = CellUtil.getRow(rowCount + i, sheet);
             for (int j = 0; j < metaData.getColumnCount(); j++) {
                 CellUtil.getCell(row, columnsCount + j).setCellStyle(dataStyle);
             }
         }
-    }
-
-    /**
-     * Counts  coefficient to make the column width fit the text width
-     *
-     * @param index Index of metaData column label
-     * @return counted coefficient
-     * @throws java.sql.SQLException
-     */
-    private double countWidthCoef(int index) throws SQLException {
-        double res = INITIAL_CELL_WIDTH / INITIAL_LETTER_WIDTH;
-        double coef = (double) (INITIAL_CELL_WIDTH / INITIAL_LETTER_WIDTH) / metaData.getColumnLabel(index).length();
-        if (coef > 4)
-            res = (res / 3.9);
-        else if (coef > 2)
-            res = (res / 1.9);
-        else if (coef < 1)
-            res = metaData.getColumnLabel(index).length();
-        return res;
-
     }
 
     /**
@@ -339,7 +334,7 @@ public class XLSReportGenerator implements ReportGenerator{
         for (int i = 0; i < metaData.getColumnCount(); i++) {
             String s = metaData.getColumnLabel(i + 1);
             CellUtil.getCell(titleRow, i + DATA_X_OFFSET).setCellValue(s.charAt(0) + s.substring(1).toLowerCase());
-            widths[i] = countWidthCoef(i + 1);
+            widths[i] = metaData.getColumnLabel(i + 1).length();
         }
         sheet.setAutoFilter(new CellRangeAddress(titleRow.getRowNum(), titleRow.getRowNum(), DATA_X_OFFSET, metaData.getColumnCount()));
 
