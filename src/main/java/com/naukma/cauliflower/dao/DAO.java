@@ -2500,14 +2500,6 @@ public class DAO {
                 this.idRouter = id;
                 this.profit = profit;
             }
-
-            public int getIdRouter() {
-                return idRouter;
-            }
-
-            public double getProfit() {
-                return profit;
-            }
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
@@ -2563,18 +2555,6 @@ public class DAO {
                 this.free = free;
                 this.occupied = occupied;
             }
-
-            public int getIdRouter() {
-                return idRouter;
-            }
-
-            public int getFree() {
-                return free;
-            }
-
-            public int getOccupied() {
-                return occupied;
-            }
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
@@ -2622,14 +2602,6 @@ public class DAO {
             ProfitabilityByMonth(int id, double profit) {
                 this.idRouter = id;
                 this.profit = profit;
-            }
-
-            public int getIdRouter() {
-                return idRouter;
-            }
-
-            public double getProfit() {
-                return profit;
             }
         }
         ArrayList<Object> result = new ArrayList<Object>();
@@ -2679,14 +2651,6 @@ public class DAO {
                 this.idCable = idCable;
                 this.idServiceInstance = idServiceInstance;
             }
-
-            public int getIdCable() {
-                return idCable;
-            }
-
-            public int getIdServiceInstance() {
-                return idServiceInstance;
-            }
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
@@ -2712,15 +2676,7 @@ public class DAO {
         return result;
     }
 
-
-    /**
-     * gets amount of lines in report for devices
-     *
-     * @return int lines amoutn
-     * @throws java.sql.SQLException
-     */
-    public int getDevicesReportLinesAmount() throws SQLException {
-        Connection connection = getConnection();
+    private int getRoutersAmount(Connection connection) throws SQLException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
@@ -2733,12 +2689,74 @@ public class DAO {
 
         } finally {
             try {
-                close(connection, preparedStatement);
+                if (!preparedStatement.isClosed()) preparedStatement.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
+        }
+        return result;
+    }
+    private int getCablesAmount(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        int result = 0;
+        try {
+            preparedStatement = connection.
+                    prepareStatement("SELECT COUNT(*) AM " +
+                            "FROM  CABLE ");
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) result = resultSet.getInt("AM");
 
+        } finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+            } catch (SQLException e) {
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    private int getPortsAmount(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        int result = 0;
+        try {
+            preparedStatement = connection.
+                    prepareStatement("SELECT COUNT(*) AM FROM PORT ");
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) result = resultSet.getInt("AM");
+
+        } finally {
+            try {
+                if (!preparedStatement.isClosed()) preparedStatement.close();
+            } catch (SQLException e) {
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * gets amount of lines in report for devices
+     *
+     * @return int lines amoutn
+     * @throws java.sql.SQLException
+     */
+    public int getDevicesReportLinesAmount() throws SQLException {
+        Connection connection = getConnection();
+        int result = 0;
+        try {
+            result = getRoutersAmount(connection);
+        } finally {
+            try {
+                if (!connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                logger.warn("Smth wrong with closing connection or preparedStatement!");
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -2751,18 +2769,12 @@ public class DAO {
      */
     public int getCircuitsReportLinesAmount() throws SQLException {
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT COUNT(*) AM " +
-                            "FROM  CABLE ");
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) result = resultSet.getInt("AM");
+            result = getCablesAmount(connection);
         } finally {
             try {
-                close(connection, preparedStatement);
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2779,18 +2791,12 @@ public class DAO {
      */
     public int getCablesReportLinesAmount() throws SQLException {
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT COUNT(*) AM FROM CABLE ");
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) result = resultSet.getInt("AM");
-
+            result = getCablesAmount(connection);
         } finally {
             try {
-                close(connection, preparedStatement);
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2807,17 +2813,12 @@ public class DAO {
      */
     public int getPortsReportLinesAmount() throws SQLException {
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT COUNT(*) AM FROM PORT ");
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) result = resultSet.getInt("AM");
+            result = getPortsAmount(connection);
         } finally {
             try {
-                close(connection, preparedStatement);
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2834,22 +2835,16 @@ public class DAO {
      */
     public int getMostProfitableRouterReportLinesAmount() throws SQLException {
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT COUNT(*) AM FROM ROUTER ");
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) result = resultSet.getInt("AM");
+            result = getRoutersAmount(connection);
         } finally {
             try {
-                close(connection, preparedStatement);
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
-
         }
         return result;
     }
@@ -2862,17 +2857,12 @@ public class DAO {
      */
     public int getUsedRoutersAndCapacityOfPortsLinesAmount() throws SQLException {
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT COUNT(*) AM FROM ROUTER ");
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) result = resultSet.getInt("AM");
+            result = getRoutersAmount(connection);
         } finally {
             try {
-                close(connection, preparedStatement);
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2889,17 +2879,12 @@ public class DAO {
      */
     public int getProfitabilityByMonthLinesAmount() throws SQLException {
         Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT COUNT(*) AM FROM ROUTER ");
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) result = resultSet.getInt("AM");
+            result = getRoutersAmount(connection);
         } finally {
             try {
-                close(connection, preparedStatement);
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2922,7 +2907,8 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM " +
-                            "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                            "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS " +
+                            "ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
                             "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
                             "GROUP BY OS.NAME ");
             preparedStatement.setString(1, aNew.toString());
@@ -3195,39 +3181,6 @@ public class DAO {
         }
         return reportGenerator;
     }
-//
-//    public ResultSet getNewOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException{
-//        {//help
-//            System.out.println("getNewOrdersPerPeriod");
-//        }
-//        Connection connection = getConnection();
-//        PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) " +
-//                "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
-//                "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ");
-//        preparedStatement.setString(1, Scenario.NEW.toString());
-//        preparedStatement.setDate(2, sqlStartDate);
-//        preparedStatement.setDate(3, sqlEndDate);
-//        ResultSet resultSet = preparedStatement.executeQuery();
-//        try {
-//            close(connection, preparedStatement);
-//        }catch (SQLException e){
-//            logger.warn("Smth wrong with closing connection or preparedStatement!");
-//        }
-//        {//help
-//            System.out.println("SUCCESS!!!!getNewOrdersPerPeriod");
-//        }
-//        return resultSet;
-//    }
-//
-//    public ResultSet DisconnectOrdersPerPeriod(java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) {
-//        return null;
-//    }
-
-    //IGOR RI.6
-    //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
-    //сделать равным null. Сам кабель удалить из базы.
-    //The system should allow deleting of Cables and Circuits.
-
 
     /**
      * Breaks circuit
@@ -3270,12 +3223,6 @@ public class DAO {
                 siID = resultSet.getInt(siIdQ);
                 cableID = resultSet.getInt(cIdQ);
                 portID = resultSet.getInt(pIdQ);
-            }
-            {//help
-                System.out.println("serviceOrderId" + serviceOrderId);
-                System.out.println("siId: " + siID);
-                System.out.println("cableID: " + cableID);
-                System.out.println("portID: " + portID);
             }
 
             if (siID != checkNumber && cableID != checkNumber
@@ -3385,7 +3332,6 @@ public class DAO {
                                     " ORDER BY P.ID_ROUTER) WHERE RNUM >= ? "
                     );
 
-//            prepareStatement();
             preparedStatement
                     .setInt(1, endP);
             preparedStatement
