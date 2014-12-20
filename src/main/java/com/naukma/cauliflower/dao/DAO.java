@@ -23,8 +23,7 @@ public class DAO {
     public static final DAO INSTANCE = new DAO();
     private static final Logger logger = Logger.getLogger(String.class);
     private DataSource dataSource;
-    private static final String BD_JNDI = "jdbc/oraclesource"; // no magic numbers
-    private int devicesReportLinesAmount;
+    private static final String BD_JNDI = "jdbc/oraclesource";
 
     private DAO() {
         InitialContext ic = null;
@@ -579,8 +578,9 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
+        int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
         try {
-            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, 60 - SUM(p.Used) FREE " +
+            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, "+amountOfPorts+" - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "GROUP BY r.id ");
             resultSet = preparedStatement.executeQuery();
@@ -779,6 +779,7 @@ public class DAO {
         {//help
             System.out.println("getUserByLoginAndPassword");
         }
+        logger.info("Hello logger");
         Connection connection = getConnection();
         User user = null;
         PreparedStatement preparedStatement = null;
@@ -2485,6 +2486,7 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
         class UsedRoutersAndCapacityOfPorts {
             private String router;
             private int free;
@@ -2499,17 +2501,18 @@ public class DAO {
         ArrayList<Object> result = new ArrayList<Object>();
         try {
             preparedStatement = connection.
-                    prepareStatement("SELECT * FROM (  " +
-                            "SELECT 'ROUTER-'||r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED,  " +
-                            "ROW_NUMBER() OVER (ORDER BY r.id ASC) RN " +
+                    prepareStatement("SELECT 'ROUTER-' ||ROUTEROLD ROUTER_NAME,  OCCUPIED, " +
+                            +amountOfPorts+" - OCCUPIED FREE, ROUND( OCCUPIED / "+amountOfPorts+", 2) UTILIZATION " +
+                            "FROM ( ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED, " +
+                            "ROW_NUMBER() OVER (ORDER BY r.id ASC) RN  " +
                             "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER)  " +
-                            "GROUP BY r.id ) " +
-                            "WHERE RN BETWEEN ? AND ? ");
+                            "GROUP BY R.ID) " +
+                            ")WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1, (page - 1) * pageLength + 1);
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getString("ROUTER"),
+                result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getString("ROUTER_NAME"),
                         resultSet.getInt("FREE"), resultSet.getInt("OCCUPIED")));
             }
         } finally {
@@ -2953,14 +2956,14 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
+        int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
         try {
-            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-' ||ROUTEROLD ROUTER, " +
-                    "OCCUPIED, CASE OCCUPIED " +
-                    "WHEN 60 THEN  100  " +
-                    "ELSE ROUND( OCCUPIED / ( 60 - OCCUPIED), 2) END UTILIZATION  " +
-                    "FROM ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED " +
-                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "GROUP BY R.ID  )");
+            preparedStatement = connection.
+                    prepareStatement("SELECT 'ROUTER-' ||ROUTEROLD ROUTER,  " +
+                            "OCCUPIED, "+amountOfPorts+" - OCCUPIED FREE, ROUND( OCCUPIED / "+amountOfPorts+", 2) UTILIZATION " +
+                            "FROM ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED " +
+                            "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                            "GROUP BY R.ID)");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
@@ -3177,8 +3180,8 @@ public class DAO {
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
         try {
-            preparedStatement = connection.prepareStatement(
-                    "SELECT 'ROUTER-'||R2.ID ROUTER_NAME, R2.USED OCCUPIED " +
+            preparedStatement = connection.
+                    prepareStatement("SELECT 'ROUTER-'||R2.ID ROUTER_NAME, R2.USED OCCUPIED " +
                             "FROM (SELECT R.ID, SUM(P.USED) USED, ROW_NUMBER() OVER (ORDER BY R.ID) RN " +
                             "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                             "GROUP BY R.ID) R2 " +
