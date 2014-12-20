@@ -157,7 +157,7 @@ public class DAO {
      * @param password User password
      * @return -1 if error occured, otherwise id of created user
      */
-    public int createUser(User us, String password) throws SQLException  {
+    public int createUser(User us, String password) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int result = -1;
@@ -271,7 +271,7 @@ public class DAO {
                 result = false;
             }
 
-        }  finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
@@ -351,8 +351,6 @@ public class DAO {
 
         return resultUser;
     }
-
-
 
 
     /**
@@ -452,7 +450,7 @@ public class DAO {
                 }
             }
 
-        }  finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
@@ -727,7 +725,7 @@ public class DAO {
      * @param phone Phone number to check.
      * @return true if phone number exists, false if doesn't
      */
-    public boolean checkForPhoneUniq(String phone) throws SQLException{
+    public boolean checkForPhoneUniq(String phone) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -751,7 +749,7 @@ public class DAO {
                 }
             }
 
-        }  finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
                 //if (!preparedStatement.isClosed()) preparedStatement.close();
@@ -785,10 +783,6 @@ public class DAO {
         User user = null;
         PreparedStatement preparedStatement = null;
         try {
-//            preparedStatement = connection.
-//                    prepareStatement("SELECT * " +
-//                            "FROM USERS U INNER JOIN USERROLE UR ON U.ID_USERROLE = UR.ID_USERROLE " +
-//                            "WHERE E_MAIL = ? AND PASSWORD = ?");
             preparedStatement = connection.
                     prepareStatement("SELECT U.*, UR.* " +
                             "FROM USERS U, USERROLE UR " +
@@ -845,14 +839,16 @@ public class DAO {
         }
         try {
             connection.setAutoCommit(false);
-            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT ID_ORDERSCENARIO FROM ORDERSCENARIO WHERE NAME = ?");
             preparedStatement.setString(1, scenario.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             int idOrderScenario = 0;
             if (resultSet.next()) {
                 idOrderScenario = resultSet.getInt("ID_ORDERSCENARIO");
             }
-            preparedStatement = connection.prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT ID_ORDERSTATUS FROM ORDERSTATUS WHERE NAME = ?");
             preparedStatement.setString(1, orderStatus.toString());
             int idOrderStatus = 0;
             resultSet = preparedStatement.executeQuery();
@@ -862,15 +858,19 @@ public class DAO {
             GregorianCalendar gregorianCalendar = new GregorianCalendar();
             Date d = gregorianCalendar.getTime();
             if (idServiceInstance == null) {
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
-                        "VALUES(?,?,?,? )");
+                preparedStatement = connection.
+                        prepareStatement("INSERT INTO SERVICEORDER(ID_ORDERSCENARIO," +
+                                "ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                                "VALUES(?,?,?,? )");
                 preparedStatement.setInt(1, idOrderScenario);
                 preparedStatement.setInt(2, idOrderStatus);
                 preparedStatement.setDate(3, new java.sql.Date(d.getYear(), d.getMonth(), d.getDay()));
                 preparedStatement.setInt(4, userId);
             } else {
-                preparedStatement = connection.prepareStatement("INSERT INTO SERVICEORDER(ID_SRVICEINSTANCE, ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
-                        "VALUES(?, ?,? ,?,?)");
+                preparedStatement = connection.
+                        prepareStatement("INSERT INTO SERVICEORDER(ID_SRVICEINSTANCE, " +
+                                "ID_ORDERSCENARIO,ID_ORDERSTATUS, OUR_DATE, ID_USER) " +
+                                "VALUES(?, ?,? ,?,?)");
                 preparedStatement.setInt(1, idServiceInstance.intValue());
                 preparedStatement.setInt(2, idOrderScenario);
                 preparedStatement.setInt(3, idOrderStatus);
@@ -878,7 +878,8 @@ public class DAO {
                 preparedStatement.setInt(5, userId);
             }
             preparedStatement.executeUpdate();
-            preparedStatement = connection.prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
+            preparedStatement = connection.
+                    prepareStatement("SELECT MAX(ID_SERVICEORDER) RES FROM SERVICEORDER");
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("RES");
@@ -1046,7 +1047,6 @@ public class DAO {
                     "FROM TASKSTATUS " +
                     "WHERE NAME = ?) " +
                     "WHERE ID_TASK = ?");
-
             preparedStatement.setString(1, taskStatus.toString());
             preparedStatement.setInt(2, taskId);
             preparedStatement.executeUpdate();
@@ -1537,13 +1537,13 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
-                    "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
-                    "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
-                    "FROM (SERVICEINSTANCE SI INNER JOIN " +
+                            "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
+                            "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
+                            "FROM (SERVICEINSTANCE SI INNER JOIN " +
                             "(SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
-                    "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
-                    "INNER JOIN SERVICEINSTANCESTATUS SIS " +
-                    "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID ");
+                            "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
+                            "INNER JOIN SERVICEINSTANCESTATUS SIS " +
+                            "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID ");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new ServiceInstance(resultSet.getInt("ID"),
@@ -1811,8 +1811,8 @@ public class DAO {
             connection.setAutoCommit(false);
             preparedStatement = connection.
                     prepareStatement("INSERT INTO SERVICEINSTANCE(ID_USER, ID_SERVICE_LOCATION, " +
-                    "ID_SERVICE, SERVICE_INSTANCE_STATUS) " +
-                    "VALUES (?,?,?, (SELECT SIS.ID FROM SERVICEINSTANCESTATUS SIS WHERE NAME = ? ) )");
+                            "ID_SERVICE, SERVICE_INSTANCE_STATUS) " +
+                            "VALUES (?,?,?, (SELECT SIS.ID FROM SERVICEINSTANCESTATUS SIS WHERE NAME = ? ) )");
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, serviceLocation.getServiceLocationId());
             preparedStatement.setInt(3, serviceId);
@@ -1858,13 +1858,13 @@ public class DAO {
      * @param serviceOrderId
      * @param role           role of the engineer
      * @param taskName       name of the task
-     * @param taskStatus  status of the task
-     * @see com.naukma.cauliflower.dao.TaskStatus
-     * @see com.naukma.cauliflower.dao.TaskName
+     * @param taskStatus     status of the task
      * @return id of created task
      * @throws java.sql.SQLException
+     * @see com.naukma.cauliflower.dao.TaskStatus
+     * @see com.naukma.cauliflower.dao.TaskName
      */
-    public int createNewTask(int serviceOrderId, UserRole role, TaskName taskName,TaskStatus taskStatus) throws SQLException {
+    public int createNewTask(int serviceOrderId, UserRole role, TaskName taskName, TaskStatus taskStatus) throws SQLException {
         {//help
             System.out.println("CREATE TASK");
         }
@@ -1879,7 +1879,7 @@ public class DAO {
                             "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME = ?), " +
                             "(SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?), " +
                             "?, ?)");
-            preparedStatement.setString(1,  taskStatus.toString());
+            preparedStatement.setString(1, taskStatus.toString());
             preparedStatement.setString(2, role.toString());
             preparedStatement.setInt(3, serviceOrderId);
             preparedStatement.setString(4, taskName.toString());
@@ -1916,6 +1916,7 @@ public class DAO {
     }
 
     //KaspYar
+
     /**
      * Returns List of task with status FREE and PROCESSING for selected usergroup
      *
@@ -1968,6 +1969,7 @@ public class DAO {
 
 
     //KaspYar
+
     /**
      * Creates a cable, assigns a free port to it and then assigns this cable to instance associated with service order
      *
@@ -2347,10 +2349,10 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("UPDATE SERVICEINSTANCE " +
-                    "SET ID_SERVICE = (SELECT ID_SERVICE " +
-                    "FROM TASK T INNER JOIN TOMODIFY TMOD ON TMOD.ID_TASK = T.ID_TASK " +
-                    "WHERE T.ID_TASK = ?) " +
-                    "WHERE ID = ?");
+                            "SET ID_SERVICE = (SELECT ID_SERVICE " +
+                            "FROM TASK T INNER JOIN TOMODIFY TMOD ON TMOD.ID_TASK = T.ID_TASK " +
+                            "WHERE T.ID_TASK = ?) " +
+                            "WHERE ID = ?");
             preparedStatement.setInt(1, taskId);
             preparedStatement.setInt(2, serviceInstanceId);
             preparedStatement.executeUpdate();
@@ -2382,7 +2384,7 @@ public class DAO {
                     prepareStatement("SELECT HAS_ACTIVE_TASK IS_BLOCKED FROM SERVICEINSTANCE WHERE ID = ? ");
             preparedStatement.setInt(1, serviceInstanceId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 result = (resultSet.getInt("IS_BLOCKED") == 1);
             }
         } finally {
@@ -2398,7 +2400,7 @@ public class DAO {
     }
 
 
-    public boolean isInstanceDisconnected(int serviceInstanceId) throws SQLException{
+    public boolean isInstanceDisconnected(int serviceInstanceId) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -2406,8 +2408,8 @@ public class DAO {
             String statusInst = InstanceStatus.DISCONNECTED.toString();
             preparedStatement = connection.
                     prepareStatement("SELECT Sis.Name RES " +
-                    "FROM ServiceInstance Si INNER JOIN Serviceinstancestatus SIS ON Si.Service_Instance_Status = Sis.Id " +
-                    "WHERE Si.Id = ? ");
+                            "FROM ServiceInstance Si INNER JOIN Serviceinstancestatus SIS ON Si.Service_Instance_Status = Sis.Id " +
+                            "WHERE Si.Id = ? ");
             preparedStatement.setInt(1, serviceInstanceId);
             ResultSet resultSet = preparedStatement.executeQuery();
             String checkResult = null;
@@ -2417,7 +2419,7 @@ public class DAO {
             if (checkResult.equals(statusInst)) {
                 result = true;
             }
-        }  finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
@@ -2458,8 +2460,8 @@ public class DAO {
                         resultSet.getString("F_NAME"),
                         resultSet.getString("L_NAME"),
                         resultSet.getString("PHONE"),
-                        ((resultSet.getString("IS_BLOCKED")).equals("1")? true: false)));
-                }
+                        ((resultSet.getString("IS_BLOCKED")).equals("1") ? true : false)));
+            }
             {//
                 System.out.println("SUCCESS!!! getUsersByUserRole");
             }
@@ -2475,24 +2477,26 @@ public class DAO {
         return result;
 
     }
+
     /**
      * Get certain sum of lines for report
      *
      * @param pageLength amount of lines per page
-     * @param page number of page
+     * @param page       number of page
      * @throws java.sql.SQLException
      */
-    public List<Object> getMostProfitableRouterForReport(int page, int pageLength)  throws SQLException {
+    public List<Object> getMostProfitableRouterForReport(int page, int pageLength) throws SQLException {
         {//help
             System.out.println("getMostProfitableRouterForReport");
         }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class MostProfRouter{
+        class MostProfRouter {
             private int idRouter;
-            private double  profit;
-            MostProfRouter(int id, double profit){
+            private double profit;
+
+            MostProfRouter(int id, double profit) {
                 this.idRouter = id;
                 this.profit = profit;
             }
@@ -2509,18 +2513,18 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * " +
-                    "FROM ( SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
-                    "FROM SERVICE S INNER JOIN (  SERVICEINSTANCE SI INNER JOIN ( " +
-                    "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID) " +
-                    "ON SI.ID_CABLE = C.ID) " +
-                    "ON  S.ID = SI.ID_SERVICE " +
-                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC) " +
-                    "WHERE RN BETWEEN ? AND ?");
-            preparedStatement.setInt(1,(page-1)*pageLength+1);
-            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+                            "FROM ( SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
+                            "FROM SERVICE S INNER JOIN (  SERVICEINSTANCE SI INNER JOIN ( " +
+                            "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID) " +
+                            "ON SI.ID_CABLE = C.ID) " +
+                            "ON  S.ID = SI.ID_SERVICE " +
+                            "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC) " +
+                            "WHERE RN BETWEEN ? AND ?");
+            preparedStatement.setInt(1, (page - 1) * pageLength + 1);
+            preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
 
             resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 result.add(new MostProfRouter(resultSet.getInt("ID_ROUTER"), resultSet.getDouble("PROFIT")));
             }
         } finally {
@@ -2541,17 +2545,17 @@ public class DAO {
      * Get certain sum of lines for report
      *
      * @param pageLength amount of lines per page
-     * @param page number of page
+     * @param page       number of page
      * @throws java.sql.SQLException
      */
-    public List<Object> getUsedRoutersAndCapacityOfPorts(int page, int pageLength)  throws SQLException {
+    public List<Object> getUsedRoutersAndCapacityOfPorts(int page, int pageLength) throws SQLException {
 
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class UsedRoutersAndCapacityOfPorts{
+        class UsedRoutersAndCapacityOfPorts {
             private int idRouter;
-            private int  free;
+            private int free;
             private int occupied;
 
             public UsedRoutersAndCapacityOfPorts(int idRouter, int free, int occupied) {
@@ -2576,15 +2580,15 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * FROM (  " +
-                    "SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED,  " +
-                    "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION, ROW_NUMBER() OVER (ORDER BY r.id ASC) RN " +
-                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER)  " +
-                    "GROUP BY r.id ) " +
-                    "WHERE RN BETWEEN ? AND ? ");
-            preparedStatement.setInt(1,(page-1)*pageLength+1);
-            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+                            "SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED,  " +
+                            "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION, ROW_NUMBER() OVER (ORDER BY r.id ASC) RN " +
+                            "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER)  " +
+                            "GROUP BY r.id ) " +
+                            "WHERE RN BETWEEN ? AND ? ");
+            preparedStatement.setInt(1, (page - 1) * pageLength + 1);
+            preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getInt("ROUTER"),
                         resultSet.getInt("FREE"), resultSet.getInt("OCCUPIED")));
             }
@@ -2603,18 +2607,19 @@ public class DAO {
      * Get certain sum of lines for report
      *
      * @param pageLength amount of lines per page
-     * @param page number of page
+     * @param page       number of page
      * @throws java.sql.SQLException
      */
-    public List<Object> getProfitabilityByMonth(int page, int pageLength)  throws SQLException {
+    public List<Object> getProfitabilityByMonth(int page, int pageLength) throws SQLException {
 
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class ProfitabilityByMonth{
+        class ProfitabilityByMonth {
             private int idRouter;
-            private double  profit;
-            ProfitabilityByMonth(int id, double profit){
+            private double profit;
+
+            ProfitabilityByMonth(int id, double profit) {
                 this.idRouter = id;
                 this.profit = profit;
             }
@@ -2631,17 +2636,17 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * FROM (  " +
-                    "SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
-                    "FROM SERVICE S INNER JOIN (  " +
-                    "SERVICEINSTANCE SI INNER JOIN (  " +
-                    "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
-                    "ON SI.ID_CABLE = C.ID) " +
-                    "ON  S.ID = SI.ID_SERVICE GROUP BY P.ID_ROUTER ) " +
-                    "WHERE RN BETWEEN ? AND ? ");
-            preparedStatement.setInt(1,(page-1)*pageLength+1);
-            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+                            "SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                            "FROM SERVICE S INNER JOIN (  " +
+                            "SERVICEINSTANCE SI INNER JOIN (  " +
+                            "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
+                            "ON SI.ID_CABLE = C.ID) " +
+                            "ON  S.ID = SI.ID_SERVICE GROUP BY P.ID_ROUTER ) " +
+                            "WHERE RN BETWEEN ? AND ? ");
+            preparedStatement.setInt(1, (page - 1) * pageLength + 1);
+            preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 result.add(new ProfitabilityByMonth(resultSet.getInt("ID_ROUTER"), resultSet.getDouble("PROFIT")));
             }
         } finally {
@@ -2654,20 +2659,21 @@ public class DAO {
         }
         return result;
     }
+
     /**
      * Get certain sum of lines for report
      *
      * @param pageLength amount of lines per page
-     * @param page number of page
+     * @param page       number of page
      * @throws java.sql.SQLException
      */
-    public List<Object> getCablesForReport(int page, int pageLength)  throws SQLException {
+    public List<Object> getCablesForReport(int page, int pageLength) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class CablesForReport{
+        class CablesForReport {
             private int idCable;
-            private int  idServiceInstance;
+            private int idServiceInstance;
 
             public CablesForReport(int idCable, int idServiceInstance) {
                 this.idCable = idCable;
@@ -2686,13 +2692,13 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * FROM (  " +
-                    "SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE, ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN " +
-                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable)) " +
-                    "WHERE RN BETWEEN ? AND ? ");
-            preparedStatement.setInt(1,(page-1)*pageLength+1);
-            preparedStatement.setInt(2, (page-1)*pageLength+pageLength);
+                            "SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE, ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN " +
+                            "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable)) " +
+                            "WHERE RN BETWEEN ? AND ? ");
+            preparedStatement.setInt(1, (page - 1) * pageLength + 1);
+            preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 result.add(new CablesForReport(resultSet.getInt("CABLE"), resultSet.getInt("SERVICE_INSTANCE")));
             }
         } finally {
@@ -2707,14 +2713,13 @@ public class DAO {
     }
 
 
-
     /**
      * gets amount of lines in report for devices
      *
      * @return int lines amoutn
      * @throws java.sql.SQLException
      */
-    public int getDevicesReportLinesAmount()throws SQLException  {
+    public int getDevicesReportLinesAmount() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2722,11 +2727,11 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM " +
-                    "FROM ROUTER ");
+                            "FROM ROUTER ");
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) result = resultSet.getInt("AM");
+            if (resultSet.next()) result = resultSet.getInt("AM");
 
-        }finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
@@ -2744,7 +2749,7 @@ public class DAO {
      * @return int lines amoutn
      * @throws java.sql.SQLException
      */
-    public int getCircuitsReportLinesAmount()throws SQLException  {
+    public int getCircuitsReportLinesAmount() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2752,10 +2757,10 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM " +
-                    "FROM  CABLE ");
+                            "FROM  CABLE ");
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) result = resultSet.getInt("AM");
-        }finally {
+            if (resultSet.next()) result = resultSet.getInt("AM");
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
@@ -2772,7 +2777,7 @@ public class DAO {
      * @return int lines amoutn
      * @throws java.sql.SQLException
      */
-    public int getCablesReportLinesAmount()throws SQLException  {
+    public int getCablesReportLinesAmount() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2781,9 +2786,9 @@ public class DAO {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM FROM CABLE ");
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) result = resultSet.getInt("AM");
+            if (resultSet.next()) result = resultSet.getInt("AM");
 
-        }finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
@@ -2800,17 +2805,17 @@ public class DAO {
      * @return int lines amoutn
      * @throws java.sql.SQLException
      */
-    public int getPortsReportLinesAmount()throws SQLException  {
+    public int getPortsReportLinesAmount() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
         try {
-    preparedStatement = connection.
-            prepareStatement("SELECT COUNT(*) AM FROM PORT ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT COUNT(*) AM FROM PORT ");
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) result = resultSet.getInt("AM");
-        }finally {
+            if (resultSet.next()) result = resultSet.getInt("AM");
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
@@ -2827,7 +2832,7 @@ public class DAO {
      * @return int lines amoutn
      * @throws java.sql.SQLException
      */
-    public int getMostProfitableRouterReportLinesAmount()throws SQLException  {
+    public int getMostProfitableRouterReportLinesAmount() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2836,8 +2841,8 @@ public class DAO {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM FROM ROUTER ");
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) result = resultSet.getInt("AM");
-        }finally {
+            if (resultSet.next()) result = resultSet.getInt("AM");
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
@@ -2855,7 +2860,7 @@ public class DAO {
      * @return int lines amoutn
      * @throws java.sql.SQLException
      */
-    public int getUsedRoutersAndCapacityOfPortsLinesAmount()throws SQLException  {
+    public int getUsedRoutersAndCapacityOfPortsLinesAmount() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2864,8 +2869,8 @@ public class DAO {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM FROM ROUTER ");
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) result = resultSet.getInt("AM");
-        }finally {
+            if (resultSet.next()) result = resultSet.getInt("AM");
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
@@ -2882,7 +2887,7 @@ public class DAO {
      * @return int lines amoutn
      * @throws java.sql.SQLException
      */
-    public int getProfitabilityByMonthLinesAmount()throws SQLException  {
+    public int getProfitabilityByMonthLinesAmount() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2891,8 +2896,8 @@ public class DAO {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM FROM ROUTER ");
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) result = resultSet.getInt("AM");
-        }finally {
+            if (resultSet.next()) result = resultSet.getInt("AM");
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
@@ -2909,7 +2914,7 @@ public class DAO {
      * @return int lines amoutn
      * @throws java.sql.SQLException
      */
-    public int getOrdersPerPeriodLinesAmount(Scenario aNew, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate)throws SQLException  {
+    public int getOrdersPerPeriodLinesAmount(Scenario aNew, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2917,15 +2922,15 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM " +
-                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
-                    "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
-                    "GROUP BY OS.NAME ");
+                            "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                            "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
+                            "GROUP BY OS.NAME ");
             preparedStatement.setString(1, aNew.toString());
             preparedStatement.setDate(2, sqlStartDate);
             preparedStatement.setDate(3, sqlEndDate);
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) result = resultSet.getInt("AM");
-        }finally {
+            if (resultSet.next()) result = resultSet.getInt("AM");
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
@@ -2943,81 +2948,80 @@ public class DAO {
      */
 
 
-	 /**
-	 * Create List<CIA> object to create report table for CIA Reports
-	 * 
-	 * @return List<CIA>
-	 * @throws java.sql.SQLException
-	 */
-	public List<CIA> getCIAReportForTable() throws SQLException{
-		 Connection connection = getConnection();
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-		List<CIA> result = new ArrayList<CIA>();
+    /**
+     * Create List<CIA> object to create report table for CIA Reports
+     *
+     * @return List<CIA>
+     * @throws java.sql.SQLException
+     */
+    public List<CIA> getCIAReportForTable() throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<CIA> result = new ArrayList<CIA>();
         final String sistActQ = InstanceStatus.ACTIVE.toString();
-		
-		// -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-		final String selectQuery = " SELECT P.ID_ROUTER ROUTER_ID, P.ID PORT_ID, SI.ID SERVICE_INSTANCE_ID, "
-				+ " U.ID_USER USER_ID, U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME"
+
+        // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
+        final String selectQuery = " SELECT P.ID_ROUTER ROUTER_ID, P.ID PORT_ID, SI.ID SERVICE_INSTANCE_ID, "
+                + " U.ID_USER USER_ID, U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME"
                 + " FROM "
-				+ " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
-				+ " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
-				+ " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
-				+ " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
-				+ " WHERE SIST.NAME = ? ";
-		final String rIdQ =    "ROUTER_ID";
-		final String pIdQ =    "PORT_ID";
-		final String siIdQ =   "SERVICE_INSTANCE_ID";
-		final String uIdQ =    "USER_ID";
-		final String uEmailQ = "USER_EMAIL";
-		final String uFNameQ = "USER_FIRST_NAME";
-		final String uLNameQ = "USER_LAST_NAME";
-		try {
-			preparedStatement = connection.prepareStatement(selectQuery);
+                + " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
+                + " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
+                + " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
+                + " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
+                + " WHERE SIST.NAME = ? ";
+        final String rIdQ = "ROUTER_ID";
+        final String pIdQ = "PORT_ID";
+        final String siIdQ = "SERVICE_INSTANCE_ID";
+        final String uIdQ = "USER_ID";
+        final String uEmailQ = "USER_EMAIL";
+        final String uFNameQ = "USER_FIRST_NAME";
+        final String uLNameQ = "USER_LAST_NAME";
+        try {
+            preparedStatement = connection.prepareStatement(selectQuery);
             preparedStatement.setString(1, sistActQ);
-			resultSet = preparedStatement.executeQuery();
-			while(resultSet.next()){
-				final CIA cia = new CIA(
-						resultSet.getInt(rIdQ),
-						resultSet.getInt(pIdQ),
-						resultSet.getInt(siIdQ),
-						resultSet.getInt(uIdQ),
-						resultSet.getString(uEmailQ),
-						resultSet.getString(uFNameQ),
-						resultSet.getString(uLNameQ)
-						);
-				result.add(cia);
-			}
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                final CIA cia = new CIA(
+                        resultSet.getInt(rIdQ),
+                        resultSet.getInt(pIdQ),
+                        resultSet.getInt(siIdQ),
+                        resultSet.getInt(uIdQ),
+                        resultSet.getString(uEmailQ),
+                        resultSet.getString(uFNameQ),
+                        resultSet.getString(uLNameQ)
+                );
+                result.add(cia);
+            }
 
-		}
-		finally {
-			 try {
-			 close(connection, preparedStatement);
-			 } catch (SQLException exc) {
-			 logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
-			 exc.printStackTrace();
-			 }
-		}
-		{// help
-			System.out.println("SUCCESS!!!! getCIAReport()");
-		}
-		return result;
-	}
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
+                exc.printStackTrace();
+            }
+        }
+        {// help
+            System.out.println("SUCCESS!!!! getCIAReport()");
+        }
+        return result;
+    }
 
-	 
-	 
-	/**
-	 * Create ReportGenerator object to generate report for CIA Reports
-	 * @param EXT extension of file to generate report
-	 * @return ReportGenerator for
-	 * @throws java.sql.SQLException
-	 */
-	public ReportGenerator getCIAReport(final String EXT) throws SQLException {
-		Connection connection = getConnection();
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-		ReportGenerator reportGenerator = null;
-		final String xlsExt = "xls";
+
+    /**
+     * Create ReportGenerator object to generate report for CIA Reports
+     *
+     * @param EXT extension of file to generate report
+     * @return ReportGenerator for
+     * @throws java.sql.SQLException
+     */
+    public ReportGenerator getCIAReport(final String EXT) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ReportGenerator reportGenerator = null;
+        final String xlsExt = "xls";
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
         final String selectQuery = " SELECT P.ID_ROUTER ROUTER_ID, P.ID PORT_ID, SI.ID SI_ID, "
@@ -3030,32 +3034,32 @@ public class DAO {
                 + " WHERE SIST.NAME = ? ";
 
         final String sistActQ = InstanceStatus.ACTIVE.toString();
-		try {
-			preparedStatement = connection
-					.prepareStatement(selectQuery);
+        try {
+            preparedStatement = connection
+                    .prepareStatement(selectQuery);
             preparedStatement.setString(1, sistActQ);
-			resultSet = preparedStatement.executeQuery();
-			if (EXT.equals(xlsExt)) {
-				reportGenerator = new XLSReportGenerator(" CIA Report ",
-						resultSet);
-			} else {
-				reportGenerator = new CSVReportGenerator(resultSet);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				close(connection, preparedStatement);
-			} catch (SQLException exc) {
-				logger.warn("Can't close connection or preparedStatement!");
-				exc.printStackTrace();
-			}
-		}
-		{// help
-			System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
-		}
-		return reportGenerator;
-	}
+            resultSet = preparedStatement.executeQuery();
+            if (EXT.equals(xlsExt)) {
+                reportGenerator = new XLSReportGenerator(" CIA Report ",
+                        resultSet);
+            } else {
+                reportGenerator = new CSVReportGenerator(resultSet);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        {// help
+            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
+        }
+        return reportGenerator;
+    }
 
     /**
      * Prepare ResultSet  to generate report on used routers and port capacity
@@ -3223,9 +3227,9 @@ public class DAO {
     //Получить ServiceInstance по OrderId. По cable_id получить привязанный порт и сделать его свободным. cable_id в ServiceInstance
     //сделать равным null. Сам кабель удалить из базы.
     //The system should allow deleting of Cables and Circuits.
-	
-	
-	 /**
+
+
+    /**
      * Breaks circuit
      *
      * @param serviceOrderId id of order connected with circuit
@@ -3242,16 +3246,16 @@ public class DAO {
         int cableID = checkNumber;
         int portID = checkNumber;
         final String selectQuery =
-                  "SELECT SI.ID SI_ID, C.ID C_ID , C.ID_PORT C_ID_PORT "
-                + " FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
-                + " INNER JOIN CABLE C ON SI.ID_CABLE = C.ID "
-                + " WHERE SO.ID_SERVICEORDER = ? ";
-        final String siIdQ =         "SI_ID";
-        final String cIdQ =          "C_ID";
-        final String pIdQ =          "C_ID_PORT";
-        final String updatePortQ =   " UPDATE PORT SET USED = 0 WHERE ID = ? ";
-        final String updateSIQ =     " UPDATE SERVICEINSTANCE SET ID_CABLE = NULL WHERE ID = ? ";
-        final String deleteCableQ =  " DELETE FROM CABLE WHERE ID = ? ";
+                "SELECT SI.ID SI_ID, C.ID C_ID , C.ID_PORT C_ID_PORT "
+                        + " FROM (SERVICEORDER SO INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) "
+                        + " INNER JOIN CABLE C ON SI.ID_CABLE = C.ID "
+                        + " WHERE SO.ID_SERVICEORDER = ? ";
+        final String siIdQ = "SI_ID";
+        final String cIdQ = "C_ID";
+        final String pIdQ = "C_ID_PORT";
+        final String updatePortQ = " UPDATE PORT SET USED = 0 WHERE ID = ? ";
+        final String updateSIQ = " UPDATE SERVICEINSTANCE SET ID_CABLE = NULL WHERE ID = ? ";
+        final String deleteCableQ = " DELETE FROM CABLE WHERE ID = ? ";
 
 
         try {
@@ -3268,10 +3272,10 @@ public class DAO {
                 portID = resultSet.getInt(pIdQ);
             }
             {//help
-                System.out.println("serviceOrderId"+serviceOrderId);
-                System.out.println("siId: "+siID);
-                System.out.println("cableID: "+cableID);
-                System.out.println("portID: "+portID);
+                System.out.println("serviceOrderId" + serviceOrderId);
+                System.out.println("siId: " + siID);
+                System.out.println("cableID: " + cableID);
+                System.out.println("portID: " + portID);
             }
 
             if (siID != checkNumber && cableID != checkNumber
@@ -3309,16 +3313,16 @@ public class DAO {
             }
 
         }
-	}
+    }
 
     /**
      * Get certain sum of lines for report
      *
      * @param pageLength amount of lines per page
-     * @param page number of page
+     * @param page       number of page
      * @throws java.sql.SQLException
      */
-    public List<Object> getDevicesForReport(int page, int pageLength) throws SQLException{
+    public List<Object> getDevicesForReport(int page, int pageLength) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -3326,25 +3330,25 @@ public class DAO {
         final int maxPortsCapOnDevice = 60;
         List<Object> devices = new ArrayList<Object>();
         final int startP = (page - 1) * pageLength + 1;
-        final int endP = page*pageLength;
+        final int endP = page * pageLength;
         try {
             preparedStatement = connection.prepareStatement(
                     "SELECT R2.ID ROUTER_ID, R2.USED OCCUPIED " +
-                    "FROM (SELECT R.ID, SUM(P.USED) USED, ROW_NUMBER() OVER (ORDER BY R.ID) RN " +
-                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "GROUP BY R.ID) R2 " +
-                    "WHERE RN BETWEEN ? AND ? ");
+                            "FROM (SELECT R.ID, SUM(P.USED) USED, ROW_NUMBER() OVER (ORDER BY R.ID) RN " +
+                            "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                            "GROUP BY R.ID) R2 " +
+                            "WHERE RN BETWEEN ? AND ? ");
 
             preparedStatement.setInt(1, startP);
             preparedStatement.setInt(2, endP);
             resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 devices.add(
                         new Device(
-                            resultSet.getInt("ROUTER_ID"),
-                            resultSet.getInt("OCCUPIED"),
-                            (maxPortsCapOnDevice - resultSet.getInt("OCCUPIED"))));
+                                resultSet.getInt("ROUTER_ID"),
+                                resultSet.getInt("OCCUPIED"),
+                                (maxPortsCapOnDevice - resultSet.getInt("OCCUPIED"))));
             }
         } finally {
             try {
@@ -3362,37 +3366,37 @@ public class DAO {
      * Get certain sum of lines for report
      *
      * @param pageLength amount of lines per page
-     * @param page number of page
+     * @param page       number of page
      * @throws java.sql.SQLException
      */
-    public List<Object> getCircuitsForReport(int page, int pageLength)  throws SQLException  {
+    public List<Object> getCircuitsForReport(int page, int pageLength) throws SQLException {
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         List<Object> circuits = new ArrayList<Object>();
-        final int startP = (page-1)*pageLength+1;
-        final int endP   = page*pageLength;
+        final int startP = (page - 1) * pageLength + 1;
+        final int endP = page * pageLength;
         try {
             preparedStatement = connection.
                     prepareStatement(
-                            " SELECT * FROM (SELECT C.ID CABLE_ID, P.ID PORT_ID, P.ID_ROUTER ROUTER_ID, ROWNUM RNUM "+
-                            " FROM CABLE C INNER JOIN PORT P ON P.ID = C.ID_PORT "+
-                            " WHERE P.USED = 1 AND ROWNUM <= ? "+
-                            " ORDER BY P.ID_ROUTER) WHERE RNUM >= ? "
+                            " SELECT * FROM (SELECT C.ID CABLE_ID, P.ID PORT_ID, P.ID_ROUTER ROUTER_ID, ROWNUM RNUM " +
+                                    " FROM CABLE C INNER JOIN PORT P ON P.ID = C.ID_PORT " +
+                                    " WHERE P.USED = 1 AND ROWNUM <= ? " +
+                                    " ORDER BY P.ID_ROUTER) WHERE RNUM >= ? "
                     );
 
 //            prepareStatement();
             preparedStatement
                     .setInt(1, endP);
             preparedStatement
-                    .setInt(2,startP);
+                    .setInt(2, startP);
             resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
 
                 final Circuit c = new Circuit(resultSet.getInt("CABLE_ID"),
-                    resultSet.getInt("PORT_ID"),
-                    resultSet.getInt("ROUTER_ID"));
-                    circuits.add(c);
+                        resultSet.getInt("PORT_ID"),
+                        resultSet.getInt("ROUTER_ID"));
+                circuits.add(c);
             }
 
         } finally {
@@ -3414,33 +3418,33 @@ public class DAO {
      * Get certain sum of lines for report
      *
      * @param pageLength amount of lines per page
-     * @param page number of page
+     * @param page       number of page
      * @throws java.sql.SQLException
      */
-    public List<Object> getPortsForReport(int page, int pageLength)  throws SQLException {
+    public List<Object> getPortsForReport(int page, int pageLength) throws SQLException {
 
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         List<Object> ports = new ArrayList<Object>();
-        final int startP = (page-1)*pageLength+1;
-        final int endP   = page*pageLength;
+        final int startP = (page - 1) * pageLength + 1;
+        final int endP = page * pageLength;
         try {
             preparedStatement = connection.prepareStatement
-                            ("SELECT * FROM( " +
-                                    "SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED,ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
-                                    "FROM PORT P ) " +
-                                    "WHERE RN BETWEEN ? AND ?");
+                    ("SELECT * FROM( " +
+                            "SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED,ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                            "FROM PORT P ) " +
+                            "WHERE RN BETWEEN ? AND ?");
             preparedStatement
-                    .setInt(1,startP);
+                    .setInt(1, startP);
             preparedStatement
-                    .setInt(2,endP);
+                    .setInt(2, endP);
 
             resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 final Port p = new Port(resultSet.getInt("PORT_ID"),
-                resultSet.getInt("ID_ROUTER"),
-                resultSet.getInt("IS_USED")==1);
+                        resultSet.getInt("ID_ROUTER"),
+                        resultSet.getInt("IS_USED") == 1);
                 ports.add(p);
 
             }
@@ -3465,8 +3469,8 @@ public class DAO {
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         List<Object> servOrds = new ArrayList<Object>();
-        final int startP = (page-1)*pageLength+1;
-        final int endP   = page*pageLength;
+        final int startP = (page - 1) * pageLength + 1;
+        final int endP = page * pageLength;
         try {
             preparedStatement = connection.prepareStatement("" +
                     " SELECT * FROM" +
@@ -3494,7 +3498,7 @@ public class DAO {
             preparedStatement.setInt(4, endP);
             preparedStatement.setInt(5, startP);
             resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 GregorianCalendar grCalendar = new GregorianCalendar();
                 grCalendar.set(resultSet.getDate("SO_DATE").getYear(),
                         resultSet.getDate("SO_DATE").getMonth(),
@@ -3508,7 +3512,7 @@ public class DAO {
                         resultSet.getString("OSC_NAME"),
                         grCalendar,
                         resultSet.getInt("U_ID")
-                ) ;
+                );
                 servOrds.add(so);
             }
 
@@ -3563,7 +3567,7 @@ public class DAO {
                         resultSet.getString("F_NAME"),
                         resultSet.getString("L_NAME"),
                         resultSet.getString("PHONE"),
-                        ((resultSet.getString("IS_BLOCKED") == "1")? true: false));
+                        ((resultSet.getString("IS_BLOCKED") == "1") ? true : false));
             }
             {//
                 System.out.println("SUCCESS!!! getCustomerUserById");
@@ -3688,7 +3692,7 @@ public class DAO {
     /**
      * gets service to modify instance for scenario MODIFY
      *
-     * @param taskId    selected task
+     * @param taskId selected task
      * @throws java.sql.SQLException
      */
     public Service getServiceModifyToByTaskId(int taskId) throws SQLException {
@@ -3733,21 +3737,22 @@ public class DAO {
 
     /**---------------------------------------------------------------------END vladmyr---------------------------------------------------------------------**/
 
-    /**---------------------------------------------------------------------START Alex---------------------------------------------------------------------**/
-    public int countNotCompletedTasksByTaskName(TaskName taskName) throws SQLException{
+    /**
+     * ---------------------------------------------------------------------START Alex---------------------------------------------------------------------*
+     */
+    public int countNotCompletedTasksByTaskName(TaskName taskName) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int taskCount = 0;
         try {
             preparedStatement = connection.prepareStatement("SELECT COUNT(ID_TASK) RES FROM TASK WHERE NAME = ? AND ID_TASKSTATUS IN " +
                     "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME != ? )");
-            preparedStatement.setString(1,  taskName.toString());
+            preparedStatement.setString(1, taskName.toString());
             preparedStatement.setString(2, TaskStatus.COMPLETED.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next())
                 taskCount = resultSet.getInt("RES");
-        }
-        finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
@@ -3759,39 +3764,20 @@ public class DAO {
     }
 
 
-
     /**---------------------------------------------------------------------END Alex---------------------------------------------------------------------**/
 
 
+    /**
+     * ---------------------------------------------------------------------START Max---------------------------------------------------------------------*
+     */
 
-    /**---------------------------------------------------------------------START Max---------------------------------------------------------------------**/
-
-    public int getTasksNumByName(TaskName taskName)throws SQLException{
-        Connection connection = getConnection();
-         PreparedStatement preparedStatement = null;
-       int num =1;
-        try {
-
-        }
-        finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        return  num;
-    }
-
-    public int getFreePortsNum(){
+    public int getTasksNumByName(TaskName taskName) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        int num =1;
+        int num = 1;
         try {
 
-        }
-        finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
@@ -3799,17 +3785,16 @@ public class DAO {
                 exc.printStackTrace();
             }
         }
-        return  num;
+        return num;
     }
 
-    public int getTasksNumByStatus(TaskStatus taskStatus){
+    public int getFreePortsNum() {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        int num =1;
+        int num = 1;
         try {
 
-        }
-        finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
@@ -3817,34 +3802,51 @@ public class DAO {
                 exc.printStackTrace();
             }
         }
-        return  num;
+        return num;
+    }
+
+    public int getTasksNumByStatus(TaskStatus taskStatus) {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        int num = 1;
+        try {
+
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement!");
+                exc.printStackTrace();
+            }
+        }
+        return num;
 
     }
-        /**---------------------------------------------------------------------END Max---------------------------------------------------------------------**/
+    /**---------------------------------------------------------------------END Max---------------------------------------------------------------------**/
 
     /**---------------------------------------------------------------------START ihor---------------------------------------------------------------------**/
-    
-	/**
+
+    /**
      * gets emails that include of the string that is the parameter queryString
-	 *
+     *
      * @param queryString string that is possibly included to email
-	 * @return ArrayList<String> consists of emais that is consisted of the parameter queryString
+     * @return ArrayList<String> consists of emais that is consisted of the parameter queryString
      * @throws java.sql.SQLException
      */
-	public ArrayList<String> getEmailsLike(String queryString)throws SQLException {
-        final String columLabel="E_MAIL";
+    public ArrayList<String> getEmailsLike(String queryString) throws SQLException {
+        final String columLabel = "E_MAIL";
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         final String query = "SELECT * FROM USERS WHERE E_MAIL like ? ";
-        ArrayList<String>resEmails=new ArrayList<String>();
+        ArrayList<String> resEmails = new ArrayList<String>();
         try {
-            preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setString(1,queryString);
-            ResultSet resultSet =preparedStatement.executeQuery();
-            while(resultSet.next()){
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, queryString);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
                 resEmails.add(resultSet.getString(columLabel));
             }
-        }finally {
+        } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
