@@ -580,7 +580,7 @@ public class DAO {
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, SUM(P.Used) OCCUPIED, 60 - SUM(p.Used) FREE " +
+            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, 60 - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "GROUP BY r.id ");
             resultSet = preparedStatement.executeQuery();
@@ -2210,9 +2210,8 @@ public class DAO {
         ReportGenerator reportGenerator = null;
         try {
             preparedStatement = connection.
-                    prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
-                            "FROM " +
-                            "SERVICE S INNER JOIN " +
+                    prepareStatement("SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT " +
+                            "FROM SERVICE S INNER JOIN " +
                             "( SERVICEINSTANCE SI INNER JOIN " +
                             "( CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID) " +
                             "ON SI.ID_CABLE = C.ID) " +
@@ -2434,11 +2433,11 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         class MostProfRouter {
-            private int idRouter;
+            private String router;
             private double profit;
 
-            MostProfRouter(int id, double profit) {
-                this.idRouter = id;
+            MostProfRouter(String router, double profit) {
+                this.router = router;
                 this.profit = profit;
             }
         }
@@ -2446,7 +2445,7 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * " +
-                            "FROM ( SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
+                            "FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
                             "FROM SERVICE S INNER JOIN (  SERVICEINSTANCE SI INNER JOIN ( " +
                             "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID) " +
                             "ON SI.ID_CABLE = C.ID) " +
@@ -2458,7 +2457,7 @@ public class DAO {
 
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result.add(new MostProfRouter(resultSet.getInt("ID_ROUTER"), resultSet.getDouble("PROFIT")));
+                result.add(new MostProfRouter(resultSet.getString("ROUTER_NAME"), resultSet.getDouble("PROFIT")));
             }
         } finally {
             try {
@@ -2487,12 +2486,12 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         class UsedRoutersAndCapacityOfPorts {
-            private int idRouter;
+            private String router;
             private int free;
             private int occupied;
 
-            public UsedRoutersAndCapacityOfPorts(int idRouter, int free, int occupied) {
-                this.idRouter = idRouter;
+            public UsedRoutersAndCapacityOfPorts(String router, int free, int occupied) {
+                this.router = router;
                 this.free = free;
                 this.occupied = occupied;
             }
@@ -2501,8 +2500,8 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * FROM (  " +
-                            "SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED,  " +
-                            "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION, ROW_NUMBER() OVER (ORDER BY r.id ASC) RN " +
+                            "SELECT 'ROUTER-'||r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED,  " +
+                            "ROW_NUMBER() OVER (ORDER BY r.id ASC) RN " +
                             "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER)  " +
                             "GROUP BY r.id ) " +
                             "WHERE RN BETWEEN ? AND ? ");
@@ -2510,7 +2509,7 @@ public class DAO {
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getInt("ROUTER"),
+                result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getString("ROUTER"),
                         resultSet.getInt("FREE"), resultSet.getInt("OCCUPIED")));
             }
         } finally {
@@ -2906,7 +2905,7 @@ public class DAO {
         final String xlsExt = "xls";
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-        final String selectQuery = " SELECT P.ID_ROUTER ROUTER_ID, P.ID PORT_ID, SI.ID SI_ID, "
+        final String selectQuery = " SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, P.ID PORT_ID, SI.ID SI_ID, "
                 + " U.ID_USER USER_ID, U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME"
                 + " FROM  "
                 + " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
@@ -2938,7 +2937,7 @@ public class DAO {
             }
         }
         {// help
-            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
+            System.out.println("SUCCESS!!!!getCIAReport");
         }
         return reportGenerator;
     }
@@ -2955,10 +2954,13 @@ public class DAO {
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT r.id ROUTER, 60 - SUM(P.Used) FREE,  SUM(p.Used) OCCUPIED, " +
-                    "ROUND((SUM(p.Used))/( 60 - SUM(P.Used)), 2) UTILIZATION\n" +
-                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) \n" +
-                    "GROUP BY r.id ");
+            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-' ||ROUTEROLD ROUTER, " +
+                    "OCCUPIED, CASE OCCUPIED " +
+                    "WHEN 60 THEN  100  " +
+                    "ELSE ROUND( OCCUPIED / ( 60 - OCCUPIED), 2) END UTILIZATION  " +
+                    "FROM ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED " +
+                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                    "GROUP BY R.ID  )");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
@@ -2976,7 +2978,7 @@ public class DAO {
             }
         }
         {//help
-            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
+            System.out.println("SUCCESS!!!!getUsedRoutersAndCapacityOfPorts");
         }
         return reportGenerator;
     }
@@ -2997,7 +2999,7 @@ public class DAO {
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT " +
+            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT " +
                     "FROM SERVICE S INNER JOIN ( " +
                     "  SERVICEINSTANCE SI INNER JOIN ( " +
                     "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
@@ -3170,13 +3172,13 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        final int maxPortsCapOnDevice = 60;
+        final int maxPortsCapOnDevice = CauliflowerInfo.PORTS_QUANTITY;
         List<Object> devices = new ArrayList<Object>();
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
         try {
             preparedStatement = connection.prepareStatement(
-                    "SELECT R2.ID ROUTER_ID, R2.USED OCCUPIED " +
+                    "SELECT 'ROUTER-'||R2.ID ROUTER_NAME, R2.USED OCCUPIED " +
                             "FROM (SELECT R.ID, SUM(P.USED) USED, ROW_NUMBER() OVER (ORDER BY R.ID) RN " +
                             "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                             "GROUP BY R.ID) R2 " +
@@ -3189,7 +3191,7 @@ public class DAO {
             while (resultSet.next()) {
                 devices.add(
                         new Device(
-                                resultSet.getInt("ROUTER_ID"),
+                                resultSet.getInt("ROUTER_NAME"),
                                 resultSet.getInt("OCCUPIED"),
                                 (maxPortsCapOnDevice - resultSet.getInt("OCCUPIED"))));
             }
@@ -3222,11 +3224,12 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement(
-                            " SELECT * FROM (SELECT C.ID CABLE_ID, P.ID PORT_ID, P.ID_ROUTER ROUTER_ID, ROWNUM RNUM " +
-                                    " FROM CABLE C INNER JOIN PORT P ON P.ID = C.ID_PORT " +
-                                    " WHERE P.USED = 1 AND ROWNUM <= ? " +
-                                    " ORDER BY P.ID_ROUTER) WHERE RNUM >= ? "
-                    );
+                            "SELECT * FROM (" +
+                                    "SELECT C.ID CABLE_ID, P.ID PORT_ID, " +
+                                    "P.ID_ROUTER ROUTER_ID, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                                    "FROM CABLE C INNER JOIN PORT P ON P.ID = C.ID_PORT " +
+                                    "WHERE P.USED = 1 " +
+                                    ")WHERE RN BETWEEN ? AND ? ");
 
             preparedStatement
                     .setInt(1, endP);
