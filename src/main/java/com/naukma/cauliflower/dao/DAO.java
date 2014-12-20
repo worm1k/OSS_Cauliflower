@@ -11,6 +11,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -582,7 +583,7 @@ public class DAO {
         try {
             preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, "+amountOfPorts+" - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "GROUP BY r.id ");
+                    "GROUP BY r.id ORDER BY R.ID ASC");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Devices", resultSet);
@@ -619,9 +620,11 @@ public class DAO {
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT R.Id ROUTER, P.Id PORT, P.Used USED " +
+            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||R.ID ROUTER, " +
+                    "'ROUTER-'||R.ID||'-'||MOD(P.ID, 60) PORT,  " +
+                    "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "Order By R.Id, P.Id ");
+                    "ORDER BY R.ID, P.ID ");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Ports", resultSet);
@@ -658,9 +661,12 @@ public class DAO {
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE " +
-                    "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable) " +
-                    "ORDER BY C.Id");
+            preparedStatement = connection.prepareStatement("SELECT 'CABLE-'||C.Id CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS " +
+                    "FROM (Cable C INNER JOIN (SERVICEINSTANCE si inner join " +
+                    "(SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                    "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
+                    "ON C.Id = Id_Cable) " +
+                    "ORDER BY l.adress ");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Cables", resultSet);
@@ -694,9 +700,16 @@ public class DAO {
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT r.ID ROUTER, p.Id PORT, c.ID CABLE, si.ID SERVICE_INSTANCE " +
-                    "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) INNER JOIN CABLE c ON p.Id = C.Id_Port) " +
-                    "INNER JOIN SERVICEINSTANCE si ON C.Id = Si.Id_Cable ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT 'ROUTER-'||r.ID ROUTER, " +
+                            "'ROUTER-'||r.ID||'-'||MOD(p.Id, 60) PORT, " +
+                            "'CABLE-'||c.ID CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS  " +
+                            "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
+                            "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE SI " +
+                            "INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                            "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
+                            "ON C.Id = Si.Id_Cable " +
+                            "ORDER BY R.ID, P.ID ASC");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Circuits", resultSet);
@@ -2433,13 +2446,22 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class MostProfRouter {
+        class MostProfRouter implements Serializable{
             private String router;
             private double profit;
 
             MostProfRouter(String router, double profit) {
+                super();
                 this.router = router;
                 this.profit = profit;
+            }
+
+            public String getRouter() {
+                return router;
+            }
+
+            public double getProfit() {
+                return profit;
             }
         }
         ArrayList<Object> result = new ArrayList<Object>();
@@ -2482,20 +2504,38 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getUsedRoutersAndCapacityOfPorts(int page, int pageLength) throws SQLException {
-
+        System.out.println("getUsedRoutersAndCapacityOfPorts");
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
-        class UsedRoutersAndCapacityOfPorts {
+        class UsedRoutersAndCapacityOfPorts implements Serializable{
             private String router;
             private int free;
             private int occupied;
+            private double utilization;
 
-            public UsedRoutersAndCapacityOfPorts(String router, int free, int occupied) {
+            public UsedRoutersAndCapacityOfPorts(String router, int free, int occupied, double utilization) {
                 this.router = router;
                 this.free = free;
                 this.occupied = occupied;
+                this.utilization = utilization;
+            }
+
+            public String getRouter() {
+                return router;
+            }
+
+            public int getFree() {
+                return free;
+            }
+
+            public int getOccupied() {
+                return occupied;
+            }
+
+            public double getUtilization() {
+                return utilization;
             }
         }
         ArrayList<Object> result = new ArrayList<Object>();
@@ -2513,7 +2553,8 @@ public class DAO {
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getString("ROUTER_NAME"),
-                        resultSet.getInt("FREE"), resultSet.getInt("OCCUPIED")));
+                        resultSet.getInt("FREE"), resultSet.getInt("OCCUPIED"),
+                        resultSet.getDouble("UTILIZATION")));
             }
         } finally {
             try {
@@ -2538,13 +2579,21 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class ProfitabilityByMonth {
+        class ProfitabilityByMonth implements Serializable{
             private int idRouter;
             private double profit;
 
             ProfitabilityByMonth(int id, double profit) {
                 this.idRouter = id;
                 this.profit = profit;
+            }
+
+            public int getIdRouter() {
+                return idRouter;
+            }
+
+            public double getProfit() {
+                return profit;
             }
         }
         ArrayList<Object> result = new ArrayList<Object>();
@@ -2586,27 +2635,37 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class CablesForReport {
-            private int idCable;
-            private int idServiceInstance;
+        class CablesForReport implements Serializable{
+            private String Cable;
+            private String adress;
 
-            public CablesForReport(int idCable, int idServiceInstance) {
-                this.idCable = idCable;
-                this.idServiceInstance = idServiceInstance;
+            public CablesForReport(String Cable, String adress) {
+                super();
+                this.Cable = Cable;
+                this.adress = adress;
+            }
+
+            public String getCable() {
+                return Cable;
+            }
+
+            public String getAdress() {
+                return adress;
             }
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
             preparedStatement = connection.
-                    prepareStatement("SELECT * FROM (  " +
-                            "SELECT C.Id CABLE, Si.Id SERVICE_INSTANCE, ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN " +
-                            "FROM (Cable C INNER JOIN Serviceinstance SI ON C.Id = Si.Id_Cable)) " +
-                            "WHERE RN BETWEEN ? AND ? ");
+                    prepareStatement("SELECT * FROM (   " +
+                            "SELECT 'CABLE-'||C.Id CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS, ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN  " +
+                            "FROM (Cable C INNER JOIN (Serviceinstance SI INNER JOIN " +
+                            "(SERVICELOCATION SL INNER JOIN LOCATION  L ON SL.ID_LOCATION = L.ID) ON SI.ID_SERVICE_LOCATION = SL.ID) ON C.Id = Si.Id_Cable)) " +
+                            "WHERE RN BETWEEN ? AND ? ORDER BY SERVICE_INSTANCE_ADRESS ASC ");
             preparedStatement.setInt(1, (page - 1) * pageLength + 1);
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result.add(new CablesForReport(resultSet.getInt("CABLE"), resultSet.getInt("SERVICE_INSTANCE")));
+                result.add(new CablesForReport(resultSet.getString("CABLE"), resultSet.getString("SERVICE_INSTANCE_ADRESS")));
             }
         } finally {
             try {
@@ -2846,34 +2905,31 @@ public class DAO {
         final String sistActQ = InstanceStatus.ACTIVE.toString();
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-        final String selectQuery = " SELECT P.ID_ROUTER ROUTER_ID, P.ID PORT_ID, SI.ID SERVICE_INSTANCE_ID, "
-                + " U.ID_USER USER_ID, U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME"
-                + " FROM "
-                + " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
-                + " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
-                + " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
-                + " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
-                + " WHERE SIST.NAME = ? ";
-        final String rIdQ = "ROUTER_ID";
-        final String pIdQ = "PORT_ID";
-        final String siIdQ = "SERVICE_INSTANCE_ID";
-        final String uIdQ = "USER_ID";
-        final String uEmailQ = "USER_EMAIL";
-        final String uFNameQ = "USER_FIRST_NAME";
-        final String uLNameQ = "USER_LAST_NAME";
+        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, 60) PORT_NAME, SI.ID SERVICE_INSTANCE_ID,  " +
+                "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME " +
+                "FROM ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )   " +
+                "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )   " +
+                "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
+                "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS  " +
+                "WHERE SIST.NAME = ? ";
+        final String routerName = "ROUTER_NAME";
+        final String portName = "PORT_NAME";
+        final String serviceInstanceId = "SERVICE_INSTANCE_ID";
+        final String userEmail = "USER_EMAIL";
+        final String userFirstName = "USER_FIRST_NAME";
+        final String userLastName = "USER_LAST_NAME";
         try {
             preparedStatement = connection.prepareStatement(selectQuery);
             preparedStatement.setString(1, sistActQ);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 final CIA cia = new CIA(
-                        resultSet.getInt(rIdQ),
-                        resultSet.getInt(pIdQ),
-                        resultSet.getInt(siIdQ),
-                        resultSet.getInt(uIdQ),
-                        resultSet.getString(uEmailQ),
-                        resultSet.getString(uFNameQ),
-                        resultSet.getString(uLNameQ)
+                        resultSet.getString(routerName),
+                        resultSet.getString(portName),
+                        resultSet.getInt(serviceInstanceId),
+                        resultSet.getString(userEmail),
+                        resultSet.getString(userFirstName),
+                        resultSet.getString(userLastName)
                 );
                 result.add(cia);
             }
@@ -2908,14 +2964,14 @@ public class DAO {
         final String xlsExt = "xls";
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-        final String selectQuery = " SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, P.ID PORT_ID, SI.ID SI_ID, "
-                + " U.ID_USER USER_ID, U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME"
-                + " FROM  "
-                + " ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )  "
-                + " INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  "
-                + " INNER JOIN PORT P ON P.ID = C.ID_PORT ) "
-                + " INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS "
-                + " WHERE SIST.NAME = ? ";
+        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, 60) PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+                "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME " +
+                "FROM ((((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
+                "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  " +
+                "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
+                "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS) " +
+                "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION)" +
+                "WHERE SIST.NAME = ? ORDER BY SERVICE_INSTANCE_ADRESS, P.ID_ROUTER, P.ID ASC";
 
         final String sistActQ = InstanceStatus.ACTIVE.toString();
         try {
@@ -2963,7 +3019,7 @@ public class DAO {
                             "OCCUPIED, "+amountOfPorts+" - OCCUPIED FREE, ROUND( OCCUPIED / "+amountOfPorts+", 2) UTILIZATION " +
                             "FROM ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED " +
                             "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                            "GROUP BY R.ID)");
+                            "GROUP BY R.ID ORDER BY R.ID )");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
@@ -3008,7 +3064,7 @@ public class DAO {
                     "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
                     "  ON SI.ID_CABLE = C.ID) " +
                     "ON  S.ID = SI.ID_SERVICE " +
-                    "GROUP BY P.ID_ROUTER ");
+                    "GROUP BY P.ID_ROUTER ORDER BY P.ID_ROUTER ASC");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Profitability by month", resultSet);
@@ -3053,10 +3109,18 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
-                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
-                    "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
-                    "GROUP BY OS.NAME ");
+//            preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
+//                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+//                    "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
+//                    "GROUP BY OS.NAME ");
+            preparedStatement = connection.prepareStatement("SELECT * FROM(SELECT  st.NAME, st.SPEED, OST.NAME STATUS_NAME, SO.OUR_DATE SO_DATE,  " +
+                    "U.F_NAME, U.L_NAME " +
+                    "FROM  " +
+                    "((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS)  " +
+                    "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
+                    "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
+                    "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
+                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ) ");
 
             preparedStatement.setString(1, scenario.toString());
             preparedStatement.setDate(2, sqlStartDate);
@@ -3194,7 +3258,7 @@ public class DAO {
             while (resultSet.next()) {
                 devices.add(
                         new Device(
-                                resultSet.getInt("ROUTER_NAME"),
+                                resultSet.getString("ROUTER_NAME"),
                                 resultSet.getInt("OCCUPIED"),
                                 (maxPortsCapOnDevice - resultSet.getInt("OCCUPIED"))));
             }
@@ -3224,27 +3288,56 @@ public class DAO {
         List<Object> circuits = new ArrayList<Object>();
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
+        class Circuit implements Serializable {
+            private String cable;
+            private String port;
+            private String router;
+            private String siAdress;
+
+            public Circuit(String cable, String port, String router, String siAdress) {
+                this.cable = cable;
+                this.port = port;
+                this.router = router;
+                this.siAdress = siAdress;
+            }
+
+            public String getCableId() {
+                return cable;
+            }
+            public void setCableId(String cable) {
+                this.cable = cable;
+            }
+            public String getPortId() {
+                return port;
+            }
+            public void setPortId(String port) {
+                this.port = port;
+            }
+            public String getRouterId() {
+                return router;
+            }
+            public void setRouterId(String router) {
+                this.router = router;
+            }
+
+            public String getSiAdress() {
+                return siAdress;
+            }
+        }
         try {
             preparedStatement = connection.
                     prepareStatement(
-                            "SELECT * FROM (" +
-                                    "SELECT C.ID CABLE_ID, P.ID PORT_ID, " +
-                                    "P.ID_ROUTER ROUTER_ID, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
-                                    "FROM CABLE C INNER JOIN PORT P ON P.ID = C.ID_PORT " +
-                                    "WHERE P.USED = 1 " +
-                                    ")WHERE RN BETWEEN ? AND ? ");
+                            "SELECT * FROM (SELECT 'CABLE-'||C.ID CABLE, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, 60) PORT, 'ROUTER-'||P.ID_ROUTER ROUTER, L.ADRESS SERVICE_INSTANCE_ADRESS , ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE si inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) ON SI.ID_SERVICE_LOCATION = SL.ID )ON C.Id = Si.Id_Cable )WHERE RN BETWEEN ? AND ? ");
+            preparedStatement
+                    .setInt(1, startP);
+            preparedStatement
+                    .setInt(2, endP);
 
-            preparedStatement
-                    .setInt(1, endP);
-            preparedStatement
-                    .setInt(2, startP);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-
-                final Circuit c = new Circuit(resultSet.getInt("CABLE_ID"),
-                        resultSet.getInt("PORT_ID"),
-                        resultSet.getInt("ROUTER_ID"));
-                circuits.add(c);
+                circuits.add(new Circuit(resultSet.getString("CABLE"),
+                        resultSet.getString("PORT"),
+                        resultSet.getString("ROUTER"), resultSet.getString("SERVICE_INSTANCE_ADRESS")));
             }
 
         } finally {
@@ -3270,18 +3363,56 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getPortsForReport(int page, int pageLength) throws SQLException {
-
+        System.out.println("getPortsForReport");
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         List<Object> ports = new ArrayList<Object>();
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
+        class Port implements Serializable{
+            private String port;
+            private String used;
+            private String router;
+            public Port(String port, String router, String used) {
+                this.port = port;
+                this.router = router;
+                this.used = used;
+            }
+            public String getPort() {
+                return port;
+            }
+            public void setPort(String port) {
+                this.port = port;
+            }
+            public String getRouter() {
+                return router;
+            }
+            public void setRouter(String router) {
+                this.router = router;
+            }
+            public String isUsed() {
+                return used;
+            }
+            public void setUsed(String used) {
+                this.used = used;
+            }
+
+            @Override
+            public String toString() {
+                return "Port{" +
+                        "port='" + port + '\'' +
+                        ", used='" + used + '\'' +
+                        ", router='" + router + '\'' +
+                        '}';
+            }
+        }
         try {
             preparedStatement = connection.prepareStatement
-                    ("SELECT * FROM( " +
-                            "SELECT P.ID PORT_ID, P.ID_ROUTER ID_ROUTER, P.USED IS_USED,ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
-                            "FROM PORT P ) " +
+                    ("SELECT * FROM(  " +
+                            "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, 60) PORT,  " +
+                            "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED,ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                            "FROM PORT P )  " +
                             "WHERE RN BETWEEN ? AND ?");
             preparedStatement
                     .setInt(1, startP);
@@ -3290,13 +3421,12 @@ public class DAO {
 
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                final Port p = new Port(resultSet.getInt("PORT_ID"),
-                        resultSet.getInt("ID_ROUTER"),
-                        resultSet.getInt("IS_USED") == 1);
+                final Port p = new Port(resultSet.getString("PORT"),
+                        resultSet.getString("ROUTER"),
+                        resultSet.getString("USED"));
                 ports.add(p);
 
             }
-
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -3317,49 +3447,74 @@ public class DAO {
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         List<Object> servOrds = new ArrayList<Object>();
+        class Orders implements  Serializable{
+            private String nameService;
+            private double speed;
+            private String statusName;
+            private java.sql.Date date;
+            private String firstName;
+            private String lastName;
+
+            public Orders(String nameService, double speed, String statusName, java.sql.Date date,
+                          String firstName, String lastName) {
+                this.nameService = nameService;
+                this.speed = speed;
+                this.statusName = statusName;
+                this.date = date;
+                this.firstName = firstName;
+                this.lastName = lastName;
+            }
+
+            public String getNameService() {
+                return nameService;
+            }
+
+            public double getSpeed() {
+                return speed;
+            }
+
+            public String getStatusName() {
+                return statusName;
+            }
+
+            public java.sql.Date getDate() {
+                return date;
+            }
+
+            public String getFirstName() {
+                return firstName;
+            }
+
+            public String getLastName() {
+                return lastName;
+            }
+        }
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
         try {
-            preparedStatement = connection.prepareStatement("" +
-                    " SELECT * FROM" +
-                    " (SELECT  " +
-                    " SO.ID_SERVICEORDER SO_ID, " +
-                    " OST.ID_ORDERSTATUS OST_ID, " +
-                    " OST.NAME STATUS_NAME, " +
-                    " SI.ID SI_ID, " +
-                    " OSC.ID_ORDERSCENARIO OSC_ID, " +
-                    " OSC.NAME OSC_NAME, " +
-                    " SO.OUR_DATE SO_DATE, " +
-                    " U.ID_USER U_ID," +
-                    " ROWNUM RNUM " +
-                    " FROM  " +
-                    " ((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
-                    " INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
-                    " INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
-                    " INNER JOIN USERS U ON U.ID_USER = SI.ID_USER " +
-                    " WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? AND ROWNUM <= ? )" +
-                    " WHERE RNUM >= ? ");
-
+            preparedStatement = connection.prepareStatement("SELECT * FROM " +
+                    "(SELECT  st.NAME, st.SPEED, OST.NAME STATUS_NAME, SO.OUR_DATE SO_DATE,  " +
+                    "U.F_NAME, U.L_NAME, ROW_NUMBER() OVER (ORDER BY SO.OUR_DATE ASC) RN  " +
+                    "FROM  " +
+                    "((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
+                    "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
+                    "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
+                    "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
+                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ) " +
+                    "WHERE RN BETWEEN ? AND ? ");
+            System.out.println("Before set");
             preparedStatement.setString(1, scenario.toString());
             preparedStatement.setDate(2, sqlStartDate);
             preparedStatement.setDate(3, sqlEndDate);
-            preparedStatement.setInt(4, endP);
-            preparedStatement.setInt(5, startP);
+            preparedStatement.setInt(4, startP);
+            preparedStatement.setInt(5, endP);
             resultSet = preparedStatement.executeQuery();
+            System.out.println("Executed!!!");
             while (resultSet.next()) {
-                GregorianCalendar grCalendar = new GregorianCalendar();
-                grCalendar.set(resultSet.getDate("SO_DATE").getYear(),
-                        resultSet.getDate("SO_DATE").getMonth(),
-                        resultSet.getDate("SO_DATE").getDay());
-                final ServiceOrder so = new ServiceOrder(
-                        resultSet.getInt("SO_ID"),
-                        resultSet.getInt("OST_ID"),
-                        resultSet.getString("STATUS_NAME"),
-                        resultSet.getInt("SI_ID"),
-                        resultSet.getInt("OSC_ID"),
-                        resultSet.getString("OSC_NAME"),
-                        grCalendar,
-                        resultSet.getInt("U_ID")
+                final Orders so = new Orders(
+                        resultSet.getString("NAME"), resultSet.getDouble("SPEED"),
+                        resultSet.getString("STATUS_NAME"), resultSet.getDate("SO_DATE"),
+                        resultSet.getString("F_NAME"), resultSet.getString("L_NAME")
                 );
                 servOrds.add(so);
             }

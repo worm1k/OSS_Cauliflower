@@ -4,32 +4,31 @@ import java.io.Serializable;
 
 public class CIA implements Serializable{
 
-	public CIA(int routerId, int portId, int siId, int userId,
+	public CIA(String router, String port, int siId,
 			String userEmail, String userFName, String userLName) {
 		super();
-		this.routerId = routerId;
-		this.portId = portId;
+		this.router = router;
+		this.port = port;
 		this.siId = siId;
-		this.userId = userId;
 		this.userEmail = userEmail;
 		this.userFName = userFName;
 		this.userLName = userLName;
 	}
 
-	public int getRouterId() {
-		return routerId;
+	public String getRouterId() {
+		return router;
 	}
 
-	public void setRouterId(int routerId) {
-		this.routerId = routerId;
+	public void setRouterId(String routerId) {
+		this.router = routerId;
 	}
 
-	public int getPortId() {
-		return portId;
+	public String getPortId() {
+		return port;
 	}
 
-	public void setPortId(int portId) {
-		this.portId = portId;
+	public void setPortId(String portId) {
+		this.port = portId;
 	}
 
 	public int getSiId() {
@@ -38,14 +37,6 @@ public class CIA implements Serializable{
 
 	public void setSiId(int siId) {
 		this.siId = siId;
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
 	}
 
 	public String getUserEmail() {
@@ -74,15 +65,14 @@ public class CIA implements Serializable{
 
 	@Override
 	public String toString() {
-		return "CIA [routerId=" + routerId + ", portId=" + portId + ", siId="
-				+ siId + ", userId=" + userId + ", userEmail=" + userEmail
+		return "CIA [router=" + router + ", port=" + port + ", siId="
+				+ siId + ", userEmail=" + userEmail
 				+ ", userFName=" + userFName + ", userLName=" + userLName + "]";
 	}
 
-	private int routerId;
-	private int portId;
+	private String router;
+	private String port;
 	private int siId;
-	private int userId;
 	private String userEmail;
 	private String userFName;
 	private String userLName;

@@ -29,20 +29,6 @@ public class ServiceOrder implements Serializable {
         this.calendar = calendar;
         this.idUser = userId;
     }
-/*
-    public ServiceOrder(int serviceOrderId, int orderStatusId, String orderStatus,
-                        int serviceInstanceId, int orderScenarioId,
-                        String orderScenario) {
-        this.serviceOrderId = serviceOrderId;
-        this.orderStatusId = orderStatusId;
-        this.orderStatus = orderStatus;
-        this.serviceInstanceId = serviceInstanceId;
-        this.orderScenarioId = orderScenarioId;
-        this.orderScenario = orderScenario;
-    }
-    */
-
-
 
     public int getServiceOrderId() {
         return serviceOrderId;

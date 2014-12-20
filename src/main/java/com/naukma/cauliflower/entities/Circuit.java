@@ -1,47 +1,47 @@
-package com.naukma.cauliflower.entities;
-
-import java.io.Serializable;
-
-public class Circuit implements Serializable {
-
-	public Circuit(int cableId, int portId, int routerId) {
-		super();
-		this.cableId = cableId;
-		this.portId = portId;
-		this.routerId = routerId;
-	}
-
-	public int getCableId() {
-		return cableId;
-	}
-
-	public void setCableId(int cableId) {
-		this.cableId = cableId;
-	}
-
-	public int getPortId() {
-		return portId;
-	}
-
-	public void setPortId(int portId) {
-		this.portId = portId;
-	}
-
-	public int getRouterId() {
-		return routerId;
-	}
-
-	public void setRouterId(int routerId) {
-		this.routerId = routerId;
-	}
-
-	@Override
-	public String toString() {
-		return "Circuit [cableId=" + cableId + ", portId=" + portId
-				+ ", routerId=" + routerId + "]";
-	}
-
-	private int cableId;
-	private int portId;
-	private int routerId;
-}
+//package com.naukma.cauliflower.entities;
+//
+//import java.io.Serializable;
+//
+//public class Circuit implements Serializable {
+//
+//	public Circuit(String cable, String port, String router) {
+//		super();
+//		this.cable = cable;
+//		this.port = port;
+//		this.router = router;
+//	}
+//
+//	public String getCableId() {
+//		return cable;
+//	}
+//
+//	public void setCableId(String cable) {
+//		this.cable = cable;
+//	}
+//
+//	public String getPortId() {
+//		return port;
+//	}
+//
+//	public void setPortId(String port) {
+//		this.port = port;
+//	}
+//
+//	public String getRouterId() {
+//		return router;
+//	}
+//
+//	public void setRouterId(String router) {
+//		this.router = router;
+//	}
+//
+//	@Override
+//	public String toString() {
+//		return "Circuit [cable=" + cable + ", port=" + port
+//				+ ", router=" + router + "]";
+//	}
+//
+//	private String cable;
+//	private String port;
+//	private String router;
+//}
