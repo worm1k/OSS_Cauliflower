@@ -49,16 +49,16 @@ public class CauliflowerInfo {
 
 
     public static final String SYSTEM_ERROR_MESSAGE = "System error, try again later, please";
-    public static final String EMAIL_UNIQ_ERROR_MESSAGE = "User with this e-mail already exist!";
+    public static final String EMAIL_UNIQ_ERROR_MESSAGE = "User with this e-mail already exists!";
     public static final String PASSWORD_ERROR_MESSAGE = "Incorrect password!";
-    public static final String PHONE_UNIQ_ERROR_MESSAGE = "User with this phone already exist!";
+    public static final String PHONE_UNIQ_ERROR_MESSAGE = "User with this phone already exists!";
     public static final String LOGIN_ERROR_MESSAGE = "Incorrect login or password!";
     public static final String PERMISSION_ERROR_MESSAGE = "You don`t have permission!";
-    public static final String INCORRECT_USER_FOR_BLOCK_ERROR_MESSAGE = "Incorrect user for block!";
+    public static final String INCORRECT_USER_FOR_BLOCK_ERROR_MESSAGE = "Incorrect user for blocking!";
     public static final String ACCOUNT_IS_BLOCKED_ERROR_MESSAGE = "Your account is blocked!";
-    public static final String INSTANCE_IS_BLOCKED_ERROR_MESSAGE = "This instance already has processing order";
-    public static final String INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE = "This instance already has been disconnected";
-    public static final String INCORRECT_USER_FOR_NEW_PASS_ERROR_MESSAGE = "Incorrect user for change his password";
+    public static final String INSTANCE_IS_BLOCKED_ERROR_MESSAGE = "The instance already has processing order";
+    public static final String INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE = "The instance has already been disconnected";
+    public static final String INCORRECT_USER_FOR_NEW_PASS_ERROR_MESSAGE = "Incorrect user for changing his password";
     public static final String NO_PORTS_ERROR_MESSAGE = "Please, create a new router";
 
     public static final String OK_REGISTER_EMPLOYEE_MESSAGE = "Employee has been registered!";
