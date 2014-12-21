@@ -22,10 +22,10 @@ import java.sql.SQLException;
 @WebServlet(name = "BlockAccountController")
 public class BlockAccountController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //String pathFrom  = request.getHeader("Referer");
+        String emailAttribute = "email";
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(us!=null && us.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
-            String userEmailForBlock = request.getParameter("email");
+            String userEmailForBlock = request.getParameter(emailAttribute);
             try {
                 if (DAO.INSTANCE.checkForExistingUserByEmail(userEmailForBlock)) {
                     User blockedUser = DAO.INSTANCE.blockUserByEmail(userEmailForBlock);
@@ -37,7 +37,7 @@ public class BlockAccountController extends HttpServlet {
                         request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_ACCOUNT_BLOCK_MESSAGE);
                         if(blockedUser.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
                             ServletContext context = getServletContext();
-                            RequestDispatcher rd = context.getRequestDispatcher("/logout");
+                            RequestDispatcher rd = context.getRequestDispatcher(CauliflowerInfo.LOGOUT_CONTROLLER_LINK);
                             rd.forward(request, response);
                         }else response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                     } else {
@@ -49,11 +49,11 @@ public class BlockAccountController extends HttpServlet {
                     response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }else{
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
-            response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+            response.sendRedirect(CauliflowerInfo.HOME_LINK);
         }
     }
 

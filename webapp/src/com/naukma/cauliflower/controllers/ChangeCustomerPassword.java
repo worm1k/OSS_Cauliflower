@@ -23,7 +23,6 @@ import java.sql.SQLException;
 public class ChangeCustomerPassword extends HttpServlet {
     private static final Logger logger = Logger.getLogger(LoginController.class);
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathFrom  = request.getHeader("Referer");
         String userIdForNewPassAttribute = "userIdForNewPass";
         String newPasswordAttribute ="newPassword";
 
@@ -33,43 +32,40 @@ public class ChangeCustomerPassword extends HttpServlet {
             String newPassword = request.getParameter(newPasswordAttribute);
              if (userIdForNewPass > 0) {
                 if(newPassword.length()>= 6) {
-                    //hashing password
                     final String hashedPassword= Cryptographer.hmacSha1(newPassword);
                     logger.info(" reg controller :: hashed password form"+newPassword+" is "+hashedPassword);
-                    //
                     User userForNewPass = null;
                     try {
                         userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, hashedPassword);
                     } catch (SQLException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        e.printStackTrace();
                     }
                     if(userForNewPass!=null){
-                        //create body
                         StringBuilder message= new StringBuilder();
-                        message.append("<p>Your password has been changed!</p> <p style=\"text-transform:none;\">Your new password: <b>");
+                        message.append("<p>Your password has been changed!</p> " +
+                                "<p style=\"text-transform:none;\">Your new password: <b>");
                         message.append(newPassword);
                         message.append("</b></p>");
-
-
                         String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
                         EmailSender.sendChangedPasswordToUser(userForNewPass,newPassword,fullPath);
                         request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_CHANGE_PASSWORD_MESSAGE);
                         response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK);
                     }else{
                         request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
-                        response.sendRedirect(pathFrom);
+                        response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
                     }
                 }else{
                     request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PASSWORD_ERROR_MESSAGE);
-                    response.sendRedirect(pathFrom);
+                    response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
                 }
             }else{
-                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.INCORRECT_USER_FOR_NEW_PASS_ERROR_MESSAGE);
-                response.sendRedirect(pathFrom);
+                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                        CauliflowerInfo.INCORRECT_USER_FOR_NEW_PASS_ERROR_MESSAGE);
+                response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
             }
         }else{
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
-            response.sendRedirect(pathFrom);
+            response.sendRedirect(CauliflowerInfo.HOME_LINK);
         }
     }
 

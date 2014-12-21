@@ -27,49 +27,48 @@ import java.sql.SQLException;
  */
 @WebServlet(name = "LoginController")
 public class LoginController extends HttpServlet {
+
     private static final Logger logger = Logger.getLogger(LoginController.class);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info(" INFO ::   LoginController");
+        String usernameAttribute = "username";
+        String passwordAttrinbute = "password";
 
-        String pathFrom  = request.getHeader("Referer");
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(userInSession==null) {
-            String username = request.getParameter("username").toLowerCase();
-            String password = request.getParameter("password");
-            //String res = "";
+            String username = request.getParameter(usernameAttribute).toLowerCase();
+            String password = request.getParameter(passwordAttrinbute);
             Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
             ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
 
-            User user = null;
+            User userForLogin = null;
             try {
-                //hashing password
-                  String hashedPassword= Cryptographer.hmacSha1(password);
+                String hashedPassword= Cryptographer.hmacSha1(password);
                 logger.info("LoginController:: hashed password form"+password+" is "+hashedPassword);
-                //
-                user = DAO.INSTANCE.getUserByLoginAndPassword(username, hashedPassword);
+                userForLogin = DAO.INSTANCE.getUserByLoginAndPassword(username, hashedPassword);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            if (user == null) {
+            if (userForLogin == null) {
                 request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.LOGIN_ERROR_MESSAGE);
-                response.sendRedirect(pathFrom);
+                response.sendRedirect(CauliflowerInfo.AUTH_LINK);
             } else {
-                if(user.isBlocked()){
+                if(userForLogin.isBlocked()){
                     request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.ACCOUNT_IS_BLOCKED_ERROR_MESSAGE);
-                    response.sendRedirect(pathFrom);
+                    response.sendRedirect(CauliflowerInfo.AUTH_LINK);
                 }else {
-                    request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, user);
-                    logger.info(" LOGGER ::   LoginController  : user is" + user.getFirstName());
+                    request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, userForLogin);
+                    logger.info(" LOGGER ::   LoginController  : user is" + userForLogin.getFirstName());
                     request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-                    if (service != null && servLoc != null && user.getUserRole().equals(UserRole.CUSTOMER.toString())) {
+                    if (service != null && servLoc != null && userForLogin.getUserRole().equals(UserRole.CUSTOMER.toString())) {
                         ServletContext context = getServletContext();
-                        RequestDispatcher rd = context.getRequestDispatcher("/proceed");
+                        RequestDispatcher rd = context.getRequestDispatcher(CauliflowerInfo.PROCEED_CONTROLLER_LINK);
                         rd.forward(request, response);
                     } else {
                         request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
                         request.getSession().removeAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
-                        String userInSessionRole = user.getUserRole();
+                        String userInSessionRole = userForLogin.getUserRole();
                         if (userInSessionRole.equals(UserRole.CUSTOMER.toString()))
                             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
                         if (userInSessionRole.equals(UserRole.ADMINISTRATOR.toString()))
@@ -85,7 +84,7 @@ public class LoginController extends HttpServlet {
             }
         }else{
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
-            response.sendRedirect(pathFrom);
+            response.sendRedirect(CauliflowerInfo.HOME_LINK);
         }
     }
 
