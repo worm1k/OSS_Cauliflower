@@ -25,25 +25,34 @@ public class TaskManager extends HttpServlet {
     */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        final User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
 
-        if(user == null){
+        final User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        if(user == null || user.isBlocked())
+        {
             response.sendRedirect(CauliflowerInfo.HOME_LINK);
-        }else if(!user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString()) && !user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString())){
+        }
+        else if(!user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString())
+                && !user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString()))
+        {
             response.sendRedirect(CauliflowerInfo.HOME_LINK);
-        }else{
+        }
+        else
+        {
             int taskId =  Integer.parseInt(request.getParameter(CauliflowerInfo.TASK_ID_PARAM));
             String status = request.getParameter(CauliflowerInfo.TASK_STATUS_PARAM);
-            try {
+            try
+            {
                 if(status.equals(TaskStatus.PROCESSING.toString()))
                     DAO.INSTANCE.changeTaskStatus(taskId, TaskStatus.FREE);
                 else if(status.equals(TaskStatus.FREE.toString()))
                     DAO.INSTANCE.changeTaskStatus(taskId,TaskStatus.PROCESSING);
-            } catch (SQLException e) {
+            } catch (SQLException e)
+            {
                 e.printStackTrace();
             }
 
-            if(user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString())){
+            if(user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString()))
+            {
                 response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
             }else{
                 response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
@@ -51,9 +60,9 @@ public class TaskManager extends HttpServlet {
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException
+    {
 
     }
+
 }

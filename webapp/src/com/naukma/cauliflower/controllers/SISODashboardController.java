@@ -22,66 +22,55 @@ import java.util.List;
 @WebServlet(name = "SISODashboardController")
 public class SISODashboardController  extends HttpServlet {
 
-
-    /*
-    ACK.14
-    ACK.15
-    */
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException
+    {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        final String pathFrom  = request.getHeader("Referer");
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
         ArrayList<ServiceOrder> orders = null;
         ArrayList<ServiceInstance> instances = null;
-        List<Service> lstService = null;
+        List<Service> lstService;
         User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         User customerUser = null;
         ObjectMapper mapper = new ObjectMapper();
         PrintWriter out = response.getWriter();
-        if(user == null){
-//            response.sendRedirect(CauliflowerInfo.AUTH_LINK);
+        if(user == null)
+        {
             mapper.writeValue(out, null);
         }
-
         String role = user.getUserRole();
-        try {
-            if(role.equals(UserRole.CUSTOMER.toString())){
+        try
+        {
+            if(role.equals(UserRole.CUSTOMER.toString()))
+            {
                 orders = DAO.INSTANCE.getOrders(user.getUserId());
                 instances = DAO.INSTANCE.getInstances(user.getUserId());
                 customerUser = user;
             }
-            else if(role.equals(UserRole.CUST_SUP_ENG.toString())){
+            else if(role.equals(UserRole.CUST_SUP_ENG.toString()))
+            {
                 int customerUserId = Integer.parseInt(request.getParameter(CauliflowerInfo.USER_ID_ATTRIBUTE));
                 orders = DAO.INSTANCE.getOrders(customerUserId);
                 instances = DAO.INSTANCE.getInstances(customerUserId);
                 customerUser = DAO.INSTANCE.getCustomerUserById(customerUserId);
             }
-
             lstService = DAO.INSTANCE.getServices();
-
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put(CauliflowerInfo.INSTANCES_ATTRIBUTE, instances);
             map.put(CauliflowerInfo.ORDERS_ATTRIBUTE, orders);
             map.put(CauliflowerInfo.SERVICE_ATTRIBUTE, lstService);
             map.put(CauliflowerInfo.USER_ATTRIBUTE, customerUser);
             mapper.writeValue(out, map);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
-//            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
-//            response.sendRedirect(pathFrom);
+
             mapper.writeValue(out, null);
         }
 
-//        request.setAttribute(CauliflowerInfo.ORDERS_ATTRIBUTE, orders);
-//        request.setAttribute(CauliflowerInfo.INSTANCES_ATTRIBUTE, instances);
-//        request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK).forward(request, response);
-        // JSP!!!!!!!
-        ///<% List<ItemObj> myList = (ArrayList<ItemObj>) request.getParameter("list"); %>
+
     }
 }
