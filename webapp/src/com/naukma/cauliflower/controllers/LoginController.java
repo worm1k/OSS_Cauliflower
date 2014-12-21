@@ -32,13 +32,13 @@ public class LoginController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info(" INFO ::   LoginController");
-        String usernameAttribute = "username";
-        String passwordAttrinbute = "password";
+        String usernameParameter = "username";
+        String passwordParameter = "password";
 
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(userInSession==null) {
-            String username = request.getParameter(usernameAttribute).toLowerCase();
-            String password = request.getParameter(passwordAttrinbute);
+            String username = request.getParameter(usernameParameter).toLowerCase();
+            String password = request.getParameter(passwordParameter);
             Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
             ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
 

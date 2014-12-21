@@ -22,10 +22,10 @@ import java.sql.SQLException;
 @WebServlet(name = "BlockAccountController")
 public class BlockAccountController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String emailAttribute = "email";
+        String emailParameter = "email";
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(us!=null && us.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
-            String userEmailForBlock = request.getParameter(emailAttribute);
+            String userEmailForBlock = request.getParameter(emailParameter);
             try {
                 if (DAO.INSTANCE.checkForExistingUserByEmail(userEmailForBlock)) {
                     User blockedUser = DAO.INSTANCE.blockUserByEmail(userEmailForBlock);

@@ -29,24 +29,24 @@ public class RegistrationController extends HttpServlet {
     private static final Logger logger = Logger.getLogger(LoginController.class);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String userForRegisterRoleAttribute = "userRole";
-        String emailAttribute = "email";
-        String passwordAttribute = "password";
-        String firstNameAttribute = "name";
-        String lastNameAttribute = "surname";
-        String phoneAttribute = "phone";
+        String userForRegisterRoleParameter = "userRole";
+        String emailParameter = "email";
+        String passwordParameter = "password";
+        String firstNameParameter = "name";
+        String lastNameParameter = "surname";
+        String phoneParameter = "phone";
 
-        String userRoleForRegister = request.getParameter(userForRegisterRoleAttribute);
+        String userRoleForRegister = request.getParameter(userForRegisterRoleParameter);
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if((userInSession==null && userRoleForRegister.equals(UserRole.CUSTOMER.toString())) ||
                 (userInSession!=null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())
                         && !userRoleForRegister.equals(UserRole.CUSTOMER.toString()))) {
             int userRoleId=0;
-            String email = request.getParameter(emailAttribute).toLowerCase();
-            String password = request.getParameter(passwordAttribute);
-            String firstName = request.getParameter(firstNameAttribute);
-            String lastName = request.getParameter(lastNameAttribute);
-            String phone = request.getParameter(phoneAttribute);
+            String email = request.getParameter(emailParameter).toLowerCase();
+            String password = request.getParameter(passwordParameter);
+            String firstName = request.getParameter(firstNameParameter);
+            String lastName = request.getParameter(lastNameParameter);
+            String phone = request.getParameter(phoneParameter);
             try {
                 if(userRoleForRegister.equals(UserRole.CUSTOMER.toString()))
                     userRoleId = DAO.INSTANCE.getUserRoleIdFor(UserRole.CUSTOMER);

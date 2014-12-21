@@ -23,13 +23,13 @@ import java.sql.SQLException;
 public class ChangeCustomerPassword extends HttpServlet {
     private static final Logger logger = Logger.getLogger(LoginController.class);
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String userIdForNewPassAttribute = "userIdForNewPass";
-        String newPasswordAttribute ="newPassword";
+        String userIdForNewPassParameter = "userIdForNewPass";
+        String newPasswordParameter ="newPassword";
 
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(us!= null && us.getUserRole().equals(UserRole.CUST_SUP_ENG.toString())){
-            int userIdForNewPass = Integer.parseInt(request.getParameter(userIdForNewPassAttribute));
-            String newPassword = request.getParameter(newPasswordAttribute);
+            int userIdForNewPass = Integer.parseInt(request.getParameter(userIdForNewPassParameter));
+            String newPassword = request.getParameter(newPasswordParameter);
              if (userIdForNewPass > 0) {
                 if(newPassword.length()>= 6) {
                     final String hashedPassword= Cryptographer.hmacSha1(newPassword);

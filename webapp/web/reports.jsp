@@ -12,11 +12,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%
-
-//    String error = (String) request.getSession().getAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-//    request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-%>
 
 <!DOCTYPE html>
 <html lang="en" ng-app="Reports">

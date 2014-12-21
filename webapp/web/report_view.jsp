@@ -1,3 +1,6 @@
+<%@ page import="com.naukma.cauliflower.entities.User" %>
+<%@ page import="com.naukma.cauliflower.info.CauliflowerInfo" %>
+<%@ page import="com.naukma.cauliflower.dao.UserRole" %>
 <%--
   Created by IntelliJ IDEA.
   User: Eugene
@@ -9,6 +12,14 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<%
+
+    User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+    String reportParameter = request.getParameter("reportMethod");
+    if(user==null || user.getUserRole().equals(UserRole.CUSTOMER) || reportParameter==null)
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
+%>
 
 <!DOCTYPE html>
 <html ng-app="ReportView">
