@@ -39,17 +39,17 @@ public class ProceedOrderController extends HttpServlet
         {
             if(scenario==null || scenario.equals(Scenario.NEW.toString()))
             {
-                scenarioNew(request);
+                startWorkflowForScenarioNew(request);
                 request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
             }
             else if (scenario.equals(Scenario.DISCONNECT.toString()))
             {
-                scenarioDisconnect(request);
+                startWorkflowForScenarioDisconnect(request);
                 request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
             }
             else if (scenario.equals(Scenario.MODIFY.toString()))
             {
-                scenarioModify(request);
+                startWorkflowForScenarioModify(request);
                 request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
             }
         }
@@ -63,7 +63,7 @@ public class ProceedOrderController extends HttpServlet
 
     }
 
-    private void scenarioNew(HttpServletRequest request) throws SQLException
+    private void startWorkflowForScenarioNew(HttpServletRequest request) throws SQLException
     {
         Integer serviceInstance = null;
         int orderId = createServiceOrder(Scenario.NEW, serviceInstance);
@@ -78,30 +78,19 @@ public class ProceedOrderController extends HttpServlet
         sendEmailNotificationForUserGroup(UserRole.INSTALLATION_ENG, TaskName.CREATE_CIRCUIT);
     }
 
-    private void scenarioModify(HttpServletRequest request) throws SQLException, IOException
+    private void startWorkflowForScenarioModify(HttpServletRequest request) throws SQLException
     {
         int serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
-        boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
-        boolean disconnected = DAO.INSTANCE.isInstanceDisconnected(serviceInstanceId);
-        if(blocked)
-        {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
-                    CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
-
-        }
-        else if(disconnected)
-        {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
-                    CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
-        }
-        else
-        {
+        if(!isInstanceBlockedOrDisconnected(serviceInstanceId,request)){
             int orderId = createServiceOrder(Scenario.MODIFY, serviceInstanceId);
             changeOrderStatus(orderId,OrderStatus.PROCESSING);
             toggleInstanceBlocked(serviceInstanceId);
-            int taskId = DAO.INSTANCE.createNewTask(orderId, UserRole.PROVISIONING_ENG,TaskName.MODIFY_SERVICE,TaskStatus.FREE);
+            int taskId = DAO.INSTANCE.createNewTask(orderId,
+                    UserRole.PROVISIONING_ENG,
+                    TaskName.MODIFY_SERVICE,
+                    TaskStatus.FREE);
             int serviceId = Integer.parseInt(request.getParameter(CauliflowerInfo.SERVICE_ID_PARAM));
-            setNewServiceForTask(taskId,serviceId);
+            DAO.INSTANCE.setServiceForTask(taskId, serviceId);
             sendEmailNotificationForUserGroup(UserRole.PROVISIONING_ENG, TaskName.MODIFY_SERVICE);
 
         }
@@ -110,24 +99,10 @@ public class ProceedOrderController extends HttpServlet
 
 
 
-    private void scenarioDisconnect(HttpServletRequest request) throws SQLException, IOException
+    private void startWorkflowForScenarioDisconnect(HttpServletRequest request) throws SQLException
     {
         int serviceInstanceId =  Integer.parseInt(request.getParameter(CauliflowerInfo.INSTANCE_ID_PARAM));
-        boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
-        boolean disconnected = DAO.INSTANCE.isInstanceDisconnected(serviceInstanceId);
-        if(blocked)
-        {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
-                    CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
-
-        }
-        else if(disconnected)
-        {
-            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
-                    CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
-        }
-        else
-        {
+        if(!isInstanceBlockedOrDisconnected(serviceInstanceId,request)){
             int orderId = createServiceOrder(Scenario.DISCONNECT,serviceInstanceId);
             changeOrderStatus(orderId,OrderStatus.PROCESSING);
             toggleInstanceBlocked(serviceInstanceId);
@@ -141,6 +116,25 @@ public class ProceedOrderController extends HttpServlet
         }
     }
 
+    private boolean isInstanceBlockedOrDisconnected(int serviceInstanceId,HttpServletRequest request) throws SQLException{
+        boolean blocked = DAO.INSTANCE.isInstanceBlocked(serviceInstanceId);
+        boolean disconnected = DAO.INSTANCE.isInstanceDisconnected(serviceInstanceId);
+        if(blocked)
+        {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                    CauliflowerInfo.INSTANCE_IS_BLOCKED_ERROR_MESSAGE);
+
+        }
+        else if(disconnected)
+        {
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                    CauliflowerInfo.INSTANCE_IS_DISCONNECTED_ERROR_MESSAGE);
+        }
+
+        return blocked || disconnected;
+    }
+
+
     private int createServiceOrder(Scenario scenario,Integer serviceInstanceId)
             throws SQLException
     {
@@ -148,12 +142,6 @@ public class ProceedOrderController extends HttpServlet
 
     }
 
-    private void setNewServiceForTask(int taskId, int serviceId) throws SQLException
-    {
-        DAO.INSTANCE.setServiceForTask(taskId,serviceId);
-
-
-    }
 
     private void changeOrderStatus(int orderId,OrderStatus orderStatus) throws SQLException
     {
@@ -169,7 +157,8 @@ public class ProceedOrderController extends HttpServlet
         serviceLocation.setServiceLocationId(serviceLocationId);
         int serviceInstanceId = DAO.INSTANCE.createServiceInstance(
                 user.getUserId(),
-                serviceLocation,service.getServiceId());
+                serviceLocation,
+                service.getServiceId());
         request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
         request.getSession().removeAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
         return serviceInstanceId;
