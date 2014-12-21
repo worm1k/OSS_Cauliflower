@@ -619,9 +619,10 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
+        int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         try {
             preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||R.ID ROUTER, " +
-                    "'ROUTER-'||R.ID||'-'||MOD(P.ID, 60) PORT,  " +
+                    "'ROUTER-'||R.ID||'-'||MOD(P.ID, "+portsQuantity +") PORT,  " +
                     "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "ORDER BY R.ID, P.ID ");
@@ -699,10 +700,11 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
+        int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT 'ROUTER-'||r.ID ROUTER, " +
-                            "'ROUTER-'||r.ID||'-'||MOD(p.Id, 60) PORT, " +
+                            "'ROUTER-'||r.ID||'-'||MOD(p.Id, "+portsQuantity+") PORT, " +
                             "'CABLE-'||c.ID CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS  " +
                             "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
                             "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE SI " +
@@ -2962,9 +2964,10 @@ public class DAO {
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         final String xlsExt = "xls";
+        int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, 60) PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
                 "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME " +
                 "FROM ((((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
                 "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  " +
@@ -3113,14 +3116,21 @@ public class DAO {
 //                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
 //                    "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
 //                    "GROUP BY OS.NAME ");
-            preparedStatement = connection.prepareStatement("SELECT * FROM(SELECT  st.NAME, st.SPEED, OST.NAME STATUS_NAME, SO.OUR_DATE SO_DATE,  " +
-                    "U.F_NAME, U.L_NAME " +
+//            preparedStatement = connection.prepareStatement("SELECT * FROM(SELECT  st.NAME, st.SPEED, OST.NAME STATUS_NAME, SO.OUR_DATE SO_DATE,  " +
+//                    "U.F_NAME, U.L_NAME " +
+//                    "FROM  " +
+//                    "((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS)  " +
+//                    "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
+//                    "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
+//                    "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
+//                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ) ");
+            preparedStatement = connection.prepareStatement("SELECT  SO.OUR_DATE SERVICE_ORDER_DATE, U.F_NAME FIRST_NAME, U.L_NAME LAST_NAME, st.NAME SERVICE_NAME, st.SPEED, OST.NAME STATUS_NAME   " +
                     "FROM  " +
-                    "((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS)  " +
+                    "((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
                     "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
                     "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
                     "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
-                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ) ");
+                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ORDER BY SO.OUR_DATE ASC");
 
             preparedStatement.setString(1, scenario.toString());
             preparedStatement.setDate(2, sqlStartDate);
@@ -3324,15 +3334,24 @@ public class DAO {
                 return siAdress;
             }
         }
+        int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         try {
             preparedStatement = connection.
                     prepareStatement(
-                            "SELECT * FROM (SELECT 'CABLE-'||C.ID CABLE, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, 60) PORT, 'ROUTER-'||P.ID_ROUTER ROUTER, L.ADRESS SERVICE_INSTANCE_ADRESS , ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE si inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) ON SI.ID_SERVICE_LOCATION = SL.ID )ON C.Id = Si.Id_Cable )WHERE RN BETWEEN ? AND ? ");
+                            "SELECT * FROM (SELECT 'CABLE-'||C.ID CABLE, " +
+                                    "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT, " +
+                                    "'ROUTER-'||P.ID_ROUTER ROUTER, L.ADRESS SERVICE_INSTANCE_ADRESS , " +
+                                    "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                                    "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
+                                    "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE si " +
+                                    "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                                    "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
+                                    "ON C.Id = Si.Id_Cable )" +
+                                    "WHERE RN BETWEEN ? AND ? ");
             preparedStatement
                     .setInt(1, startP);
             preparedStatement
                     .setInt(2, endP);
-
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 circuits.add(new Circuit(resultSet.getString("CABLE"),
@@ -3407,11 +3426,14 @@ public class DAO {
                         '}';
             }
         }
+        int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         try {
             preparedStatement = connection.prepareStatement
                     ("SELECT * FROM(  " +
-                            "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, 60) PORT,  " +
-                            "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED,ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                            "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER, " +
+                            "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT,  " +
+                            "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED," +
+                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
                             "FROM PORT P )  " +
                             "WHERE RN BETWEEN ? AND ?");
             preparedStatement
@@ -3493,10 +3515,9 @@ public class DAO {
         final int endP = page * pageLength;
         try {
             preparedStatement = connection.prepareStatement("SELECT * FROM " +
-                    "(SELECT  st.NAME, st.SPEED, OST.NAME STATUS_NAME, SO.OUR_DATE SO_DATE,  " +
+                    "(SELECT  st.NAME, st.SPEED, OST.NAME STATUS_NAME, SO.OUR_DATE SERVICE_ORDER_DATE,  " +
                     "U.F_NAME, U.L_NAME, ROW_NUMBER() OVER (ORDER BY SO.OUR_DATE ASC) RN  " +
-                    "FROM  " +
-                    "((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
+                    "FROM  ((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
                     "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
                     "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
                     "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
@@ -3508,12 +3529,13 @@ public class DAO {
             preparedStatement.setDate(3, sqlEndDate);
             preparedStatement.setInt(4, startP);
             preparedStatement.setInt(5, endP);
+            System.out.println(preparedStatement.toString());
             resultSet = preparedStatement.executeQuery();
             System.out.println("Executed!!!");
             while (resultSet.next()) {
                 final Orders so = new Orders(
                         resultSet.getString("NAME"), resultSet.getDouble("SPEED"),
-                        resultSet.getString("STATUS_NAME"), resultSet.getDate("SO_DATE"),
+                        resultSet.getString("STATUS_NAME"), resultSet.getDate("SERVICE_ORDER_DATE"),
                         resultSet.getString("F_NAME"), resultSet.getString("L_NAME")
                 );
                 servOrds.add(so);
