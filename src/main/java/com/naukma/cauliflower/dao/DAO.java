@@ -2297,12 +2297,12 @@ public class DAO {
         ArrayList<Object> result = new ArrayList<Object>();
         try {
             preparedStatement = connection.
-                    prepareStatement("SELECT * " +
-                            "FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT, " +
+                    prepareStatement("SELECT * FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
+                            "SUM(S.PRICE) PROFIT, " +
                             "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
-                            "FROM SERVICE S ,SERVICEINSTANCE SI ,CABLE C, PORT P " +
-                            "WHERE S.ID = SI.ID_SERVICE(+) AND SI.ID_CABLE = C.ID(+) " +
-                            "AND C.ID_PORT = P.ID(+) " +
+                            "FROM CABLE C, PORT P, SERVICEINSTANCE SI, SERVICE S  " +
+                            "WHERE C.ID_PORT = P.ID(+) AND  C.ID = SI.ID_CABLE(+) " +
+                            "AND  SI.ID_SERVICE = S.ID(+) " +
                             "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC) " +
                             "WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1, (page - 1) * pageLength + 1);
@@ -2426,16 +2426,14 @@ public class DAO {
         ArrayList<Object> result = new ArrayList<Object>();
         try {
             preparedStatement = connection.
-                    prepareStatement("SELECT * " +
-                            "FROM ( " +
-                            "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
+                    prepareStatement("SELECT * FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
                             "SUM(S.PRICE) PROFIT, " +
                             "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
-                            "FROM SERVICE S ,SERVICEINSTANCE SI ,CABLE C, PORT P " +
-                            "WHERE S.ID = SI.ID_SERVICE(+) AND SI.ID_CABLE = C.ID(+) " +
-                            "AND C.ID_PORT = P.ID(+) " +
+                            "FROM CABLE C, PORT P, SERVICEINSTANCE SI, SERVICE S  " +
+                            "WHERE C.ID_PORT = P.ID(+) AND  C.ID = SI.ID_CABLE(+) " +
+                            "AND  SI.ID_SERVICE = S.ID(+) " +
                             "GROUP BY P.ID_ROUTER ) " +
-                            "WHERE RN BETWEEN ? AND ? ");
+                            "WHERE RN BETWEEN ? AND ?");
             preparedStatement.setInt(1, (page - 1) * pageLength + 1);
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
