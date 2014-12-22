@@ -30,11 +30,11 @@ public class ReportsPagingController  extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         final int LINES_ON_PAGE = 3;
-        int page = 0;
+        int page = 1;
         try{
             page = Integer.valueOf((String) request.getParameter("page"));
         }catch (NumberFormatException e){
-            page = 0;
+            page = 1;
         }
         String methodName = (String) request.getParameter("reportMethod");
         String startDate = (String) request.getParameter("startDate");
