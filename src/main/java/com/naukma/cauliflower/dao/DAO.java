@@ -625,7 +625,7 @@ public class DAO {
                     "'ROUTER-'||R.ID||'-'||MOD(P.ID, "+portsQuantity +") PORT,  " +
                     "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "ORDER BY R.ID, P.ID ");
+                    "ORDER BY R.ID, MOD(P.ID,"+portsQuantity+") ");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Ports", resultSet);
@@ -667,7 +667,7 @@ public class DAO {
                     "(SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
                     "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
                     "ON C.Id = Id_Cable) " +
-                    "ORDER BY l.adress ");
+                    "ORDER BY C.ID, l.adress ");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Cables", resultSet);
@@ -711,7 +711,7 @@ public class DAO {
                             "INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
                             "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
                             "ON C.Id = Si.Id_Cable " +
-                            "ORDER BY R.ID, P.ID ASC");
+                            "ORDER BY R.ID, MOD(P.ID,"+portsQuantity+") ASC");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Circuits", resultSet);
@@ -2513,14 +2513,14 @@ public class DAO {
         int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
         class UsedRoutersAndCapacityOfPorts implements Serializable{
             private String router;
-            private int free;
             private int occupied;
+            private int free;
             private double utilization;
 
-            public UsedRoutersAndCapacityOfPorts(String router, int free, int occupied, double utilization) {
+            public UsedRoutersAndCapacityOfPorts(String router, int occupied, int free, double utilization) {
                 this.router = router;
-                this.free = free;
                 this.occupied = occupied;
+                this.free = free;
                 this.utilization = utilization;
             }
 
@@ -2555,7 +2555,7 @@ public class DAO {
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getString("ROUTER_NAME"),
-                        resultSet.getInt("FREE"), resultSet.getInt("OCCUPIED"),
+                        resultSet.getInt("OCCUPIED"), resultSet.getInt("FREE"),
                         resultSet.getDouble("UTILIZATION")));
             }
         } finally {
@@ -2582,16 +2582,16 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         class ProfitabilityByMonth implements Serializable{
-            private int idRouter;
+            private String routerName;
             private double profit;
 
-            ProfitabilityByMonth(int id, double profit) {
-                this.idRouter = id;
+            ProfitabilityByMonth(String routerName, double profit) {
+                this.routerName = routerName;
                 this.profit = profit;
             }
 
-            public int getIdRouter() {
-                return idRouter;
+            public String getRouterName() {
+                return routerName;
             }
 
             public double getProfit() {
@@ -2602,7 +2602,7 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * FROM (  " +
-                            "SELECT P.ID_ROUTER, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                            "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
                             "FROM SERVICE S INNER JOIN (  " +
                             "SERVICEINSTANCE SI INNER JOIN (  " +
                             "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
@@ -2613,7 +2613,7 @@ public class DAO {
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result.add(new ProfitabilityByMonth(resultSet.getInt("ID_ROUTER"), resultSet.getDouble("PROFIT")));
+                result.add(new ProfitabilityByMonth(resultSet.getString("ROUTER_NAME"), resultSet.getDouble("PROFIT")));
             }
         } finally {
             try {
@@ -2638,21 +2638,21 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         class CablesForReport implements Serializable{
-            private String Cable;
-            private String adress;
+            private String cable;
+            private String serviceInstanceAdress;
 
-            public CablesForReport(String Cable, String adress) {
+            public CablesForReport(String Cable, String serviceInstanceAdress) {
                 super();
-                this.Cable = Cable;
-                this.adress = adress;
+                this.cable = Cable;
+                this.serviceInstanceAdress = serviceInstanceAdress;
             }
 
             public String getCable() {
-                return Cable;
+                return cable;
             }
 
-            public String getAdress() {
-                return adress;
+            public String getServiceInstanceAdress() {
+                return serviceInstanceAdress;
             }
         }
         ArrayList<Object> result = new ArrayList<Object>();
@@ -2886,12 +2886,120 @@ public class DAO {
         return result;
     }
     public int getCIALinesAmount()throws SQLException{
-        System.out.println("CIAICACIA");
-        return 1;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        int result = 0;
+        String serviceInstanceStatus = InstanceStatus.ACTIVE.toString();
+        try{
+            preparedStatement = connection.
+                    prepareStatement("SELECT COUNT(*) AM " +
+                            "FROM ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
+                            "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE ) " +
+                            "INNER JOIN PORT P ON P.ID = C.ID_PORT ) " +
+                            "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS " +
+                            "WHERE SIST.NAME = ?");
+            preparedStatement.setString(1, serviceInstanceStatus);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) result = resultSet.getInt("AM");
+        }finally {
+            try{
+                close(connection, preparedStatement);
+            }catch (SQLException e){
+                logger.warn("Can't close connection or preparedStatement");
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
     public List<Object> getCIAReport(int page, int pageLength) throws SQLException{
-        System.out.println("CIA PAGE");
-        return new ArrayList<Object>();
+        class CIAReport implements Serializable{
+            private String routerName;
+            private String portName;
+            private String serviceInstanceAdress;
+            private String email;
+            private String firstName;
+            private String lastName;
+
+            public CIAReport(String routerName, String portName, String serviceInstanceAdress, String email, String firstName, String lastName) {
+                this.routerName = routerName;
+                this.portName = portName;
+                this.serviceInstanceAdress = serviceInstanceAdress;
+                this.email = email;
+                this.firstName = firstName;
+                this.lastName = lastName;
+            }
+
+            public String getRouterName() {
+                return routerName;
+            }
+
+            public String getPortName() {
+                return portName;
+            }
+
+            public String getServiceInstanceAdress() {
+                return serviceInstanceAdress;
+            }
+
+            public String getEmail() {
+                return email;
+            }
+
+            public String getFirstName() {
+                return firstName;
+            }
+
+            public String getLastName() {
+                return lastName;
+            }
+        }
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Object> result = new ArrayList<Object>();
+        final String serviceInstanceStatus = InstanceStatus.ACTIVE.toString();
+        final int startP = (page - 1) * pageLength + 1;
+        final int endP = page * pageLength;
+        final int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
+        final String selectQuery = " SELECT * FROM ( " +
+                "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+                "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME , ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
+                "FROM ((((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
+                "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  " +
+                "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
+                "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS) " +
+                "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION) " +
+                "WHERE SIST.NAME = ? ) WHERE RN BETWEEN ? AND ? ";
+        try {
+            preparedStatement = connection.
+                    prepareStatement(selectQuery);
+            preparedStatement.setString(1, serviceInstanceStatus);
+            preparedStatement.setInt(2, startP);
+            preparedStatement.setInt(3, endP);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new CIAReport(
+                        resultSet.getString("ROUTER_NAME"),
+                        resultSet.getString("PORT_NAME"),
+                        resultSet.getString("SERVICE_INSTANCE_ADRESS"),
+                        resultSet.getString("USER_EMAIL"),
+                        resultSet.getString("USER_FIRST_NAME"),
+                        resultSet.getString("USER_LAST_NAME")
+                ));
+            }
+        } finally {
+            try {
+                close(connection, preparedStatement);
+            } catch (SQLException exc) {
+                logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
+                exc.printStackTrace();
+            }
+        }
+        {// help
+            System.out.println("SUCCESS!!!! getCIAReport()");
+        }
+        return result;
     }
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
@@ -2982,7 +3090,7 @@ public class DAO {
                 "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
                 "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS) " +
                 "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION)" +
-                "WHERE SIST.NAME = ? ORDER BY SERVICE_INSTANCE_ADRESS, P.ID_ROUTER, P.ID ASC";
+                "WHERE SIST.NAME = ? ORDER BY SERVICE_INSTANCE_ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC";
 
         final String sistActQ = InstanceStatus.ACTIVE.toString();
         try {
@@ -3138,7 +3246,7 @@ public class DAO {
                     "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
                     "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
                     "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
-                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ORDER BY SO.OUR_DATE ASC");
+                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ORDER BY SO.OUR_DATE ASC ORDER BY SO.OUR_DATE ASC");
 
             preparedStatement.setString(1, scenario.toString());
             preparedStatement.setDate(2, sqlStartDate);
@@ -3253,6 +3361,30 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getDevicesForReport(int page, int pageLength) throws SQLException {
+        class Device implements Serializable {
+
+            private String deviceName;
+            private int occupied;
+            private int free;
+
+            public Device(String deviceName, int occupied, int free) {
+                this.deviceName = deviceName;
+                this.occupied = occupied;
+                this.free = free;
+            }
+
+            public String getDeviceName() {
+                return deviceName;
+            }
+
+            public int getOccupied() {
+                return occupied;
+            }
+
+            public int getFree() {
+                return free;
+            }
+        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -3307,39 +3439,29 @@ public class DAO {
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
         class Circuit implements Serializable {
-            private String cable;
-            private String port;
             private String router;
-            private String siAdress;
+            private String port;
+            private String cable;
+            private String serviceInstanceAdress;
 
-            public Circuit(String cable, String port, String router, String siAdress) {
-                this.cable = cable;
-                this.port = port;
+            public Circuit(String router, String port, String cable, String serviceInstanceAdress) {
                 this.router = router;
-                this.siAdress = siAdress;
+                this.port = port;
+                this.cable = cable;
+                this.serviceInstanceAdress = serviceInstanceAdress;
             }
 
             public String getCableId() {
                 return cable;
             }
-            public void setCableId(String cable) {
-                this.cable = cable;
-            }
             public String getPortId() {
                 return port;
-            }
-            public void setPortId(String port) {
-                this.port = port;
             }
             public String getRouterId() {
                 return router;
             }
-            public void setRouterId(String router) {
-                this.router = router;
-            }
-
-            public String getSiAdress() {
-                return siAdress;
+            public String getServiceInstanceAdress() {
+                return serviceInstanceAdress;
             }
         }
         int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
@@ -3349,7 +3471,7 @@ public class DAO {
                             "SELECT * FROM (SELECT 'CABLE-'||C.ID CABLE, " +
                                     "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT, " +
                                     "'ROUTER-'||P.ID_ROUTER ROUTER, L.ADRESS SERVICE_INSTANCE_ADRESS , " +
-                                    "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                                    "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID, "+portsQuantity+") ASC) RN " +
                                     "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
                                     "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE si " +
                                     "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
@@ -3398,40 +3520,26 @@ public class DAO {
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
         class Port implements Serializable{
+            private String router;
             private String port;
             private String used;
-            private String router;
-            public Port(String port, String router, String used) {
+
+            public Port(String router,String port,  String used) {
                 this.port = port;
                 this.router = router;
-                this.used = used;
-            }
-            public String getPort() {
-                return port;
-            }
-            public void setPort(String port) {
-                this.port = port;
-            }
-            public String getRouter() {
-                return router;
-            }
-            public void setRouter(String router) {
-                this.router = router;
-            }
-            public String getUsed() {
-                return used;
-            }
-            public void setUsed(String used) {
                 this.used = used;
             }
 
-            @Override
-            public String toString() {
-                return "Port{" +
-                        "port='" + port + '\'' +
-                        ", used='" + used + '\'' +
-                        ", router='" + router + '\'' +
-                        '}';
+            public String getRouter() {
+                return router;
+            }
+
+            public String getPort() {
+                return port;
+            }
+
+            public String getUsed() {
+                return used;
             }
         }
         int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
@@ -3441,7 +3549,7 @@ public class DAO {
                             "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER, " +
                             "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT,  " +
                             "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED," +
-                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
                             "FROM PORT P )  " +
                             "WHERE RN BETWEEN ? AND ?");
             preparedStatement
@@ -3451,8 +3559,8 @@ public class DAO {
 
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                final Port p = new Port(resultSet.getString("PORT"),
-                        resultSet.getString("ROUTER"),
+                final Port p = new Port(resultSet.getString("ROUTER"),
+                        resultSet.getString("PORT"),
                         resultSet.getString("USED"));
                 ports.add(p);
 
