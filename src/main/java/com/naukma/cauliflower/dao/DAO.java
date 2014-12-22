@@ -2695,9 +2695,9 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM " +
-                            "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS " +
-                            "ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
-                            "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
+                            "FROM SERVICEORDER SO,ORDERSCENARIO OS " +
+                            "WHERE SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO(+) AND "+
+                            "OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
                             "GROUP BY OS.NAME ");
             preparedStatement.setString(1, scenario.toString());
             preparedStatement.setDate(2, sqlStartDate);
