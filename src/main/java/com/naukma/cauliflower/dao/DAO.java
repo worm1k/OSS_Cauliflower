@@ -1318,6 +1318,7 @@ public class DAO {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
+        System.out.println("here");
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +
@@ -1326,7 +1327,7 @@ public class DAO {
                             "FROM SERVICEORDER SO,ORDERSTATUS OS,ORDERSCENARIO OSC " +
                             "WHERE SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS(+) " +
                             "AND SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO(+) " +
-                            "AND SO.ID_USER = ?");
+                            "AND SO.ID_USER = ? ORDER BY ID_SERVICEORDER DESC ");
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {

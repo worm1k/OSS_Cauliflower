@@ -36,8 +36,6 @@
                     ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
             </select>
             <dl class="dl-horizontal ng-cloak">
-                <dt>Id:</dt>
-                <dd>{{serviceInstance.id}}</dd>
                 <dt>Service Location:</dt>
                 <dd>{{serviceInstance.serviceLocation.locationAddress}}</dd>
                 <dt>Provider Location:</dt>
@@ -94,7 +92,6 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>Id</th>
                         <th>Scenario</th>
                         <th>Status</th>
                     </tr>
@@ -102,7 +99,6 @@
                     <tbody>
                     <tr ng-repeat="order in serviceInstance.arrServiceOrder" class="ng-cloak">
                         <td>{{$index + 1}}</td>
-                        <td>{{order.id}}</td>
                         <td>{{order.orderScenario}}</td>
                         <td>{{order.orderStatus}}</td>
                     </tr>

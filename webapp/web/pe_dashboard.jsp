@@ -55,7 +55,6 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>Id</th>
                 <th>Scenario</th>
                 <th>Status</th>
                 <th></th>
@@ -64,7 +63,6 @@
             <tbody>
             <tr ng-repeat="task in arrTaskFree" class="ng-cloak">
                 <td>{{$index + 1}}</td>
-                <td>{{task.taskId}}</td>
                 <td>{{task.taskName}}</td>
                 <td>{{task.taskStatus}}</td>
                 <td>
@@ -88,7 +86,6 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>Id</th>
                 <th>Scenario</th>
                 <th>Status</th>
                 <th></th>
@@ -97,7 +94,6 @@
             <tbody>
             <tr ng-repeat="task in arrTaskSubscribed" class="ng-cloak">
                 <td>{{$index + 1}}</td>
-                <td>{{task.taskId}}</td>
                 <td>{{task.taskName}}</td>
                 <td>{{task.taskStatus}}</td>
                 <td>

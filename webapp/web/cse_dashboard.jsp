@@ -28,7 +28,6 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Surname</th>
                 <th>Email</th>
@@ -41,7 +40,6 @@
             <tbody>
             <tr ng-repeat="user in arrUser" class="ng-cloak">
                 <td>{{$index + 1}}</td>
-                <td>{{user.userId}}</td>
                 <td>{{user.firstName}}</td>
                 <td>{{user.lastName}}</td>
                 <td>{{user.email}}</td>

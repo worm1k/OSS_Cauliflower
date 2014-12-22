@@ -58,14 +58,9 @@
         <div class="col-xs-6 border-right">
             <h4 class="txt-bold">About Customer User:</h4>
             <dl class="dl-horizontal">
-                <dt>Id:</dt>
-                <%
-                    User us = (User)request.getSession().getAttribute("customerUser");
-                    if(us!=null)out.print("<dd>" + us.getUserId()+"</dd>");
-                %>
                 <dt>Name:</dt>
                 <%
-                    //us = (User)request.getSession().getAttribute("customerUser");
+                    User us = (User)request.getSession().getAttribute("customerUser");
                     if(us!=null)out.print("<dd>" + us.getFirstName()+"</dd>");
                 %>
                 <dt>Surname:</dt>
@@ -121,8 +116,6 @@
             </select>
             <h4 class="txt-bold">General:</h4>
             <dl class="dl-horizontal ng-cloak">
-                <dt>Id:</dt>
-                <dd>{{serviceInstance.id}}</dd>
                 <dt>Service Location:</dt>
                 <dd>{{serviceInstance.serviceLocation.locationAddress}}</dd>
                 <dt>Provider Location:</dt>
@@ -142,7 +135,6 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>Id</th>
                         <th>Scenario</th>
                         <th>Status</th>
                     </tr>
@@ -150,7 +142,6 @@
                     <tbody>
                     <tr ng-repeat="order in serviceInstance.arrServiceOrder" class="ng-cloak">
                         <td>{{$index + 1}}</td>
-                        <td>{{order.id}}</td>
                         <td>{{order.orderScenario}}</td>
                         <td>{{order.orderStatus}}</td>
                     </tr>
