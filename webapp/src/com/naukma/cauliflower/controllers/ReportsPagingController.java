@@ -120,6 +120,12 @@ public class ReportsPagingController  extends HttpServlet {
                 //resultSet =
                 if(hasRights)
                     list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, page, LINES_ON_PAGE);
+            }else if (methodName.equals("Tree")){
+                hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) ||
+                        user.getUserRole().equals(UserRole.CUST_SUP_ENG.toString())||
+                        user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
+                if (hasRights)
+                    list = DAO.INSTANCE.getCIAReport(page, LINES_ON_PAGE);
             }
 
             //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);

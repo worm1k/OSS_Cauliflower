@@ -67,6 +67,8 @@ public class AmountOfLinesInReportController extends HttpServlet {
                 //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
             }else if (methodName.equals("Disconnect") && startDate != null && endDate != null) {
                 result = DAO.INSTANCE.getOrdersPerPeriodLinesAmount(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
+            }else if (methodName.equals("Tree")){
+                result = DAO.INSTANCE.getCIALinesAmount();
             }
         } catch (SQLException e) {
             e.printStackTrace();

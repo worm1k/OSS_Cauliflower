@@ -2885,6 +2885,14 @@ public class DAO {
         }
         return result;
     }
+    public int getCIALinesAmount()throws SQLException{
+        System.out.println("CIAICACIA");
+        return 1;
+    }
+    public List<Object> getCIAReport(int page, int pageLength) throws SQLException{
+        System.out.println("CIA PAGE");
+        return new ArrayList<Object>();
+    }
     /**---------------------------------------------------------------------END KASPYAR---------------------------------------------------------------------**/
 
 
@@ -3410,7 +3418,7 @@ public class DAO {
             public void setRouter(String router) {
                 this.router = router;
             }
-            public String isUsed() {
+            public String getUsed() {
                 return used;
             }
             public void setUsed(String used) {
