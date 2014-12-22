@@ -40,6 +40,10 @@ public class ProvisioningTaskTest {
         controller.dao = dao;
     }
 
+    /**
+     * Tests servlet when task parameter is null
+     * @throws Exception
+     */
     @Test
     public void taskNullTest() throws Exception {
         User userStub = new User(0, 0, "", "", "", "", "", false);
@@ -60,10 +64,11 @@ public class ProvisioningTaskTest {
         reset(request, response, session);
     }
 
-    @Test
     /**
-     * When task doesn't have status PROCESSING
+     * Tests servlet when task doesn't have status processing.
+     * @throws Exception
      */
+    @Test
     public void badTaskTest() throws Exception {
         Task taskStub = new Task(0, 0, 0, 0, "NOT PROCESSING", null);
 
@@ -84,7 +89,7 @@ public class ProvisioningTaskTest {
 
     @Test
     /**
-     * When user role id is not equal to expected user role id
+     * Tests servlet when user role id is not equal to expected user role id(provisioning engineer)
      */
     public void badUserTest() throws Exception {
         int userRoleId = 1;
@@ -108,11 +113,11 @@ public class ProvisioningTaskTest {
         reset(request, response, session, dao);
     }
 
-    @Test
     /**
-     * When all attributes and their status are initialised as expected, servlet should finally redirect
+     * Tests servlet when all attributes and their status are initialised as expected, servlet should finally redirect
      * to provisioning engineer dashboard.
      */
+    @Test
     public void normalWorkFlowTest() throws Exception {
         int userRoleId = 0;
         User userStub = new User(0, userRoleId, "", "", "", "", "", false);

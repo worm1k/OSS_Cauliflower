@@ -27,7 +27,7 @@ import java.sql.SQLException;
 @WebServlet(name = "ProvisioningTaskController")
 public class ProvisioningTaskController extends HttpServlet {
     private static final Logger logger = Logger.getLogger(ProvisioningTaskController.class);
-    private DAO dao = DAO.INSTANCE;
+    DAO dao = DAO.INSTANCE;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get all required attributes and parameters

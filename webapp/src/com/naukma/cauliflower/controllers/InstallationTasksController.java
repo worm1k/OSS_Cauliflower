@@ -33,7 +33,7 @@ import java.util.List;
 @WebServlet(name = "InstallationTasksController")
 public class InstallationTasksController extends HttpServlet {
     private static final Logger logger = Logger.getLogger(InstallationTasksController.class);
-    private DAO dao = DAO.INSTANCE;
+    DAO dao = DAO.INSTANCE;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get all required attributes and parameters
@@ -101,7 +101,7 @@ public class InstallationTasksController extends HttpServlet {
      * @throws SQLException
      */
     private void sendEmailNotificationForUserGroup(UserRole userRole, TaskName taskName) throws SQLException{
-        List<User> usersByUserRole = DAO.INSTANCE.getUsersByUserRole(userRole);
+        List<User> usersByUserRole = dao.getUsersByUserRole(userRole);
         EmailSender.sendEmailToGroup(usersByUserRole,
                 taskName.toString(),
                 getServletContext().getRealPath(CauliflowerInfo.EMAIL_TEMPLATE_PATH));
