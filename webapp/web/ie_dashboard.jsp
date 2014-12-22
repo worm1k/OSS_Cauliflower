@@ -16,14 +16,14 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="IEDashboard">
 <head>
-    <title>CauliFlower | Installation Engineer Dashboard</title>
+    <title>Installation Engineer Dashboard | CauliFlower</title>
     <jsp:include page="head.jsp"/>
 </head>
 <body ng-controller="IEDashboardController">
     <jsp:include page="header.jsp"/>
 
     <div class="container">
-        <h1 class="txt-center txt-bold">CauliFlower</h1>
+        <h1 class="txt-center txt-bold">Internet Provider "CauliFlower"</h1>
         <h2 class="txt-center">Installation Engineer Dashboard</h2>
         <%--Server message shows here--%>
         <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
@@ -52,7 +52,6 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Id</th>
                         <th>Scenario</th>
                         <th>Status</th>
                         <th></th>
@@ -61,7 +60,6 @@
                 <tbody>
                     <tr ng-repeat="task in arrTaskFree" class="ng-cloak">
                         <td>{{$index + 1}}</td>
-                        <td>{{task.taskId}}</td>
                         <td>{{task.taskName}}</td>
                         <td>{{task.taskStatus}}</td>
                         <td>
@@ -85,7 +83,6 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Id</th>
                         <th>Scenario</th>
                         <th>Status</th>
                         <th></th>
@@ -94,7 +91,6 @@
             <tbody>
                 <tr ng-repeat="task in arrTaskSubscribed" class="ng-cloak">
                     <td>{{$index + 1}}</td>
-                    <td>{{task.taskId}}</td>
                     <td>{{task.taskName}}</td>
                     <td>{{task.taskStatus}}</td>
                     <td>

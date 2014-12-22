@@ -27,6 +27,7 @@ table, .table { border: 1px solid #ddd }
     padding-bottom: 20px;
     border-top: 2px solid #dbdbdb;
 }
+.pointer-cursor { cursor: pointer; }
 .search-container {
     position: relative;
 }

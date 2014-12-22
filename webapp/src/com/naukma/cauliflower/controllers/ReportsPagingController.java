@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,12 +30,12 @@ public class ReportsPagingController  extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        final int LINES_ON_PAGE = 3;
-        int page = 1;
+        final int LINES_ON_PAGE = 20;
+        int page = 0;
         try{
             page = Integer.valueOf((String) request.getParameter("page"));
         }catch (NumberFormatException e){
-            page = 1;
+            page = 0;
         }
         String methodName = (String) request.getParameter("reportMethod");
         String startDate = (String) request.getParameter("startDate");
@@ -43,11 +44,11 @@ public class ReportsPagingController  extends HttpServlet {
         User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         String pathFrom  = request.getHeader("Referer");
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         java.sql.Date sqlStartDate = null;
         java.sql.Date sqlEndDate = null;
 
-        request.getSession().setAttribute(CauliflowerInfo.LINES_ON_PAGE_ATTRIBUTE, LINES_ON_PAGE);
+        HashMap<String, Object> map = new HashMap<String, Object>();
 
         if (startDate != null && endDate != null)
             try {
@@ -119,7 +120,14 @@ public class ReportsPagingController  extends HttpServlet {
                 //resultSet =
                 if(hasRights)
                     list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, page, LINES_ON_PAGE);
+            }else if (methodName.equals("Tree")){
+                hasRights = user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) ||
+                        user.getUserRole().equals(UserRole.CUST_SUP_ENG.toString())||
+                        user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
+                if (hasRights)
+                    list = DAO.INSTANCE.getCIAReport(page, LINES_ON_PAGE);
             }
+
             //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
             /*if (resultSet == null)
                 resultSet = DAO.INSTANCE.reportTester();*/
@@ -128,21 +136,21 @@ public class ReportsPagingController  extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        ObjectMapper mapper = new ObjectMapper();
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
         if(hasRights) {
             System.out.println(list);
-            ObjectMapper mapper = new ObjectMapper();
-            response.setContentType("application/json;charset=UTF-8");
-            PrintWriter out = response.getWriter();
-//        //return data as json object
-//        //Convert Java object to JSON format
-            mapper.writeValue(out, list);
-//        Service service = DAO.INSTANCE.getServiceById(1);
-//        mapper.writeValue(out, service);
+            map.put("list", list);
+            map.put("linesOnPage", LINES_ON_PAGE);
         }else{
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
             //response.getWriter().println("Sorry, you have no rights for downloading this report");
-            response.sendRedirect(pathFrom);
         }
+
+        mapper.writeValue(out, map);
     }
 
 

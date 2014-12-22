@@ -16,14 +16,14 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="MapDashboard">
 <head>
-    <title>CauliFlower | Dashboard</title>
+    <title>Dashboard | CauliFlower</title>
     <jsp:include page="head.jsp"/>
 </head>
 <body ng-controller="MapDashboardController">
     <jsp:include page="header.jsp"/>
 
     <div class="container">
-        <h1 class="txt-center txt-bold">CauliFlower</h1>
+        <h1 class="txt-center txt-bold">Internet Provider "CauliFlower"</h1>
         <h2 class="txt-center">Dashboard</h2>
     </div>
 
@@ -36,8 +36,6 @@
                     ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
             </select>
             <dl class="dl-horizontal ng-cloak">
-                <dt>Id:</dt>
-                <dd>{{serviceInstance.id}}</dd>
                 <dt>Service Location:</dt>
                 <dd>{{serviceInstance.serviceLocation.locationAddress}}</dd>
                 <dt>Provider Location:</dt>
@@ -56,7 +54,7 @@
             <div class="col-xs-8 border-right margin-bottom">
                 <h3>Modify Service:</h3>
                 <p ng-class="arrAvailableServices.length > 0? 'item-visible-false' : 'item-visible-true'">There are no available services.</p>
-                <form action="services" method="POST" ng-class="arrAvailableServices.length > 0? 'item-visible-true' : 'item-visible-false'">
+                <form action="proceed" method="POST" ng-class="arrAvailableServices.length > 0? 'item-visible-true' : 'item-visible-false'">
                     <ul>
                         <li ng-repeat="service in arrAvailableServices" class="ng-cloak">
                             <label class="radio font-regular">
@@ -77,7 +75,7 @@
             </div>
             <div class="col-xs-4 margin-bottom">
                 <h3>Disconnect:</h3>
-                <form action="services" method="POST">
+                <form action="proceed" method="POST">
                     <input type="hidden" name="instanceId" value="{{serviceInstance.id}}">
                     <input type="hidden" name="scenario" value="DISCONNECT">
                     <button type="submit" class="btn btn-danger">Disconnect</button>
@@ -94,7 +92,6 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>Id</th>
                         <th>Scenario</th>
                         <th>Status</th>
                     </tr>
@@ -102,7 +99,6 @@
                     <tbody>
                     <tr ng-repeat="order in serviceInstance.arrServiceOrder" class="ng-cloak">
                         <td>{{$index + 1}}</td>
-                        <td>{{order.id}}</td>
                         <td>{{order.orderScenario}}</td>
                         <td>{{order.orderStatus}}</td>
                     </tr>

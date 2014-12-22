@@ -7,23 +7,23 @@ import java.io.Serializable;
 
 public class Device implements Serializable {
 
-	private int id;
+	private String device;
 	private int occupiedPortCap;
 	private int freePortCap;
 
-	public Device(int id, int occupiedPortCap, int freePortCap) {
+	public Device(String device, int occupiedPortCap, int freePortCap) {
 		super();
-		this.id = id;
+		this.device = device;
 		this.occupiedPortCap = occupiedPortCap;
 		this.freePortCap = freePortCap;
 	}
 
-	public int getId() {
-		return id;
+	public String getDevice() {
+		return device;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setDevice(String device) {
+		this.device = device;
 	}
 
 	public int getOccupiedPortCap() {

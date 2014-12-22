@@ -12,11 +12,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%
-
-//    String error = (String) request.getSession().getAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-//    request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-%>
 
 <!DOCTYPE html>
 <html lang="en" ng-app="Reports">
@@ -27,7 +22,7 @@
 <body ng-controller="ReportsController">
     <jsp:include page="header.jsp"/>
     <div class="container">
-        <h1 class="txt-center txt-bold">CauliFlower</h1>
+        <h1 class="txt-center txt-bold">Internet Provider "CauliFlower"</h1>
 
         <h2 class="txt-center">Reports</h2>
 
@@ -265,14 +260,16 @@
                                 <td>
                                     <form class="form-inline inline" action="report_view.jsp" method="post">
                                         <input type="hidden" name="reportMethod" value="New">
-                                        <button type="submit" class="btn btn-xs btn-default">View</button>
+                                        <input type="hidden" name="startDate" value="{{startTime}}"/>
+                                        <input type="hidden" name="endDate" value="{{endTime}}"/>
+                                        <button type="submit" id="js-get-report-0" class="btn btn-xs btn-default">View</button>
                                     </form>
                                     <form class="form-inline inline" action="reports" method="post">
                                         <input type="hidden" name="reportMethod" value="New">
                                         <input type="hidden" name="extension" value="{{reportFormat}}">
                                         <input type="hidden" name="startDate" value="{{startTime}}"/>
                                         <input type="hidden" name="endDate" value="{{endTime}}"/>
-                                        <button type="submit" id="js-get-report-0" class="btn btn-xs btn-primary">Download</button>
+                                        <button type="submit" id="js-get-report-1" class="btn btn-xs btn-primary">Download</button>
                                     </form>
 
                                 </td>
@@ -287,14 +284,16 @@
                                 <td>
                                     <form class="form-inline inline" action="report_view.jsp" method="post">
                                         <input type="hidden" name="reportMethod" value="Disconnect">
-                                        <button type="submit" class="btn btn-xs btn-default">View</button>
+                                        <input type="hidden" name="startDate" value="{{startTime}}"/>
+                                        <input type="hidden" name="endDate" value="{{endTime}}"/>
+                                        <button type="submit" id="js-get-report-2" class="btn btn-xs btn-default">View</button>
                                     </form>
                                     <form class="form-inline inline" action="reports" method="post">
                                         <input type="hidden" name="reportMethod" value="Disconnect">
                                         <input type="hidden" name="extension" value="{{reportFormat}}">
                                         <input type="hidden" name="startDate" value="{{startTime}}"/>
                                         <input type="hidden" name="endDate" value="{{endTime}}"/>
-                                        <button type="submit" id="js-get-report-1" class="btn btn-xs btn-primary">Download</button>
+                                        <button type="submit" id="js-get-report-3" class="btn btn-xs btn-primary">Download</button>
                                     </form>
 
                                 </td>

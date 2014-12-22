@@ -22,14 +22,14 @@
 
 <html>
 <head>
-    <title>Cauliflower | Task Information</title>
+    <title>Task Information | CauliFlower</title>
     <jsp:include page="head.jsp"/>
 </head>
 <body>
     <jsp:include page="header.jsp"/>
 
     <div class="container">
-        <h1 class="text-center txt-bold">CauliFlower</h1>
+        <h1 class="text-center txt-bold">Internet Provider "CauliFlower"</h1>
         <h2 class="text-center">Task Information</h2>
 
         <%--Server message shows here--%>
@@ -57,8 +57,6 @@
             <div class="col-xs-12">
                 <h4 class="txt-bold">About Task:</h4>
                 <dl class="dl-horizontal">
-                    <dt>Task id:</dt>
-                    <dd>${task.taskId}</dd>
                     <dt>Task name:</dt>
                     <dd>${task.taskName}</dd>
                     <dt>Task status:</dt>
@@ -68,8 +66,6 @@
             <div class="col-xs-12">
                 <h4 class="txt-bold">Customer User:</h4>
                 <dl class="dl-horizontal">
-                    <dt>User id:</dt>
-                    <dd>${customerUser.userId}</dd>
                     <dt>User name:</dt>
                     <dd>${customerUser.firstName}</dd>
                     <dt>User surname:</dt>
@@ -85,8 +81,6 @@
             <div class="col-xs-12">
                 <h4 class="txt-bold">Service Order:</h4>
                 <dl class="dl-horizontal">
-                    <dt>Order id:</dt>
-                    <dd>${serviceOrder.serviceOrderId}</dd>
                     <dt>Order status:</dt>
                     <dd>${serviceOrder.orderStatus}</dd>
                     <dt>Order scenario:</dt>
@@ -96,8 +90,6 @@
             <div class="col-xs-12">
                 <h4 class="txt-bold">Service Instance:</h4>
                 <dl class="dl-horizontal">
-                    <dt>Instance id:</dt>
-                    <dd>${serviceInstance.instanceId}</dd>
                     <dt>Service Location:</dt>
                     <dd>${serviceInstance.serviceLocation.locationAddress}</dd>
                     <dt>Instance status:</dt>
@@ -109,8 +101,6 @@
             <div class="col-xs-12">
                 <h4 class="txt-bold">Service:</h4>
                 <dl class="dl-horizontal">
-                    <dt>Id:</dt>
-                    <dd>${service.serviceId}</dd>
                     <dt>Provider Location:</dt>
                     <dd>${service.locationAddress}</dd>
                     <dt>Service:</dt>
@@ -125,8 +115,6 @@
                 <div class="col-xs-12">
                     <h4 class="txt-bold">Modify to Service:</h4>
                     <dl class="dl-horizontal">
-                        <dt>Id:</dt>
-                        <dd>${newService.serviceId}</dd>
                         <dt>Service:</dt>
                         <dd>${newService.serviceTypeName}</dd>
                         <dt>Service speed:</dt>

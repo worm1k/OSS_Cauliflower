@@ -17,14 +17,14 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="NgApp">
 <head>
-  <title></title>
+  <title>Administrator | CauliFlower</title>
   <jsp:include page="head.jsp"/>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
 
 <div class="container">
-  <h1 class="text-center txt-bold">CauliFlower</h1>
+  <h1 class="text-center txt-bold">Internet Provider "CauliFlower"</h1>
     <h2 class="text-center">Administrator Dashboard</h2>
   <%--Server message shows here--%>
   <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">

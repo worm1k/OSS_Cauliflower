@@ -193,11 +193,11 @@
 
 
     <servlet>
-        <servlet-name>AmountOfLinesInReportComtroller</servlet-name>
-        <servlet-class>com.naukma.cauliflower.controllers.AmountOfLinesInReportComtroller</servlet-class>
+        <servlet-name>AmountOfLinesInReportController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.AmountOfLinesInReportController</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>AmountOfLinesInReportComtroller</servlet-name>
+        <servlet-name>AmountOfLinesInReportController</servlet-name>
         <url-pattern>/amountoflines</url-pattern>
     </servlet-mapping>
 

@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="NgApp">
 <head>
-    <title>Cauliflower | Home</title>
+    <title>Home | Cauliflower</title>
     <jsp:include page="head.jsp"/>
 </head>
 <body>
@@ -17,7 +17,7 @@
 
     <div class="container">
         <div class="row text-center">
-            <h1 class="txt-center txt-bold">CauliFlower</h1>
+            <h1 class="txt-center txt-bold">Internet Provider "CauliFlower"</h1>
             <img class="img-responsive center-block img-logo-homepage" src="img/logo_lg.png"/>
         </div>
     </div>

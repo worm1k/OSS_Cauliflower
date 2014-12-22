@@ -15,9 +15,10 @@ import java.io.IOException;
  */
 @WebServlet(name = "LogoutController")
 public class LogoutController extends HttpServlet {
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getSession().invalidate();
-        response.sendRedirect("home.jsp");
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

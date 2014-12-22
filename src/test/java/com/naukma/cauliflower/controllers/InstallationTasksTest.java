@@ -3,6 +3,7 @@ package com.naukma.cauliflower.controllers;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.TaskName;
 import com.naukma.cauliflower.dao.UserRole;
+import com.naukma.cauliflower.entities.ServiceOrder;
 import com.naukma.cauliflower.entities.Task;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
@@ -39,6 +40,10 @@ public class InstallationTasksTest {
         controller.dao = dao;
     }
 
+    /**
+     * Tests servlet when task id parameter and service order are null.
+     * @throws Exception
+     */
     @Test
     public void testTaskAndServiceNull() throws Exception {
         expect(request.getSession()).andReturn(session).times(2);
@@ -56,6 +61,10 @@ public class InstallationTasksTest {
         reset(request, response, session);
     }
 
+    /**
+     * Tests servlet when task doesn't have status processing.
+     * @throws Exception
+     */
     @Test
     public void badTaskTest() throws Exception {
         expect(request.getSession()).andReturn(session);
@@ -74,6 +83,10 @@ public class InstallationTasksTest {
         reset(request, response, session, dao);
     }
 
+    /**
+     * Tests servlet when user role is not installation engineer
+     * @throws Exception
+     */
     @Test
     public void badUserTest() throws Exception {
         int userRoleId = 1;
@@ -96,9 +109,14 @@ public class InstallationTasksTest {
         reset(request, response, session, dao);
     }
 
+    /**
+     * Tests servlet, whether error attribute is set if system has no free ports.
+     * @throws Exception
+     */
     @Test
     public void noFreePortsAttributeTest() throws Exception {
         int userRoleId = 0;
+        int createNewRouterTaskCount = 1;
 
         expect(request.getSession()).andReturn(session).times(2);
         expect(session.getAttribute(CauliflowerInfo.USER_ATTRIBUTE)).andReturn(new User(0, userRoleId, "", "", "", "", "", false));
@@ -106,8 +124,40 @@ public class InstallationTasksTest {
         expect(dao.getTaskById(anyInt())).andReturn(new Task(0, 0, 0, 0, "PROCESSING", TaskName.CREATE_CIRCUIT));
         expect(dao.getUserRoleIdFor(UserRole.INSTALLATION_ENG)).andReturn(userRoleId);
         expect(dao.freePortExists()).andReturn(false);
+        expect(dao.countNotCompletedTasksByTaskName(TaskName.CREATE_NEW_ROUTER)).andReturn(createNewRouterTaskCount);
         session.setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.NO_PORTS_ERROR_MESSAGE);
         expectLastCall();
+
+
+        response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
+        expectLastCall();
+
+        replay(request, response, session, dao);
+
+        controller.doPost(request, response);
+
+        verify(request, response, session, dao);
+        reset(request, response, session, dao);
+    }
+
+    /**
+     * Tests servlet when all attributes and their status are initialised as expected, servlet should finally redirect
+     * to installation engineer dashboard.
+     */
+    @Test
+    public void normalWorkFlowTest() throws Exception {
+        int userRoleId = 0;
+        User userStub = new User(0, userRoleId, "", "", "", "", "", false);
+        //Create new router (for example, because nothing will be changed)
+        Task taskStub = new Task(0, 0, 0, 0, "PROCESSING", TaskName.CREATE_NEW_ROUTER);
+        ServiceOrder serviceOrderStub = new ServiceOrder(0, 0, "", 0, 0, "", null, 0);
+
+        expect(request.getSession()).andReturn(session);
+        expect(session.getAttribute(CauliflowerInfo.USER_ATTRIBUTE)).andReturn(userStub);
+        expect(request.getParameter(isA(String.class))).andStubReturn("0");
+        expect(dao.getTaskById(anyInt())).andReturn(taskStub);
+        expect(dao.getUserRoleIdFor(UserRole.INSTALLATION_ENG)).andReturn(userRoleId);
+        //some dao void method calls, we don't test them
 
 
         response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
