@@ -791,10 +791,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public User getUserByLoginAndPassword(String login, String password) throws SQLException {
-        {//help
-            System.out.println("getUserByLoginAndPassword");
-        }
-        logger.info("Hello logger");
         Connection connection = getConnection();
         User user = null;
         PreparedStatement preparedStatement = null;
@@ -818,9 +814,6 @@ public class DAO {
                 user = new User(idUser, idUserrole, userrole, eMail, firstName, lastName, phone, isBlocked);
             }
             resultSet.close();
-            {//help
-                System.out.println("SUCCESS!!! getUserByLoginAndPassword");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -850,9 +843,6 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int result = 0;
-        {//help
-            System.out.println("CREATE NEW ORDER!");
-        }
         try {
             connection.setAutoCommit(false);
             preparedStatement = connection.
@@ -901,9 +891,6 @@ public class DAO {
                 result = resultSet.getInt("RES");
             }
             connection.commit();
-            {//help
-                System.out.println("SUCCESS! CREATE NEW ORDER!");
-            }
 
         } catch (SQLException e) {
             if (connection != null) {
@@ -936,9 +923,6 @@ public class DAO {
      * @throws java.sql.SQLException*
      */
     public void setUserForInstance(int instanceId, int userId) throws SQLException {
-        {//help
-            System.out.println("SET USER FOR INSTANCE!");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
@@ -949,9 +933,6 @@ public class DAO {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, instanceId);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("SUCCESS!!! SET USER FOR INSTANCE!");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -973,9 +954,6 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.InstanceStatus
      */
     public void changeInstanceStatus(int instanceId, InstanceStatus status) throws SQLException {
-        {//help
-            System.out.println("CHANGE INSTANCE STATUS!");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
@@ -988,9 +966,6 @@ public class DAO {
             preparedStatement.setString(1, status.toString());
             preparedStatement.setInt(2, instanceId);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("SUCCESS!!! CHANGE INSTANCE STATUS!");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1013,9 +988,6 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.OrderStatus
      */
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) throws SQLException {
-        {//help
-            System.out.println("CHANGE ORDER STATUS");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
@@ -1027,9 +999,6 @@ public class DAO {
             preparedStatement.setString(1, orderStatus.toString());
             preparedStatement.setInt(2, orderId);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("SUCCESS!!! CHANGE ORDER STATUS");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1052,9 +1021,6 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.TaskStatus
      */
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) throws SQLException {
-        {//help
-            System.out.println("CHANGE TASK STATUS");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
@@ -1066,9 +1032,6 @@ public class DAO {
             preparedStatement.setString(1, taskStatus.toString());
             preparedStatement.setInt(2, taskId);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("SUCCESS!!! CHANGE TASK STATUS");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1092,9 +1055,6 @@ public class DAO {
     public void setInstanceBlocked(int instanceId, int isBlocked) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        {//help
-            System.out.println("SET INSTANCE BLOCKED!");
-        }
         try {
             preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
                     "SET HAS_ACTIVE_TASK = ? " +
@@ -1102,9 +1062,6 @@ public class DAO {
             preparedStatement.setInt(1, isBlocked);
             preparedStatement.setInt(2, instanceId);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("SUCCESS! SET INSTANCE BLOCKED!");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1127,9 +1084,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId) throws SQLException {
-        {//help
-            System.out.println("getTasksByStatusAndRole");
-        }
         ArrayList<Task> result = new ArrayList<Task>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1149,9 +1103,6 @@ public class DAO {
                         resultSet.getString("TS_NAME"),
                         TaskName.valueOf(resultSet.getString("T_NAME"))));
 
-            }
-            {//help
-                System.out.println("success!   getTasksByStatusAndRole");
             }
         } finally {
             try {
@@ -1175,9 +1126,6 @@ public class DAO {
      * @see com.naukma.cauliflower.entities.Service
      */
     public List<Service> getServicesByProviderLocationId(int providerLocationId) throws SQLException {
-        {//help
-            System.out.println("getServicesByProviderLocationId");
-        }
         ArrayList<Service> result = new ArrayList<Service>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1201,9 +1149,6 @@ public class DAO {
                         resultSet.getInt("ID"),
                         resultSet.getDouble("PRICE")));
             }
-            {//help
-                System.out.println("SUCCESS !!! getServicesByProviderLocationId");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1224,9 +1169,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void createRouter() throws SQLException {
-        {//help
-            System.out.println("CREATE ROUTER");
-        }
         int amountsOfPorts = CauliflowerInfo.PORTS_QUANTITY;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1249,9 +1191,6 @@ public class DAO {
             preparedStatement = connection.prepareStatement(sb.toString());
             preparedStatement.executeUpdate();
             connection.commit();
-            {//help
-                System.out.println("SUCCESS!!! CREATE NEW ROUTER");
-            }
         } catch (SQLException e) {
             if (connection != null) {
                 logger.error("Transaction is being rolled back");
@@ -1286,9 +1225,6 @@ public class DAO {
      */
 
     public ServiceOrder getServiceOrder(int taskId) throws SQLException {
-        {//help
-            System.out.println("getServiceOrder");
-        }
         ServiceOrder result = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1314,9 +1250,6 @@ public class DAO {
                         resultSet.getString("OSC_NAME"),
                         gregorianCalendar, resultSet.getInt("ID_USER"));
             }
-            {//help
-                System.out.println("SUCCESS ! getServiceOrder");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1339,9 +1272,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void setInstanceForOrder(int instanceId, int orderId) throws SQLException {
-        {//help
-            System.out.println("SET INSTANCE FOR ORDER");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
@@ -1352,9 +1282,6 @@ public class DAO {
             preparedStatement.setInt(1, instanceId);
             preparedStatement.setInt(2, orderId);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("SUCCESS!!! SET INSTANCE FOR ORDER");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1379,9 +1306,6 @@ public class DAO {
      */
 
     public ArrayList<ServiceOrder> getOrders(int userId) throws SQLException {
-        {//help
-            System.out.println("GET ORDERS");
-        }
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1407,9 +1331,6 @@ public class DAO {
                         gregorianCalendar,
                         resultSet.getInt("ID_USER")));
             }
-            {//help
-                System.out.println("SUCCESS ! GET ORDERS");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1434,9 +1355,6 @@ public class DAO {
      */
 
     public ArrayList<ServiceInstance> getInstances(int userId) throws SQLException {
-        {//help
-            System.out.println("GET INSTANCES");
-        }
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1466,9 +1384,6 @@ public class DAO {
                         resultSet.getInt("ID_CABLE"),
                         (resultSet.getInt("HAS_ACTIVE_TASK") == 1)));
             }
-            {//help
-                System.out.println("SUCCESS !!! GET INSTANCES");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1492,9 +1407,6 @@ public class DAO {
      * @see com.naukma.cauliflower.entities.ServiceOrder
      */
     public ArrayList<ServiceOrder> getAllOrders() throws SQLException {
-        {//help
-            System.out.println("GET ALL ORDERS");
-        }
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1519,9 +1431,6 @@ public class DAO {
                         gregorianCalendar,
                         resultSet.getInt("ID_USER")));
             }
-            {//help
-                System.out.println("SUCCESS GET ALL ORDERS");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1544,9 +1453,6 @@ public class DAO {
      * @see com.naukma.cauliflower.entities.ServiceInstance
      */
     public ArrayList<ServiceInstance> getAllInstances() throws SQLException {
-        {//help
-            System.out.println("GET ALL INSTANCES");
-        }
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1574,9 +1480,6 @@ public class DAO {
                         resultSet.getInt("ID_CABLE"),
                         (resultSet.getInt("HAS_ACTIVE_TASK") == 1)));
             }
-            {//help
-                System.out.println("SUCCESS !! GET ALL INSTANCES");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1600,9 +1503,6 @@ public class DAO {
      * @see com.naukma.cauliflower.entities.ProviderLocation
      */
     public List<ProviderLocation> getProviderLocations() throws SQLException {
-        {//
-            System.out.println("getProviderLocations");
-        }
         ArrayList<ProviderLocation> result = new ArrayList<ProviderLocation>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1616,9 +1516,6 @@ public class DAO {
                         resultSet.getString("ADRESS"),
                         resultSet.getDouble("LONGITUDE"),
                         resultSet.getDouble("LATITUDE")));
-            }
-            {//
-                System.out.println("SUCCESS!!! getProviderLocations");
             }
         } finally {
             try {
@@ -1643,9 +1540,6 @@ public class DAO {
      * @see com.naukma.cauliflower.entities.Service
      */
     public Service getServiceById(int serviceId) throws SQLException {
-        {//help
-            System.out.println("getServiceById");
-        }
         Service service = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1671,9 +1565,6 @@ public class DAO {
                         resultSet.getDouble("PRICE")
                 );
             }
-            {//help
-                System.out.println("getServiceById");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -1696,9 +1587,6 @@ public class DAO {
      * @see com.naukma.cauliflower.entities.Service
      */
     public List<Service> getServices() throws SQLException {
-        {//
-            System.out.println("getServices");
-        }
         ArrayList<Service> result = new ArrayList<Service>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1721,9 +1609,6 @@ public class DAO {
                         resultSet.getInt("ID_PROVIDER_LOCATION"),
                         resultSet.getInt("ID"),
                         resultSet.getDouble("PRICE")));
-            }
-            {//
-                System.out.println("SUCCESS!!! getServices");
             }
         } finally {
             try {
@@ -1749,9 +1634,6 @@ public class DAO {
      */
 
     public int createServiceLocation(ServiceLocation serviceLocation) throws SQLException {
-        {//help
-            System.out.println("CREATE SERVICE LOCATION!");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int res = 0;
@@ -1777,9 +1659,6 @@ public class DAO {
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) res = resultSet.getInt("MAX_ID");
             connection.commit();
-            {//help
-                System.out.println("SUCCESS!!! CREATE SERVICE LOCATION!");
-            }
         } catch (SQLException e) {
             if (connection != null) {
                 logger.error("Transaction is being rolled back");
@@ -1817,9 +1696,6 @@ public class DAO {
      */
 
     public int createServiceInstance(int userId, ServiceLocation serviceLocation, int serviceId) throws SQLException {
-        {//help
-            System.out.println("CREATE SERVICE INSTANCE!");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int res = 0;
@@ -1839,9 +1715,6 @@ public class DAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) res = resultSet.getInt("MAX_ID");
             connection.commit();
-            {//help
-                System.out.println("SUCCESS !! CREATE SERVICE INSTANCE!");
-            }
         } catch (SQLException e) {
             if (connection != null) {
                 logger.error("Transaction is being rolled back");
@@ -1881,9 +1754,6 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.TaskName
      */
     public int createNewTask(int serviceOrderId, UserRole role, TaskName taskName, TaskStatus taskStatus) throws SQLException {
-        {//help
-            System.out.println("CREATE TASK");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int taskId = 0;
@@ -1905,9 +1775,6 @@ public class DAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) taskId = resultSet.getInt("TASK_ID");
             connection.commit();
-            {//help
-                System.out.println("SUCCESS!!! CREATE TASK");
-            }
         } catch (SQLException e) {
             if (connection != null) {
                 logger.error("Transaction is being rolled back");
@@ -1943,10 +1810,6 @@ public class DAO {
      * @see UserRole
      */
     public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) throws SQLException {
-        {//help
-            System.out.println("getFreeAndProcessingTasksByUserRoleId");
-            System.out.println("UserRoleId:" + userRoleId);
-        }
         ArrayList<Task> result = new ArrayList<Task>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1967,9 +1830,6 @@ public class DAO {
                         resultSet.getInt("ID_TASKSTATUS"),
                         resultSet.getString("TS_NAME"),
                         TaskName.valueOf(resultSet.getString("NAME"))));
-            }
-            {//help
-                System.out.println("SUCCESS!!! getFreeAndProcessingTasksByUserRoleId");
             }
         } finally {
             try {
@@ -1993,9 +1853,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void createPortAndCableAndAssignToServiceInstance(int serviceOrderId) throws SQLException {
-        {//help
-            System.out.println("createPortAndCableAndAssignToServiceInstance");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         int portId = 0;
@@ -2026,9 +1883,6 @@ public class DAO {
             preparedStatement.setInt(1, portId);
             preparedStatement.executeUpdate();
             connection.commit();
-            {//help
-                System.out.println("SUCCESS!!! createPortAndCableAndAssignToServiceInstance");
-            }
         } catch (SQLException e) {
             if (connection != null) {
                 logger.error("Transaction is being rolled back");
@@ -2060,9 +1914,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public boolean freePortExists() throws SQLException {
-        {//help
-            System.out.println("freePortExists");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         boolean result = false;
@@ -2072,9 +1923,6 @@ public class DAO {
             preparedStatement.setInt(1, 0);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) result = (resultSet.getInt("AM") > 0);
-            {//help
-                System.out.println("SUCCESS!!! freePortExists");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -2096,9 +1944,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public Scenario getOrderScenario(int serviceOrderId) throws SQLException {
-        {//help
-            System.out.println("getOrderScenario");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         Scenario result = null;
@@ -2110,9 +1955,6 @@ public class DAO {
             preparedStatement.setInt(1, serviceOrderId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) result = Scenario.valueOf(resultSet.getString("NAME"));
-            {//help
-                System.out.println("SUCCESS!!! getOrderScenario");
-            }
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -2133,9 +1975,6 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.TaskStatus
      */
     public TaskStatus getTaskStatus(int taskId) throws SQLException {
-        {//help
-            System.out.println("getTaskStatus");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         TaskStatus result = null;
@@ -2148,9 +1987,6 @@ public class DAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = TaskStatus.valueOf(resultSet.getString("NAME"));
-            }
-            {//help
-                System.out.println("SUCCESS!!!getTaskStatus");
             }
         } finally {
             try {
@@ -2173,9 +2009,6 @@ public class DAO {
      * @see com.naukma.cauliflower.entities.Task
      */
     public Task getTaskById(int taskId) throws SQLException {
-        {//help
-            System.out.println("getTaskById");
-        }
         Task task = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -2194,9 +2027,6 @@ public class DAO {
                         resultSet.getInt("ID_TASKSTATUS"),
                         resultSet.getString("TS_NAME"),
                         TaskName.valueOf(resultSet.getString("NAME")));
-            }
-            {//help
-                System.out.println("SUCCESS!!!getTaskById");
             }
         } finally {
             try {
@@ -2217,9 +2047,6 @@ public class DAO {
      * @see java.sql.ResultSet
      */
     public ReportGenerator getMostProfitableRouterForReport(final String EXT) throws SQLException {
-        {//help
-            System.out.println("getMostProfitableRouterForReport");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2251,9 +2078,6 @@ public class DAO {
                 exc.printStackTrace();
             }
         }
-        {//help
-            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
-        }
         return reportGenerator;
     }
 
@@ -2266,9 +2090,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void setServiceForTask(int taskId, int serviceId) throws SQLException {
-        {//help
-            System.out.println("setServiceForTask");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
@@ -2284,9 +2105,6 @@ public class DAO {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
             }
-        }
-        {//help
-            System.out.println("SUCCESS!!!setServiceForTask");
         }
         return;
     }
@@ -2352,7 +2170,6 @@ public class DAO {
             }
         }
         return result;
-
     }
 
 
@@ -2395,9 +2212,6 @@ public class DAO {
      * @see com.naukma.cauliflower.entities.Service
      */
     public List<User> getUsersByUserRole(UserRole role) throws SQLException {
-        {//
-            System.out.println("getUsersByUserRole");
-        }
         ArrayList<User> result = new ArrayList<User>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -2417,9 +2231,6 @@ public class DAO {
                         resultSet.getString("L_NAME"),
                         resultSet.getString("PHONE"),
                         ((resultSet.getString("IS_BLOCKED")).equals("1") ? true : false)));
-            }
-            {//
-                System.out.println("SUCCESS!!! getUsersByUserRole");
             }
         } finally {
             try {
@@ -2442,9 +2253,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getMostProfitableRouterForReport(int page, int pageLength) throws SQLException {
-        {//help
-            System.out.println("getMostProfitableRouterForReport");
-        }
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2492,9 +2300,6 @@ public class DAO {
                 exc.printStackTrace();
             }
         }
-        {//help
-            System.out.println("SUCCESS!!!!getMostProfitableRouterForReport");
-        }
         return result;
     }
 
@@ -2506,7 +2311,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getUsedRoutersAndCapacityOfPorts(int page, int pageLength) throws SQLException {
-        System.out.println("getUsedRoutersAndCapacityOfPorts");
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2577,7 +2381,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getProfitabilityByMonth(int page, int pageLength) throws SQLException {
-
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2995,9 +2798,6 @@ public class DAO {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
                 exc.printStackTrace();
             }
-        }
-        {// help
-            System.out.println("SUCCESS!!!! getCIAReport()");
         }
         return result;
     }
