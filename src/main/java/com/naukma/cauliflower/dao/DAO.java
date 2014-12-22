@@ -3246,7 +3246,7 @@ public class DAO {
                     "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
                     "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
                     "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
-                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ORDER BY SO.OUR_DATE ASC ORDER BY SO.OUR_DATE ASC");
+                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ORDER BY SO.OUR_DATE ASC ");
 
             preparedStatement.setString(1, scenario.toString());
             preparedStatement.setDate(2, sqlStartDate);
@@ -3589,7 +3589,7 @@ public class DAO {
             private String nameService;
             private double speed;
             private String statusName;
-            private java.sql.Date date;
+            private java.sql.Date serviceOrderDate;
             private String firstName;
             private String lastName;
 
@@ -3598,7 +3598,7 @@ public class DAO {
                 this.nameService = nameService;
                 this.speed = speed;
                 this.statusName = statusName;
-                this.date = date;
+                this.serviceOrderDate = date;
                 this.firstName = firstName;
                 this.lastName = lastName;
             }
@@ -3615,8 +3615,8 @@ public class DAO {
                 return statusName;
             }
 
-            public java.sql.Date getDate() {
-                return date;
+            public java.sql.Date getServiceOrderDate() {
+                return serviceOrderDate;
             }
 
             public String getFirstName() {
