@@ -2715,30 +2715,8 @@ public class DAO {
         return result;
     }
     public int getCIALinesAmount()throws SQLException{
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         int result = 0;
-        String serviceInstanceStatus = InstanceStatus.ACTIVE.toString();
-        try{
-            preparedStatement = connection.
-                    prepareStatement("SELECT COUNT(*) AM " +
-                            "FROM ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
-                            "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE ) " +
-                            "INNER JOIN PORT P ON P.ID = C.ID_PORT ) " +
-                            "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS " +
-                            "WHERE SIST.NAME = ?");
-            preparedStatement.setString(1, serviceInstanceStatus);
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) result = resultSet.getInt("AM");
-        }finally {
-            try{
-                close(connection, preparedStatement);
-            }catch (SQLException e){
-                logger.warn("Can't close connection or preparedStatement");
-                e.printStackTrace();
-            }
-        }
+        result = getCablesAmount();
         return result;
     }
     public List<Object> getCIAReport(int page, int pageLength) throws SQLException{
@@ -2792,18 +2770,31 @@ public class DAO {
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
         final int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
-        final String selectQuery = " SELECT * FROM ( " +
-                "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+
-                portsQuantity+") PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
-                "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME , " +
+//        final String selectQuery = " SELECT * FROM ( " +
+//                "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+
+//                portsQuantity+") PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+//                "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME , " +
+//                "ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
+//                "FROM ((((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
+//                "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  " +
+//                "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
+//                "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS) " +
+//                "inner join (SERVICELOCATION SL INNER JOIN LOCATION L " +
+//                "ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION) " +
+//                "WHERE SIST.NAME = ? ) WHERE RN BETWEEN ? AND ? ";
+        final String selectQuery = "SELECT * FROM ( " +
+                "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
+                "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT_NAME, " +
+                "L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+                "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, " +
+                "U.L_NAME USER_LAST_NAME , " +
                 "ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
-                "FROM ((((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
-                "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  " +
-                "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
-                "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS) " +
-                "inner join (SERVICELOCATION SL INNER JOIN LOCATION L " +
-                "ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION) " +
-                "WHERE SIST.NAME = ? ) WHERE RN BETWEEN ? AND ? ";
+                "FROM SERVICEINSTANCE SI, SERVICELOCATION SL, LOCATION L, " +
+                "USERS U, SERVICEINSTANCESTATUS SIST, CABLE C, PORT P " +
+                "WHERE SI.ID_USER = U.ID_USER(+) AND SI.ID_SERVICE_LOCATION = SL.ID(+) " +
+                "AND SL.ID_LOCATION = L.ID(+) AND SI.SERVICE_INSTANCE_STATUS = SIST.ID(+) " +
+                "AND SI.ID_CABLE = C.ID(+) AND C.ID_PORT = P.ID(+) AND SIST.NAME = ? ) " +
+                "WHERE RN BETWEEN ? AND ? ";
         try {
             preparedStatement = connection.
                     prepareStatement(selectQuery);
