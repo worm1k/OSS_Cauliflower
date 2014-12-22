@@ -14,14 +14,14 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="CSEDashboard">
 <head>
-    <title>CauliFlower | Customer Support Engineer Dashboard</title>
+    <title>Customer Support Engineer Dashboard | CauliFlower</title>
     <jsp:include page="head.jsp"/>
 </head>
 <body ng-controller="CSEDashboardController">
     <jsp:include page="header.jsp"/>
 
     <div class="container">
-        <h1 class="txt-center txt-bold">CauliFlower</h1>
+        <h1 class="txt-center txt-bold">Internet Provider "CauliFlower"</h1>
         <h2 class="txt-center">Customer Support Engineer Dashboard</h2>
 
         <table class="table table-striped">

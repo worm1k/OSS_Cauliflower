@@ -15,7 +15,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="NgApp">
 <head>
-    <title>CauliFlower | Operation Support System</title>
+    <title>Connect | CauliFlower</title>
     <jsp:include page="head.jsp"/>
 </head>
 <body ng-controller="MapOrderController">
@@ -23,8 +23,8 @@
 <jsp:include page="header.jsp"/>
 
 <div class="container">
-    <h1 class="txt-center txt-bold">CauliFlower</h1>
-    <h2 class="txt-center">Service order</h2>
+    <h1 class="txt-center txt-bold">Internet Provider "CauliFlower"</h1>
+    <h2 class="txt-center">Connect to the internet</h2>
     <div class="row search-container item-visible-false">
         <div id="js-address-search" class="input-group search">
             <input type="text" id="js-address" class="form-control" placeholder="Search by address" ng-model="serviceLocationAddress" data-trigger="manual" data-placement="bottom" data-content="No result :(">

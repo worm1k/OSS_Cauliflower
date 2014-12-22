@@ -50,7 +50,7 @@
 <body ng-controller="ReportViewController">
     <jsp:include page="header.jsp"/>
     <div class="container">
-        <h1 class="text-center txt-bold">Cauliflower</h1>
+        <h1 class="text-center txt-bold">Internet Provider "CauliFlower"</h1>
         <h2 class="text-center">View "${param.reportMethod}" report</h2>
 
         <ul id="pagination"></ul>

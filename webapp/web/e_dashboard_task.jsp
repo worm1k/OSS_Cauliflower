@@ -22,14 +22,14 @@
 
 <html>
 <head>
-    <title>Cauliflower | Task Information</title>
+    <title>Task Information | CauliFlower</title>
     <jsp:include page="head.jsp"/>
 </head>
 <body>
     <jsp:include page="header.jsp"/>
 
     <div class="container">
-        <h1 class="text-center txt-bold">CauliFlower</h1>
+        <h1 class="text-center txt-bold">Internet Provider "CauliFlower"</h1>
         <h2 class="text-center">Task Information</h2>
 
         <%--Server message shows here--%>

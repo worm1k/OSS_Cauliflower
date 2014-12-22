@@ -16,14 +16,14 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="MapDashboard">
 <head>
-    <title>CauliFlower | Dashboard</title>
+    <title>Dashboard | CauliFlower</title>
     <jsp:include page="head.jsp"/>
 </head>
 <body ng-controller="MapDashboardController">
     <jsp:include page="header.jsp"/>
 
     <div class="container">
-        <h1 class="txt-center txt-bold">CauliFlower</h1>
+        <h1 class="txt-center txt-bold">Internet Provider "CauliFlower"</h1>
         <h2 class="txt-center">Dashboard</h2>
     </div>
 
