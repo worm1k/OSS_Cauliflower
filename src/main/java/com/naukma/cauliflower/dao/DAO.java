@@ -991,7 +991,8 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("UPDATE SERVICEORDER " +
+            preparedStatement = connection.
+                    prepareStatement("UPDATE SERVICEORDER " +
                     "SET ID_ORDERSTATUS = (SELECT ID_ORDERSTATUS " +
                     "FROM ORDERSTATUS " +
                     "WHERE NAME = ?) " +
@@ -1024,7 +1025,8 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("UPDATE TASK " +
+            preparedStatement = connection.
+                    prepareStatement("UPDATE TASK " +
                     "SET ID_TASKSTATUS = (SELECT ID_TASKSTATUS " +
                     "FROM TASKSTATUS " +
                     "WHERE NAME = ?) " +
@@ -1056,7 +1058,8 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("UPDATE SERVICEINSTANCE " +
+            preparedStatement = connection.
+                    prepareStatement("UPDATE SERVICEINSTANCE " +
                     "SET HAS_ACTIVE_TASK = ? " +
                     "WHERE ID = ?");
             preparedStatement.setInt(1, isBlocked);
@@ -1089,7 +1092,8 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.
-                    prepareStatement("SELECT T.ID_TASK, T.ID_USERROLE, T.ID_SERVICEORDER, T.ID_TASKSTATUS, TS.NAME TS_NAME, T.NAME T_NAME " +
+                    prepareStatement("SELECT T.ID_TASK, T.ID_USERROLE, T.ID_SERVICEORDER, " +
+                            "T.ID_TASKSTATUS, TS.NAME TS_NAME, T.NAME T_NAME " +
                             "FROM TASK T INNER JOIN TASKSTATUS TS ON T.ID_TASKSTATUS = TS.ID_TASKSTATUS " +
                             "WHERE T.ID_TASKSTATUS = ? AND T.ID_USERROLE = ?");
             preparedStatement.setInt(1, taskStatusId);
@@ -1131,9 +1135,11 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.
-                    prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                    prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, " +
+                            "L.LONGITUDE, L.LATITUDE, " +
                             "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                            "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                            "FROM (SERVICE S INNER JOIN SERVICETYPE ST " +
+                            "ON S.ID_SERVICE_TYPE = ST.ID) " +
                             "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID " +
                             "WHERE S.ID_PROVIDER_LOCATION = ? ");
             preparedStatement.setInt(1, providerLocationId);
@@ -1231,10 +1237,14 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
-                            "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                            "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
-                            "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
-                            "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
+                            "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, " +
+                            "SO.OUR_DATE, SO.ID_USER " +
+                            "FROM (((TASK T INNER JOIN SERVICEORDER SO " +
+                            "ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
+                            "INNER JOIN ORDERSTATUS OST " +
+                            "ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
+                            "INNER JOIN ORDERSCENARIO OSC " +
+                            "ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
                             "WHERE T.ID_TASK = ?");
             preparedStatement.setInt(1, taskId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -1312,9 +1322,12 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +
-                            "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                            "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
-                            "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO " +
+                            "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, " +
+                            "OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                            "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS " +
+                            "ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
+                            "INNER JOIN ORDERSCENARIO OSC " +
+                            "ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO " +
                             "WHERE SO.ID_USER = ?");
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -1414,9 +1427,12 @@ public class DAO {
 
             preparedStatement = connection.
                     prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
-                            "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                            "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
-                            "INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO ");
+                            "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, " +
+                            "OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                            "FROM (SERVICEORDER SO INNER JOIN  ORDERSTATUS OS " +
+                            "ON SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS) " +
+                            "INNER JOIN ORDERSCENARIO OSC " +
+                            "ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO ");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 GregorianCalendar gregorianCalendar = new GregorianCalendar();
@@ -1509,7 +1525,8 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * " +
-                            "FROM PROVIDERLOCATION PL INNER JOIN LOCATION L ON PL.ID_LOCATION = L.ID");
+                            "FROM PROVIDERLOCATION PL " +
+                            "INNER JOIN LOCATION L ON PL.ID_LOCATION = L.ID");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new ProviderLocation(resultSet.getInt("ID"),
@@ -1950,7 +1967,8 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT OS.NAME " +
-                            "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
+                            "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS " +
+                            "ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
                             "WHERE SO.ID_SERVICEORDER = ?");
             preparedStatement.setInt(1, serviceOrderId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -2181,7 +2199,8 @@ public class DAO {
             String statusInst = InstanceStatus.DISCONNECTED.toString();
             preparedStatement = connection.
                     prepareStatement("SELECT Sis.Name RES " +
-                            "FROM ServiceInstance Si INNER JOIN Serviceinstancestatus SIS ON Si.Service_Instance_Status = Sis.Id " +
+                            "FROM ServiceInstance Si INNER JOIN " +
+                            "Serviceinstancestatus SIS ON Si.Service_Instance_Status = Sis.Id " +
                             "WHERE Si.Id = ? ");
             preparedStatement.setInt(1, serviceInstanceId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -2278,7 +2297,8 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * " +
-                            "FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
+                            "FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT, " +
+                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
                             "FROM SERVICE S INNER JOIN (  SERVICEINSTANCE SI INNER JOIN ( " +
                             "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID) " +
                             "ON SI.ID_CABLE = C.ID) " +
@@ -2348,7 +2368,8 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT 'ROUTER-' ||ROUTEROLD ROUTER_NAME,  OCCUPIED, " +
-                            +amountOfPorts+" - OCCUPIED FREE, ROUND( OCCUPIED / "+amountOfPorts+", 2) UTILIZATION " +
+                            +amountOfPorts+" - OCCUPIED FREE, " +
+                            "ROUND( OCCUPIED / "+amountOfPorts+", 2) UTILIZATION " +
                             "FROM ( ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED, " +
                             "ROW_NUMBER() OVER (ORDER BY r.id ASC) RN  " +
                             "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER)  " +
@@ -2405,7 +2426,8 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * FROM (  " +
-                            "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                            "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
+                            "SUM(S.PRICE) PROFIT, ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
                             "FROM SERVICE S INNER JOIN (  " +
                             "SERVICEINSTANCE SI INNER JOIN (  " +
                             "CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
@@ -2462,15 +2484,19 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT * FROM (   " +
-                            "SELECT 'CABLE-'||C.Id CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS, ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN  " +
+                            "SELECT 'CABLE-'||C.Id CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+                            "ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN  " +
                             "FROM (Cable C INNER JOIN (Serviceinstance SI INNER JOIN " +
-                            "(SERVICELOCATION SL INNER JOIN LOCATION  L ON SL.ID_LOCATION = L.ID) ON SI.ID_SERVICE_LOCATION = SL.ID) ON C.Id = Si.Id_Cable)) " +
+                            "(SERVICELOCATION SL INNER JOIN LOCATION  L ON SL.ID_LOCATION = L.ID) " +
+                            "ON SI.ID_SERVICE_LOCATION = SL.ID) ON C.Id = Si.Id_Cable)) " +
                             "WHERE RN BETWEEN ? AND ? ORDER BY SERVICE_INSTANCE_ADRESS ASC ");
             preparedStatement.setInt(1, (page - 1) * pageLength + 1);
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result.add(new CablesForReport(resultSet.getString("CABLE"), resultSet.getString("SERVICE_INSTANCE_ADRESS")));
+                result.add(new CablesForReport(
+                        resultSet.getString("CABLE"),
+                        resultSet.getString("SERVICE_INSTANCE_ADRESS")));
             }
         } finally {
             try {
@@ -2724,7 +2750,8 @@ public class DAO {
             private String firstName;
             private String lastName;
 
-            public CIAReport(String routerName, String portName, String serviceInstanceAdress, String email, String firstName, String lastName) {
+            public CIAReport(String routerName, String portName, String serviceInstanceAdress,
+                             String email, String firstName, String lastName) {
                 this.routerName = routerName;
                 this.portName = portName;
                 this.serviceInstanceAdress = serviceInstanceAdress;
@@ -2766,13 +2793,16 @@ public class DAO {
         final int endP = page * pageLength;
         final int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         final String selectQuery = " SELECT * FROM ( " +
-                "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
-                "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME , ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
+                "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+
+                portsQuantity+") PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+                "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME , " +
+                "ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
                 "FROM ((((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
                 "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  " +
                 "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
                 "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS) " +
-                "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION) " +
+                "inner join (SERVICELOCATION SL INNER JOIN LOCATION L " +
+                "ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION) " +
                 "WHERE SIST.NAME = ? ) WHERE RN BETWEEN ? AND ? ";
         try {
             preparedStatement = connection.
