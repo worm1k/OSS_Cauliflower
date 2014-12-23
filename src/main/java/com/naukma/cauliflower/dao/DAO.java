@@ -488,9 +488,10 @@ public class DAO {
         ReportGenerator reportGenerator = null;
         int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
         try {
-            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, "+amountOfPorts+" - SUM(p.Used) FREE " +
+            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, ? - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "GROUP BY r.id ORDER BY R.ID ASC");
+            preparedStatement.setInt(1,amountOfPorts);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Devices", resultSet);
@@ -527,10 +528,12 @@ public class DAO {
         int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         try {
             preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||R.ID ROUTER, " +
-                    "'ROUTER-'||R.ID||'-'||MOD(P.ID, "+portsQuantity +") PORT,  " +
+                    "'ROUTER-'||R.ID||'-'||MOD(P.ID, ?) PORT,  " +
                     "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "ORDER BY R.ID, MOD(P.ID,"+portsQuantity+") ");
+                    "ORDER BY R.ID, MOD(P.ID,?) ");
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Ports", resultSet);
@@ -603,14 +606,16 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT 'ROUTER-'||r.ID ROUTER, " +
-                            "'ROUTER-'||r.ID||'-'||MOD(p.Id, "+portsQuantity+") PORT, " +
+                            "'ROUTER-'||r.ID||'-'||MOD(p.Id, ?) PORT, " +
                             "'CABLE-'||c.ID CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS  " +
                             "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
                             "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE SI " +
                             "INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
                             "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
                             "ON C.Id = Si.Id_Cable " +
-                            "ORDER BY R.ID, MOD(P.ID,"+portsQuantity+") ASC");
+                            "ORDER BY R.ID, MOD(P.ID,?) ASC");
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Circuits", resultSet);
@@ -2259,16 +2264,18 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT 'ROUTER-' ||ROUTEROLD ROUTER_NAME,  " +
-                            "OCCUPIED, "+amountOfPorts+" - OCCUPIED FREE, " +
-                            "ROUND( OCCUPIED / "+amountOfPorts+", 2) UTILIZATION " +
+                            "OCCUPIED, ? - OCCUPIED FREE, " +
+                            "ROUND( OCCUPIED / ?, 2) UTILIZATION " +
                             "FROM (  SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED, " +
                             "ROW_NUMBER() OVER (ORDER BY r.id ASC) RN  " +
                             "FROM ROUTER R ,PORT P " +
                             "WHERE R.ID = P.ID_ROUTER(+) " +
                             "GROUP BY R.ID " +
                             ")WHERE RN BETWEEN ? AND ? ");
-            preparedStatement.setInt(1, (page - 1) * pageLength + 1);
-            preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
+            preparedStatement.setInt(1,amountOfPorts);
+            preparedStatement.setInt(2,amountOfPorts);
+            preparedStatement.setInt(3, (page - 1) * pageLength + 1);
+            preparedStatement.setInt(4, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getString("ROUTER_NAME"),
@@ -2677,11 +2684,11 @@ public class DAO {
 //                "WHERE SIST.NAME = ? ) WHERE RN BETWEEN ? AND ? ";
         final String selectQuery = "SELECT * FROM ( " +
                 "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
-                "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT_NAME, " +
+                "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT_NAME, " +
                 "L.ADRESS SERVICE_INSTANCE_ADRESS, " +
                 "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, " +
                 "U.L_NAME USER_LAST_NAME , " +
-                "ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
+                "ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,?) ASC) RN " +
                 "FROM SERVICEINSTANCE SI, SERVICELOCATION SL, LOCATION L, " +
                 "USERS U, SERVICEINSTANCESTATUS SIST, CABLE C, PORT P " +
                 "WHERE SI.ID_USER = U.ID_USER(+) AND SI.ID_SERVICE_LOCATION = SL.ID(+) " +
@@ -2691,9 +2698,11 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement(selectQuery);
-            preparedStatement.setString(1, serviceInstanceStatus);
-            preparedStatement.setInt(2, startP);
-            preparedStatement.setInt(3, endP);
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setString(3, serviceInstanceStatus);
+            preparedStatement.setInt(4, startP);
+            preparedStatement.setInt(5, endP);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new CIAReport(
@@ -2797,20 +2806,22 @@ public class DAO {
         int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
                 "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME " +
                 "FROM ((((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
                 "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  " +
                 "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
                 "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS) " +
                 "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION)" +
-                "WHERE SIST.NAME = ? ORDER BY SERVICE_INSTANCE_ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC";
+                "WHERE SIST.NAME = ? ORDER BY SERVICE_INSTANCE_ADRESS, P.ID_ROUTER, MOD(P.ID,?) ASC";
 
         final String sistActQ = InstanceStatus.ACTIVE.toString();
         try {
             preparedStatement = connection
                     .prepareStatement(selectQuery);
-            preparedStatement.setString(1, sistActQ);
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setString(3, sistActQ);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals(xlsExt)) {
                 reportGenerator = new XLSReportGenerator(" CIA Report ",
@@ -2849,10 +2860,12 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT 'ROUTER-' ||ROUTEROLD ROUTER,  " +
-                            "OCCUPIED, "+amountOfPorts+" - OCCUPIED FREE, ROUND( OCCUPIED / "+amountOfPorts+", 2) UTILIZATION " +
+                            "OCCUPIED, ? - OCCUPIED FREE, ROUND( OCCUPIED / ?, 2) UTILIZATION " +
                             "FROM ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED " +
                             "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                             "GROUP BY R.ID ORDER BY R.ID )");
+            preparedStatement.setInt(1, amountOfPorts);
+            preparedStatement.setInt(2, amountOfPorts);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
@@ -3183,19 +3196,19 @@ public class DAO {
             preparedStatement = connection.
                     prepareStatement(
                             "SELECT * FROM (SELECT 'CABLE-'||C.ID CABLE, " +
-                                    "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT, " +
+                                    "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT, " +
                                     "'ROUTER-'||P.ID_ROUTER ROUTER, L.ADRESS SERVICE_INSTANCE_ADRESS , " +
-                                    "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID, "+portsQuantity+") ASC) RN " +
+                                    "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID, ?) ASC) RN " +
                                     "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
                                     "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE si " +
                                     "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
                                     "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
                                     "ON C.Id = Si.Id_Cable )" +
                                     "WHERE RN BETWEEN ? AND ? ");
-            preparedStatement
-                    .setInt(1, startP);
-            preparedStatement
-                    .setInt(2, endP);
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setInt(3, startP);
+            preparedStatement.setInt(4, endP);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 circuits.add(new Circuit(resultSet.getString("CABLE"),
@@ -3261,15 +3274,15 @@ public class DAO {
             preparedStatement = connection.prepareStatement
                     ("SELECT * FROM(  " +
                             "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER, " +
-                            "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT,  " +
+                            "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT,  " +
                             "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED," +
-                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
+                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID,?) ASC) RN " +
                             "FROM PORT P )  " +
                             "WHERE RN BETWEEN ? AND ?");
-            preparedStatement
-                    .setInt(1, startP);
-            preparedStatement
-                    .setInt(2, endP);
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setInt(3, startP);
+            preparedStatement.setInt(4, endP);
 
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
