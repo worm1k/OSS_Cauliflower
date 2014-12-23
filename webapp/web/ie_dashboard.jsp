@@ -98,23 +98,29 @@
                             <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
                             <button type="submit" class="btn btn-xs btn-default">Open</button>
                         </form>
-                            <%--<form class="form-inline inline" action="installationController" method="POST">--%>
-                                <%--<input type="hidden" name="taskId" value="{{task.taskId}}"/>--%>
-                                <%--<input type="hidden" name="serviceOrderId" value="{{task.serviceOrderId}}"/>--%>
-                                <%--<button type="submit" class="btn btn-xs btn-success">Done</button>--%>
-                            <%--</form>--%>
-                            <form class="form-inline inline" action="manageTask" method="POST">
-                                <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
-                                <input type="hidden" name="taskStatus" ng-value="'{{task.taskStatus}}'"/>
-                                <button class="btn btn-xs btn-danger">Unassign from me</button>
-                            </form>
+                        <form class="form-inline inline" action="manageTask" method="POST">
+                            <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
+                            <input type="hidden" name="taskStatus" ng-value="'{{task.taskStatus}}'"/>
+                            <button class="btn btn-xs btn-danger">Unassign from me</button>
+                        </form>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
-
 <jsp:include page="footer.jsp"/>
+
+    <%
+        request.getSession().removeAttribute(CauliflowerInfo.TASK_PARAM);
+        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ORDER_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_INSTANCE_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.MODIFY_TO_SERVICE_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.CUSTOMER_USER_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.ACTION_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.DASHBOARD_PARAM);
+    %>
+
 </body>
 </html>

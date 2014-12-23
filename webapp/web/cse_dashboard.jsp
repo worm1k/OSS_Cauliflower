@@ -57,5 +57,16 @@
         </table>
     </div>
     <jsp:include page="footer.jsp"/>
+
+    <%
+        request.getSession().removeAttribute(CauliflowerInfo.TASK_PARAM);
+        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ORDER_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_INSTANCE_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.MODIFY_TO_SERVICE_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.CUSTOMER_USER_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.ACTION_ATTRIBUTE);
+        request.getSession().removeAttribute(CauliflowerInfo.DASHBOARD_PARAM);
+    %>
 </body>
 </html>
