@@ -137,10 +137,6 @@
     </servlet-mapping>
 
 
-    <servlet-mapping>
-        <servlet-name>UserInstances</servlet-name>
-        <url-pattern>/userInstances</url-pattern>
-    </servlet-mapping>
 
     <servlet>
         <servlet-name>LogoutController</servlet-name>
