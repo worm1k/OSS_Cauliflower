@@ -12,29 +12,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
+/**      ProvisioningEngineer checks if the user has permission to see pe_dashboard.jsp.
+ *   Otherwise user will be redirected to   home.jsp
  * Created by ihor on 11.12.2014.
  */
-@WebFilter(filterName = "ProvisioningEngineer",urlPatterns = "/pe_dashboard.jsp")
+@WebFilter(filterName = "ProvisioningEngineer", urlPatterns = "/pe_dashboard.jsp")
 public class ProvisioningEngineer extends BaseFilter {
     private static final Logger logger = Logger.getLogger(ProvisioningEngineer.class);
+
     @Override
-    public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
+    public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException {
         User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(user==null || (user!=null && !user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString()))) {
+        if (user == null || (user != null && !user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString()))) {
             try {
                 logger.info("ProvisioningEngineer :: user == null send redirect to home jsp ");
                 response.sendRedirect(CauliflowerInfo.HOME_LINK);
             } catch (IOException e) {
                 logger.error(e);
             }
-        }else{
+        } else {
             try {
                 logger.info("ProvisioningEngineer :: user has permission and was send to ");
-                chain.doFilter(request,response);
+                chain.doFilter(request, response);
             } catch (IOException e) {
-                logger.error(e);
-            } catch (ServletException e) {
                 logger.error(e);
             }
         }
