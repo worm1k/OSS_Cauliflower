@@ -86,71 +86,6 @@ public class DAO {
         }
         return result;
     }
-    //Galya_Sh
-    //просто отримуємо айди юзер ролі яка є Installation Engineer
-//    public int getUserRoleIdFor_InstallationEngineer() {
-//        Connection connection = getConnection();
-//        PreparedStatement preparedStatement = null;
-//        int result = 4;
-//        try {
-//            UserRoles urName = UserRoles.INSTALLATION_ENG;
-//            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-//            preparedStatement.setString(1, urName.toString());
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            if (resultSet.next()) {
-//                result = resultSet.getInt("RES");
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                close(connection, preparedStatement);
-//                //if (!preparedStatement.isClosed()) preparedStatement.close();
-//                //if (!connection.isClosed()) connection.close();
-//            } catch (SQLException e) {
-//                logger.info("Smth wrong with closing connection or preparedStatement!");
-//                e.printStackTrace();
-//            }
-//
-//        }
-//        return result;
-//    }
-//
-//    //Galya_Sh
-//    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
-//    public int getUserRoleIdFor_ProvisioningEngineer() {
-//        Connection connection = getConnection();
-//        PreparedStatement preparedStatement = null;
-//        int result = 0;
-//        try {
-//            UserRoles urName = UserRoles.PROVISIONING_ENG;
-//            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-//            preparedStatement.setString(1, urName.toString());
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            if (resultSet.next()) {
-//                result = resultSet.getInt("RES");
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                close(connection, preparedStatement);
-//                //if (!preparedStatement.isClosed()) preparedStatement.close();
-//                //if (!connection.isClosed()) connection.close();
-//            } catch (SQLException e) {
-//                logger.info("Smth wrong with closing connection or preparedStatement!");
-//                e.printStackTrace();
-//            }
-//
-//        }
-//        return result;
-//    }
-
-    //Halya
-    //if error - return < 0
-    //else return id of created user
 
     /**
      * @param us       User to create
@@ -174,7 +109,6 @@ public class DAO {
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_USER) MAX_ID FROM USERS");
-            //int idU = 0;
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("MAX_ID");
@@ -182,7 +116,7 @@ public class DAO {
             connection.commit();
         } catch (SQLException e) {
             if (connection != null) {
-                System.err.print("Transaction is being rolled back");
+                logger.error("Transaction is being rolled back");
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
@@ -194,10 +128,9 @@ public class DAO {
             throw e;
         } finally {
             try {
-                //connection.setAutoCommit(true);
+
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -235,8 +168,6 @@ public class DAO {
         } finally {
             try {
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -274,8 +205,6 @@ public class DAO {
         } finally {
             try {
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -301,13 +230,11 @@ public class DAO {
             preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ? ");
             preparedStatement.setInt(1, idForBlock);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("ID USER: " + idForBlock + " IS BLOCKED");
-            }
 
-            preparedStatement = connection.prepareStatement("SELECT * FROM USERS US " +
-                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE " +
-                    "WHERE ID_USER = ? ");
+
+            preparedStatement = connection.prepareStatement("SELECT *  " +
+                    "FROM USERS US,USERROLE UR " +
+                    "WHERE US.ID_USERROLE = UR.ID_USERROLE(+) AND ID_USER = ? ");
             preparedStatement.setInt(1, idForBlock);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -326,7 +253,7 @@ public class DAO {
 
         } catch (SQLException e) {
             if (connection != null) {
-                System.err.print("Transaction is being rolled back");
+                logger.error("Transaction is being rolled back");
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
@@ -338,10 +265,9 @@ public class DAO {
 
         } finally {
             try {
-                //connection.setAutoCommit(true);
+
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -368,13 +294,11 @@ public class DAO {
             preparedStatement = connection.prepareStatement("UPDATE USERS SET IS_BLOCKED = 1 WHERE E_MAIL = ? ");
             preparedStatement.setString(1, email);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("USER WITH EMAIL " + email + " IS BLOCKED");
-            }
 
-            preparedStatement = connection.prepareStatement("SELECT * FROM USERS US " +
-                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE " +
-                    "WHERE E_MAIL = ? ");
+
+            preparedStatement = connection.prepareStatement("SELECT *  " +
+                    "FROM USERS US, USERROLE UR " +
+                    "WHERE   US.ID_USERROLE = UR.ID_USERROLE(+) AND E_MAIL = ? ");
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -393,7 +317,7 @@ public class DAO {
 
         } catch (SQLException e) {
             if (connection != null) {
-                System.err.print("Transaction is being rolled back");
+                logger.error("Transaction is being rolled back");
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
@@ -404,10 +328,9 @@ public class DAO {
             throw e;
         } finally {
             try {
-                //connection.setAutoCommit(true);
+
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -439,22 +362,15 @@ public class DAO {
             }
             if (checkResult == 1) {
                 result = true;
-                {//help
-                    System.out.println("USER WITH EMAIL " + email + " EXIST");
-                }
 
             } else {
                 result = false;
-                {//help
-                    System.out.println("THERE IS NO USER WITH EMAIL " + email);
-                }
+
             }
 
         } finally {
             try {
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -487,18 +403,12 @@ public class DAO {
         } finally {
             try {
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
         }
-        //if(userRoleId==1)return "CUSTOMER";
-        //if(userRoleId==2)return "Customer Support Engineer";
-        //if(userRoleId==3)return "Provisioning Engineer";
-        //if(userRoleId==4)return "Installation Engineer";
         return result;
     }
 
@@ -520,13 +430,11 @@ public class DAO {
             preparedStatement.setString(1, newPassword);
             preparedStatement.setInt(2, userId);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println(" FOR ID USER: " + userId + " password was successfully changed");
-            }
 
-            preparedStatement = connection.prepareStatement("SELECT *  FROM USERS US " +
-                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE " +
-                    "WHERE ID_USER = ? ");
+
+            preparedStatement = connection.prepareStatement("SELECT *   " +
+                    "FROM USERS US, USERROLE UR " +
+                    "WHERE US.ID_USERROLE = UR.ID_USERROLE(+) AND ID_USER = ? ");
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -545,7 +453,7 @@ public class DAO {
 
         } catch (SQLException e) {
             if (connection != null) {
-                System.err.print("Transaction is being rolled back");
+                logger.error("Transaction is being rolled back");
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
@@ -556,10 +464,9 @@ public class DAO {
             throw e;
         } finally {
             try {
-                //connection.setAutoCommit(true);
+
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -612,9 +519,7 @@ public class DAO {
      * @throws SQLException
      */
     public ReportGenerator getPortsForReport(final String EXT) throws SQLException {
-        {//help
-            System.out.println("getPortsForReport");
-        }
+
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -632,9 +537,7 @@ public class DAO {
             } else {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }
-            {//help
-                System.out.println("SUCCESS!!!!getPortsForReport");
-            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -654,9 +557,7 @@ public class DAO {
      * @throws SQLException
      */
     public ReportGenerator getCablesForReport(final String EXT) throws SQLException {
-        {//help
-            System.out.println("getCablesForReport");
-        }
+
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -674,9 +575,7 @@ public class DAO {
             } else {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }
-            {//help
-                System.out.println("SUCCESS!!!!getCablesForReport");
-            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -723,8 +622,6 @@ public class DAO {
         } finally {
             try {
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -754,14 +651,8 @@ public class DAO {
             }
             if (checkResult == 0) {
                 result = true;
-                {//help
-                    System.out.println("checkForPhoneUniq PHONE " + phone + " IS UNIQ");
-                }
             } else {
                 result = false;
-                {//help
-                    System.out.println("checkForPhoneUniq USER WITH PHONE " + phone + " IS ALREADY EXISTS ");
-                }
             }
 
         } finally {
