@@ -1143,6 +1143,7 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         System.out.println("here");
+
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +

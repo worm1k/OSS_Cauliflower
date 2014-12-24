@@ -30,22 +30,27 @@ public class ProceedOrderController extends HttpServlet
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
+        System.out.println("ENTERRRRR");
         user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         String scenario = request.getParameter(CauliflowerInfo.SCENARIO_PARAM);
         if(user == null || user.isBlocked())
         {
+            System.out.println("1");
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
             return;
         }
-        if(!user.getUserRole().equals(UserRole.CUSTOMER))
+        if(!user.getUserRole().equals(UserRole.CUSTOMER.toString()))
         {
+            System.out.println("2");
             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             return;
         }
+        System.out.println("asdasd1");
         try
         {
             if(scenario==null || scenario.equals(Scenario.NEW.toString()))
             {
+                System.out.println("aAGDGHHD");
                 startWorkflowForScenarioNew(request);
             }
             else if (scenario.equals(Scenario.DISCONNECT.toString()))
@@ -61,6 +66,7 @@ public class ProceedOrderController extends HttpServlet
         }
         catch (SQLException e)
         {
+            System.out.println("asdasd2");
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
                     CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
         }
