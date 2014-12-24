@@ -142,7 +142,7 @@
 
                     <a href="#" class="footer"
                        style="color: #382F2E;text-decoration: none;display: block;margin-top: 25px;padding: 10px 50px;font: 1em Helvetica;line-height: 18px">
-                        <font color="#ffffff"> Regards, ${from}  </font>
+                        <font color="#ffffff">${from}  </font>
                     </a>
 
 

@@ -21,7 +21,9 @@
 <head>
     <title>Customer User Information | CauliFlower</title>
     <jsp:include page="head.jsp"/>
-
+    <%
+        if(request.getSession().getAttribute( CauliflowerInfo.CUSTOMER_USER_ATTRIBUTE)== null)response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
+    %>
     <script>
         const customerUserId = ${customerUser.userId};
         console.log(customerUserId);
