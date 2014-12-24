@@ -491,7 +491,7 @@ public class DAO {
             preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, ? - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "GROUP BY r.id ORDER BY R.ID ASC");
-            preparedStatement.setInt(1,amountOfPorts);
+            preparedStatement.setInt(1, amountOfPorts);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Devices", resultSet);
@@ -532,8 +532,8 @@ public class DAO {
                     "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "ORDER BY R.ID, MOD(P.ID,?) ");
-            preparedStatement.setInt(1,portsQuantity);
-            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setInt(1, portsQuantity);
+            preparedStatement.setInt(2, portsQuantity);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Ports", resultSet);
@@ -614,8 +614,8 @@ public class DAO {
                             "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
                             "ON C.Id = Si.Id_Cable " +
                             "ORDER BY R.ID, MOD(P.ID,?) ASC");
-            preparedStatement.setInt(1,portsQuantity);
-            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setInt(1, portsQuantity);
+            preparedStatement.setInt(2, portsQuantity);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Circuits", resultSet);
@@ -676,7 +676,6 @@ public class DAO {
 /**---------------------------------------------------------------------END HALYA---------------------------------------------------------------------**/
 
 /**---------------------------------------------------------------------KASPYAR---------------------------------------------------------------------**/
-    //KaspYar
 
     /**
      * Get user by its login and password
@@ -720,8 +719,6 @@ public class DAO {
         }
         return user;
     }
-
-    //KaspYar
 
     /**
      * Creates new service order
@@ -809,8 +806,6 @@ public class DAO {
         return result;
     }
 
-    //KaspYar
-
     /**
      * Connects selected instance and selected user
      *
@@ -838,8 +833,6 @@ public class DAO {
             }
         }
     }
-
-    //KaspYar
 
     /**
      * Sets selected status for selected instance
@@ -873,8 +866,6 @@ public class DAO {
         return;
     }
 
-    //KaspYar
-
     /**
      * Set selected status for selected order
      *
@@ -906,8 +897,6 @@ public class DAO {
         }
         return;
     }
-
-    //KaspYar
 
     /**
      * Set selected status for selected task
@@ -941,8 +930,6 @@ public class DAO {
         return;
     }
 
-    //KaspYar
-
     /**
      * Block instance when exist active task on it
      *
@@ -971,8 +958,6 @@ public class DAO {
         }
         return;
     }
-
-    //KaspYar
 
     /**
      * Returns tasks for selected usergroup with seleceted status
@@ -1016,55 +1001,6 @@ public class DAO {
         result.trimToSize();
         return result;
     }
-    //KaspYar
-
-    /**
-     * returns all Services of Provider Location with certain id
-     *
-     * @param providerLocationId id of Provider Location
-     * @return ArrayList<Service> of services
-     * @throws java.sql.SQLException
-     * @see com.naukma.cauliflower.entities.Service
-     */
-    public List<Service> getServicesByProviderLocationId(int providerLocationId) throws SQLException {
-        ArrayList<Service> result = new ArrayList<Service>();
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, " +
-                            "L.LONGITUDE, L.LATITUDE, " +
-                            "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                            "FROM SERVICE S, SERVICETYPE ST, LOCATION L " +
-                            "WHERE  S.ID_SERVICE_TYPE = ST.ID(+) " +
-                            "AND S.ID_PROVIDER_LOCATION = L.ID(+) " +
-                            "AND S.ID_PROVIDER_LOCATION = ?");
-            preparedStatement.setInt(1, providerLocationId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                result.add(new Service(resultSet.getInt("ID_SERVICE_TYPE"),
-                        resultSet.getString("ADRESS"),
-                        resultSet.getDouble("LONGITUDE"),
-                        resultSet.getDouble("LATITUDE"),
-                        resultSet.getString("NAME"),
-                        resultSet.getString("SPEED"),
-                        resultSet.getInt("ID_PROVIDER_LOCATION"),
-                        resultSet.getInt("ID"),
-                        resultSet.getDouble("PRICE")));
-            }
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        result.trimToSize();
-        return result;
-    }
-
-    //KaspYar
 
     /**
      * Creates new router
@@ -1116,8 +1052,6 @@ public class DAO {
         }
     }
 
-    //KaspYar
-
     /**
      * Returns ServiceOrder for selected task
      *
@@ -1166,9 +1100,6 @@ public class DAO {
         return result;
     }
 
-
-    //KaspYar
-
     /**
      * Connects selected instance and selected order
      *
@@ -1197,9 +1128,6 @@ public class DAO {
         }
         return;
     }
-
-
-    //KaspYar
 
     /**
      * Returns ArrayList of orders for selected user
@@ -1250,8 +1178,6 @@ public class DAO {
         result.trimToSize();
         return result;
     }
-
-    //KaspYar
 
     /**
      * Returns ArrayList of instances for selected user
@@ -1305,143 +1231,6 @@ public class DAO {
 
     }
 
-    //KaspYar
-
-    /**
-     * Returns ArrayList of all orders
-     *
-     * @return ArrayList of ServiceOrder
-     * @throws java.sql.SQLException
-     * @see com.naukma.cauliflower.entities.ServiceOrder
-     */
-    public ArrayList<ServiceOrder> getAllOrders() throws SQLException {
-        ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        try {
-
-            preparedStatement = connection.
-                    prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
-                            "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, " +
-                            "OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                            "FROM SERVICEORDER SO, ORDERSTATUS OS, ORDERSCENARIO OSC " +
-                            "WHERE SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS(+) " +
-                            "AND SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO(+)");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                GregorianCalendar gregorianCalendar = new GregorianCalendar();
-                Date date = resultSet.getDate("OUR_DATE");
-                gregorianCalendar.set(date.getYear(), date.getMonth(), date.getDay());
-                result.add(new ServiceOrder(resultSet.getInt("ID_SERVICEORDER"),
-                        resultSet.getInt("ID_ORDERSTATUS"),
-                        resultSet.getString("OS_NAME"),
-                        resultSet.getInt("ID_SRVICEINSTANCE"),
-                        resultSet.getInt("ID_ORDERSCENARIO"),
-                        resultSet.getString("OSC_NAME"),
-                        gregorianCalendar,
-                        resultSet.getInt("ID_USER")));
-            }
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        result.trimToSize();
-        return result;
-
-    }
-    //KaspYar
-
-    /**
-     * Returns ArrayList of all instances
-     *
-     * @return ArrayList of ServiceInstance
-     * @throws java.sql.SQLException
-     * @see com.naukma.cauliflower.entities.ServiceInstance
-     */
-    public ArrayList<ServiceInstance> getAllInstances() throws SQLException {
-        ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
-                            "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
-                            "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
-                            "FROM SERVICEINSTANCE SI,SERVICELOCATION SL, " +
-                            "LOCATION L ,SERVICEINSTANCESTATUS SIS " +
-                            "WHERE SI.ID_SERVICE_LOCATION = SL.ID(+) " +
-                            "AND SL.ID_LOCATION = L.ID(+) " +
-                            "AND SI.SERVICE_INSTANCE_STATUS = SIS.ID(+) ");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                result.add(new ServiceInstance(resultSet.getInt("ID"),
-                        resultSet.getInt("ID_USER"),
-                        resultSet.getInt("ID_SERVICE_LOCATION"),
-                        resultSet.getString("ADRESS"),
-                        resultSet.getDouble("LONGITUDE"),
-                        resultSet.getDouble("LATITUDE"),
-                        resultSet.getInt("ID_SERVICE"),
-                        resultSet.getInt("SERVICE_INSTANCE_STATUS"),
-                        resultSet.getString("NAME"),
-                        resultSet.getInt("ID_CABLE"),
-                        (resultSet.getInt("HAS_ACTIVE_TASK") == 1)));
-            }
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        result.trimToSize();
-        return result;
-
-    }
-
-    //KaspYar
-
-    /**
-     * Returns list of all Provider Locations existing in the system
-     *
-     * @return List of Provider Locations
-     * @throws java.sql.SQLException
-     * @see com.naukma.cauliflower.entities.ProviderLocation
-     */
-    public List<ProviderLocation> getProviderLocations() throws SQLException {
-        ArrayList<ProviderLocation> result = new ArrayList<ProviderLocation>();
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT * " +
-                            "FROM PROVIDERLOCATION PL, LOCATION L " +
-                            "WHERE PL.ID_LOCATION = L.ID(+) ");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                result.add(new ProviderLocation(resultSet.getInt("ID"),
-                        resultSet.getString("ADRESS"),
-                        resultSet.getDouble("LONGITUDE"),
-                        resultSet.getDouble("LATITUDE")));
-            }
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        result.trimToSize();
-        return result;
-    }
-
-    //vladmyr
-
     /**
      * Returns Service by its Id
      *
@@ -1490,8 +1279,6 @@ public class DAO {
 
     }
 
-    //KaspYar
-
     /**
      * return List<Services> of all Services
      *
@@ -1535,8 +1322,6 @@ public class DAO {
         result.trimToSize();
         return result;
     }
-
-    //KaspYar
 
     /**
      * Creates service location record in database from ServiceLocation object
@@ -1596,9 +1381,6 @@ public class DAO {
         return res;
     }
 
-
-    //KaspYar
-
     /**
      * Creates new service instance
      *
@@ -1651,9 +1433,6 @@ public class DAO {
         }
         return res;
     }
-
-
-    //KaspYar
 
     /**
      * Creates task with status FREE for selected engineer for selected service order
@@ -1712,8 +1491,6 @@ public class DAO {
         return taskId;
     }
 
-    //KaspYar
-
     /**
      * Returns List of task with status FREE and PROCESSING for selected usergroup
      *
@@ -1756,9 +1533,6 @@ public class DAO {
         result.trimToSize();
         return result;
     }
-
-
-    //KaspYar
 
     /**
      * Creates a cable, assigns a free port to it and then assigns this cable to instance associated with service order
@@ -1819,8 +1593,6 @@ public class DAO {
         }
     }
 
-    //KaspYar
-
     /**
      * Checks if free ports exist
      *
@@ -1847,74 +1619,6 @@ public class DAO {
         }
         return result;
     }
-
-    //KaspYar
-
-    /**
-     * Returns scenario type for this service
-     *
-     * @param serviceOrderId id of service
-     * @return scenario of service
-     * @throws java.sql.SQLException
-     */
-    public Scenario getOrderScenario(int serviceOrderId) throws SQLException {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        Scenario result = null;
-        try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT OS.NAME " +
-                            "FROM SERVICEORDER SO, ORDERSCENARIO OS " +
-                            "WHERE SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO(+) " +
-                            "AND SO.ID_SERVICEORDER = ? ");
-            preparedStatement.setInt(1, serviceOrderId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) result = Scenario.valueOf(resultSet.getString("NAME"));
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns status of task
-     *
-     * @param taskId id of the task
-     * @return Status of this task
-     * @throws java.sql.SQLException
-     * @see com.naukma.cauliflower.dao.TaskStatus
-     */
-    public TaskStatus getTaskStatus(int taskId) throws SQLException {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        TaskStatus result = null;
-        try {
-            preparedStatement = connection.
-                    prepareStatement("SELECT TS.NAME " +
-                            "FROM TASK T , TASKSTATUS TS " +
-                            "WHERE T.ID_TASKSTATUS = TS.ID_TASKSTATUS(+) " +
-                            "AND T.ID_TASK =?");
-            preparedStatement.setInt(1, taskId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result = TaskStatus.valueOf(resultSet.getString("NAME"));
-            }
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        return result;
-    }
-
 
     /**
      * Returns task with given id PK
@@ -2024,7 +1728,6 @@ public class DAO {
     }
 
 
-
     /**
      * Method changes the service for service instance taking a new service from a task
      *
@@ -2039,8 +1742,8 @@ public class DAO {
             preparedStatement = connection.
                     prepareStatement("UPDATE SERVICEINSTANCE  " +
                             "SET ID_SERVICE = (SELECT ID_SERVICE " +
-                            "FROM TASK T ,TOMODIFY TMOD WHERE TMOD.ID_TASK = T.ID_TASK(+) AND " +
-                            "T.ID_TASK = ?) " +
+                            "FROM TASK T ,TOMODIFY TMOD " +
+                            "WHERE TMOD.ID_TASK = T.ID_TASK(+) AND T.ID_TASK = ?) " +
                             "WHERE ID = ? ");
             preparedStatement.setInt(1, taskId);
             preparedStatement.setInt(2, serviceInstanceId);
@@ -2069,7 +1772,8 @@ public class DAO {
         boolean result = false;
         try {
             preparedStatement = connection.
-                    prepareStatement("SELECT HAS_ACTIVE_TASK IS_BLOCKED FROM SERVICEINSTANCE WHERE ID = ? ");
+                    prepareStatement("SELECT HAS_ACTIVE_TASK IS_BLOCKED " +
+                            "FROM SERVICEINSTANCE WHERE ID = ? ");
             preparedStatement.setInt(1, serviceInstanceId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -2086,7 +1790,12 @@ public class DAO {
         return result;
     }
 
-
+    /**
+     * checks if instance is disconnected
+     * @param serviceInstanceId id of Service Instance
+     * @return true if yes, false - if no
+     * @throws SQLException
+     */
     public boolean isInstanceDisconnected(int serviceInstanceId) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -2172,7 +1881,7 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class MostProfRouter implements Serializable{
+        class MostProfRouter implements Serializable {
             private String router;
             private double profit;
 
@@ -2206,7 +1915,8 @@ public class DAO {
 
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result.add(new MostProfRouter(resultSet.getString("ROUTER_NAME"), resultSet.getDouble("PROFIT")));
+                result.add(new MostProfRouter(resultSet.getString("ROUTER_NAME"),
+                        resultSet.getDouble("PROFIT")));
             }
         } finally {
             try {
@@ -2231,7 +1941,7 @@ public class DAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
-        class UsedRoutersAndCapacityOfPorts implements Serializable{
+        class UsedRoutersAndCapacityOfPorts implements Serializable {
             private String router;
             private int occupied;
             private int free;
@@ -2272,8 +1982,8 @@ public class DAO {
                             "WHERE R.ID = P.ID_ROUTER(+) " +
                             "GROUP BY R.ID " +
                             ")WHERE RN BETWEEN ? AND ? ");
-            preparedStatement.setInt(1,amountOfPorts);
-            preparedStatement.setInt(2,amountOfPorts);
+            preparedStatement.setInt(1, amountOfPorts);
+            preparedStatement.setInt(2, amountOfPorts);
             preparedStatement.setInt(3, (page - 1) * pageLength + 1);
             preparedStatement.setInt(4, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
@@ -2304,7 +2014,7 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class ProfitabilityByMonth implements Serializable{
+        class ProfitabilityByMonth implements Serializable {
             private String routerName;
             private double profit;
 
@@ -2336,7 +2046,8 @@ public class DAO {
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result.add(new ProfitabilityByMonth(resultSet.getString("ROUTER_NAME"), resultSet.getDouble("PROFIT")));
+                result.add(new ProfitabilityByMonth(resultSet.getString("ROUTER_NAME"),
+                        resultSet.getDouble("PROFIT")));
             }
         } finally {
             try {
@@ -2360,7 +2071,7 @@ public class DAO {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        class CablesForReport implements Serializable{
+        class CablesForReport implements Serializable {
             private String cable;
             private String serviceInstanceAdress;
 
@@ -2581,13 +2292,15 @@ public class DAO {
 
     /**
      * gets amount of lines in report for Orders Per Period
-     * @param scenario scenario "NEW" or "DISCONNECT" to special report
+     *
+     * @param scenario     scenario "NEW" or "DISCONNECT" to special report
      * @param sqlStartDate start date
-     * @param sqlEndDate end date
+     * @param sqlEndDate   end date
      * @return int amount of lines
      * @throws SQLException
      */
-    public int getOrdersPerPeriodLinesAmount(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
+    public int getOrdersPerPeriodLinesAmount(Scenario scenario, java.sql.Date sqlStartDate,
+                                             java.sql.Date sqlEndDate) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2596,7 +2309,7 @@ public class DAO {
             preparedStatement = connection.
                     prepareStatement("SELECT COUNT(*) AM " +
                             "FROM SERVICEORDER SO,ORDERSCENARIO OS " +
-                            "WHERE SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO(+) AND "+
+                            "WHERE SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO(+) AND " +
                             "OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
                             "GROUP BY OS.NAME ");
             preparedStatement.setString(1, scenario.toString());
@@ -2614,13 +2327,27 @@ public class DAO {
         }
         return result;
     }
-    public int getCIALinesAmount()throws SQLException{
+
+    /**
+     *
+     * @return int number of lines in CIA report
+     * @throws SQLException
+     */
+    public int getCIALinesAmount() throws SQLException {
         int result = 0;
         result = getCablesAmount();
         return result;
     }
-    public List<Object> getCIAReport(int page, int pageLength) throws SQLException{
-        class CIAReport implements Serializable{
+
+    /**
+     * CIA report with paging
+     * @param page number of page
+     * @param pageLength number of rown on page
+     * @return List<Object> list of CIAReports with data
+     * @throws SQLException
+     */
+    public List<Object> getCIAReport(int page, int pageLength) throws SQLException {
+        class CIAReport implements Serializable {
             private String routerName;
             private String portName;
             private String serviceInstanceAdress;
@@ -2670,18 +2397,6 @@ public class DAO {
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
         final int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
-//        final String selectQuery = " SELECT * FROM ( " +
-//                "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+
-//                portsQuantity+") PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
-//                "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME , " +
-//                "ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
-//                "FROM ((((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
-//                "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  " +
-//                "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
-//                "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS) " +
-//                "inner join (SERVICELOCATION SL INNER JOIN LOCATION L " +
-//                "ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION) " +
-//                "WHERE SIST.NAME = ? ) WHERE RN BETWEEN ? AND ? ";
         final String selectQuery = "SELECT * FROM ( " +
                 "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
                 "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT_NAME, " +
@@ -2698,8 +2413,8 @@ public class DAO {
         try {
             preparedStatement = connection.
                     prepareStatement(selectQuery);
-            preparedStatement.setInt(1,portsQuantity);
-            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setInt(1, portsQuantity);
+            preparedStatement.setInt(2, portsQuantity);
             preparedStatement.setString(3, serviceInstanceStatus);
             preparedStatement.setInt(4, startP);
             preparedStatement.setInt(5, endP);
@@ -2819,9 +2534,9 @@ public class DAO {
         try {
             preparedStatement = connection
                     .prepareStatement(selectQuery);
-            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(1, portsQuantity);
             preparedStatement.setString(2, sistActQ);
-            preparedStatement.setInt(3,portsQuantity);
+            preparedStatement.setInt(3, portsQuantity);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals(xlsExt)) {
                 reportGenerator = new XLSReportGenerator(" CIA Report ",
@@ -3181,12 +2896,15 @@ public class DAO {
             public String getCableId() {
                 return cable;
             }
+
             public String getPortId() {
                 return port;
             }
+
             public String getRouterId() {
                 return router;
             }
+
             public String getServiceInstanceAdress() {
                 return serviceInstanceAdress;
             }
@@ -3205,8 +2923,8 @@ public class DAO {
                                     "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
                                     "ON C.Id = Si.Id_Cable )" +
                                     "WHERE RN BETWEEN ? AND ? ");
-            preparedStatement.setInt(1,portsQuantity);
-            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setInt(1, portsQuantity);
+            preparedStatement.setInt(2, portsQuantity);
             preparedStatement.setInt(3, startP);
             preparedStatement.setInt(4, endP);
             resultSet = preparedStatement.executeQuery();
@@ -3246,12 +2964,12 @@ public class DAO {
         List<Object> ports = new ArrayList<Object>();
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
-        class Port implements Serializable{
+        class Port implements Serializable {
             private String router;
             private String port;
             private String used;
 
-            public Port(String router,String port,  String used) {
+            public Port(String router, String port, String used) {
                 this.port = port;
                 this.router = router;
                 this.used = used;
@@ -3279,8 +2997,8 @@ public class DAO {
                             "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID,?) ASC) RN " +
                             "FROM PORT P )  " +
                             "WHERE RN BETWEEN ? AND ?");
-            preparedStatement.setInt(1,portsQuantity);
-            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setInt(1, portsQuantity);
+            preparedStatement.setInt(2, portsQuantity);
             preparedStatement.setInt(3, startP);
             preparedStatement.setInt(4, endP);
 
@@ -3312,7 +3030,7 @@ public class DAO {
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         List<Object> servOrds = new ArrayList<Object>();
-        class Orders implements  Serializable{
+        class Orders implements Serializable {
             private String nameService;
             private double speed;
             private String statusName;
