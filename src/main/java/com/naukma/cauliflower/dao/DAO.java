@@ -3353,63 +3353,6 @@ public class DAO {
     /**---------------------------------------------------------------------END Alex---------------------------------------------------------------------**/
 
 
-    /**
-     * ---------------------------------------------------------------------START Max---------------------------------------------------------------------*
-     */
-
-    public int getTasksNumByName(TaskName taskName) throws SQLException {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int num = 1;
-        try {
-
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        return num;
-    }
-
-    public int getFreePortsNum() {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int num = 1;
-        try {
-
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        return num;
-    }
-
-    public int getTasksNumByStatus(TaskStatus taskStatus) {
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        int num = 1;
-        try {
-
-        } finally {
-            try {
-                close(connection, preparedStatement);
-            } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
-            }
-        }
-        return num;
-
-    }
-    /**---------------------------------------------------------------------END Max---------------------------------------------------------------------**/
-
     /**---------------------------------------------------------------------START ihor---------------------------------------------------------------------**/
 
     /**
