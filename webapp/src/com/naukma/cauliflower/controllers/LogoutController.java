@@ -12,11 +12,14 @@ import java.io.IOException;
 
 /**
  * Created by Артем on 05.12.2014.
+ *
+ * This servlet controls logout of users.
  */
 @WebServlet(name = "LogoutController")
 public class LogoutController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Invalidation of session and redirect to home page.
         request.getSession().invalidate();
         response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
