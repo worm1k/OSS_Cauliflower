@@ -114,7 +114,7 @@ public class RegistrationController extends HttpServlet {
                         }
                     } else {
                         //Insertion attribute of uniqueness phone number error into session
-                        // and redirect to registration page
+                        // and redirect to registration page or to administrator dashboard
                         request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
                                 CauliflowerInfo.PHONE_UNIQ_ERROR_MESSAGE);
                         if(userInSession!=null)
@@ -123,13 +123,20 @@ public class RegistrationController extends HttpServlet {
                     }
                 }else{
                     //Insertion attribute of uniqueness e-mail error into session and redirect to registration page
+                    // or to administrator dashboard
                     request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.EMAIL_UNIQ_ERROR_MESSAGE);
                     if(userInSession!=null)
                         response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                     else response.sendRedirect(CauliflowerInfo.AUTH_LINK);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                //Insertion attribute of system error into session and redirect to registration page
+                // or to administrator dashboard
+                logger.error(e);
+                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+                if(userInSession!=null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString()))
+                    response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                else response.sendRedirect(CauliflowerInfo.AUTH_LINK);
             }
         }else{
             //Insertion attribute of permission error into session and redirect to home page

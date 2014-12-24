@@ -23,7 +23,9 @@ import java.sql.SQLException;
  */
 @WebServlet(name = "ChangeCustomerPassword")
 public class ChangeCustomerPassword extends HttpServlet {
+
     private static final Logger logger = Logger.getLogger(LoginController.class);
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //Parameters for validation new password and account for changing password
         int minPasswordLength = 6;
@@ -50,16 +52,19 @@ public class ChangeCustomerPassword extends HttpServlet {
                     try {
                         userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, hashedPassword);
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        //Insertion attribute of system error into session and redirect to customer support engineer dashboard
+                        logger.error(e);
+                        request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+                        response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
                     }
-                        //Sending e-mail to account with new password
-                        String fullPath = getServletContext().getRealPath(CauliflowerInfo.EMAIL_TEMPLATE_PATH);
-                        EmailSender.sendChangedPasswordToUser(userForNewPass,newPassword,fullPath);
-                        //Insertion attribute of successful changing password into session
-                        // and redirect to customer support engineer dashboard
-                        request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,
-                                CauliflowerInfo.OK_CHANGE_PASSWORD_MESSAGE);
-                        response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK);
+                    //Sending e-mail to account with new password
+                    String fullPath = getServletContext().getRealPath(CauliflowerInfo.EMAIL_TEMPLATE_PATH);
+                    EmailSender.sendChangedPasswordToUser(userForNewPass,newPassword,fullPath);
+                    //Insertion attribute of successful changing password into session
+                    // and redirect to customer support engineer dashboard
+                    request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,
+                            CauliflowerInfo.OK_CHANGE_PASSWORD_MESSAGE);
+                    response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK);
                 }else{
                     //Insertion attribute of incorrect new password error into session
                     // and redirect to customer support engineer dashboard

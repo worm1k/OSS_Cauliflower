@@ -56,7 +56,10 @@ public class LoginController extends HttpServlet {
                 //Validation email and password and getting user from database
                 userForLogin = DAO.INSTANCE.getUserByLoginAndPassword(email, hashedPassword);
             } catch (SQLException e) {
-                e.printStackTrace();
+                //Insertion attribute of system error into session and redirect to login page
+                logger.error(e);
+                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+                response.sendRedirect(CauliflowerInfo.AUTH_LINK);
             }
             if (userForLogin == null) {
                 //Insertion attribute of login error into session and redirect to login page

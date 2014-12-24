@@ -5,6 +5,7 @@ import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 import com.naukma.cauliflower.mail.EmailSender;
+import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -23,6 +24,9 @@ import java.sql.SQLException;
  */
 @WebServlet(name = "BlockAccountController")
 public class BlockAccountController extends HttpServlet {
+
+    private static final Logger logger = Logger.getLogger(LoginController.class);
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //Name of parameter that is taken from form in jsp
         String emailParameter = "email";
@@ -58,7 +62,10 @@ public class BlockAccountController extends HttpServlet {
                     response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                //Insertion attribute of system error into session and redirect to administrator dashboard
+                logger.error(e);
+                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+                response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
             }
         } else {
             //Insertion attribute of permission error into session and redirect to home page
