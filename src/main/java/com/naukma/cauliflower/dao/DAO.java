@@ -2495,11 +2495,7 @@ public class DAO {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
-                exc.printStackTrace();
             }
-        }
-        {// help
-            System.out.println("SUCCESS!!!! getCIAReport()");
         }
         return result;
     }
@@ -2554,9 +2550,7 @@ public class DAO {
                 exc.printStackTrace();
             }
         }
-        {// help
-            System.out.println("SUCCESS!!!!getCIAReport");
-        }
+
         return reportGenerator;
     }
 
@@ -2588,18 +2582,15 @@ public class DAO {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("IOException in DAO.getUsedRoutersAndCapacityOfPorts");
         } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
+                logger.warn("Can't close connection or preparedStatement in DAO.getUsedRoutersAndCapacityOfPorts");
             }
         }
-        {//help
-            System.out.println("SUCCESS!!!!getUsedRoutersAndCapacityOfPorts");
-        }
+
         return reportGenerator;
     }
 
@@ -2611,9 +2602,7 @@ public class DAO {
      */
 
     public ReportGenerator getProfitabilityByMonth(final String EXT) throws SQLException {
-        {//help
-            System.out.println("getProfitabilityByMonth");
-        }
+
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -2633,18 +2622,16 @@ public class DAO {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("IOException in DAO.getUsedRoutersAndCapacityOfPorts");
         } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
+                logger.warn("Can't close connection or preparedStatement in DAO.getUsedRoutersAndCapacityOfPorts");
                 exc.printStackTrace();
             }
         }
-        {//help
-            System.out.println("SUCCESS!!!!getProfitabilityByMonth");
-        }
+
         return reportGenerator;
     }
 
@@ -2662,26 +2649,11 @@ public class DAO {
 
     public ReportGenerator getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final String EXT) throws SQLException {
 
-        {//help
-            System.out.println("getOrdersPerPeriod");
-        }
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         ReportGenerator reportGenerator = null;
         try {
-//            preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
-//                    "FROM SERVICEORDER SO INNER JOIN ORDERSCENARIO OS ON SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO " +
-//                    "WHERE OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
-//                    "GROUP BY OS.NAME ");
-//            preparedStatement = connection.prepareStatement("SELECT * FROM(SELECT  st.NAME, st.SPEED, OST.NAME STATUS_NAME, SO.OUR_DATE SO_DATE,  " +
-//                    "U.F_NAME, U.L_NAME " +
-//                    "FROM  " +
-//                    "((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS)  " +
-//                    "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
-//                    "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
-//                    "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
-//                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ) ");
             preparedStatement = connection.prepareStatement("SELECT  SO.OUR_DATE SERVICE_ORDER_DATE, U.F_NAME FIRST_NAME, U.L_NAME LAST_NAME, st.NAME SERVICE_NAME, st.SPEED, OST.NAME STATUS_NAME   " +
                     "FROM  " +
                     "((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
@@ -2700,17 +2672,14 @@ public class DAO {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("IOException in DAO.getUsedRoutersAndCapacityOfPorts");
         } finally {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
+                logger.warn("Can't close connection or preparedStatement in DAO.getUsedRoutersAndCapacityOfPorts");
                 exc.printStackTrace();
             }
-        }
-        {//help
-            System.out.println("SUCCESS!!!!getOrdersPerPeriod");
         }
         return reportGenerator;
     }
@@ -2788,7 +2757,7 @@ public class DAO {
                 close(connection, preparedStatementSelect);
                 close(connection, preparedStatementUpdate);
             } catch (SQLException e) {
-                logger.info("Smth wrong with closing connection or preparedStatement! in DAO.removeCableFromServiceInstanceAndFreePort ");
+                logger.info("Can't close connection or preparedStatement in DAO.removeCableFromServiceInstanceAndFreePort ");
                 e.printStackTrace();
             }
 
@@ -2858,8 +2827,7 @@ public class DAO {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException e) {
-                logger.warn("Smth wrong with closing connection or preparedStatement!");
-                e.printStackTrace();
+                logger.warn("Can't close connection or preparedStatement in DAO.getUsedRoutersAndCapacityOfPorts");
             }
         }
         return devices;
@@ -2942,9 +2910,6 @@ public class DAO {
                 exc.printStackTrace();
             }
         }
-        {//help
-            System.out.println("SUCCESS!!!!getCircuitsForReport");
-        }
         return circuits;
     }
 
@@ -2957,7 +2922,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getPortsForReport(int page, int pageLength) throws SQLException {
-        System.out.println("getPortsForReport");
         Connection connection = getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
@@ -3015,11 +2979,7 @@ public class DAO {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getPortsForReport(int page, int pageLength)");
-                exc.printStackTrace();
             }
-        }
-        {//help
-            System.out.println("SUCCESS!!!!getPortsForReport");
         }
         return ports;
     }
@@ -3081,7 +3041,8 @@ public class DAO {
                     "FROM  ((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
                     "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
                     "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
-                    "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
+                    "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER " +
+                    "inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
                     "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ) " +
                     "WHERE RN BETWEEN ? AND ? ");
             System.out.println("Before set");
@@ -3106,13 +3067,10 @@ public class DAO {
             try {
                 close(connection, preparedStatement);
             } catch (SQLException exc) {
-                logger.warn("Can't close connection or preparedStatement!");
-                exc.printStackTrace();
+                logger.warn("Can't close connection or preparedStatement in DAO.getUsedRoutersAndCapacityOfPorts");
             }
         }
-        {//help
-            System.out.println("SUCCESS!!!!getOrdersPerPeriod");
-        }
+
         return servOrds;
     }
 
