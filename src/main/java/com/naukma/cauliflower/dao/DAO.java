@@ -1142,8 +1142,6 @@ public class DAO {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        System.out.println("here");
-
         try {
             preparedStatement = connection.
                     prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +
@@ -3046,15 +3044,12 @@ public class DAO {
                     "inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
                     "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ) " +
                     "WHERE RN BETWEEN ? AND ? ");
-            System.out.println("Before set");
             preparedStatement.setString(1, scenario.toString());
             preparedStatement.setDate(2, sqlStartDate);
             preparedStatement.setDate(3, sqlEndDate);
             preparedStatement.setInt(4, startP);
             preparedStatement.setInt(5, endP);
-            System.out.println(preparedStatement.toString());
             resultSet = preparedStatement.executeQuery();
-            System.out.println("Executed!!!");
             while (resultSet.next()) {
                 final Orders so = new Orders(
                         resultSet.getString("NAME"), resultSet.getDouble("SPEED"),
