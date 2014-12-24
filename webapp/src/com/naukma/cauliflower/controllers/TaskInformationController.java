@@ -22,7 +22,7 @@ import java.io.IOException;
 @WebServlet(name = "TaskInformationController")
 public class TaskInformationController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

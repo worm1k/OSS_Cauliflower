@@ -67,5 +67,6 @@ public class GetTasksController extends HttpServlet {
         System.out.println("TASKS = "+tasks);
         request.setAttribute(CauliflowerInfo.TASKS_PARAM, tasks);
         request.getRequestDispatcher(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK).forward(request, response);*/
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 }

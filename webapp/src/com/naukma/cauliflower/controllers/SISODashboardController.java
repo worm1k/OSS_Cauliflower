@@ -22,9 +22,8 @@ import java.util.List;
 @WebServlet(name = "SISODashboardController")
 public class SISODashboardController  extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException
-    {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
