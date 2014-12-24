@@ -37,6 +37,7 @@ public class RegistrationController extends HttpServlet {
         String phoneParameter = "phone";
 
         String userRoleForRegister = request.getParameter(userForRegisterRoleParameter);
+        if(userRoleForRegister==null) userRoleForRegister=UserRole.CUSTOMER.toString();
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if((userInSession==null && userRoleForRegister.equals(UserRole.CUSTOMER.toString())) ||
                 (userInSession!=null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())
@@ -57,49 +58,47 @@ public class RegistrationController extends HttpServlet {
                 if(userRoleForRegister.equals(UserRole.INSTALLATION_ENG.toString()))
                     userRoleId = DAO.INSTANCE.getUserRoleIdFor(UserRole.INSTALLATION_ENG);
 
-                if (!DAO.INSTANCE.checkForEmailUniq(email)) {
+                if (DAO.INSTANCE.checkForEmailUniq(email)) {
+                    if (DAO.INSTANCE.checkForPhoneUniq(phone)) {
+                        User registeredUser = new User(0, userRoleId, userRoleForRegister, email, firstName, lastName, phone, false);
+                        String hashedPassword = Cryptographer.hmacSha1(password);
+                        logger.info(" reg controller :: hashed password form" + password + " is " + hashedPassword);
+                        int registeredUserId = DAO.INSTANCE.createUser(registeredUser, hashedPassword);
+                        registeredUser = new User(registeredUserId, userRoleId, userRoleForRegister, email, firstName, lastName, phone, false);
+                        if (userInSession == null) {
+                            request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, registeredUser);
+                            userInSession = registeredUser;
+                        }
+                        String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
+                        if (userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
+                            EmailSender.sendRegistrationEmailToEngineer(registeredUser, password, fullPath);
+                        } else {
+                            EmailSender.sendRegistrationEmailToCustomer(registeredUser, password, fullPath);
+                        }
+                        Service service = (Service) request.getSession()
+                                .getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
+                        ServiceLocation servLoc = (ServiceLocation) request.getSession()
+                                .getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
+                        request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+                        if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString()) && service != null && servLoc != null) {
+                            ServletContext context = getServletContext();
+                            RequestDispatcher rd = context.getRequestDispatcher(CauliflowerInfo.PROCEED_CONTROLLER_LINK);
+                            rd.forward(request, response);
+                        } else {
+                            if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString()))
+                                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+                            if (userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
+                                request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE, CauliflowerInfo.OK_REGISTER_EMPLOYEE_MESSAGE);
+                                response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                            }
+                        }
+                    } else {
+                        request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PHONE_UNIQ_ERROR_MESSAGE);
+                        response.sendRedirect(CauliflowerInfo.AUTH_LINK);
+                    }
+                }else{
                     request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.EMAIL_UNIQ_ERROR_MESSAGE);
                     response.sendRedirect(CauliflowerInfo.AUTH_LINK);
-                }
-                if (!DAO.INSTANCE.checkForPhoneUniq(phone)) {
-                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PHONE_UNIQ_ERROR_MESSAGE);
-                    response.sendRedirect(CauliflowerInfo.AUTH_LINK);
-                }
-                User registeredUser = new User(0,userRoleId, userRoleForRegister, email, firstName, lastName, phone,false);
-                String hashedPassword= Cryptographer.hmacSha1(password);
-                logger.info(" reg controller :: hashed password form"+password+" is "+hashedPassword);
-                int registeredUserId = DAO.INSTANCE.createUser(registeredUser, hashedPassword);
-                if (registeredUserId < 1) {
-                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
-                    response.sendRedirect(CauliflowerInfo.AUTH_LINK);
-                }
-                registeredUser = new User(registeredUserId, userRoleId, userRoleForRegister, email, firstName, lastName, phone,false);
-                if(userInSession==null){
-                    request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, registeredUser);
-                    userInSession=registeredUser;
-                }
-                String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
-                if(userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())){
-                      EmailSender.sendRegistrationEmailToEngineer(registeredUser,password,fullPath);
-                }else{
-                      EmailSender.sendRegistrationEmailToCustomer(registeredUser,password,fullPath);
-                }
-                Service service = (Service) request.getSession()
-                        .getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
-                ServiceLocation servLoc = (ServiceLocation) request.getSession()
-                        .getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
-                request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-                if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString()) && service != null && servLoc != null) {
-                    ServletContext context = getServletContext();
-                    RequestDispatcher rd = context.getRequestDispatcher(CauliflowerInfo.PROCEED_CONTROLLER_LINK);
-                    rd.forward(request, response);
-                } else {
-                    if (userInSession.getUserRole().equals(UserRole.CUSTOMER.toString()))
-                        response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-                    if (userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
-                        request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_REGISTER_EMPLOYEE_MESSAGE);
-                        response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
-                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

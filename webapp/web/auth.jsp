@@ -43,7 +43,6 @@
                 <div class="form-group" id="auth_log_password">
                     <h4>Password <span class="required"></span></h4>
                     <input type="password" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Password must contain at least 6 symbols" name="password" placeholder="secret-password" required>
-                    <%--<a href="#">Forgot your password?</a>--%>
                 </div>
                 <button id="auth_log_submit" class="btn-signin btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
             </form>
@@ -71,7 +70,6 @@
                     <h4>Phone number <span class="required"></span></h4>
                     <input type="text" class="form-control" data-placement="bottom" data-trigger="manual" data-content="Phone is not valid" name="phone" placeholder="Phone" required>
                 </div>
-                <input type="hidden" name="userRole" value="CUSTOMER" >
                 <button class="btn-signin btn btn-lg btn-primary btn-block" id="auth_reg_submit" type="submit">Sign Up</button>
             </form>
         </div>
