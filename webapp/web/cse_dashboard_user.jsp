@@ -14,7 +14,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-
+<%
+    if(request.getSession().getAttribute(CauliflowerInfo.CUSTOMER_USER_ATTRIBUTE) == null){
+        response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
+    }
+%>
 
 <!DOCTYPE html>
 <html lang="en" ng-app="CSEDashboard">
@@ -25,7 +29,7 @@
         if(request.getSession().getAttribute( CauliflowerInfo.CUSTOMER_USER_ATTRIBUTE)== null)response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
     %>
     <script>
-        const customerUserId = ${customerUser.userId};
+        const customerUserId = ${customerUser.userId != null? customerUser.userId : 0};
         console.log(customerUserId);
     </script>
 </head>
@@ -105,16 +109,10 @@
             </form>
         </div>
 
-        <div class="col-xs-12 border-top">
+        <div class="col-xs-12 border-top ng-cloak" ng-class="hasServiceInstance? 'item-visible-true' : 'item-visible-false'">
             <h4 class="txt-bold">Service Instance:</h4>
             <select class="form-control" ng-model="serviceInstance"
                     ng-options="item.serviceLocation.locationAddress for item in arrServiceInstance" ng-change="update()">
-                <%--<%--%>
-                    <%--final List<ServiceInstance> listInstance = (List<ServiceInstance>)request.getSession().getAttribute("lstServiceInstance");--%>
-                    <%--for(int i=0;i<listInstance.size();i++){--%>
-                        <%--out.print("ng-options=\"istInstance.get(i).getServiceLocation()\" ng-change = \"update()\"");--%>
-                    <%--}--%>
-                <%--%>--%>
             </select>
             <h4 class="txt-bold">General:</h4>
             <dl class="dl-horizontal ng-cloak">
@@ -151,6 +149,12 @@
                 </table>
             </div>
         </div>
+
+        <div class="col-xs-12 border-top ng-cloak" ng-class="hasServiceInstance? 'item-visible-false' : 'item-visible-true'">
+            <h3 class="text-center">There are no orders</h3>
+        </div>
+
+        <a href="<% out.print(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK); %>" class="btn-block text-center">Back to Dashboard</a>
     </div>
 
     <jsp:include page="footer.jsp"/>

@@ -265,11 +265,10 @@ angular.module('MapDashboard', [])
 
         function ajaxGetDashboardData(callback){
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: 'dashboard',
                 dataType: 'json',
                 success: function(jqXHR){
-//                    console.log('ajaxGetDashboardData', jqXHR);
                     if(jqXHR != null){
                         if (callback && typeof(callback) === "function") {
                             callback(jqXHR);

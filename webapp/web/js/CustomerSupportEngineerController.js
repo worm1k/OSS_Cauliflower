@@ -45,6 +45,7 @@ angular.module('CSEDashboard', [])
         $scope.service;
 
         $scope.isControllerInit = false;
+        $scope.hasServiceInstance = false;
 
         $scope.update = function(){
             updateGeneralInfo(false);
@@ -54,6 +55,8 @@ angular.module('CSEDashboard', [])
             if($scope.arrServiceInstance.length > 0){
                 console.log('serviceInstance', $scope.serviceInstance);
                 console.log('providerLocation arrServices', $scope.serviceInstance.providerLocation.arrService);
+
+                $scope.hasServiceInstance = true;
 
                 var i = 0;
                 var isFound = false;
@@ -74,6 +77,7 @@ angular.module('CSEDashboard', [])
                 }
             }else{
                 console.log('empty');
+                $scope.hasServiceInstance = false;
             }
         }
 
@@ -98,7 +102,7 @@ angular.module('CSEDashboard', [])
 
         function ajaxGetDashboardData(userId, callback){
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: 'dashboard',
                 dataType: 'json',
                 data: {

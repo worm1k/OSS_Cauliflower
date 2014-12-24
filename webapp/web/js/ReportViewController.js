@@ -12,7 +12,9 @@ angular.module('ReportView', [])
         $scope.totalPages = 1;
         $scope.arrPage = [];
         $scope.json = [];
+
         $scope.isLoading = true;
+        $scope.hasRecords = false;
 
         $scope.calcTotalPages = function(){
             $scope.totalPages = Math.floor($scope.itemsLength / $scope.linesOnPage);
@@ -44,7 +46,7 @@ angular.module('ReportView', [])
         $scope.ajaxGetReport = function(data, callback){
             console.log('ajaxGetReport');
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: 'reportspaging',
                 data: data,
                 success: function(jqXHR){
@@ -84,47 +86,53 @@ angular.module('ReportView', [])
 
             $scope.ajaxGetReportPagination(data, function(length){
                 console.log("length", length);
-                $scope.ajaxGetReport(data, function(json){
-                    $scope.$apply(function(){
-                        $scope.json = json.list;
-                        $scope.linesOnPage = json.linesOnPage;
-                        $scope.itemsLength = length;
-                        $scope.calcTotalPages();
-                    });
+                if(length > 0){
+                    $scope.hasRecords = true;
+                    $scope.ajaxGetReport(data, function(json){
+                        $scope.$apply(function(){
+                            $scope.json = json.list;
+                            $scope.linesOnPage = json.linesOnPage;
+                            $scope.itemsLength = length;
+                            $scope.calcTotalPages();
+                        });
 
-                    console.log("json", json);
+                        console.log("json", json);
 
-                    console.log('$scope.linesOnPage', $scope.linesOnPage);
-                    console.log('$scope.itemsLength', $scope.itemsLength);
-                    console.log('$scope.totalPages', $scope.totalPages);
+                        console.log('$scope.linesOnPage', $scope.linesOnPage);
+                        console.log('$scope.itemsLength', $scope.itemsLength);
+                        console.log('$scope.totalPages', $scope.totalPages);
 
-                    $('#pagination').bootstrapPaginator({
-                        bootstrapMajorVersion: 3,
-                        currentPage: $scope.page,
-                        totalPages: $scope.totalPages,
-                        numberOfPages: 5,
-                        itemTexts: function (type, page, current) {
-                            switch (type) {
-                                case "first":
-                                    return "First";
-                                case "prev":
-                                    return "Previous";
-                                case "next":
-                                    return "Next";
-                                case "last":
-                                    return "Last";
-                                case "page":
-                                    return page;
+                        $('#pagination').bootstrapPaginator({
+                            bootstrapMajorVersion: 3,
+                            currentPage: $scope.page,
+                            totalPages: $scope.totalPages,
+                            numberOfPages: 5,
+                            itemTexts: function (type, page, current) {
+                                switch (type) {
+                                    case "first":
+                                        return "First";
+                                    case "prev":
+                                        return "Previous";
+                                    case "next":
+                                        return "Next";
+                                    case "last":
+                                        return "Last";
+                                    case "page":
+                                        return page;
+                                }
+                            },
+                            itemContainerClass: function (type, page, current) {
+                                return (page === current) ? "active" : "pointer-cursor";
+                            },
+                            onPageChanged: function(e, oldPage, newPage){
+                                $scope.update(newPage);
                             }
-                        },
-                        itemContainerClass: function (type, page, current) {
-                            return (page === current) ? "active" : "pointer-cursor";
-                        },
-                        onPageChanged: function(e, oldPage, newPage){
-                            $scope.update(newPage);
-                        }
-                    });
-                })
+                        });
+                    })
+                }else{
+                    $scope.hasRecords = false;
+                    console.log('empty');
+                }
             });
         }
 

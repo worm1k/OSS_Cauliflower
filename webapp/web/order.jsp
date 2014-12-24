@@ -51,7 +51,7 @@
                 </label>
             </li>
         </ul>
-        <form id="js-order-form" action="services" method="POST">
+        <form id="js-order-form" action="new" method="POST">
             <%-- serviceLocation data --%>
             <input type="hidden" name="serviceLocationAddress" value="">
             <input type="hidden" name="serviceLocationLongtitude" value="">

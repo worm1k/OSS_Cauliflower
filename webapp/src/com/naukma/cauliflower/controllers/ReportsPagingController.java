@@ -28,7 +28,7 @@ public class ReportsPagingController  extends HttpServlet {
 
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         final int LINES_ON_PAGE = 20;
         int page = 0;
@@ -146,21 +146,26 @@ public class ReportsPagingController  extends HttpServlet {
     }
 
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final User user = (User) req.getSession().getAttribute(CauliflowerInfo.USER_ID_ATTRIBUTE);
+//    @Override
+//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        final User user = (User) req.getSession().getAttribute(CauliflowerInfo.USER_ID_ATTRIBUTE);
+//
+//        if(user == null){
+//            resp.sendRedirect(CauliflowerInfo.HOME_LINK);
+//        }else if(user.getUserRole().equals(UserRole.CUSTOMER.toString())){
+//            resp.sendRedirect(CauliflowerInfo.HOME_LINK);
+//        }else{
+//            try{
+//                req.setAttribute(CauliflowerInfo.REPORT_METHOD_ATTRIBUTE, req.getParameter(CauliflowerInfo.REPORT_METHOD_ATTRIBUTE));
+//                resp.sendRedirect(CauliflowerInfo.REPORT_VIEW_LINK);
+//            }catch (Exception e){
+//                resp.sendRedirect(CauliflowerInfo.HOME_LINK);
+//            }
+//        }
+//    }
 
-        if(user == null){
-            resp.sendRedirect(CauliflowerInfo.HOME_LINK);
-        }else if(user.getUserRole().equals(UserRole.CUSTOMER.toString())){
-            resp.sendRedirect(CauliflowerInfo.HOME_LINK);
-        }else{
-            try{
-                req.setAttribute(CauliflowerInfo.REPORT_METHOD_ATTRIBUTE, req.getParameter(CauliflowerInfo.REPORT_METHOD_ATTRIBUTE));
-                resp.sendRedirect(CauliflowerInfo.REPORT_VIEW_LINK);
-            }catch (Exception e){
-                resp.sendRedirect(CauliflowerInfo.HOME_LINK);
-            }
-        }
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 }

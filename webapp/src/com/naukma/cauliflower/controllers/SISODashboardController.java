@@ -22,12 +22,12 @@ import java.util.List;
 @WebServlet(name = "SISODashboardController")
 public class SISODashboardController  extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException
     {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         ArrayList<ServiceOrder> orders = null;
         ArrayList<ServiceInstance> instances = null;

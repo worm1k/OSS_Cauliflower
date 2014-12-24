@@ -352,7 +352,7 @@ angular.module('NgApp', [])
 
         function ajaxGetServices(callback){
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: 'services',
                 dataType: 'json',
                 success: function(jqXHR){

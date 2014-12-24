@@ -60,9 +60,9 @@ public class TaskManager extends HttpServlet {
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 
 }

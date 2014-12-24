@@ -41,6 +41,7 @@ public class CauliflowerInfo {
     public static final String SUPPORT_ENGINEER_DASHBOARD_LINK = "cse_dashboard.jsp";
     public static final String SUPPORT_ENGINEER_USER_INFORMATION_LINK = "cse_dashboard_user.jsp";
     public static final String REPORT_VIEW_LINK = "report_view.jsp";
+    public static final String REPORTS_LINK = "reports.jsp";
 
     public static final String INSTALL_ENGINEER_CONTROLLER_LINK = "installationController";
     public static final String PROVIS_ENGINEER_CONTROLLER_LINK = "provisioningController";

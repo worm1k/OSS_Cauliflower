@@ -24,12 +24,12 @@
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCP497dnVu2vETnDTcY9ouPNOyCMhccFcs&libraries=places&language=en"></script>
 <script type="text/javascript" src="./vendor/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="vendor/jquery.ui/js/core.js"></script>
-<script type="text/javascript" src="vendor/jquery.ui/js/widget.js"></script>
-<script type="text/javascript" src="vendor/jquery.ui/js/position.js"></script>
-<script type="text/javascript" src="vendor/jquery.ui/js/menu.js"></script>
-<script type="text/javascript" src="vendor/jquery.ui/js/datepicker.js"></script>
-<script type="text/javascript" src="vendor/jquery.ui/js/autocomplete.js"></script>
+<script type="text/javascript" src="./vendor/jquery.ui/js/core.js"></script>
+<script type="text/javascript" src="./vendor/jquery.ui/js/widget.js"></script>
+<script type="text/javascript" src="./vendor/jquery.ui/js/position.js"></script>
+<script type="text/javascript" src="./vendor/jquery.ui/js/menu.js"></script>
+<script type="text/javascript" src="./vendor/jquery.ui/js/datepicker.js"></script>
+<script type="text/javascript" src="./vendor/jquery.ui/js/autocomplete.js"></script>
 <script type="text/javascript" src="./vendor/jquery.inputmask/dist/jquery.inputmask.bundle.min.js"></script>
 <script type="text/javascript" src="./vendor/gmap3/dist/gmap3.min.js"></script>
 <script type="text/javascript" src="./vendor/google-infobox/google-infobox.js"></script>
@@ -38,13 +38,7 @@
 <script type="text/javascript" src="./vendor/bootstrap/dist/js/alert.js"></script>
 <script type="text/javascript" src="./vendor/bootstrap-paginator/bootstrap-paginator.min.js"></script>
 <script type="text/javascript" src="./vendor/angularjs/angular.min.js"></script>
-
-<%--it works incorrect--%>
-<%--<script src="http://code.jquery.com/jquery-1.10.2.js"></script>--%>
-<%--<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>--%>
-<%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">--%>
-
-<!-- custom scripts -->
+<%--custom scripts--%>
 <script type="text/javascript" src="./js/MapDashboardController.js"></script>
 <script type="text/javascript" src="./js/ReportsController.js"></script>
 <script type="text/javascript" src="./js/InstallationEngineerDashboardController.js"></script>

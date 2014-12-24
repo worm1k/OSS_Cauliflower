@@ -101,10 +101,6 @@
                         <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
                         <button type="submit" class="btn btn-xs btn-default">Open</button>
                     </form>
-                    <%--<form class="form-inline inline" action="provisioningController" method="POST">--%>
-                        <%--<input type="hidden" name="taskId" value="{{task.taskId}}"/>--%>
-                        <%--<button type="submit" class="btn btn-xs btn-success">Done</button>--%>
-                    <%--</form>--%>
                     <form class="form-inline inline" action="manageTask" method="POST">
                         <input type="hidden" name="taskId" ng-value="{{task.taskId}}"/>
                         <input type="hidden" name="taskStatus" ng-value="'{{task.taskStatus}}'"/>

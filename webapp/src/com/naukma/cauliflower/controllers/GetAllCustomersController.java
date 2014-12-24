@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.UserRole;
 import com.naukma.cauliflower.entities.User;
+import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,6 +41,6 @@ public class GetAllCustomersController  extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        resp.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 }

@@ -24,10 +24,8 @@ import java.util.List;
 @WebServlet(name = "GetServicesController")
 public class GetServicesController extends HttpServlet {
 
-
-    private static final String PROCEED_TO_ORDER_CONTROLLER="/proceed";
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         List<Service> services = null;
         try {
@@ -38,57 +36,11 @@ public class GetServicesController extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
-//        //return data as json object
-//        //Convert Java object to JSON format
         mapper.writeValue(out, services);
-//        Service service = DAO.INSTANCE.getServiceById(1);
-//        mapper.writeValue(out, service);
     }
 
-
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String pathFrom  = req.getHeader("Referer");
-        HttpSession session = req.getSession();
-        final User user  = (User) session.getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(user==null || user.getUserRole().equals(UserRole.CUSTOMER.toString())) {
-            String serviceLocationAddress = req.getParameter("serviceLocationAddress");
-            String serviceLocationLongtitude = req.getParameter("serviceLocationLongtitude");
-            String serviceLocationLatitude = req.getParameter("serviceLocationLatitude");
-
-            String serviceId = req.getParameter("serviceId");
-
-            Service service = null;
-            ServiceLocation serviceLocation = null;
-
-            try {
-                serviceLocation = new ServiceLocation(
-                        0,
-                        serviceLocationAddress,
-                        Double.parseDouble(serviceLocationLongtitude),
-                        Double.parseDouble(serviceLocationLatitude)
-                );
-                service = DAO.INSTANCE.getServiceById(Integer.parseInt(serviceId));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-
-            session.setAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE, service);
-            session.setAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE, serviceLocation);
-
-            if (user == null) {
-
-                resp.sendRedirect(CauliflowerInfo.AUTH_LINK);
-
-            } else {
-                RequestDispatcher requestDispatcher = req.getRequestDispatcher(PROCEED_TO_ORDER_CONTROLLER);
-                requestDispatcher.forward(req, resp);
-            }
-        }else{
-            req.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
-            resp.sendRedirect(pathFrom);
-        }
-
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 }

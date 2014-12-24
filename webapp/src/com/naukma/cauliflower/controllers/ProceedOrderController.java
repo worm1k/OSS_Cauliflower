@@ -26,6 +26,7 @@ public class ProceedOrderController extends HttpServlet
 {
     private User user = null;
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
@@ -68,6 +69,10 @@ public class ProceedOrderController extends HttpServlet
 
     }
 
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
+    }
 
     /**
      * Starts SO workflow for "NEW" scenario
@@ -226,8 +231,4 @@ public class ProceedOrderController extends HttpServlet
                 getServletContext().getRealPath(CauliflowerInfo.EMAIL_TEMPLATE_PATH));
 
     }
-
-
-
-
 }

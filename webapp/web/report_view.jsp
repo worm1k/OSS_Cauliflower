@@ -53,22 +53,31 @@
         <h1 class="text-center txt-bold">Internet Provider "CauliFlower"</h1>
         <h2 class="text-center">View "${param.reportMethod}" report</h2>
 
-        <ul id="pagination"></ul>
+        <div class="col-xs-12 ng-cloak" ng-class="hasRecords? 'item-visible-true' : 'item-visible-false'">
+            <ul id="pagination"></ul>
 
-        <table class="table table-striped">
-            <thead>
+            <table class="table table-striped">
+                <thead>
                 <tr>
                     <th>#</th>
                     <th ng-repeat="(key, val) in json[0]" class="ng-cloak">{{key}}</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <tr ng-repeat="item in json" class="ng-cloak">
                     <td>{{(page - 1) * linesOnPage + $index + 1}}</td>
                     <td ng-repeat="(key, val) in item">{{val}}</td>
                 </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-xs-12 ng-cloak" ng-class="hasRecords? 'item-visible-false' : 'item-visible-true'">
+            <h3 class="text-center">There are no records</h3>
+        </div>
+
+        <a href="<% out.print(CauliflowerInfo.REPORTS_LINK); %>" class="btn-block text-center">Back to all reports</a>
+
     </div>
 
     <jsp:include page="footer.jsp"/>

@@ -25,6 +25,6 @@ public class LogoutController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 }

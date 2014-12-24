@@ -14,9 +14,9 @@
 <%
     User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
     if(user == null){
-        response.sendRedirect("home.jsp");
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }else if(!user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString()) && !user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString())){
-        response.sendRedirect("home.jsp");
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 %>
 

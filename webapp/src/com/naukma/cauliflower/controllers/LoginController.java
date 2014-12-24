@@ -106,12 +106,6 @@ public class LoginController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        final User user = (User)session.getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        ObjectMapper mapper = new ObjectMapper();
-        PrintWriter out = response.getWriter();
-
-        response.setContentType("application/json;charset=UTF-8");
-        mapper.writeValue(out, user);
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 }

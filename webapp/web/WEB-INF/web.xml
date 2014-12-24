@@ -119,6 +119,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>NewOrderController</servlet-name>
+        <servlet-class>com.naukma.cauliflower.controllers.NewOrderController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NewOrderController</servlet-name>
+        <url-pattern>/new</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>BlockAccountController</servlet-name>
         <servlet-class>com.naukma.cauliflower.controllers.BlockAccountController</servlet-class>
     </servlet>
