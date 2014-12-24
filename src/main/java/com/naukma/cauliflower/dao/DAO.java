@@ -103,7 +103,6 @@ public class DAO {
      * @throws SQLException
      */
     public int getUserRoleIdFor(UserRole userRole) throws SQLException {
-        //Connection connection = getConnection();
         PreparedStatementBlocker preparedStatement = null;
         int result = 0;
         try {
@@ -116,7 +115,6 @@ public class DAO {
             }
         } finally {
             try {
-                //close(connection, preparedStatement);
                 preparedStatement.close();
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
@@ -187,7 +185,7 @@ public class DAO {
      * @return true if exists, false if doesn't
      */
     public boolean checkForEmailUniq(String email) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         boolean result = false;
         try {
@@ -208,9 +206,6 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -228,7 +223,6 @@ public class DAO {
      * @return true if user exists, false if doesn't
      */
     public boolean checkForExistingUserById(int id) throws SQLException {
-        //Connection connection = getConnection();
         PreparedStatementBlocker preparedStatement = null;
         boolean result = false;
         try {
@@ -249,9 +243,6 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -396,7 +387,6 @@ public class DAO {
      * @return true if user exists, false if doesn't
      */
     public boolean checkForExistingUserByEmail(String email) throws SQLException {
-        //Connection connection = getConnection();
         PreparedStatementBlocker preparedStatement = null;
         boolean result = false;
         try {
@@ -419,9 +409,6 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -439,7 +426,6 @@ public class DAO {
      * @return null if there is no user role with this id, otherwise user role name
      */
     public String getUserRoleNameByUserRoleId(int userRoleId) throws SQLException {
-        //Connection connection = getConnection();
         String result = null;
         PreparedStatementBlocker preparedStatement = null;
         try {
@@ -534,7 +520,6 @@ public class DAO {
      * @return ResultSet with routers(each row contains router id, sum of occupied, sum of free ports for this router)
      */
     public ReportGenerator getDevicesForReport(final String EXT) throws SQLException {
-        //Connection connection = getConnection();
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
@@ -557,7 +542,6 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -599,7 +583,6 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -637,7 +620,6 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -652,7 +634,6 @@ public class DAO {
      * @return ResultSet with circuits(each row contains router id, port id, cable id, service instance id)
      */
     public ReportGenerator getCircuitsForReport(final String EXT) throws SQLException {
-        //Connection connection = getConnection();
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
@@ -697,7 +678,6 @@ public class DAO {
      * @return true if phone number exists, false if doesn't
      */
     public boolean checkForPhoneUniq(String phone) throws SQLException {
-        //Connection connection = getConnection();
         PreparedStatementBlocker preparedStatement = null;
         boolean result = false;
         try {
@@ -718,9 +698,6 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -743,7 +720,6 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public User getUserByLoginAndPassword(String login, String password) throws SQLException {
-        //Connection connection = getConnection();
         User user = null;
         PreparedStatementBlocker preparedStatement = null;
         try {
@@ -769,7 +745,6 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -876,7 +851,7 @@ public class DAO {
      * @throws java.sql.SQLException*
      */
     public void setUserForInstance(int instanceId, int userId) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("setUserForInstance",
@@ -889,7 +864,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -908,7 +883,7 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.InstanceStatus
      */
     public void changeInstanceStatus(int instanceId, InstanceStatus status) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("changeInstanceStatus",
@@ -923,7 +898,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -943,7 +918,7 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.OrderStatus
      */
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("changeOrderStatus",
@@ -958,7 +933,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -993,7 +968,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1012,7 +987,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void setInstanceBlocked(int instanceId, int isBlocked) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("setInstanceBlocked",
@@ -1025,7 +1000,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1046,7 +1021,7 @@ public class DAO {
      */
     public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId) throws SQLException {
         ArrayList<Task> result = new ArrayList<Task>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getTasksByStatusAndRole",
@@ -1070,7 +1045,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1091,7 +1066,7 @@ public class DAO {
      */
     public List<Service> getServicesByProviderLocationId(int providerLocationId) throws SQLException {
         ArrayList<Service> result = new ArrayList<Service>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getServicesByProviderLocationId",
@@ -1118,7 +1093,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1193,7 +1168,7 @@ public class DAO {
 
     public ServiceOrder getServiceOrder(int taskId) throws SQLException {
         ServiceOrder result = null;
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getServiceOrder",
@@ -1222,7 +1197,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1242,7 +1217,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void setInstanceForOrder(int instanceId, int orderId) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("setInstanceForOrder",
@@ -1255,7 +1230,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1278,7 +1253,7 @@ public class DAO {
 
     public ArrayList<ServiceOrder> getOrders(int userId) throws SQLException {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         System.out.println("here");
         try {
@@ -1308,7 +1283,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1331,7 +1306,7 @@ public class DAO {
 
     public ArrayList<ServiceInstance> getInstances(int userId) throws SQLException {
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getInstances",
@@ -1362,7 +1337,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1384,7 +1359,7 @@ public class DAO {
      */
     public ArrayList<ServiceOrder> getAllOrders() throws SQLException {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
 
@@ -1412,7 +1387,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1433,7 +1408,7 @@ public class DAO {
      */
     public ArrayList<ServiceInstance> getAllInstances() throws SQLException {
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getAllInstances",
@@ -1462,7 +1437,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1484,7 +1459,7 @@ public class DAO {
      */
     public List<ProviderLocation> getProviderLocations() throws SQLException {
         ArrayList<ProviderLocation> result = new ArrayList<ProviderLocation>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getProviderLocations",
@@ -1501,7 +1476,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1523,7 +1498,7 @@ public class DAO {
      */
     public Service getServiceById(int serviceId) throws SQLException {
         Service service = null;
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getServiceById",
@@ -1552,7 +1527,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1573,7 +1548,7 @@ public class DAO {
      */
     public List<Service> getServices() throws SQLException {
         ArrayList<Service> result = new ArrayList<Service>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getServices",
@@ -1599,7 +1574,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1798,7 +1773,7 @@ public class DAO {
      */
     public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) throws SQLException {
         ArrayList<Task> result = new ArrayList<Task>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getFreeAndProcessingTasksByUserRoleId",
@@ -1821,7 +1796,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1902,7 +1877,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public boolean freePortExists() throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         boolean result = false;
         try {
@@ -1914,7 +1889,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1933,7 +1908,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public Scenario getOrderScenario(int serviceOrderId) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         Scenario result = null;
         try {
@@ -1948,7 +1923,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1966,7 +1941,7 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.TaskStatus
      */
     public TaskStatus getTaskStatus(int taskId) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         TaskStatus result = null;
         try {
@@ -1983,7 +1958,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2003,7 +1978,7 @@ public class DAO {
      */
     public Task getTaskById(int taskId) throws SQLException {
         Task task = null;
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getTaskById",
@@ -2025,7 +2000,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2042,7 +2017,7 @@ public class DAO {
      * @see java.sql.ResultSet
      */
     public ReportGenerator getMostProfitableRouterForReport(final String EXT) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
@@ -2064,7 +2039,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2082,7 +2057,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void setServiceForTask(int taskId, int serviceId) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("setServiceForTask",
@@ -2093,7 +2068,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2112,7 +2087,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void changeServiceForServiceInstance(int taskId, int serviceInstanceId) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("changeServiceForServiceInstance",
@@ -2127,7 +2102,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2144,7 +2119,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public boolean isInstanceBlocked(int serviceInstanceId) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         boolean result = false;
         try {
@@ -2158,7 +2133,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2169,7 +2144,7 @@ public class DAO {
 
 
     public boolean isInstanceDisconnected(int serviceInstanceId) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         boolean result = false;
         try {
@@ -2191,7 +2166,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2210,7 +2185,7 @@ public class DAO {
      */
     public List<User> getUsersByUserRole(UserRole role) throws SQLException {
         ArrayList<User> result = new ArrayList<User>();
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             String query = "SELECT * " +
@@ -2233,7 +2208,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2252,7 +2227,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getMostProfitableRouterForReport(int page, int pageLength) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         class MostProfRouter implements Serializable{
@@ -2294,7 +2269,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2311,7 +2286,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getUsedRoutersAndCapacityOfPorts(int page, int pageLength) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
@@ -2369,7 +2344,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2386,7 +2361,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getProfitabilityByMonth(int page, int pageLength) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         class ProfitabilityByMonth implements Serializable{
@@ -2426,7 +2401,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2443,7 +2418,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getCablesForReport(int page, int pageLength) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         class CablesForReport implements Serializable{
@@ -2487,7 +2462,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2503,7 +2478,7 @@ public class DAO {
      * @throws SQLException
      */
     private int getRoutersAmount() throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
@@ -2517,7 +2492,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2533,7 +2508,7 @@ public class DAO {
      * @throws SQLException
      */
     private int getCablesAmount() throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
@@ -2547,7 +2522,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2563,7 +2538,7 @@ public class DAO {
      * @throws SQLException
      */
     private int getPortsAmount() throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
@@ -2576,7 +2551,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2678,7 +2653,7 @@ public class DAO {
      * @throws SQLException
      */
     public int getOrdersPerPeriodLinesAmount(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
@@ -2697,7 +2672,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2753,7 +2728,7 @@ public class DAO {
                 return lastName;
             }
         }
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         List<Object> result = new ArrayList<Object>();
@@ -2808,7 +2783,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
                 exc.printStackTrace();
@@ -2831,7 +2806,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<CIA> getCIAReportForTable() throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         List<CIA> result = new ArrayList<CIA>();
@@ -2870,7 +2845,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
                 exc.printStackTrace();
@@ -2891,7 +2866,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public ReportGenerator getCIAReport(final String EXT) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
@@ -2926,7 +2901,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2945,7 +2920,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public ReportGenerator getUsedRoutersAndCapacityOfPorts(final String EXT) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
@@ -2970,7 +2945,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2993,7 +2968,7 @@ public class DAO {
         {//help
             System.out.println("getProfitabilityByMonth");
         }
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
@@ -3017,7 +2992,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3046,7 +3021,7 @@ public class DAO {
         {//help
             System.out.println("getOrdersPerPeriod");
         }
-        //Connection connection = getConnection();
+
         ResultSet resultSet = null;
         PreparedStatementBlocker preparedStatement = null;
         ReportGenerator reportGenerator = null;
@@ -3086,7 +3061,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3210,7 +3185,7 @@ public class DAO {
                 return free;
             }
         }
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
 
@@ -3240,7 +3215,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -3258,7 +3233,7 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getCircuitsForReport(int page, int pageLength) throws SQLException {
-        //Connection connection = getConnection();
+
         ResultSet resultSet = null;
         PreparedStatementBlocker preparedStatement = null;
         List<Object> circuits = new ArrayList<Object>();
@@ -3317,7 +3292,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getCircuitsForReport(int page, int pageLength)");
                 exc.printStackTrace();
@@ -3339,7 +3314,7 @@ public class DAO {
      */
     public List<Object> getPortsForReport(int page, int pageLength) throws SQLException {
         System.out.println("getPortsForReport");
-        //Connection connection = getConnection();
+
         ResultSet resultSet = null;
         PreparedStatementBlocker preparedStatement = null;
         List<Object> ports = new ArrayList<Object>();
@@ -3408,7 +3383,7 @@ public class DAO {
 
 
     public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
-        //Connection connection = getConnection();
+
         ResultSet resultSet = null;
         PreparedStatementBlocker preparedStatement = null;
         List<Object> servOrds = new ArrayList<Object>();
@@ -3488,7 +3463,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3517,7 +3492,7 @@ public class DAO {
             System.out.println("getCustomerUserById");
         }
         User result = null;
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             String query = "SELECT * FROM USERS WHERE ID_USERROLE = ? AND ID_USER = ?";
@@ -3545,7 +3520,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3567,7 +3542,7 @@ public class DAO {
             System.out.println("GET INSTANCE BY ID");
         }
         ServiceInstance result = null;
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getInstanceById",
@@ -3601,7 +3576,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3625,7 +3600,7 @@ public class DAO {
             System.out.println("getServiceOrderById");
         }
         ServiceOrder result = null;
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getServiceOrderById",
@@ -3655,7 +3630,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3675,7 +3650,7 @@ public class DAO {
             System.out.println("getServiceModifyToByTaskId");
         }
         Service result = null;
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         try {
             preparedStatement = getPreparedStatementFromHashMap("getServiceModifyToByTaskId",
@@ -3703,7 +3678,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3718,7 +3693,7 @@ public class DAO {
      * ---------------------------------------------------------------------START Alex---------------------------------------------------------------------*
      */
     public int countNotCompletedTasksByTaskName(TaskName taskName) throws SQLException {
-        //Connection connection = getConnection();
+
         PreparedStatementBlocker preparedStatement = null;
         int taskCount = 0;
         try {
@@ -3733,7 +3708,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3814,7 +3789,6 @@ public class DAO {
      */
     public ArrayList<String> getEmailsLike(String queryString) throws SQLException {
         final String columLabel = "E_MAIL";
-        //Connection connection = getConnection();
         PreparedStatementBlocker preparedStatement = null;
         final String query = "SELECT * FROM USERS WHERE E_MAIL like ? ";
         ArrayList<String> resEmails = new ArrayList<String>();
@@ -3829,7 +3803,7 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
+
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
