@@ -40,7 +40,7 @@ public class ReportGeneratorServlet extends HttpServlet {
         java.sql.Date sqlEndDate = null;
         if (startDate != null && endDate != null)
             try {
-
+                //parce date from jquery to sql
                 java.util.Date date = formatter.parse(startDate);
                 sqlStartDate = new java.sql.Date(date.getTime());
 

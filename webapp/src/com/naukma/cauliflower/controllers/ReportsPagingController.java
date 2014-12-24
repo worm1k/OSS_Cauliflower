@@ -52,7 +52,7 @@ public class ReportsPagingController  extends HttpServlet {
 
         if (startDate != null && endDate != null)
             try {
-
+                //parce date from jquery to sql
                 java.util.Date date = formatter.parse(startDate);
                 sqlStartDate = new java.sql.Date(date.getTime());
 
@@ -66,7 +66,6 @@ public class ReportsPagingController  extends HttpServlet {
         List<Object> list = null;
         try {
             if (methodName.equals("Devices")) {
-                //resultSet = DAO.INSTANCE.getDevicesForReport();
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
                 if(hasRights)
@@ -74,50 +73,49 @@ public class ReportsPagingController  extends HttpServlet {
             } else if (methodName.equals("Circuits")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
-                //resultSet =
+
                 if(hasRights)
                     list = DAO.INSTANCE.getCircuitsForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("Cables")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
-                //resultSet =
+
                 if(hasRights)
                     list = DAO.INSTANCE.getCablesForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("Ports")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
-                //resultSet =
+
                 if(hasRights)
                     list = DAO.INSTANCE.getPortsForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("Profitable")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
-                //resultSet = DAO.INSTANCE.getMostProfitableRouterForReport();
+
                 if(hasRights)
                     list = DAO.INSTANCE.getMostProfitableRouterForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("utilizationAndCapacity")){
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
-                //resultSet =
+
                 if(hasRights)
                     list = DAO.INSTANCE.getUsedRoutersAndCapacityOfPorts(page, LINES_ON_PAGE);
             }else if (methodName.equals("Profitability")) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
-                //resultSet =
+
                 if(hasRights)
                     list = DAO.INSTANCE.getProfitabilityByMonth(page, LINES_ON_PAGE);
             }else if (methodName.equals("New") && startDate != null && endDate != null) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
-                //resultSet =
+
                 if(hasRights)
                     list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, page, LINES_ON_PAGE);
-                //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
             }else if (methodName.equals("Disconnect") && startDate != null && endDate != null) {
                 hasRights =
                         user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
-                //resultSet =
+
                 if(hasRights)
                     list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, page, LINES_ON_PAGE);
             }else if (methodName.equals("Tree")){
@@ -128,11 +126,6 @@ public class ReportsPagingController  extends HttpServlet {
                     list = DAO.INSTANCE.getCIAReport(page, LINES_ON_PAGE);
             }
 
-            //resultSet = DAO.INSTANCE.DisconnectOrdersPerPeriod(sqlStartDate, sqlEndDate);
-            /*if (resultSet == null)
-                resultSet = DAO.INSTANCE.reportTester();*/
-
-            //reportGenerator = new XLSReportGenerator("aaa", resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -147,7 +140,6 @@ public class ReportsPagingController  extends HttpServlet {
             map.put("linesOnPage", LINES_ON_PAGE);
         }else{
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
-            //response.getWriter().println("Sorry, you have no rights for downloading this report");
         }
 
         mapper.writeValue(out, map);
