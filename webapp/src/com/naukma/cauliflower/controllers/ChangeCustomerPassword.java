@@ -53,12 +53,7 @@ public class ChangeCustomerPassword extends HttpServlet {
                         e.printStackTrace();
                     }
                         //Sending e-mail to account with new password
-                        StringBuilder message = new StringBuilder();
-                        message.append("<p>Your password has been changed!</p> " +
-                                "<p style = \"text-transform:none;\">Your new password: <b>");
-                        message.append(newPassword);
-                        message.append("</b></p>");
-                        String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
+                        String fullPath = getServletContext().getRealPath(CauliflowerInfo.EMAIL_TEMPLATE_PATH);
                         EmailSender.sendChangedPasswordToUser(userForNewPass,newPassword,fullPath);
                         //Insertion attribute of successful changing password into session
                         // and redirect to customer support engineer dashboard

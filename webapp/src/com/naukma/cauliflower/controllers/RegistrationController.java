@@ -84,7 +84,7 @@ public class RegistrationController extends HttpServlet {
                             userInSession = registeredUser;
                         }
                         //Sending e-mail
-                        String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
+                        String fullPath = getServletContext().getRealPath(CauliflowerInfo.EMAIL_TEMPLATE_PATH);
                         if (userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())) {
                             EmailSender.sendRegistrationEmailToEngineer(registeredUser, password, fullPath);
                         } else {

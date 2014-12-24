@@ -38,7 +38,7 @@ public class BlockAccountController extends HttpServlet {
                     //Blocking account
                     User blockedUser = DAO.INSTANCE.blockUserByEmail(userEmailForBlock);
                     //Sending e-mail to blocked account
-                    String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
+                    String fullPath = getServletContext().getRealPath(CauliflowerInfo.EMAIL_TEMPLATE_PATH);
                     EmailSender.notifyUserAboutBlockedAccount(blockedUser, fullPath);
                     //Insertion attribute of successful blocking into session
                     request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_ACCOUNT_BLOCK_MESSAGE);
