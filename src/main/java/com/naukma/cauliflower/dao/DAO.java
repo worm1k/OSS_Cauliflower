@@ -36,9 +36,6 @@ public class DAO {
         }
         Properties props = new Properties();
         PropertyConfigurator.configure(props);
-        //Eugene
-        hashMapForPreparedStatement = new Hashtable<String, PreparedStatementBlocker>();
-        connectionForPreparedStatements = getConnection();
     }
 
     private Connection getConnection() {
@@ -57,40 +54,6 @@ public class DAO {
     }
 
 
-
-    /**
-     * ---------------------------------------------------------------------Eugene Try---------------------------------------------------------------------*
-     */
-
-    private Hashtable<String, PreparedStatementBlocker> hashMapForPreparedStatement;
-    private Connection connectionForPreparedStatements;
-
-    /**
-     * get PreparedStatement from hashMapForPreparedStatement and block it or add it there and block
-     *
-     * @param key    key for returned PreparedStatementBlocker object in hashMapForPreparedStatement, if there's such
-     * @param query query for returned PreparedStatementBlocker object in hashMapForPreparedStatement
-     * @return PreparedStatementBlocker for query
-     */
-    private PreparedStatementBlocker getPreparedStatementFromHashMap(String key, String query) throws SQLException {
-        if(hashMapForPreparedStatement.containsKey(key)) {
-            PreparedStatementBlocker ret = hashMapForPreparedStatement.get(key);
-            if(ret.blocked()){
-                return new PreparedStatementBlocker(query, getConnection(), true);
-            }else {
-                return ret.block();
-            }
-        }else{
-            PreparedStatementBlocker ret =  new PreparedStatementBlocker(query, connectionForPreparedStatements);
-            hashMapForPreparedStatement.put(key, ret);
-            return ret;
-        }
-    }
-
-    /**---------------------------------------------------------------------END EUGENE TRY---------------------------------------------------------------------**/
-
-
-
     /**
      * ---------------------------------------------------------------------HALYA---------------------------------------------------------------------*
      */
@@ -103,11 +66,11 @@ public class DAO {
      * @throws SQLException
      */
     public int getUserRoleIdFor(UserRole userRole) throws SQLException {
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         int result = 0;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getUserRoleIdFor",
-                    "SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
+            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
             preparedStatement.setString(1, userRole.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -115,7 +78,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -185,12 +148,11 @@ public class DAO {
      * @return true if exists, false if doesn't
      */
     public boolean checkForEmailUniq(String email) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("checkForEmailUniq",
-                    "SELECT COUNT(Id_User) RES FROM USERS WHERE E_Mail = ?");
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE E_Mail = ?");
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             int checkResult = -1;
@@ -205,7 +167,7 @@ public class DAO {
 
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -223,11 +185,11 @@ public class DAO {
      * @return true if user exists, false if doesn't
      */
     public boolean checkForExistingUserById(int id) throws SQLException {
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("checkForExistingUserById",
-                    "SELECT COUNT(Id_User) RES FROM USERS WHERE Id_User = ?");
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE Id_User = ?");
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             int checkResult = -1;
@@ -242,7 +204,7 @@ public class DAO {
 
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -387,11 +349,11 @@ public class DAO {
      * @return true if user exists, false if doesn't
      */
     public boolean checkForExistingUserByEmail(String email) throws SQLException {
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("checkForExistingUserByEmail",
-                    "SELECT COUNT(Id_User) RES FROM USERS WHERE E_MAIL = ?");
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE E_MAIL = ?");
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             int checkResult = -1;
@@ -408,7 +370,7 @@ public class DAO {
 
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -426,12 +388,12 @@ public class DAO {
      * @return null if there is no user role with this id, otherwise user role name
      */
     public String getUserRoleNameByUserRoleId(int userRoleId) throws SQLException {
+        Connection connection = getConnection();
         String result = null;
-        PreparedStatementBlocker preparedStatement = null;
+        PreparedStatement preparedStatement = null;
         try {
 
-            preparedStatement = getPreparedStatementFromHashMap("getUserRoleNameByUserRoleId",
-                    "SELECT NAME RES FROM USERROLE WHERE ID_USERROLE = ?");
+            preparedStatement = connection.prepareStatement("SELECT NAME RES FROM USERROLE WHERE ID_USERROLE = ?");
             preparedStatement.setInt(1, userRoleId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -440,7 +402,7 @@ public class DAO {
 
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -520,13 +482,13 @@ public class DAO {
      * @return ResultSet with routers(each row contains router id, sum of occupied, sum of free ports for this router)
      */
     public ReportGenerator getDevicesForReport(final String EXT) throws SQLException {
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getDevicesForReport",
-                    "SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, " + amountOfPorts + " - SUM(p.Used) FREE " +
+            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, ? - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "GROUP BY r.id ORDER BY R.ID ASC");
             preparedStatement.setInt(1,amountOfPorts);
@@ -541,7 +503,7 @@ public class DAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -558,17 +520,18 @@ public class DAO {
      * @throws SQLException
      */
     public ReportGenerator getPortsForReport(final String EXT) throws SQLException {
-        PreparedStatementBlocker preparedStatement = null;
+
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getPortsForReport",
-                    "SELECT 'ROUTER-'||R.ID ROUTER, " +
-                    "'ROUTER-'||R.ID||'-'||MOD(P.ID, " + portsQuantity + ") PORT,  " +
+            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||R.ID ROUTER, " +
+                    "'ROUTER-'||R.ID||'-'||MOD(P.ID, ?) PORT,  " +
                     "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "ORDER BY R.ID, MOD(P.ID," + portsQuantity+") ");
+                    "ORDER BY R.ID, MOD(P.ID,?) ");
             preparedStatement.setInt(1,portsQuantity);
             preparedStatement.setInt(2,portsQuantity);
             resultSet = preparedStatement.executeQuery();
@@ -582,7 +545,7 @@ public class DAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -597,12 +560,13 @@ public class DAO {
      * @throws SQLException
      */
     public ReportGenerator getCablesForReport(final String EXT) throws SQLException {
-        PreparedStatementBlocker preparedStatement = null;
+
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getCablesForReport",
-                    "SELECT 'CABLE-'||C.Id CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS " +
+            preparedStatement = connection.prepareStatement("SELECT 'CABLE-'||C.Id CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS " +
                     "FROM (Cable C INNER JOIN (SERVICEINSTANCE si inner join " +
                     "(SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
                     "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
@@ -619,7 +583,7 @@ public class DAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -634,21 +598,22 @@ public class DAO {
      * @return ResultSet with circuits(each row contains router id, port id, cable id, service instance id)
      */
     public ReportGenerator getCircuitsForReport(final String EXT) throws SQLException {
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getCircuitsForReport",
-                    "SELECT 'ROUTER-'||r.ID ROUTER, " +
-                    "'ROUTER-'||r.ID||'-'||MOD(p.Id, " + portsQuantity + ") PORT, " +
-                    "'CABLE-'||c.ID CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS  " +
-                    "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
-                    "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE SI " +
-                    "INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
-                    "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
-                    "ON C.Id = Si.Id_Cable " +
-                    "ORDER BY R.ID, MOD(P.ID," + portsQuantity+") ASC");
+            preparedStatement = connection.
+                    prepareStatement("SELECT 'ROUTER-'||r.ID ROUTER, " +
+                            "'ROUTER-'||r.ID||'-'||MOD(p.Id, ?) PORT, " +
+                            "'CABLE-'||c.ID CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS  " +
+                            "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
+                            "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE SI " +
+                            "INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                            "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
+                            "ON C.Id = Si.Id_Cable " +
+                            "ORDER BY R.ID, MOD(P.ID,?) ASC");
             preparedStatement.setInt(1,portsQuantity);
             preparedStatement.setInt(2,portsQuantity);
             resultSet = preparedStatement.executeQuery();
@@ -661,7 +626,7 @@ public class DAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -678,11 +643,11 @@ public class DAO {
      * @return true if phone number exists, false if doesn't
      */
     public boolean checkForPhoneUniq(String phone) throws SQLException {
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("checkForPhoneUniq",
-                    "SELECT COUNT(Id_User) RES FROM USERS WHERE PHONE = ?");
+            preparedStatement = connection.prepareStatement("SELECT COUNT(Id_User) RES FROM USERS WHERE PHONE = ?");
             preparedStatement.setString(1, phone);
             ResultSet resultSet = preparedStatement.executeQuery();
             int checkResult = -1;
@@ -697,7 +662,9 @@ public class DAO {
 
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
+                //if (!preparedStatement.isClosed()) preparedStatement.close();
+                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -720,13 +687,14 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public User getUserByLoginAndPassword(String login, String password) throws SQLException {
+        Connection connection = getConnection();
         User user = null;
-        PreparedStatementBlocker preparedStatement = null;
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getUserByLoginAndPassword",
-                    "SELECT U.*, UR.* " +
-                    "FROM USERS U, USERROLE UR " +
-                    "WHERE U.ID_USERROLE = UR.ID_USERROLE(+) AND E_MAIL = ? AND PASSWORD = ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT U.*, UR.* " +
+                            "FROM USERS U, USERROLE UR " +
+                            "WHERE U.ID_USERROLE = UR.ID_USERROLE(+) AND E_MAIL = ? AND PASSWORD = ? ");
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -744,7 +712,7 @@ public class DAO {
             resultSet.close();
         } finally {
             try {
-                preparedStatement.close();
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -851,20 +819,19 @@ public class DAO {
      * @throws java.sql.SQLException*
      */
     public void setUserForInstance(int instanceId, int userId) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("setUserForInstance",
-                    "UPDATE SERVICEINSTANCE " +
-                    "SET ID_USER = ? " +
-                    "WHERE ID = ?");
+            preparedStatement = connection.
+                    prepareStatement("UPDATE SERVICEINSTANCE " +
+                            "SET ID_USER = ? " +
+                            "WHERE ID = ?");
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, instanceId);
             preparedStatement.executeUpdate();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -883,22 +850,21 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.InstanceStatus
      */
     public void changeInstanceStatus(int instanceId, InstanceStatus status) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("changeInstanceStatus",
-                    "UPDATE SERVICEINSTANCE " +
-                    "SET SERVICE_INSTANCE_STATUS = (SELECT ID " +
-                    "FROM SERVICEINSTANCESTATUS " +
-                    "WHERE NAME = ?) " +
-                    "WHERE ID = ?");
+            preparedStatement = connection.
+                    prepareStatement("UPDATE SERVICEINSTANCE " +
+                            "SET SERVICE_INSTANCE_STATUS = (SELECT ID " +
+                            "FROM SERVICEINSTANCESTATUS " +
+                            "WHERE NAME = ?) " +
+                            "WHERE ID = ?");
             preparedStatement.setString(1, status.toString());
             preparedStatement.setInt(2, instanceId);
             preparedStatement.executeUpdate();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -918,22 +884,21 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.OrderStatus
      */
     public void changeOrderStatus(int orderId, OrderStatus orderStatus) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("changeOrderStatus",
-                    "UPDATE SERVICEORDER " +
-                    "SET ID_ORDERSTATUS = (SELECT ID_ORDERSTATUS " +
-                    "FROM ORDERSTATUS " +
-                    "WHERE NAME = ?) " +
-                    "WHERE ID_SERVICEORDER = ?");
+            preparedStatement = connection.
+                    prepareStatement("UPDATE SERVICEORDER " +
+                            "SET ID_ORDERSTATUS = (SELECT ID_ORDERSTATUS " +
+                            "FROM ORDERSTATUS " +
+                            "WHERE NAME = ?) " +
+                            "WHERE ID_SERVICEORDER = ?");
             preparedStatement.setString(1, orderStatus.toString());
             preparedStatement.setInt(2, orderId);
             preparedStatement.executeUpdate();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -953,22 +918,21 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.TaskStatus
      */
     public void changeTaskStatus(int taskId, TaskStatus taskStatus) throws SQLException {
-        //changeTaskStatusConnection connection = getConnection();
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("changeTaskStatus",
-                    "UPDATE TASK " +
-                    "SET ID_TASKSTATUS = (SELECT ID_TASKSTATUS " +
-                    "FROM TASKSTATUS " +
-                    "WHERE NAME = ?) " +
-                    "WHERE ID_TASK = ?");
+            preparedStatement = connection.
+                    prepareStatement("UPDATE TASK " +
+                            "SET ID_TASKSTATUS = (SELECT ID_TASKSTATUS " +
+                            "FROM TASKSTATUS " +
+                            "WHERE NAME = ?) " +
+                            "WHERE ID_TASK = ?");
             preparedStatement.setString(1, taskStatus.toString());
             preparedStatement.setInt(2, taskId);
             preparedStatement.executeUpdate();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -987,20 +951,19 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void setInstanceBlocked(int instanceId, int isBlocked) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("setInstanceBlocked",
-                    "UPDATE SERVICEINSTANCE " +
-                    "SET HAS_ACTIVE_TASK = ? " +
-                    "WHERE ID = ?");
+            preparedStatement = connection.
+                    prepareStatement("UPDATE SERVICEINSTANCE " +
+                            "SET HAS_ACTIVE_TASK = ? " +
+                            "WHERE ID = ?");
             preparedStatement.setInt(1, isBlocked);
             preparedStatement.setInt(2, instanceId);
             preparedStatement.executeUpdate();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1021,15 +984,15 @@ public class DAO {
      */
     public List<Task> getTasksByStatusAndRole(int taskStatusId, int userRoleId) throws SQLException {
         ArrayList<Task> result = new ArrayList<Task>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getTasksByStatusAndRole",
-                    "SELECT T.ID_TASK, T.ID_USERROLE, T.ID_SERVICEORDER, " +
-                    "T.ID_TASKSTATUS, TS.NAME TS_NAME, T.NAME T_NAME " +
-                    "FROM TASK T, TASKSTATUS TS " +
-                    "WHERE T.ID_TASKSTATUS = TS.ID_TASKSTATUS(+) " +
-                    "AND T.ID_TASKSTATUS = ? AND T.ID_USERROLE = ?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT T.ID_TASK, T.ID_USERROLE, T.ID_SERVICEORDER, " +
+                            "T.ID_TASKSTATUS, TS.NAME TS_NAME, T.NAME T_NAME " +
+                            "FROM TASK T, TASKSTATUS TS " +
+                            "WHERE T.ID_TASKSTATUS = TS.ID_TASKSTATUS(+) " +
+                            "AND T.ID_TASKSTATUS = ? AND T.ID_USERROLE = ?");
             preparedStatement.setInt(1, taskStatusId);
             preparedStatement.setInt(2, userRoleId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -1044,8 +1007,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1066,17 +1028,17 @@ public class DAO {
      */
     public List<Service> getServicesByProviderLocationId(int providerLocationId) throws SQLException {
         ArrayList<Service> result = new ArrayList<Service>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getServicesByProviderLocationId",
-                    "SELECT S.ID_SERVICE_TYPE, L.ADRESS, " +
-                    "L.LONGITUDE, L.LATITUDE, " +
-                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                    "FROM SERVICE S, SERVICETYPE ST, LOCATION L " +
-                    "WHERE  S.ID_SERVICE_TYPE = ST.ID(+) " +
-                    "AND S.ID_PROVIDER_LOCATION = L.ID(+) " +
-                    "AND S.ID_PROVIDER_LOCATION = ?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, " +
+                            "L.LONGITUDE, L.LATITUDE, " +
+                            "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                            "FROM SERVICE S, SERVICETYPE ST, LOCATION L " +
+                            "WHERE  S.ID_SERVICE_TYPE = ST.ID(+) " +
+                            "AND S.ID_PROVIDER_LOCATION = L.ID(+) " +
+                            "AND S.ID_PROVIDER_LOCATION = ?");
             preparedStatement.setInt(1, providerLocationId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -1092,8 +1054,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1168,18 +1129,18 @@ public class DAO {
 
     public ServiceOrder getServiceOrder(int taskId) throws SQLException {
         ServiceOrder result = null;
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getServiceOrder",
-                    "SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
-                    "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, " +
-                    "SO.OUR_DATE, SO.ID_USER " +
-                    "FROM TASK T, SERVICEORDER SO,ORDERSTATUS OST,ORDERSCENARIO OSC " +
-                    "WHERE T.ID_SERVICEORDER = SO.ID_SERVICEORDER(+) " +
-                    "AND SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS(+) " +
-                    "AND SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO(+) " +
-                    "AND T.ID_TASK = ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
+                            "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, " +
+                            "SO.OUR_DATE, SO.ID_USER " +
+                            "FROM TASK T, SERVICEORDER SO,ORDERSTATUS OST,ORDERSCENARIO OSC " +
+                            "WHERE T.ID_SERVICEORDER = SO.ID_SERVICEORDER(+) " +
+                            "AND SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS(+) " +
+                            "AND SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO(+) " +
+                            "AND T.ID_TASK = ? ");
             preparedStatement.setInt(1, taskId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -1196,8 +1157,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1217,20 +1177,19 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void setInstanceForOrder(int instanceId, int orderId) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("setInstanceForOrder",
-                    "UPDATE SERVICEORDER " +
-                    "SET ID_SRVICEINSTANCE = ? " +
-                    "WHERE ID_SERVICEORDER = ?");
+            preparedStatement = connection.
+                    prepareStatement("UPDATE SERVICEORDER " +
+                            "SET ID_SRVICEINSTANCE = ? " +
+                            "WHERE ID_SERVICEORDER = ?");
             preparedStatement.setInt(1, instanceId);
             preparedStatement.setInt(2, orderId);
             preparedStatement.executeUpdate();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1253,18 +1212,18 @@ public class DAO {
 
     public ArrayList<ServiceOrder> getOrders(int userId) throws SQLException {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         System.out.println("here");
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getOrders",
-                    "SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +
-                    "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, " +
-                    "OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                    "FROM SERVICEORDER SO,ORDERSTATUS OS,ORDERSCENARIO OSC " +
-                    "WHERE SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS(+) " +
-                    "AND SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO(+) " +
-                    "AND SO.ID_USER = ? ORDER BY ID_SERVICEORDER DESC ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OST_NAME, " +
+                            "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, " +
+                            "OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                            "FROM SERVICEORDER SO,ORDERSTATUS OS,ORDERSCENARIO OSC " +
+                            "WHERE SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS(+) " +
+                            "AND SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO(+) " +
+                            "AND SO.ID_USER = ? ORDER BY ID_SERVICEORDER DESC ");
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -1282,8 +1241,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1306,19 +1264,19 @@ public class DAO {
 
     public ArrayList<ServiceInstance> getInstances(int userId) throws SQLException {
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getInstances",
-                    "SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
-                    "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
-                    "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
-                    "FROM SERVICEINSTANCE SI ,SERVICELOCATION SL, " +
-                    "LOCATION L, SERVICEINSTANCESTATUS SIS " +
-                    "WHERE SI.ID_SERVICE_LOCATION = SL.ID(+) " +
-                    "AND SL.ID_LOCATION = L.ID(+) " +
-                    "AND SI.SERVICE_INSTANCE_STATUS = SIS.ID(+) " +
-                    "AND ID_USER = ?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
+                            "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
+                            "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
+                            "FROM SERVICEINSTANCE SI ,SERVICELOCATION SL, " +
+                            "LOCATION L, SERVICEINSTANCESTATUS SIS " +
+                            "WHERE SI.ID_SERVICE_LOCATION = SL.ID(+) " +
+                            "AND SL.ID_LOCATION = L.ID(+) " +
+                            "AND SI.SERVICE_INSTANCE_STATUS = SIS.ID(+) " +
+                            "AND ID_USER = ?");
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -1336,8 +1294,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1359,17 +1316,17 @@ public class DAO {
      */
     public ArrayList<ServiceOrder> getAllOrders() throws SQLException {
         ArrayList<ServiceOrder> result = new ArrayList<ServiceOrder>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
 
-            preparedStatement = getPreparedStatementFromHashMap("getAllOrders",
-                    "SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
-                    "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, " +
-                    "OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                    "FROM SERVICEORDER SO, ORDERSTATUS OS, ORDERSCENARIO OSC " +
-                    "WHERE SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS(+) " +
-                    "AND SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO(+)");
+            preparedStatement = connection.
+                    prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OS.NAME OS_NAME, " +
+                            "SO.ID_SRVICEINSTANCE, OSC.ID_ORDERSCENARIO, " +
+                            "OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                            "FROM SERVICEORDER SO, ORDERSTATUS OS, ORDERSCENARIO OSC " +
+                            "WHERE SO.ID_ORDERSTATUS = OS.ID_ORDERSTATUS(+) " +
+                            "AND SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO(+)");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 GregorianCalendar gregorianCalendar = new GregorianCalendar();
@@ -1386,8 +1343,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1408,18 +1364,18 @@ public class DAO {
      */
     public ArrayList<ServiceInstance> getAllInstances() throws SQLException {
         ArrayList<ServiceInstance> result = new ArrayList<ServiceInstance>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getAllInstances",
-                    "SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
-                    "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
-                    "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
-                    "FROM SERVICEINSTANCE SI,SERVICELOCATION SL, " +
-                    "LOCATION L ,SERVICEINSTANCESTATUS SIS " +
-                    "WHERE SI.ID_SERVICE_LOCATION = SL.ID(+) " +
-                    "AND SL.ID_LOCATION = L.ID(+) " +
-                    "AND SI.SERVICE_INSTANCE_STATUS = SIS.ID(+) ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
+                            "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
+                            "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
+                            "FROM SERVICEINSTANCE SI,SERVICELOCATION SL, " +
+                            "LOCATION L ,SERVICEINSTANCESTATUS SIS " +
+                            "WHERE SI.ID_SERVICE_LOCATION = SL.ID(+) " +
+                            "AND SL.ID_LOCATION = L.ID(+) " +
+                            "AND SI.SERVICE_INSTANCE_STATUS = SIS.ID(+) ");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new ServiceInstance(resultSet.getInt("ID"),
@@ -1436,8 +1392,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1459,13 +1414,13 @@ public class DAO {
      */
     public List<ProviderLocation> getProviderLocations() throws SQLException {
         ArrayList<ProviderLocation> result = new ArrayList<ProviderLocation>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getProviderLocations",
-                    "SELECT * " +
-                    "FROM PROVIDERLOCATION PL, LOCATION L " +
-                    "WHERE PL.ID_LOCATION = L.ID(+) ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT * " +
+                            "FROM PROVIDERLOCATION PL, LOCATION L " +
+                            "WHERE PL.ID_LOCATION = L.ID(+) ");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new ProviderLocation(resultSet.getInt("ID"),
@@ -1475,8 +1430,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1498,17 +1452,17 @@ public class DAO {
      */
     public Service getServiceById(int serviceId) throws SQLException {
         Service service = null;
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getServiceById",
-                    "SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
-                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                    "FROM PROVIDERLOCATION PL, LOCATION L, SERVICE S, SERVICETYPE ST " +
-                    "WHERE PL.ID_LOCATION = L.ID(+) " +
-                    "AND S.ID_PROVIDER_LOCATION = PL.ID(+) " +
-                    "AND S.ID_SERVICE_TYPE = ST.ID(+) " +
-                    "AND  S.ID = ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                            "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                            "FROM PROVIDERLOCATION PL, LOCATION L, SERVICE S, SERVICETYPE ST " +
+                            "WHERE PL.ID_LOCATION = L.ID(+) " +
+                            "AND S.ID_PROVIDER_LOCATION = PL.ID(+) " +
+                            "AND S.ID_SERVICE_TYPE = ST.ID(+) " +
+                            "AND  S.ID = ? ");
             preparedStatement.setInt(1, serviceId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -1526,8 +1480,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1548,16 +1501,16 @@ public class DAO {
      */
     public List<Service> getServices() throws SQLException {
         ArrayList<Service> result = new ArrayList<Service>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getServices",
-                    "SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
-                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                    "FROM PROVIDERLOCATION PL, LOCATION L, SERVICE S, SERVICETYPE ST " +
-                    "WHERE PL.ID_LOCATION = L.ID(+) " +
-                    "AND S.ID_SERVICE_TYPE = ST.ID(+) " +
-                    "AND  S.ID_PROVIDER_LOCATION = PL.ID(+)");
+            preparedStatement = connection.
+                    prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+                            "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                            "FROM PROVIDERLOCATION PL, LOCATION L, SERVICE S, SERVICETYPE ST " +
+                            "WHERE PL.ID_LOCATION = L.ID(+) " +
+                            "AND S.ID_SERVICE_TYPE = ST.ID(+) " +
+                            "AND  S.ID_PROVIDER_LOCATION = PL.ID(+)");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new Service(
@@ -1573,8 +1526,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1773,14 +1725,14 @@ public class DAO {
      */
     public List<Task> getFreeAndProcessingTasksByUserRoleId(int userRoleId) throws SQLException {
         ArrayList<Task> result = new ArrayList<Task>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getFreeAndProcessingTasksByUserRoleId",
-                    "SELECT T.ID_TASK, T.ID_TASKSTATUS, T.ID_USERROLE, T.ID_SERVICEORDER, " +
-                    "T.NAME, TS.NAME TS_NAME " +
-                    "FROM TASK T ,TASKSTATUS TS WHERE T.ID_TASKSTATUS = TS.ID_TASKSTATUS(+) " +
-                    "AND ID_USERROLE = ? AND ((TS.NAME = ?) OR (TS.NAME = ?))");
+            preparedStatement = connection.
+                    prepareStatement("SELECT T.ID_TASK, T.ID_TASKSTATUS, T.ID_USERROLE, T.ID_SERVICEORDER, " +
+                            "T.NAME, TS.NAME TS_NAME " +
+                            "FROM TASK T ,TASKSTATUS TS WHERE T.ID_TASKSTATUS = TS.ID_TASKSTATUS(+) " +
+                            "AND ID_USERROLE = ? AND ((TS.NAME = ?) OR (TS.NAME = ?))");
             preparedStatement.setInt(1, userRoleId);
             preparedStatement.setString(2, TaskStatus.FREE.toString());
             preparedStatement.setString(3, TaskStatus.PROCESSING.toString());
@@ -1795,8 +1747,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1877,19 +1828,18 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public boolean freePortExists() throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("freePortExists",
-                    "SELECT COUNT(*) AM FROM PORT WHERE USED = ?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT COUNT(*) AM FROM PORT WHERE USED = ?");
             preparedStatement.setInt(1, 0);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) result = (resultSet.getInt("AM") > 0);
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1908,22 +1858,21 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public Scenario getOrderScenario(int serviceOrderId) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         Scenario result = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getOrderScenario",
-                    "SELECT OS.NAME " +
-                    "FROM SERVICEORDER SO, ORDERSCENARIO OS " +
-                    "WHERE SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO(+) " +
-                    "AND SO.ID_SERVICEORDER = ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT OS.NAME " +
+                            "FROM SERVICEORDER SO, ORDERSCENARIO OS " +
+                            "WHERE SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO(+) " +
+                            "AND SO.ID_SERVICEORDER = ? ");
             preparedStatement.setInt(1, serviceOrderId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) result = Scenario.valueOf(resultSet.getString("NAME"));
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1941,15 +1890,15 @@ public class DAO {
      * @see com.naukma.cauliflower.dao.TaskStatus
      */
     public TaskStatus getTaskStatus(int taskId) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         TaskStatus result = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getTaskStatus",
-                    "SELECT TS.NAME " +
-                    "FROM TASK T , TASKSTATUS TS " +
-                    "WHERE T.ID_TASKSTATUS = TS.ID_TASKSTATUS(+) " +
-                    "AND T.ID_TASK =?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT TS.NAME " +
+                            "FROM TASK T , TASKSTATUS TS " +
+                            "WHERE T.ID_TASKSTATUS = TS.ID_TASKSTATUS(+) " +
+                            "AND T.ID_TASK =?");
             preparedStatement.setInt(1, taskId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -1957,8 +1906,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -1978,15 +1926,15 @@ public class DAO {
      */
     public Task getTaskById(int taskId) throws SQLException {
         Task task = null;
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getTaskById",
-                    "SELECT T.ID_TASK, T.ID_TASKSTATUS, T.ID_USERROLE, " +
-                    "T.ID_SERVICEORDER, T.NAME, TS.NAME TS_NAME " +
-                    "FROM TASK T ,TASKSTATUS TS " +
-                    "WHERE  T.ID_TASKSTATUS = TS.ID_TASKSTATUS(+) " +
-                    "AND ID_TASK = ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT T.ID_TASK, T.ID_TASKSTATUS, T.ID_USERROLE, " +
+                            "T.ID_SERVICEORDER, T.NAME, TS.NAME TS_NAME " +
+                            "FROM TASK T ,TASKSTATUS TS " +
+                            "WHERE  T.ID_TASKSTATUS = TS.ID_TASKSTATUS(+) " +
+                            "AND ID_TASK = ? ");
             preparedStatement.setInt(1, taskId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -1999,8 +1947,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2017,16 +1964,17 @@ public class DAO {
      * @see java.sql.ResultSet
      */
     public ReportGenerator getMostProfitableRouterForReport(final String EXT) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getMostProfitableRouterForReport",
-                    "FROM SERVICE S , SERVICEINSTANCE SI, CABLE C ,PORT P  " +
-                    "WHERE S.ID = SI.ID_SERVICE(+) AND SI.ID_CABLE = C.ID(+) AND C.ID_PORT = P.ID(+) " +
-                    "GROUP BY P.ID_ROUTER " +
-                    "ORDER BY PROFIT DESC ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT " +
+                            "FROM SERVICE S , SERVICEINSTANCE SI, CABLE C ,PORT P  " +
+                            "WHERE S.ID = SI.ID_SERVICE(+) AND SI.ID_CABLE = C.ID(+) AND C.ID_PORT = P.ID(+) " +
+                            "GROUP BY P.ID_ROUTER " +
+                            "ORDER BY PROFIT DESC ");
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Most Profitable Router", resultSet);
@@ -2038,8 +1986,7 @@ public class DAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2057,18 +2004,17 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void setServiceForTask(int taskId, int serviceId) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("setServiceForTask",
-                    "INSERT INTO TOMODIFY(ID_TASK, ID_SERVICE) VALUES(?,?)");
+            preparedStatement = connection.
+                    prepareStatement("INSERT INTO TOMODIFY(ID_TASK, ID_SERVICE) VALUES(?,?)");
             preparedStatement.setInt(1, taskId);
             preparedStatement.setInt(2, serviceId);
             preparedStatement.executeUpdate();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2087,22 +2033,21 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public void changeServiceForServiceInstance(int taskId, int serviceInstanceId) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("changeServiceForServiceInstance",
-                    "UPDATE SERVICEINSTANCE  " +
-                    "SET ID_SERVICE = (SELECT ID_SERVICE " +
-                    "FROM TASK T ,TOMODIFY TMOD WHERE TMOD.ID_TASK = T.ID_TASK(+) AND " +
-                    "T.ID_TASK = ?) " +
-                    "WHERE ID = ? ");
+            preparedStatement = connection.
+                    prepareStatement("UPDATE SERVICEINSTANCE  " +
+                            "SET ID_SERVICE = (SELECT ID_SERVICE " +
+                            "FROM TASK T ,TOMODIFY TMOD WHERE TMOD.ID_TASK = T.ID_TASK(+) AND " +
+                            "T.ID_TASK = ?) " +
+                            "WHERE ID = ? ");
             preparedStatement.setInt(1, taskId);
             preparedStatement.setInt(2, serviceInstanceId);
             preparedStatement.executeUpdate();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2119,12 +2064,12 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public boolean isInstanceBlocked(int serviceInstanceId) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("isInstanceBlocked",
-                    "SELECT HAS_ACTIVE_TASK IS_BLOCKED FROM SERVICEINSTANCE WHERE ID = ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT HAS_ACTIVE_TASK IS_BLOCKED FROM SERVICEINSTANCE WHERE ID = ? ");
             preparedStatement.setInt(1, serviceInstanceId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -2132,8 +2077,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2144,16 +2088,16 @@ public class DAO {
 
 
     public boolean isInstanceDisconnected(int serviceInstanceId) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         boolean result = false;
         try {
             String statusInst = InstanceStatus.DISCONNECTED.toString();
-            preparedStatement = getPreparedStatementFromHashMap("isInstanceDisconnected",
-                    "SELECT SIS.NAME RES " +
-                    "FROM SERVICEINSTANCE SI,SERVICEINSTANCESTATUS SIS " +
-                    "WHERE SI.SERVICE_INSTANCE_STATUS = SIS.ID(+) " +
-                    "AND SI.ID = ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT SIS.NAME RES " +
+                            "FROM SERVICEINSTANCE SI,SERVICEINSTANCESTATUS SIS " +
+                            "WHERE SI.SERVICE_INSTANCE_STATUS = SIS.ID(+) " +
+                            "AND SI.ID = ? ");
             preparedStatement.setInt(1, serviceInstanceId);
             ResultSet resultSet = preparedStatement.executeQuery();
             String checkResult = null;
@@ -2165,8 +2109,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2185,13 +2128,13 @@ public class DAO {
      */
     public List<User> getUsersByUserRole(UserRole role) throws SQLException {
         ArrayList<User> result = new ArrayList<User>();
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             String query = "SELECT * " +
                     "FROM USERS " +
                     "WHERE ID_USERROLE = (SELECT ID_USERROLE FROM USERROLE WHERE NAME = ?)";
-            preparedStatement = getPreparedStatementFromHashMap("getUsersByUserRole",query);
+            preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, role.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -2207,8 +2150,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2227,8 +2169,8 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getMostProfitableRouterForReport(int page, int pageLength) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         class MostProfRouter implements Serializable{
             private String router;
@@ -2250,15 +2192,15 @@ public class DAO {
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getMostProfitableRouterForReport",
-                    "SELECT * FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
-                    "SUM(S.PRICE) PROFIT, " +
-                    "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
-                    "FROM CABLE C, PORT P, SERVICEINSTANCE SI, SERVICE S  " +
-                    "WHERE C.ID_PORT = P.ID(+) AND  C.ID = SI.ID_CABLE(+) " +
-                    "AND  SI.ID_SERVICE = S.ID(+) " +
-                    "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC) " +
-                    "WHERE RN BETWEEN ? AND ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT * FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
+                            "SUM(S.PRICE) PROFIT, " +
+                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER DESC) RN " +
+                            "FROM CABLE C, PORT P, SERVICEINSTANCE SI, SERVICE S  " +
+                            "WHERE C.ID_PORT = P.ID(+) AND  C.ID = SI.ID_CABLE(+) " +
+                            "AND  SI.ID_SERVICE = S.ID(+) " +
+                            "GROUP BY P.ID_ROUTER ORDER BY PROFIT DESC) " +
+                            "WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1, (page - 1) * pageLength + 1);
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
 
@@ -2268,8 +2210,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2286,8 +2227,8 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getUsedRoutersAndCapacityOfPorts(int page, int pageLength) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
         class UsedRoutersAndCapacityOfPorts implements Serializable{
@@ -2321,16 +2262,16 @@ public class DAO {
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getUsedRoutersAndCapacityOfPorts",
-                    "SELECT 'ROUTER-' ||ROUTEROLD ROUTER_NAME,  " +
-                    "OCCUPIED, " + amountOfPorts + " - OCCUPIED FREE, " +
-                    "ROUND( OCCUPIED / " + amountOfPorts + ", 2) UTILIZATION " +
-                    "FROM (  SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED, " +
-                    "ROW_NUMBER() OVER (ORDER BY r.id ASC) RN  " +
-                    "FROM ROUTER R ,PORT P " +
-                    "WHERE R.ID = P.ID_ROUTER(+) " +
-                    "GROUP BY R.ID " +
-                    ")WHERE RN BETWEEN ? AND ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT 'ROUTER-' ||ROUTEROLD ROUTER_NAME,  " +
+                            "OCCUPIED, ? - OCCUPIED FREE, " +
+                            "ROUND( OCCUPIED / ?, 2) UTILIZATION " +
+                            "FROM (  SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED, " +
+                            "ROW_NUMBER() OVER (ORDER BY r.id ASC) RN  " +
+                            "FROM ROUTER R ,PORT P " +
+                            "WHERE R.ID = P.ID_ROUTER(+) " +
+                            "GROUP BY R.ID " +
+                            ")WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1,amountOfPorts);
             preparedStatement.setInt(2,amountOfPorts);
             preparedStatement.setInt(3, (page - 1) * pageLength + 1);
@@ -2343,8 +2284,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2361,8 +2301,8 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getProfitabilityByMonth(int page, int pageLength) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         class ProfitabilityByMonth implements Serializable{
             private String routerName;
@@ -2383,15 +2323,15 @@ public class DAO {
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getProfitabilityByMonth",
-                    "SELECT * FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
-                    "SUM(S.PRICE) PROFIT, " +
-                    "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
-                    "FROM CABLE C, PORT P, SERVICEINSTANCE SI, SERVICE S  " +
-                    "WHERE C.ID_PORT = P.ID(+) AND  C.ID = SI.ID_CABLE(+) " +
-                    "AND  SI.ID_SERVICE = S.ID(+) " +
-                    "GROUP BY P.ID_ROUTER ) " +
-                    "WHERE RN BETWEEN ? AND ?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT * FROM ( SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
+                            "SUM(S.PRICE) PROFIT, " +
+                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER ASC) RN " +
+                            "FROM CABLE C, PORT P, SERVICEINSTANCE SI, SERVICE S  " +
+                            "WHERE C.ID_PORT = P.ID(+) AND  C.ID = SI.ID_CABLE(+) " +
+                            "AND  SI.ID_SERVICE = S.ID(+) " +
+                            "GROUP BY P.ID_ROUTER ) " +
+                            "WHERE RN BETWEEN ? AND ?");
             preparedStatement.setInt(1, (page - 1) * pageLength + 1);
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
@@ -2400,8 +2340,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2418,8 +2357,8 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getCablesForReport(int page, int pageLength) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         class CablesForReport implements Serializable{
             private String cable;
@@ -2441,16 +2380,16 @@ public class DAO {
         }
         ArrayList<Object> result = new ArrayList<Object>();
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getCablesForReport",
-                    "SELECT * FROM ( " +
-                    "SELECT 'CABLE-'||C.ID CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
-                    "ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN " +
-                    "FROM SERVICEINSTANCE SI, SERVICELOCATION SL,LOCATION L, CABLE C " +
-                    "WHERE SI.ID_SERVICE_LOCATION = SL.ID(+) " +
-                    "AND SL.ID_LOCATION = L.ID(+) " +
-                    "AND SI.ID_CABLE = C.ID(+)) " +
-                    "WHERE RN BETWEEN ? AND ? " +
-                    "ORDER BY SERVICE_INSTANCE_ADRESS ASC ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT * FROM ( " +
+                            "SELECT 'CABLE-'||C.ID CABLE, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+                            "ROW_NUMBER() OVER (ORDER BY C.ID ASC) RN " +
+                            "FROM SERVICEINSTANCE SI, SERVICELOCATION SL,LOCATION L, CABLE C " +
+                            "WHERE SI.ID_SERVICE_LOCATION = SL.ID(+) " +
+                            "AND SL.ID_LOCATION = L.ID(+) " +
+                            "AND SI.ID_CABLE = C.ID(+)) " +
+                            "WHERE RN BETWEEN ? AND ? " +
+                            "ORDER BY SERVICE_INSTANCE_ADRESS ASC ");
             preparedStatement.setInt(1, (page - 1) * pageLength + 1);
             preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
@@ -2461,8 +2400,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2478,21 +2416,20 @@ public class DAO {
      * @throws SQLException
      */
     private int getRoutersAmount() throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getRoutersAmount",
-                    "SELECT COUNT(*) AM " +
-                    "FROM ROUTER ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT COUNT(*) AM " +
+                            "FROM ROUTER ");
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) result = resultSet.getInt("AM");
 
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2508,21 +2445,20 @@ public class DAO {
      * @throws SQLException
      */
     private int getCablesAmount() throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getCablesAmount",
-                    "SELECT COUNT(*) AM " +
-                    "FROM  CABLE ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT COUNT(*) AM " +
+                            "FROM  CABLE ");
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) result = resultSet.getInt("AM");
 
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2538,20 +2474,19 @@ public class DAO {
      * @throws SQLException
      */
     private int getPortsAmount() throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getPortsAmount",
-                    "SELECT COUNT(*) AM FROM PORT ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT COUNT(*) AM FROM PORT ");
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) result = resultSet.getInt("AM");
 
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2653,17 +2588,17 @@ public class DAO {
      * @throws SQLException
      */
     public int getOrdersPerPeriodLinesAmount(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int result = 0;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getOrdersPerPeriodLinesAmount",
-                    "SELECT COUNT(*) AM " +
-                    "FROM SERVICEORDER SO,ORDERSCENARIO OS " +
-                    "WHERE SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO(+) AND " +
-                    "OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
-                    "GROUP BY OS.NAME ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT COUNT(*) AM " +
+                            "FROM SERVICEORDER SO,ORDERSCENARIO OS " +
+                            "WHERE SO.ID_ORDERSCENARIO = OS.ID_ORDERSCENARIO(+) AND "+
+                            "OS.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? " +
+                            "GROUP BY OS.NAME ");
             preparedStatement.setString(1, scenario.toString());
             preparedStatement.setDate(2, sqlStartDate);
             preparedStatement.setDate(3, sqlEndDate);
@@ -2671,8 +2606,7 @@ public class DAO {
             if (resultSet.next()) result = resultSet.getInt("AM");
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -2728,8 +2662,8 @@ public class DAO {
                 return lastName;
             }
         }
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         List<Object> result = new ArrayList<Object>();
         final String serviceInstanceStatus = InstanceStatus.ACTIVE.toString();
@@ -2762,8 +2696,8 @@ public class DAO {
                 "AND SI.ID_CABLE = C.ID(+) AND C.ID_PORT = P.ID(+) AND SIST.NAME = ? ) " +
                 "WHERE RN BETWEEN ? AND ? ";
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getCIAReport",
-                    selectQuery);
+            preparedStatement = connection.
+                    prepareStatement(selectQuery);
             preparedStatement.setInt(1,portsQuantity);
             preparedStatement.setInt(2,portsQuantity);
             preparedStatement.setString(3, serviceInstanceStatus);
@@ -2782,8 +2716,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
                 exc.printStackTrace();
@@ -2806,8 +2739,8 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<CIA> getCIAReportForTable() throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         List<CIA> result = new ArrayList<CIA>();
         final String sistActQ = InstanceStatus.ACTIVE.toString();
@@ -2827,7 +2760,7 @@ public class DAO {
         final String userFirstName = "USER_FIRST_NAME";
         final String userLastName = "USER_LAST_NAME";
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getCIAReportForTable",selectQuery);
+            preparedStatement = connection.prepareStatement(selectQuery);
             preparedStatement.setString(1, sistActQ);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -2844,8 +2777,7 @@ public class DAO {
 
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getCIAReport()");
                 exc.printStackTrace();
@@ -2866,8 +2798,8 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public ReportGenerator getCIAReport(final String EXT) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         final String xlsExt = "xls";
@@ -2885,7 +2817,8 @@ public class DAO {
 
         final String sistActQ = InstanceStatus.ACTIVE.toString();
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getCIAReport2", selectQuery);
+            preparedStatement = connection
+                    .prepareStatement(selectQuery);
             preparedStatement.setInt(1,portsQuantity);
             preparedStatement.setInt(2,portsQuantity);
             preparedStatement.setString(3, sistActQ);
@@ -2900,8 +2833,7 @@ public class DAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2920,18 +2852,18 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public ReportGenerator getUsedRoutersAndCapacityOfPorts(final String EXT) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         int amountOfPorts = CauliflowerInfo.PORTS_QUANTITY;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getUsedRoutersAndCapacityOfPorts",
-                    "SELECT 'ROUTER-' ||ROUTEROLD ROUTER,  " +
-                    "OCCUPIED, " + amountOfPorts + " - OCCUPIED FREE, ROUND( OCCUPIED / " + amountOfPorts + ", 2) UTILIZATION " +
-                    "FROM ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED " +
-                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "GROUP BY R.ID ORDER BY R.ID )");
+            preparedStatement = connection.
+                    prepareStatement("SELECT 'ROUTER-' ||ROUTEROLD ROUTER,  " +
+                            "OCCUPIED, ? - OCCUPIED FREE, ROUND( OCCUPIED / ?, 2) UTILIZATION " +
+                            "FROM ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED " +
+                            "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                            "GROUP BY R.ID ORDER BY R.ID )");
             preparedStatement.setInt(1, amountOfPorts);
             preparedStatement.setInt(2, amountOfPorts);
             resultSet = preparedStatement.executeQuery();
@@ -2944,8 +2876,7 @@ public class DAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -2968,13 +2899,12 @@ public class DAO {
         {//help
             System.out.println("getProfitabilityByMonth");
         }
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getProfitabilityByMonth",
-                    "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT " +
+            preparedStatement = connection.prepareStatement("SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, SUM(S.PRICE) PROFIT " +
                     "FROM SERVICE S INNER JOIN ( " +
                     "  SERVICEINSTANCE SI INNER JOIN ( " +
                     "    CABLE C INNER JOIN PORT P ON C.ID_PORT = P.ID)  " +
@@ -2991,8 +2921,7 @@ public class DAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3021,9 +2950,9 @@ public class DAO {
         {//help
             System.out.println("getOrdersPerPeriod");
         }
-
+        Connection connection = getConnection();
         ResultSet resultSet = null;
-        PreparedStatementBlocker preparedStatement = null;
+        PreparedStatement preparedStatement = null;
         ReportGenerator reportGenerator = null;
         try {
 //            preparedStatement = connection.prepareStatement("SELECT OS.NAME SCENARIO, COUNT(*) AMOUNT " +
@@ -3038,8 +2967,7 @@ public class DAO {
 //                    "INNER JOIN ORDERSCENARIO  OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
 //                    "INNER JOIN USERS U ON U.ID_USER = SI.ID_USER inner join (service s inner join servicetype st on s.ID_SERVICE_TYPE = st.ID)on SI.ID_SERVICE = s.ID " +
 //                    "WHERE OSC.NAME = ? AND SO.OUR_DATE BETWEEN ? AND ? ) ");
-            preparedStatement = getPreparedStatementFromHashMap("getOrdersPerPeriod",
-                    "SELECT  SO.OUR_DATE SERVICE_ORDER_DATE, U.F_NAME FIRST_NAME, U.L_NAME LAST_NAME, st.NAME SERVICE_NAME, st.SPEED, OST.NAME STATUS_NAME   " +
+            preparedStatement = connection.prepareStatement("SELECT  SO.OUR_DATE SERVICE_ORDER_DATE, U.F_NAME FIRST_NAME, U.L_NAME LAST_NAME, st.NAME SERVICE_NAME, st.SPEED, OST.NAME STATUS_NAME   " +
                     "FROM  " +
                     "((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
                     "INNER JOIN SERVICEINSTANCE SI ON SI.ID = SO.ID_SRVICEINSTANCE) " +
@@ -3060,8 +2988,7 @@ public class DAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3185,8 +3112,8 @@ public class DAO {
                 return free;
             }
         }
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         final int maxPortsCapOnDevice = CauliflowerInfo.PORTS_QUANTITY;
@@ -3194,12 +3121,12 @@ public class DAO {
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getDevicesForReport",
-                    "SELECT 'ROUTER-'||R2.ID ROUTER_NAME, R2.USED OCCUPIED " +
-                    "FROM (SELECT R.ID, SUM(P.USED) USED, ROW_NUMBER() OVER (ORDER BY R.ID) RN " +
-                    "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
-                    "GROUP BY R.ID) R2 " +
-                    "WHERE RN BETWEEN ? AND ? ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT 'ROUTER-'||R2.ID ROUTER_NAME, R2.USED OCCUPIED " +
+                            "FROM (SELECT R.ID, SUM(P.USED) USED, ROW_NUMBER() OVER (ORDER BY R.ID) RN " +
+                            "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
+                            "GROUP BY R.ID) R2 " +
+                            "WHERE RN BETWEEN ? AND ? ");
 
             preparedStatement.setInt(1, startP);
             preparedStatement.setInt(2, endP);
@@ -3214,8 +3141,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -3233,9 +3159,9 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public List<Object> getCircuitsForReport(int page, int pageLength) throws SQLException {
-
+        Connection connection = getConnection();
         ResultSet resultSet = null;
-        PreparedStatementBlocker preparedStatement = null;
+        PreparedStatement preparedStatement = null;
         List<Object> circuits = new ArrayList<Object>();
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
@@ -3267,17 +3193,18 @@ public class DAO {
         }
         int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getCircuitsForReport",
-                    "SELECT * FROM (SELECT 'CABLE-'||C.ID CABLE, " +
-                            "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, " + portsQuantity + ") PORT, " +
-                            "'ROUTER-'||P.ID_ROUTER ROUTER, L.ADRESS SERVICE_INSTANCE_ADRESS , " +
-                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID, " + portsQuantity + ") ASC) RN " +
-                            "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
-                            "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE si " +
-                            "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
-                            "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
-                            "ON C.Id = Si.Id_Cable )" +
-                            "WHERE RN BETWEEN ? AND ? ");
+            preparedStatement = connection.
+                    prepareStatement(
+                            "SELECT * FROM (SELECT 'CABLE-'||C.ID CABLE, " +
+                                    "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT, " +
+                                    "'ROUTER-'||P.ID_ROUTER ROUTER, L.ADRESS SERVICE_INSTANCE_ADRESS , " +
+                                    "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID, ?) ASC) RN " +
+                                    "FROM ((ROUTER r INNER JOIN PORT p ON r.Id = P.Id_Router) " +
+                                    "INNER JOIN CABLE c ON p.Id = C.Id_Port) INNER JOIN (SERVICEINSTANCE si " +
+                                    "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                                    "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
+                                    "ON C.Id = Si.Id_Cable )" +
+                                    "WHERE RN BETWEEN ? AND ? ");
             preparedStatement.setInt(1,portsQuantity);
             preparedStatement.setInt(2,portsQuantity);
             preparedStatement.setInt(3, startP);
@@ -3291,8 +3218,7 @@ public class DAO {
 
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getCircuitsForReport(int page, int pageLength)");
                 exc.printStackTrace();
@@ -3314,9 +3240,9 @@ public class DAO {
      */
     public List<Object> getPortsForReport(int page, int pageLength) throws SQLException {
         System.out.println("getPortsForReport");
-
+        Connection connection = getConnection();
         ResultSet resultSet = null;
-        PreparedStatementBlocker preparedStatement = null;
+        PreparedStatement preparedStatement = null;
         List<Object> ports = new ArrayList<Object>();
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
@@ -3345,8 +3271,8 @@ public class DAO {
         }
         int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getPortsForReport",
-                    "SELECT * FROM(  " +
+            preparedStatement = connection.prepareStatement
+                    ("SELECT * FROM(  " +
                             "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER, " +
                             "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT,  " +
                             "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED," +
@@ -3368,8 +3294,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-//                close(connection, preparedStatement);
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement! in DAO.getPortsForReport(int page, int pageLength)");
                 exc.printStackTrace();
@@ -3383,9 +3308,9 @@ public class DAO {
 
 
     public List<Object> getOrdersPerPeriod(Scenario scenario, java.sql.Date sqlStartDate, java.sql.Date sqlEndDate, final int page, final int pageLength) throws SQLException {
-
+        Connection connection = getConnection();
         ResultSet resultSet = null;
-        PreparedStatementBlocker preparedStatement = null;
+        PreparedStatement preparedStatement = null;
         List<Object> servOrds = new ArrayList<Object>();
         class Orders implements  Serializable{
             private String nameService;
@@ -3432,8 +3357,7 @@ public class DAO {
         final int startP = (page - 1) * pageLength + 1;
         final int endP = page * pageLength;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getOrdersPerPeriod",
-                    "SELECT * FROM " +
+            preparedStatement = connection.prepareStatement("SELECT * FROM " +
                     "(SELECT  st.NAME, st.SPEED, OST.NAME STATUS_NAME, SO.OUR_DATE SERVICE_ORDER_DATE,  " +
                     "U.F_NAME, U.L_NAME, ROW_NUMBER() OVER (ORDER BY SO.OUR_DATE ASC) RN  " +
                     "FROM  ((( SERVICEORDER SO INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS) " +
@@ -3462,8 +3386,7 @@ public class DAO {
 
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3492,14 +3415,14 @@ public class DAO {
             System.out.println("getCustomerUserById");
         }
         User result = null;
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             String query = "SELECT * FROM USERS WHERE ID_USERROLE = ? AND ID_USER = ?";
             {//
                 System.out.println(query);
             }
-            preparedStatement = getPreparedStatementFromHashMap("getCustomerUserById",query);
+            preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, CUSTOMER);
             preparedStatement.setInt(2, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -3519,8 +3442,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3542,11 +3464,10 @@ public class DAO {
             System.out.println("GET INSTANCE BY ID");
         }
         ServiceInstance result = null;
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getInstanceById",
-                    "SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
+            preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
                     "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
                     "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
                     "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
@@ -3575,8 +3496,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3600,11 +3520,10 @@ public class DAO {
             System.out.println("getServiceOrderById");
         }
         ServiceOrder result = null;
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getServiceOrderById",
-                    "SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
+            preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
                     "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
                     "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
                     "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
@@ -3629,8 +3548,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3650,11 +3568,10 @@ public class DAO {
             System.out.println("getServiceModifyToByTaskId");
         }
         Service result = null;
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getServiceModifyToByTaskId",
-                    "SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
+            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
                     "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
                     "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
                     "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID " +
@@ -3677,8 +3594,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3693,12 +3609,11 @@ public class DAO {
      * ---------------------------------------------------------------------START Alex---------------------------------------------------------------------*
      */
     public int countNotCompletedTasksByTaskName(TaskName taskName) throws SQLException {
-
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         int taskCount = 0;
         try {
-            preparedStatement = getPreparedStatementFromHashMap("countNotCompletedTasksByTaskName",
-                    "SELECT COUNT(ID_TASK) RES FROM TASK WHERE NAME = ? AND ID_TASKSTATUS IN " +
+            preparedStatement = connection.prepareStatement("SELECT COUNT(ID_TASK) RES FROM TASK WHERE NAME = ? AND ID_TASKSTATUS IN " +
                     "(SELECT ID_TASKSTATUS FROM TASKSTATUS WHERE NAME != ? )");
             preparedStatement.setString(1, taskName.toString());
             preparedStatement.setString(2, TaskStatus.COMPLETED.toString());
@@ -3707,8 +3622,7 @@ public class DAO {
                 taskCount = resultSet.getInt("RES");
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
@@ -3789,12 +3703,12 @@ public class DAO {
      */
     public ArrayList<String> getEmailsLike(String queryString) throws SQLException {
         final String columLabel = "E_MAIL";
-        PreparedStatementBlocker preparedStatement = null;
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
         final String query = "SELECT * FROM USERS WHERE E_MAIL like ? ";
         ArrayList<String> resEmails = new ArrayList<String>();
         try {
-            preparedStatement = getPreparedStatementFromHashMap("getEmailsLike",
-                    query);
+            preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, queryString);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -3802,8 +3716,7 @@ public class DAO {
             }
         } finally {
             try {
-                preparedStatement.close();
-
+                close(connection, preparedStatement);
             } catch (SQLException exc) {
                 logger.warn("Can't close connection or preparedStatement!");
                 exc.printStackTrace();
