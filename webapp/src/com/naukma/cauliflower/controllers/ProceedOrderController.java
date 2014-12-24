@@ -52,17 +52,20 @@ public class ProceedOrderController extends HttpServlet
             {
                 System.out.println("aAGDGHHD");
                 startWorkflowForScenarioNew(request);
+                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             }
             else if (scenario.equals(Scenario.DISCONNECT.toString()))
             {
                 startWorkflowForScenarioDisconnect(request);
+//                request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
+                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             }
             else if (scenario.equals(Scenario.MODIFY.toString()))
             {
                 startWorkflowForScenarioModify(request);
+//                request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
+                response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             }
-            request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
-
         }
         catch (SQLException e)
         {
