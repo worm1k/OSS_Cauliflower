@@ -20,8 +20,22 @@ import java.util.List;
 /**
  * This servlet proceeds orders for three different scenarios
  * and starts Service Order Workflow according to scenario type
+ *
+ * For scenario NEW it creates order with name CREATE_CIRCUIT,creates service location,
+ * creates instance with status "Planned" and blocks it,
+ * connects order and instance,
+ * creates task for installation engineer and send email to installation engineer user group
+ *
+ *  For scenario MODIFY it creates order with name MODIFY_SERVICE, blocks instance,
+ * creates task for provisioning engineer,
+ * connects task with new service and send email to provisioning engineer user group
+ *
+ * For scenario DISCONNECT it creates order with name BREAK_CIRCUIT, blocks instance,
+ * connects instance, creates task for installation engineer and send email to installation engineer user group
+ * 
  * */
-@WebServlet(name = "ProceedOrderController")
+
+ @WebServlet(name = "ProceedOrderController")
 public class ProceedOrderController extends HttpServlet
 {
     private User user = null;
@@ -30,46 +44,35 @@ public class ProceedOrderController extends HttpServlet
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
-        System.out.println("ENTERRRRR");
         user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         String scenario = request.getParameter(CauliflowerInfo.SCENARIO_PARAM);
         if(user == null || user.isBlocked())
         {
-            System.out.println("1");
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
             return;
         }
         if(!user.getUserRole().equals(UserRole.CUSTOMER.toString()))
         {
-            System.out.println("2");
             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             return;
         }
-        System.out.println("asdasd1");
-        try
-        {
-            if(scenario==null || scenario.equals(Scenario.NEW.toString()))
+        try {
+            if (scenario==null || scenario.equals(Scenario.NEW.toString()))
             {
-                System.out.println("aAGDGHHD");
-                startWorkflowForScenarioNew(request);
+                 startWorkflowForScenarioNew(request);
                 response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-            }
-            else if (scenario.equals(Scenario.DISCONNECT.toString()))
+            } else if (scenario.equals(Scenario.DISCONNECT.toString()))
             {
                 startWorkflowForScenarioDisconnect(request);
-//                request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
                 response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-            }
-            else if (scenario.equals(Scenario.MODIFY.toString()))
+            } else if (scenario.equals(Scenario.MODIFY.toString()))
             {
                 startWorkflowForScenarioModify(request);
-//                request.getRequestDispatcher(CauliflowerInfo.DASHBOARD_LINK);
                 response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
             }
         }
         catch (SQLException e)
         {
-            System.out.println("asdasd2");
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
                     CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
         }
@@ -78,10 +81,7 @@ public class ProceedOrderController extends HttpServlet
 
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect(CauliflowerInfo.HOME_LINK);
-    }
+
 
     /**
      * Starts SO workflow for "NEW" scenario
@@ -239,5 +239,10 @@ public class ProceedOrderController extends HttpServlet
         EmailSender.sendEmailToGroup(usersByUserRole,taskName.toString(),
                 getServletContext().getRealPath(CauliflowerInfo.EMAIL_TEMPLATE_PATH));
 
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect(CauliflowerInfo.HOME_LINK);
     }
 }
