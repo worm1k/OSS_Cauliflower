@@ -117,12 +117,16 @@ public class RegistrationController extends HttpServlet {
                         // and redirect to registration page
                         request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
                                 CauliflowerInfo.PHONE_UNIQ_ERROR_MESSAGE);
-                        response.sendRedirect(CauliflowerInfo.AUTH_LINK);
+                        if(userInSession!=null)
+                            response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                        else response.sendRedirect(CauliflowerInfo.AUTH_LINK);
                     }
                 }else{
                     //Insertion attribute of uniqueness e-mail error into session and redirect to registration page
                     request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.EMAIL_UNIQ_ERROR_MESSAGE);
-                    response.sendRedirect(CauliflowerInfo.AUTH_LINK);
+                    if(userInSession!=null)
+                        response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                    else response.sendRedirect(CauliflowerInfo.AUTH_LINK);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
