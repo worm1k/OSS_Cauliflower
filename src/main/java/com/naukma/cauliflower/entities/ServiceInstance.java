@@ -13,7 +13,6 @@ public class ServiceInstance implements Serializable {
     private int userId;
     private ServiceLocation serviceLocation;
     private int serviceId;
- //   private Service service;
     private int instanceStatusId;
     private String instanceStatus;
     private int cableId;
@@ -32,7 +31,6 @@ public class ServiceInstance implements Serializable {
         this.instanceStatus = instanceStatus;
         this.cableId = cableId;
         this.isBlocked = isBlocked;
-    //    this.service = null;
     }
 
 

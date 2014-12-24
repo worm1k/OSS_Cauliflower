@@ -37,41 +37,46 @@ public class ProvisioningTaskController extends HttpServlet {
         //make sure that user is not null
         if (user == null) {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
-            //make sure that task id is not null, otherwise set error attribute and redirect
-        } else if (taskIdParam == null) {
+            return;
+        }
+
+        //make sure that task id is not null, otherwise set error attribute and redirect
+        if (taskIdParam == null) {
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-        } else {
-            try {
-                Integer taskId = Integer.parseInt(taskIdParam);
-                Task task = dao.getTaskById(taskId);
+            return;
+        }
 
-                //this servlet should work only if task is processing and userRole is provisioning engineer
-                if (task.getTaskStatus().equals(TaskStatus.PROCESSING.toString())  &&
-                    user.getUserRoleId() == dao.getUserRoleIdFor(UserRole.PROVISIONING_ENG)) {
+        try {
+            Integer taskId = Integer.parseInt(taskIdParam);
+            Task task = dao.getTaskById(taskId);
 
-                    ServiceOrder serviceOrder = dao.getServiceOrder(taskId);
-                    if (task.getTaskName().equals(TaskName.CONNECT_INSTANCE)) {//connect scenario
-                        dao.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
-                    }
-                    else if (task.getTaskName().equals(TaskName.MODIFY_SERVICE)) {//modify scenario
-                        dao.changeServiceForServiceInstance(taskId, serviceOrder.getServiceInstanceId());
-                    }
-                    else if (task.getTaskName().equals(TaskName.DISCONNECT_INSTANCE)) {//disconnect scenario
-                        dao.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
-                    }
-                    dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                    dao.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
-                    dao.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
-
-                    response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
-                } else
-                    response.sendRedirect(CauliflowerInfo.HOME_LINK);
-
-            } catch (SQLException e) {
-                logger.error(e);
-                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+            //this servlet should work only if task is processing and userRole is provisioning engineer
+            if (!task.getTaskStatus().equals(TaskStatus.PROCESSING.toString())  ||
+                user.getUserRoleId() != dao.getUserRoleIdFor(UserRole.PROVISIONING_ENG)) {
+                response.sendRedirect(CauliflowerInfo.HOME_LINK);
+                return;
             }
+
+            ServiceOrder serviceOrder = dao.getServiceOrder(taskId);
+            if (task.getTaskName().equals(TaskName.CONNECT_INSTANCE)) {//connect scenario
+                dao.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.ACTIVE);
+            }
+            else if (task.getTaskName().equals(TaskName.MODIFY_SERVICE)) {//modify scenario
+                dao.changeServiceForServiceInstance(taskId, serviceOrder.getServiceInstanceId());
+            }
+            else if (task.getTaskName().equals(TaskName.DISCONNECT_INSTANCE)) {//disconnect scenario
+                dao.changeInstanceStatus(serviceOrder.getServiceInstanceId(), InstanceStatus.DISCONNECTED);
+            }
+            dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+            dao.changeOrderStatus(serviceOrder.getServiceOrderId(), OrderStatus.COMPLETED);
+            dao.setInstanceBlocked(serviceOrder.getServiceInstanceId(), 0);
+
+            response.sendRedirect(CauliflowerInfo.PROVIS_ENGINEER_DASHBOARD_LINK);
+            return;
+        } catch (SQLException e) {
+            logger.error(e);
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
         }
     }
 }

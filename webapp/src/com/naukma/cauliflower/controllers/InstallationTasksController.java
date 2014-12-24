@@ -43,54 +43,59 @@ public class InstallationTasksController extends HttpServlet {
         //make sure that user is not null
         if (user == null) {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
-            //make sure that task id and service order id parameters are not null
-        } else if (taskIdParam == null || serviceOrderIdParam == null) {
+            return;
+        }
+        if (taskIdParam == null || serviceOrderIdParam == null) {
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
-        } else {
-            try {
-                int taskId = Integer.parseInt(taskIdParam);
-                int serviceOrderId = Integer.parseInt(serviceOrderIdParam);
-                Task task = dao.getTaskById(taskId);
-                //this servlet should work only if task is processing and userRole is installation engineer
-                if (task.getTaskStatus().equals(TaskStatus.PROCESSING.toString()) &&
-                        user.getUserRoleId() == dao.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
+            return;
+        }
 
-                    if (task.getTaskName().equals(TaskName.CREATE_NEW_ROUTER)) {
-                        //create new router and make task completed
-                        dao.createRouter();
-                        dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                    } else if (task.getTaskName().equals(TaskName.CREATE_CIRCUIT)) {
-                        //check whether free ports exist
-                        if (dao.freePortExists()) {
-                            dao.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
-                            dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                            dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE, TaskStatus.FREE);
-                            sendEmailNotificationForUserGroup(UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
-                        } else {
-                            //if no free ports exist check whether not completed task to create new router already exists
-                            if (dao.countNotCompletedTasksByTaskName(TaskName.CREATE_NEW_ROUTER) == 0) {
-                                dao.createNewTask(serviceOrderId, UserRole.INSTALLATION_ENG, TaskName.CREATE_NEW_ROUTER, TaskStatus.FREE);
-                                sendEmailNotificationForUserGroup(UserRole.INSTALLATION_ENG, TaskName.CREATE_NEW_ROUTER);
-                            }
-                            //set error attribute so that jsp could notify user that he should complete task to create a new router
-                            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.NO_PORTS_ERROR_MESSAGE);
-                        }
-                    } else if (task.getTaskName().equals(TaskName.BREAK_CIRCUIT)) {
-                        dao.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
-                        dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
-                        dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE,TaskStatus.FREE);
-                        sendEmailNotificationForUserGroup(UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE);
-                    }
+        try {
+            int taskId = Integer.parseInt(taskIdParam);
+            int serviceOrderId = Integer.parseInt(serviceOrderIdParam);
+            Task task = dao.getTaskById(taskId);
 
-                    response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
-
-                } else
-                    response.sendRedirect(CauliflowerInfo.HOME_LINK);
-            } catch(SQLException e) {
-                logger.error(e);
-                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
+            //this servlet should work only if task is processing and userRole is installation engineer
+            if (!task.getTaskStatus().equals(TaskStatus.PROCESSING.toString()) ||
+                user.getUserRoleId() != dao.getUserRoleIdFor(UserRole.INSTALLATION_ENG)) {
+                response.sendRedirect(CauliflowerInfo.HOME_LINK);
+                return;
             }
+
+                if (task.getTaskName().equals(TaskName.CREATE_NEW_ROUTER)) {
+                    //create new router and make task completed
+                    dao.createRouter();
+                    dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+                } else if (task.getTaskName().equals(TaskName.CREATE_CIRCUIT)) {
+                    //check whether free ports exist
+                    if (dao.freePortExists()) {
+                        dao.createPortAndCableAndAssignToServiceInstance(serviceOrderId);
+                        dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+                        dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE, TaskStatus.FREE);
+                        sendEmailNotificationForUserGroup(UserRole.PROVISIONING_ENG, TaskName.CONNECT_INSTANCE);
+                    } else {
+                        //if no free ports exist check whether not completed task to create new router already exists
+                        if (dao.countNotCompletedTasksByTaskName(TaskName.CREATE_NEW_ROUTER) == 0) {
+                            dao.createNewTask(serviceOrderId, UserRole.INSTALLATION_ENG, TaskName.CREATE_NEW_ROUTER, TaskStatus.FREE);
+                            sendEmailNotificationForUserGroup(UserRole.INSTALLATION_ENG, TaskName.CREATE_NEW_ROUTER);
+                        }
+                        //set error attribute so that jsp could notify user that he should complete task to create a new router
+                        request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.NO_PORTS_ERROR_MESSAGE);
+                    }
+                } else if (task.getTaskName().equals(TaskName.BREAK_CIRCUIT)) {
+                    dao.removeCableFromServiceInstanceAndFreePort(serviceOrderId);
+                    dao.changeTaskStatus(taskId, TaskStatus.COMPLETED);
+                    dao.createNewTask(serviceOrderId, UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE,TaskStatus.FREE);
+                    sendEmailNotificationForUserGroup(UserRole.PROVISIONING_ENG, TaskName.DISCONNECT_INSTANCE);
+                }
+
+                response.sendRedirect(CauliflowerInfo.INSTALL_ENGINEER_DASHBOARD_LINK);
+                return;
+
+        } catch(SQLException e) {
+            logger.error(e);
+            request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
         }
     }
 
