@@ -91,15 +91,22 @@ public class ProceedOrderController extends HttpServlet
     private void startWorkflowForScenarioNew(HttpServletRequest request) throws SQLException
     {
         Integer serviceInstance = null;
+        //creates service order
         int orderId = createServiceOrder(Scenario.NEW, serviceInstance);
+        //change status for SO
         DAO.INSTANCE.changeOrderStatus(orderId, OrderStatus.PROCESSING);
+        //create service instance
         int serviceInstanceId = createServiceInstance(request.getSession());
+        //connect SO and SI
         DAO.INSTANCE.setInstanceForOrder(serviceInstanceId,orderId);
+        //block SI
         toggleInstanceBlocked(serviceInstanceId);
+        //create task for install eng
         DAO.INSTANCE.createNewTask(orderId,UserRole.
                 INSTALLATION_ENG,
                 TaskName.CREATE_CIRCUIT,
                 TaskStatus.FREE);
+        // send email to install eng
         sendEmailNotificationForUserGroup(UserRole.INSTALLATION_ENG, TaskName.CREATE_CIRCUIT);
     }
 
