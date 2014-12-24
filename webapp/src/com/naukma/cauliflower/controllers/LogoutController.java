@@ -1,6 +1,5 @@
 package com.naukma.cauliflower.controllers;
 
-import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;

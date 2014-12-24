@@ -1,8 +1,6 @@
 package com.naukma.cauliflower.controllers;
 
 import com.naukma.cauliflower.dao.DAO;
-import com.naukma.cauliflower.entities.ServiceInstance;
-import com.naukma.cauliflower.entities.ServiceOrder;
 import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 
@@ -12,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.

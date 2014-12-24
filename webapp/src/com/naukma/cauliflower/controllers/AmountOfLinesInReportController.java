@@ -3,8 +3,6 @@ package com.naukma.cauliflower.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naukma.cauliflower.dao.DAO;
 import com.naukma.cauliflower.dao.Scenario;
-import com.naukma.cauliflower.dao.UserRole;
-import com.naukma.cauliflower.entities.User;
 import com.naukma.cauliflower.info.CauliflowerInfo;
 
 import javax.servlet.ServletException;
@@ -35,8 +33,8 @@ public class AmountOfLinesInReportController extends HttpServlet {
         java.sql.Date sqlStartDate = null;
         java.sql.Date sqlEndDate = null;
         if (startDate != null && endDate != null)
-            try {
-
+            try{
+        //parce date from jquery to sql
                 java.util.Date date = formatter.parse(startDate);
                 sqlStartDate = new java.sql.Date(date.getTime());
 
@@ -64,7 +62,6 @@ public class AmountOfLinesInReportController extends HttpServlet {
                 result = DAO.INSTANCE.getProfitabilityByMonthLinesAmount();
             }else if (methodName.equals("New") && startDate != null && endDate != null) {
                 result = DAO.INSTANCE.getOrdersPerPeriodLinesAmount(Scenario.NEW, sqlStartDate, sqlEndDate);
-                //resultSet = DAO.INSTANCE.getNewOrdersPerPeriod(sqlStartDate, sqlEndDate);
             }else if (methodName.equals("Disconnect") && startDate != null && endDate != null) {
                 result = DAO.INSTANCE.getOrdersPerPeriodLinesAmount(Scenario.DISCONNECT, sqlStartDate, sqlEndDate);
             }else if (methodName.equals("Tree")){

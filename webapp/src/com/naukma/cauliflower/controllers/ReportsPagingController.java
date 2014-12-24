@@ -44,6 +44,9 @@ public class ReportsPagingController  extends HttpServlet {
         User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         String pathFrom  = request.getHeader("Referer");
 
+        if(user == null)
+            response.sendRedirect(CauliflowerInfo.HOME_LINK);
+
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         java.sql.Date sqlStartDate = null;
         java.sql.Date sqlEndDate = null;
