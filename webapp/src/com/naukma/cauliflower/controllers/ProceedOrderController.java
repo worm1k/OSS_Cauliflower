@@ -34,10 +34,12 @@ public class ProceedOrderController extends HttpServlet
         if(user == null || user.isBlocked())
         {
             response.sendRedirect(CauliflowerInfo.AUTH_LINK);
+            return;
         }
         if(!user.getUserRole().equals(UserRole.CUSTOMER))
         {
             response.sendRedirect(CauliflowerInfo.DASHBOARD_LINK);
+            return;
         }
         try
         {
