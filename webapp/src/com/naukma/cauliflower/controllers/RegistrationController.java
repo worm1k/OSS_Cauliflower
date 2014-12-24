@@ -125,8 +125,7 @@ public class RegistrationController extends HttpServlet {
                     //Insertion attribute of uniqueness e-mail error into session and redirect to registration page
                     // or to administrator dashboard
                     request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.EMAIL_UNIQ_ERROR_MESSAGE);
-                    if(userInSession!=null)
-                        response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                    if(userInSession != null) response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                     else response.sendRedirect(CauliflowerInfo.AUTH_LINK);
                 }
             } catch (SQLException e) {
@@ -134,8 +133,7 @@ public class RegistrationController extends HttpServlet {
                 // or to administrator dashboard
                 logger.error(e);
                 request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
-                if(userInSession!=null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString()))
-                    response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
+                if(userInSession != null) response.sendRedirect(CauliflowerInfo.ADMIN_DASHBOARD_LINK);
                 else response.sendRedirect(CauliflowerInfo.AUTH_LINK);
             }
         }else{
