@@ -2820,8 +2820,8 @@ public class DAO {
             preparedStatement = connection
                     .prepareStatement(selectQuery);
             preparedStatement.setInt(1,portsQuantity);
-            preparedStatement.setInt(2,portsQuantity);
-            preparedStatement.setString(3, sistActQ);
+            preparedStatement.setString(2, sistActQ);
+            preparedStatement.setInt(3,portsQuantity);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals(xlsExt)) {
                 reportGenerator = new XLSReportGenerator(" CIA Report ",
