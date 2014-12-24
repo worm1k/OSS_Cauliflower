@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 /**
- * Created by Max on 26.11.2014.
+ * This servlet controls login of users.
  */
 @WebServlet(name = "LoginController")
 public class LoginController extends HttpServlet {
@@ -32,40 +32,54 @@ public class LoginController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info(" INFO ::   LoginController");
+        //Names of parameters that are taken from form in jsp
         String usernameParameter = "username";
         String passwordParameter = "password";
 
+        //Checking for user in session
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(userInSession==null) {
-            String username = request.getParameter(usernameParameter).toLowerCase();
+            //Getting parameters for login
+            String email = request.getParameter(usernameParameter).toLowerCase();
             String password = request.getParameter(passwordParameter);
             Service service = (Service) request.getSession().getAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
-            ServiceLocation servLoc = (ServiceLocation) request.getSession().getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
+            ServiceLocation servLoc = (ServiceLocation) request.getSession()
+                    .getAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
 
             User userForLogin = null;
             try {
+                //Hashihg password
                 String hashedPassword= Cryptographer.hmacSha1(password);
                 logger.info("LoginController:: hashed password form"+password+" is "+hashedPassword);
-                userForLogin = DAO.INSTANCE.getUserByLoginAndPassword(username, hashedPassword);
+                //Validation email and password and getting user from database
+                userForLogin = DAO.INSTANCE.getUserByLoginAndPassword(email, hashedPassword);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             if (userForLogin == null) {
+                //Insertion attribute of login error into session and redirect to login page
                 request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.LOGIN_ERROR_MESSAGE);
                 response.sendRedirect(CauliflowerInfo.AUTH_LINK);
             } else {
+                //Checking for blocking of user account
                 if(userForLogin.isBlocked()){
-                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.ACCOUNT_IS_BLOCKED_ERROR_MESSAGE);
+                    //Insertion attribute of blocking account error into session and redirect to login page
+                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                            CauliflowerInfo.ACCOUNT_IS_BLOCKED_ERROR_MESSAGE);
                     response.sendRedirect(CauliflowerInfo.AUTH_LINK);
                 }else {
+                    //Insertion user attribute into session
                     request.getSession().setAttribute(CauliflowerInfo.USER_ATTRIBUTE, userForLogin);
                     logger.info(" LOGGER ::   LoginController  : user is" + userForLogin.getFirstName());
-                    request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
-                    if (service != null && servLoc != null && userForLogin.getUserRole().equals(UserRole.CUSTOMER.toString())) {
+                    //Checking for user selecting attributes to create a new connection
+                    if (service != null && servLoc != null
+                            && userForLogin.getUserRole().equals(UserRole.CUSTOMER.toString())) {
+                        //Redirect to servlet of creating new connection
                         ServletContext context = getServletContext();
                         RequestDispatcher rd = context.getRequestDispatcher(CauliflowerInfo.PROCEED_CONTROLLER_LINK);
                         rd.forward(request, response);
                     } else {
+                        //Redirection on the dashboard of the user who is logged
                         request.getSession().removeAttribute(CauliflowerInfo.SERVICE_ATTRIBUTE);
                         request.getSession().removeAttribute(CauliflowerInfo.SERVICE_LOCATION_ATTRIBUTE);
                         String userInSessionRole = userForLogin.getUserRole();
@@ -83,6 +97,7 @@ public class LoginController extends HttpServlet {
                 }
             }
         }else{
+            //Insertion attribute of permission error into session and redirect to home page
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
             response.sendRedirect(CauliflowerInfo.HOME_LINK);
         }
