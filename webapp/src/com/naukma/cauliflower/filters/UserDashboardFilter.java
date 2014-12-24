@@ -12,14 +12,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
+/**   UserDashboardFilter checks if the user has permission to see dashboard.jsp.
+ *   Otherwise user will be redirected to   home.jsp
  * Created by ihor on 11.12.2014.
  */
 @WebFilter(filterName = "UserDashboardFilter",urlPatterns = "/dashboard.jsp")
 public class UserDashboardFilter extends BaseFilter{
     private static final Logger logger = Logger.getLogger(UserDashboardFilter.class);
     @Override
-    public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
+    public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException {
 
         User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
         if(user==null || (user!=null && !user.getUserRole().equals(UserRole.CUSTOMER.toString()))) {
@@ -35,9 +36,8 @@ public class UserDashboardFilter extends BaseFilter{
                 chain.doFilter(request,response);
             } catch (IOException e) {
                 logger.error(e);
-            } catch (ServletException e) {
-                logger.error(e);
             }
+
         }
     }
 }

@@ -136,14 +136,7 @@
         <url-pattern>/changepass</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>UserInstances</servlet-name>
-        <servlet-class>com.naukma.cauliflower.controllers.ReviewUserServiceInstance</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UserInstances</servlet-name>
-        <url-pattern>/userInstances</url-pattern>
-    </servlet-mapping>
+
 
     <servlet>
         <servlet-name>LogoutController</servlet-name>
@@ -219,4 +212,7 @@
         <url-pattern>/cse_dashboard.jsp</url-pattern>
         <url-pattern>/cse_dashboard_user.jsp</url-pattern>
     </filter-mapping>
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
 </web-app>

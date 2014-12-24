@@ -12,27 +12,28 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * CustomerSupportEngineerFilter checks if the user has permission to see cse_dashboard.jsp or cse_dashboard_user.jsp
+ * Otherwise user will be redirected to   home.jsp
  * Created by ihor on 12.12.2014.
  */
 public class CustomerSupportEngineerFilter extends BaseFilter {
     private static final Logger logger = Logger.getLogger(InstallationEngineerFilter.class);
+
     @Override
-    public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
-        User user = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(user==null || (user!=null && !user.getUserRole().equals(UserRole.CUST_SUP_ENG.toString()))) {
+    public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException {
+        User user = (User) request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
+        if (user == null || (user != null && !user.getUserRole().equals(UserRole.CUST_SUP_ENG.toString()))) {
             try {
                 logger.info("CustomerSupportEngineerFilter ::  user has not permission to see customer support engineer page");
                 response.sendRedirect(CauliflowerInfo.HOME_LINK);
             } catch (IOException e) {
                 logger.error(e);
             }
-        }else{
+        } else {
             try {
                 logger.info("CustomerSupportEngineerFilter ::  user has  permission to see customer support engineer page");
-                chain.doFilter(request,response);
+                chain.doFilter(request, response);
             } catch (IOException e) {
-                logger.error(e);
-            } catch (ServletException e) {
                 logger.error(e);
             }
         }

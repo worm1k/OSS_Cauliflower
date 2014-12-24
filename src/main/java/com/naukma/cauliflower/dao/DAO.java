@@ -125,71 +125,6 @@ public class DAO {
         }
         return result;
     }
-    //Galya_Sh
-    //просто отримуємо айди юзер ролі яка є Installation Engineer
-//    public int getUserRoleIdFor_InstallationEngineer() {
-//        Connection connection = getConnection();
-//        PreparedStatement preparedStatement = null;
-//        int result = 4;
-//        try {
-//            UserRoles urName = UserRoles.INSTALLATION_ENG;
-//            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-//            preparedStatement.setString(1, urName.toString());
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            if (resultSet.next()) {
-//                result = resultSet.getInt("RES");
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                close(connection, preparedStatement);
-//                //if (!preparedStatement.isClosed()) preparedStatement.close();
-//                //if (!connection.isClosed()) connection.close();
-//            } catch (SQLException e) {
-//                logger.info("Smth wrong with closing connection or preparedStatement!");
-//                e.printStackTrace();
-//            }
-//
-//        }
-//        return result;
-//    }
-//
-//    //Galya_Sh
-//    //просто отримуємо айди юзер ролі яка є Provisioning Engineer
-//    public int getUserRoleIdFor_ProvisioningEngineer() {
-//        Connection connection = getConnection();
-//        PreparedStatement preparedStatement = null;
-//        int result = 0;
-//        try {
-//            UserRoles urName = UserRoles.PROVISIONING_ENG;
-//            preparedStatement = connection.prepareStatement("SELECT Id_UserRole RES FROM USERROLE WHERE NAME = ?");
-//            preparedStatement.setString(1, urName.toString());
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            if (resultSet.next()) {
-//                result = resultSet.getInt("RES");
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                close(connection, preparedStatement);
-//                //if (!preparedStatement.isClosed()) preparedStatement.close();
-//                //if (!connection.isClosed()) connection.close();
-//            } catch (SQLException e) {
-//                logger.info("Smth wrong with closing connection or preparedStatement!");
-//                e.printStackTrace();
-//            }
-//
-//        }
-//        return result;
-//    }
-
-    //Halya
-    //if error - return < 0
-    //else return id of created user
 
     /**
      * @param us       User to create
@@ -213,7 +148,6 @@ public class DAO {
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement("SELECT MAX(ID_USER) MAX_ID FROM USERS");
-            //int idU = 0;
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 result = resultSet.getInt("MAX_ID");
@@ -221,7 +155,7 @@ public class DAO {
             connection.commit();
         } catch (SQLException e) {
             if (connection != null) {
-                System.err.print("Transaction is being rolled back");
+                logger.error("Transaction is being rolled back");
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
@@ -233,10 +167,9 @@ public class DAO {
             throw e;
         } finally {
             try {
-                //connection.setAutoCommit(true);
+
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -344,13 +277,11 @@ public class DAO {
             preparedStatement = connection.prepareStatement("UPDATE USERS SET Isblocked = 1 WHERE Id_User = ? ");
             preparedStatement.setInt(1, idForBlock);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("ID USER: " + idForBlock + " IS BLOCKED");
-            }
 
-            preparedStatement = connection.prepareStatement("SELECT * FROM USERS US " +
-                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE " +
-                    "WHERE ID_USER = ? ");
+
+            preparedStatement = connection.prepareStatement("SELECT *  " +
+                    "FROM USERS US,USERROLE UR " +
+                    "WHERE US.ID_USERROLE = UR.ID_USERROLE(+) AND ID_USER = ? ");
             preparedStatement.setInt(1, idForBlock);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -369,7 +300,7 @@ public class DAO {
 
         } catch (SQLException e) {
             if (connection != null) {
-                System.err.print("Transaction is being rolled back");
+                logger.error("Transaction is being rolled back");
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
@@ -381,10 +312,9 @@ public class DAO {
 
         } finally {
             try {
-                //connection.setAutoCommit(true);
+
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -411,13 +341,11 @@ public class DAO {
             preparedStatement = connection.prepareStatement("UPDATE USERS SET IS_BLOCKED = 1 WHERE E_MAIL = ? ");
             preparedStatement.setString(1, email);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println("USER WITH EMAIL " + email + " IS BLOCKED");
-            }
 
-            preparedStatement = connection.prepareStatement("SELECT * FROM USERS US " +
-                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE " +
-                    "WHERE E_MAIL = ? ");
+
+            preparedStatement = connection.prepareStatement("SELECT *  " +
+                    "FROM USERS US, USERROLE UR " +
+                    "WHERE   US.ID_USERROLE = UR.ID_USERROLE(+) AND E_MAIL = ? ");
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -436,7 +364,7 @@ public class DAO {
 
         } catch (SQLException e) {
             if (connection != null) {
-                System.err.print("Transaction is being rolled back");
+                logger.error("Transaction is being rolled back");
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
@@ -447,10 +375,9 @@ public class DAO {
             throw e;
         } finally {
             try {
-                //connection.setAutoCommit(true);
+
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -483,15 +410,10 @@ public class DAO {
             }
             if (checkResult == 1) {
                 result = true;
-                {//help
-                    System.out.println("USER WITH EMAIL " + email + " EXIST");
-                }
 
             } else {
                 result = false;
-                {//help
-                    System.out.println("THERE IS NO USER WITH EMAIL " + email);
-                }
+
             }
 
         } finally {
@@ -533,19 +455,12 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
             }
 
         }
-        //if(userRoleId==1)return "CUSTOMER";
-        //if(userRoleId==2)return "Customer Support Engineer";
-        //if(userRoleId==3)return "Provisioning Engineer";
-        //if(userRoleId==4)return "Installation Engineer";
         return result;
     }
 
@@ -567,13 +482,11 @@ public class DAO {
             preparedStatement.setString(1, newPassword);
             preparedStatement.setInt(2, userId);
             preparedStatement.executeUpdate();
-            {//help
-                System.out.println(" FOR ID USER: " + userId + " password was successfully changed");
-            }
 
-            preparedStatement = connection.prepareStatement("SELECT *  FROM USERS US " +
-                    "INNER JOIN USERROLE UR ON US.ID_USERROLE = UR.ID_USERROLE " +
-                    "WHERE ID_USER = ? ");
+
+            preparedStatement = connection.prepareStatement("SELECT *   " +
+                    "FROM USERS US, USERROLE UR " +
+                    "WHERE US.ID_USERROLE = UR.ID_USERROLE(+) AND ID_USER = ? ");
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -592,7 +505,7 @@ public class DAO {
 
         } catch (SQLException e) {
             if (connection != null) {
-                System.err.print("Transaction is being rolled back");
+                logger.error("Transaction is being rolled back");
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
@@ -603,10 +516,9 @@ public class DAO {
             throw e;
         } finally {
             try {
-                //connection.setAutoCommit(true);
+
                 close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
+
             } catch (SQLException e) {
                 logger.info("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -632,6 +544,7 @@ public class DAO {
                     "SELECT 'ROUTER-'||r.id ROUTER, SUM(P.Used) OCCUPIED, " + amountOfPorts + " - SUM(p.Used) FREE " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "GROUP BY r.id ORDER BY R.ID ASC");
+            preparedStatement.setInt(1,amountOfPorts);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Devices", resultSet);
@@ -661,10 +574,6 @@ public class DAO {
      * @throws SQLException
      */
     public ReportGenerator getPortsForReport(final String EXT) throws SQLException {
-        {//help
-            System.out.println("getPortsForReport");
-        }
-        //Connection connection = getConnection();
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
@@ -676,15 +585,15 @@ public class DAO {
                     "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "ORDER BY R.ID, MOD(P.ID," + portsQuantity+") ");
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Ports", resultSet);
             } else {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }
-            {//help
-                System.out.println("SUCCESS!!!!getPortsForReport");
-            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -705,10 +614,6 @@ public class DAO {
      * @throws SQLException
      */
     public ReportGenerator getCablesForReport(final String EXT) throws SQLException {
-        {//help
-            System.out.println("getCablesForReport");
-        }
-        //Connection connection = getConnection();
         PreparedStatementBlocker preparedStatement = null;
         ResultSet resultSet = null;
         ReportGenerator reportGenerator = null;
@@ -726,9 +631,7 @@ public class DAO {
             } else {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }
-            {//help
-                System.out.println("SUCCESS!!!!getCablesForReport");
-            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -765,6 +668,8 @@ public class DAO {
                     "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
                     "ON C.Id = Si.Id_Cable " +
                     "ORDER BY R.ID, MOD(P.ID," + portsQuantity+") ASC");
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Circuits", resultSet);
@@ -776,9 +681,6 @@ public class DAO {
         } finally {
             try {
                 preparedStatement.close();
-                //close(connection, preparedStatement);
-                //if (!preparedStatement.isClosed()) preparedStatement.close();
-                //if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 logger.warn("Smth wrong with closing connection or preparedStatement!");
                 e.printStackTrace();
@@ -809,14 +711,8 @@ public class DAO {
             }
             if (checkResult == 0) {
                 result = true;
-                {//help
-                    System.out.println("checkForPhoneUniq PHONE " + phone + " IS UNIQ");
-                }
             } else {
                 result = false;
-                {//help
-                    System.out.println("checkForPhoneUniq USER WITH PHONE " + phone + " IS ALREADY EXISTS ");
-                }
             }
 
         } finally {
@@ -2460,8 +2356,10 @@ public class DAO {
                     "WHERE R.ID = P.ID_ROUTER(+) " +
                     "GROUP BY R.ID " +
                     ")WHERE RN BETWEEN ? AND ? ");
-            preparedStatement.setInt(1, (page - 1) * pageLength + 1);
-            preparedStatement.setInt(2, (page - 1) * pageLength + pageLength);
+            preparedStatement.setInt(1,amountOfPorts);
+            preparedStatement.setInt(2,amountOfPorts);
+            preparedStatement.setInt(3, (page - 1) * pageLength + 1);
+            preparedStatement.setInt(4, (page - 1) * pageLength + pageLength);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new UsedRoutersAndCapacityOfPorts(resultSet.getString("ROUTER_NAME"),
@@ -2877,11 +2775,11 @@ public class DAO {
 //                "WHERE SIST.NAME = ? ) WHERE RN BETWEEN ? AND ? ";
         final String selectQuery = "SELECT * FROM ( " +
                 "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, " +
-                "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT_NAME, " +
+                "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT_NAME, " +
                 "L.ADRESS SERVICE_INSTANCE_ADRESS, " +
                 "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, " +
                 "U.L_NAME USER_LAST_NAME , " +
-                "ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
+                "ROW_NUMBER() OVER (ORDER BY L.ADRESS, P.ID_ROUTER, MOD(P.ID,?) ASC) RN " +
                 "FROM SERVICEINSTANCE SI, SERVICELOCATION SL, LOCATION L, " +
                 "USERS U, SERVICEINSTANCESTATUS SIST, CABLE C, PORT P " +
                 "WHERE SI.ID_USER = U.ID_USER(+) AND SI.ID_SERVICE_LOCATION = SL.ID(+) " +
@@ -2891,9 +2789,11 @@ public class DAO {
         try {
             preparedStatement = getPreparedStatementFromHashMap("getCIAReport",
                     selectQuery);
-            preparedStatement.setString(1, serviceInstanceStatus);
-            preparedStatement.setInt(2, startP);
-            preparedStatement.setInt(3, endP);
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setString(3, serviceInstanceStatus);
+            preparedStatement.setInt(4, startP);
+            preparedStatement.setInt(5, endP);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(new CIAReport(
@@ -2999,19 +2899,21 @@ public class DAO {
         int portsQuantity = CauliflowerInfo.PORTS_QUANTITY;
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
+        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT_NAME, L.ADRESS SERVICE_INSTANCE_ADRESS, " +
                 "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME " +
                 "FROM ((((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER ) " +
                 "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )  " +
                 "INNER JOIN PORT P ON P.ID = C.ID_PORT )  " +
                 "INNER JOIN SERVICEINSTANCESTATUS SIST ON SIST.ID =  SI.SERVICE_INSTANCE_STATUS) " +
                 "inner join (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) ON SL.ID = SI.ID_SERVICE_LOCATION)" +
-                "WHERE SIST.NAME = ? ORDER BY SERVICE_INSTANCE_ADRESS, P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC";
+                "WHERE SIST.NAME = ? ORDER BY SERVICE_INSTANCE_ADRESS, P.ID_ROUTER, MOD(P.ID,?) ASC";
 
         final String sistActQ = InstanceStatus.ACTIVE.toString();
         try {
             preparedStatement = getPreparedStatementFromHashMap("getCIAReport2", selectQuery);
-            preparedStatement.setString(1, sistActQ);
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setString(3, sistActQ);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals(xlsExt)) {
                 reportGenerator = new XLSReportGenerator(" CIA Report ",
@@ -3055,6 +2957,8 @@ public class DAO {
                     "FROM ( SELECT R.ID ROUTEROLD, SUM(p.Used) OCCUPIED " +
                     "FROM (ROUTER R INNER JOIN PORT P ON R.ID = P.ID_ROUTER) " +
                     "GROUP BY R.ID ORDER BY R.ID )");
+            preparedStatement.setInt(1, amountOfPorts);
+            preparedStatement.setInt(2, amountOfPorts);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
                 reportGenerator = new XLSReportGenerator("Routers and capacity of ports", resultSet);
@@ -3399,10 +3303,10 @@ public class DAO {
                             "ON SI.ID_SERVICE_LOCATION = SL.ID ) " +
                             "ON C.Id = Si.Id_Cable )" +
                             "WHERE RN BETWEEN ? AND ? ");
-            preparedStatement
-                    .setInt(1, startP);
-            preparedStatement
-                    .setInt(2, endP);
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setInt(3, startP);
+            preparedStatement.setInt(4, endP);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 circuits.add(new Circuit(resultSet.getString("CABLE"),
@@ -3469,15 +3373,15 @@ public class DAO {
             preparedStatement = getPreparedStatementFromHashMap("getPortsForReport",
                     "SELECT * FROM(  " +
                             "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER, " +
-                            "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, "+portsQuantity+") PORT,  " +
+                            "'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, ?) PORT,  " +
                             "CASE P.USED WHEN 1 THEN 'YES' ELSE 'NO' END USED," +
-                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID,"+portsQuantity+") ASC) RN " +
+                            "ROW_NUMBER() OVER (ORDER BY P.ID_ROUTER, MOD(P.ID,?) ASC) RN " +
                             "FROM PORT P )  " +
                             "WHERE RN BETWEEN ? AND ?");
-            preparedStatement
-                    .setInt(1, startP);
-            preparedStatement
-                    .setInt(2, endP);
+            preparedStatement.setInt(1,portsQuantity);
+            preparedStatement.setInt(2,portsQuantity);
+            preparedStatement.setInt(3, startP);
+            preparedStatement.setInt(4, endP);
 
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
