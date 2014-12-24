@@ -25,6 +25,16 @@
     <div class="container">
         <h1 class="txt-center txt-bold">Internet Provider "CauliFlower"</h1>
         <h2 class="txt-center">Dashboard</h2>
+        <%-- Server message shows here --%>
+        <c:if test="${sessionScope.error ne null && not empty sessionScope.error}">
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <p><b>Server message:</b> ${sessionScope.error}</p>
+            </div>
+            <%
+                request.getSession().removeAttribute(CauliflowerInfo.ERROR_ATTRIBUTE);
+            %>
+        </c:if>
     </div>
 
     <div id="js-map" class="google-map"></div>
