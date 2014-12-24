@@ -42,11 +42,11 @@ public class RegistrationController extends HttpServlet {
 
         //Getting role of user who will be registered
         String userRoleForRegister = request.getParameter(userForRegisterRoleParameter);
-        if(userRoleForRegister==null) userRoleForRegister=UserRole.CUSTOMER.toString();
+        if(userRoleForRegister == null) userRoleForRegister=UserRole.CUSTOMER.toString();
         //Checking for role of user who will register new user and for his permissions for register new user
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if((userInSession==null && userRoleForRegister.equals(UserRole.CUSTOMER.toString())) ||
-                (userInSession!=null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())
+        if((userInSession == null && userRoleForRegister.equals(UserRole.CUSTOMER.toString())) ||
+                (userInSession != null && userInSession.getUserRole().equals(UserRole.ADMINISTRATOR.toString())
                         && !userRoleForRegister.equals(UserRole.CUSTOMER.toString()))) {
             int userRoleId=0;
             //Getting parameters for registration of new user

@@ -18,52 +18,69 @@ import java.sql.SQLException;
 
 /**
  * Created by Артем on 02.12.2014.
+ *
+ * This servlet controls changing password of users by customer support engineer.
  */
 @WebServlet(name = "ChangeCustomerPassword")
 public class ChangeCustomerPassword extends HttpServlet {
     private static final Logger logger = Logger.getLogger(LoginController.class);
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String userIdForNewPassParameter = "userIdForNewPass";
-        String newPasswordParameter ="newPassword";
+        //Parameters for validation new password and account for changing password
+        int minPasswordLength = 6;
+        int minUserId = 1;
 
+        //Names of parameters that are taken from form in jsp
+        String userIdForNewPassParameter = "userIdForNewPass";
+        String newPasswordParameter = "newPassword";
+
+        //Checking for user in session and for his permissions for changing password
         User us = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(us!= null && us.getUserRole().equals(UserRole.CUST_SUP_ENG.toString())){
+        if(us != null && us.getUserRole().equals(UserRole.CUST_SUP_ENG.toString())){
+            //Getting parameters for changing password
             int userIdForNewPass = Integer.parseInt(request.getParameter(userIdForNewPassParameter));
             String newPassword = request.getParameter(newPasswordParameter);
-             if (userIdForNewPass > 0) {
-                if(newPassword.length()>= 6) {
-                    final String hashedPassword= Cryptographer.hmacSha1(newPassword);
+            //Validation account for changing password and new password
+             if (userIdForNewPass >= minUserId) {
+                if(newPassword.length() >= minPasswordLength) {
+                    //Hashihg new password
+                    final String hashedPassword = Cryptographer.hmacSha1(newPassword);
                     logger.info(" reg controller :: hashed password form"+newPassword+" is "+hashedPassword);
                     User userForNewPass = null;
+                    //Changing password
                     try {
                         userForNewPass = DAO.INSTANCE.changeUserPasswordById(userIdForNewPass, hashedPassword);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                    if(userForNewPass!=null){
-                        StringBuilder message= new StringBuilder();
+                        //Sending e-mail to account with new password
+                        StringBuilder message = new StringBuilder();
                         message.append("<p>Your password has been changed!</p> " +
-                                "<p style=\"text-transform:none;\">Your new password: <b>");
+                                "<p style = \"text-transform:none;\">Your new password: <b>");
                         message.append(newPassword);
                         message.append("</b></p>");
                         String fullPath = getServletContext().getRealPath("/WEB-INF/mail/");
                         EmailSender.sendChangedPasswordToUser(userForNewPass,newPassword,fullPath);
-                        request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,CauliflowerInfo.OK_CHANGE_PASSWORD_MESSAGE);
+                        //Insertion attribute of successful changing password into session
+                        // and redirect to customer support engineer dashboard
+                        request.getSession().setAttribute(CauliflowerInfo.OK_ATTRIBUTE,
+                                CauliflowerInfo.OK_CHANGE_PASSWORD_MESSAGE);
                         response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_USER_INFORMATION_LINK);
-                    }else{
-                        request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.SYSTEM_ERROR_MESSAGE);
-                        response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
-                    }
                 }else{
-                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PASSWORD_ERROR_MESSAGE);
+                    //Insertion attribute of incorrect new password error into session
+                    // and redirect to customer support engineer dashboard
+                    request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                            CauliflowerInfo.PASSWORD_ERROR_MESSAGE);
                     response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
                 }
             }else{
-                request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
-                        CauliflowerInfo.INCORRECT_USER_FOR_NEW_PASS_ERROR_MESSAGE);
-                response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
+                 //Insertion attribute of incorrect account for changing password error into session
+                 // and redirect to customer support engineer dashboard
+                 request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE,
+                         CauliflowerInfo.INCORRECT_USER_FOR_NEW_PASS_ERROR_MESSAGE);
+                 response.sendRedirect(CauliflowerInfo.SUPPORT_ENGINEER_DASHBOARD_LINK);
             }
         }else{
+            //Insertion attribute of permission error into session and redirect to home page
             request.getSession().setAttribute(CauliflowerInfo.ERROR_ATTRIBUTE, CauliflowerInfo.PERMISSION_ERROR_MESSAGE);
             response.sendRedirect(CauliflowerInfo.HOME_LINK);
         }

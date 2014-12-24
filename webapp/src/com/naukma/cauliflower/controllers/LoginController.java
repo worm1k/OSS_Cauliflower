@@ -23,6 +23,8 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 /**
+ * Created by Max on 26.11.2014.
+ *
  * This servlet controls login of users.
  */
 @WebServlet(name = "LoginController")
@@ -38,7 +40,7 @@ public class LoginController extends HttpServlet {
 
         //Checking for user in session
         User userInSession = (User)request.getSession().getAttribute(CauliflowerInfo.USER_ATTRIBUTE);
-        if(userInSession==null) {
+        if(userInSession == null) {
             //Getting parameters for login
             String email = request.getParameter(usernameParameter).toLowerCase();
             String password = request.getParameter(passwordParameter);
@@ -49,7 +51,7 @@ public class LoginController extends HttpServlet {
             User userForLogin = null;
             try {
                 //Hashihg password
-                String hashedPassword= Cryptographer.hmacSha1(password);
+                String hashedPassword = Cryptographer.hmacSha1(password);
                 logger.info("LoginController:: hashed password form"+password+" is "+hashedPassword);
                 //Validation email and password and getting user from database
                 userForLogin = DAO.INSTANCE.getUserByLoginAndPassword(email, hashedPassword);
