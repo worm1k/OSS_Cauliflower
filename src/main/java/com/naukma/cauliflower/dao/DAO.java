@@ -3129,17 +3129,11 @@ public class DAO {
      */
     public User getCustomerUserById(int id) throws SQLException {
         final int CUSTOMER = 1;
-        {//
-            System.out.println("getCustomerUserById");
-        }
         User result = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
             String query = "SELECT * FROM USERS WHERE ID_USERROLE = ? AND ID_USER = ?";
-            {//
-                System.out.println(query);
-            }
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, CUSTOMER);
             preparedStatement.setInt(2, id);
@@ -3148,16 +3142,14 @@ public class DAO {
                 result = new User(
                         resultSet.getInt("ID_USER"),
                         resultSet.getInt("ID_USERROLE"),
-                        "CUSTOMER",
+                        UserRole.CUSTOMER.toString(),
                         resultSet.getString("E_MAIL"),
                         resultSet.getString("F_NAME"),
                         resultSet.getString("L_NAME"),
                         resultSet.getString("PHONE"),
                         ((resultSet.getString("IS_BLOCKED") == "1") ? true : false));
             }
-            {//
-                System.out.println("SUCCESS!!! getCustomerUserById");
-            }
+
         } finally {
             try {
                 close(connection, preparedStatement);
@@ -3178,21 +3170,21 @@ public class DAO {
      * @see com.naukma.cauliflower.entities.ServiceInstance
      */
     public ServiceInstance getInstanceById(int serviceInstanceId) throws SQLException {
-        {//help
-            System.out.println("GET INSTANCE BY ID");
-        }
+
         ServiceInstance result = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
-                    "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
-                    "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
-                    "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
-                    "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
-                    "INNER JOIN SERVICEINSTANCESTATUS SIS " +
-                    "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID " +
-                    "WHERE SI.ID = ?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT SI.ID, SI.ID_USER, SI.ID_SERVICE_LOCATION, SI.ID_SERVICE, " +
+                            "SI.SERVICE_INSTANCE_STATUS, SI.ID_CABLE, SI.HAS_ACTIVE_TASK, " +
+                            "L.ADRESS,L.LATITUDE, L.LONGITUDE, SIS.NAME " +
+                            "FROM (SERVICEINSTANCE SI INNER JOIN (SERVICELOCATION SL " +
+                            "INNER JOIN LOCATION L ON SL.ID_LOCATION = L.ID) " +
+                            "ON SI.ID_SERVICE_LOCATION = SL.ID)" +
+                            "INNER JOIN SERVICEINSTANCESTATUS SIS " +
+                            "ON SI.SERVICE_INSTANCE_STATUS = SIS.ID " +
+                            "WHERE SI.ID = ?");
             preparedStatement.setInt(1, serviceInstanceId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -3208,9 +3200,6 @@ public class DAO {
                         resultSet.getString("NAME"),
                         resultSet.getInt("ID_CABLE"),
                         (resultSet.getInt("HAS_ACTIVE_TASK") == 1));
-            }
-            {//help
-                System.out.println("SUCCESS !!! GET INSTANCES");
             }
         } finally {
             try {
@@ -3234,19 +3223,18 @@ public class DAO {
      */
 
     public ServiceOrder getServiceOrderById(int serviceOrderId) throws SQLException {
-        {//help
-            System.out.println("getServiceOrderById");
-        }
         ServiceOrder result = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, OST.NAME OST_NAME, " +
-                    "SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
-                    "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
-                    "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
-                    ") INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
-                    "WHERE SO.ID_SERVICEORDER = ?");
+            preparedStatement = connection.
+                    prepareStatement("SELECT SO.ID_SERVICEORDER, SO.ID_ORDERSTATUS, " +
+                            "OST.NAME OST_NAME, SO.ID_SRVICEINSTANCE, SO.ID_ORDERSCENARIO, " +
+                            "OSC.NAME OSC_NAME, SO.OUR_DATE, SO.ID_USER " +
+                            "FROM (((TASK T INNER JOIN SERVICEORDER SO ON T.ID_SERVICEORDER = SO.ID_SERVICEORDER) " +
+                            "INNER JOIN ORDERSTATUS OST ON SO.ID_ORDERSTATUS = OST.ID_ORDERSTATUS " +
+                            ") INNER JOIN ORDERSCENARIO OSC ON SO.ID_ORDERSCENARIO = OSC.ID_ORDERSCENARIO) " +
+                            "WHERE SO.ID_SERVICEORDER = ?");
             preparedStatement.setInt(1, serviceOrderId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -3260,9 +3248,6 @@ public class DAO {
                         resultSet.getInt("ID_ORDERSCENARIO"),
                         resultSet.getString("OSC_NAME"),
                         gregorianCalendar, resultSet.getInt("ID_USER"));
-            }
-            {//help
-                System.out.println("SUCCESS ! getServiceOrder");
             }
         } finally {
             try {
@@ -3282,18 +3267,17 @@ public class DAO {
      * @throws java.sql.SQLException
      */
     public Service getServiceModifyToByTaskId(int taskId) throws SQLException {
-        {//help
-            System.out.println("getServiceModifyToByTaskId");
-        }
         Service result = null;
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, L.LONGITUDE, L.LATITUDE, " +
-                    "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
-                    "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
-                    "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID " +
-                    "WHERE S.ID = (SELECT ID_SERVICE FROM TOMODIFY WHERE ID_TASK = ?) ");
+            preparedStatement = connection.
+                    prepareStatement("SELECT S.ID_SERVICE_TYPE, L.ADRESS, " +
+                            "L.LONGITUDE, L.LATITUDE, " +
+                            "ST.NAME, ST.SPEED, S.ID_PROVIDER_LOCATION, S.ID, S.PRICE " +
+                            "FROM (SERVICE S INNER JOIN SERVICETYPE ST ON S.ID_SERVICE_TYPE = ST.ID) " +
+                            "INNER JOIN LOCATION L ON S.ID_PROVIDER_LOCATION = L.ID " +
+                            "WHERE S.ID = (SELECT ID_SERVICE FROM TOMODIFY WHERE ID_TASK = ?) ");
             preparedStatement.setInt(1, taskId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -3306,9 +3290,6 @@ public class DAO {
                         resultSet.getInt("ID_PROVIDER_LOCATION"),
                         resultSet.getInt("ID"),
                         resultSet.getDouble("PRICE"));
-            }
-            {//help
-                System.out.println("SUCCESS ! getServiceModifyToByTaskId");
             }
         } finally {
             try {
