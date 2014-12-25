@@ -2666,7 +2666,7 @@ public class DAO {
             preparedStatement.setDate(3, sqlEndDate);
             resultSet = preparedStatement.executeQuery();
             if (EXT.equals("xls")) {
-                reportGenerator = new XLSReportGenerator("Get " + scenario + " orders", resultSet);
+                reportGenerator = new XLSReportGenerator(scenario + " orders", resultSet);
             } else {
                 reportGenerator = new CSVReportGenerator(resultSet);
             }

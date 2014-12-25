@@ -65,7 +65,7 @@ public class ReportGeneratorServlet extends HttpServlet {
                 } else if (methodName.equals("Circuits")) {
                     hasRights =
                             user.getUserRole().equals(UserRole.ADMINISTRATOR.toString())
-                                    || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
+                                    || user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
 
 
                     if(hasRights)
@@ -103,12 +103,14 @@ public class ReportGeneratorServlet extends HttpServlet {
                         reportGenerator = DAO.INSTANCE.getProfitabilityByMonth(EXT);
                 }else if (methodName.equals("New") && startDate != null && endDate != null) {
                     hasRights =
-                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) ||
+                            user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     if(hasRights)
                         reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, EXT);
                 }else if (methodName.equals("Disconnect") && startDate != null && endDate != null) {
                     hasRights =
-                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
+                            user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) ||
+                            user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
                     if(hasRights)
                         reportGenerator = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, EXT);
                 }else if (methodName.equals("Tree")) {
