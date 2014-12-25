@@ -75,7 +75,8 @@ public class ReportsPagingController  extends HttpServlet {
                     list = DAO.INSTANCE.getDevicesForReport(page, LINES_ON_PAGE);
             } else if (methodName.equals("Circuits")) {
                 hasRights =
-                        user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
+                        user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString()) ||
+                                user.getUserRole().equals(UserRole.INSTALLATION_ENG.toString());
 
                 if(hasRights)
                     list = DAO.INSTANCE.getCircuitsForReport(page, LINES_ON_PAGE);
@@ -111,13 +112,13 @@ public class ReportsPagingController  extends HttpServlet {
                     list = DAO.INSTANCE.getProfitabilityByMonth(page, LINES_ON_PAGE);
             }else if (methodName.equals("New") && startDate != null && endDate != null) {
                 hasRights =
-                        user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
+                        user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
 
                 if(hasRights)
                     list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.NEW, sqlStartDate, sqlEndDate, page, LINES_ON_PAGE);
             }else if (methodName.equals("Disconnect") && startDate != null && endDate != null) {
                 hasRights =
-                        user.getUserRole().equals(UserRole.ADMINISTRATOR.toString());
+                        user.getUserRole().equals(UserRole.ADMINISTRATOR.toString()) || user.getUserRole().equals(UserRole.PROVISIONING_ENG.toString());
 
                 if(hasRights)
                     list = DAO.INSTANCE.getOrdersPerPeriod(Scenario.DISCONNECT, sqlStartDate, sqlEndDate, page, LINES_ON_PAGE);
@@ -138,7 +139,6 @@ public class ReportsPagingController  extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         if(hasRights) {
-            System.out.println(list);
             map.put("list", list);
             map.put("linesOnPage", LINES_ON_PAGE);
         }else{
@@ -147,25 +147,6 @@ public class ReportsPagingController  extends HttpServlet {
 
         mapper.writeValue(out, map);
     }
-
-
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        final User user = (User) req.getSession().getAttribute(CauliflowerInfo.USER_ID_ATTRIBUTE);
-//
-//        if(user == null){
-//            resp.sendRedirect(CauliflowerInfo.HOME_LINK);
-//        }else if(user.getUserRole().equals(UserRole.CUSTOMER.toString())){
-//            resp.sendRedirect(CauliflowerInfo.HOME_LINK);
-//        }else{
-//            try{
-//                req.setAttribute(CauliflowerInfo.REPORT_METHOD_ATTRIBUTE, req.getParameter(CauliflowerInfo.REPORT_METHOD_ATTRIBUTE));
-//                resp.sendRedirect(CauliflowerInfo.REPORT_VIEW_LINK);
-//            }catch (Exception e){
-//                resp.sendRedirect(CauliflowerInfo.HOME_LINK);
-//            }
-//        }
-//    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
