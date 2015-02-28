@@ -2460,7 +2460,8 @@ public class DAO {
         final String sistActQ = InstanceStatus.ACTIVE.toString();
 
         // -- SELECT ROUTER ID, PORT ID, SI ID, USER ID, USER EMAIL, USER FNAME, USER LNAME
-        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME, 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, 60) PORT_NAME, SI.ID SERVICE_INSTANCE_ID,  " +
+        final String selectQuery = "SELECT 'ROUTER-'||P.ID_ROUTER ROUTER_NAME," +
+                " 'ROUTER-'||P.ID_ROUTER||'-'||MOD(P.ID, 60) PORT_NAME, SI.ID SERVICE_INSTANCE_ID,  " +
                 "U.E_MAIL USER_EMAIL, U.F_NAME USER_FIRST_NAME, U.L_NAME USER_LAST_NAME " +
                 "FROM ((( SERVICEINSTANCE SI INNER JOIN USERS U ON SI.ID_USER = U.ID_USER )   " +
                 "INNER JOIN CABLE C ON C.ID = SI.ID_CABLE )   " +
